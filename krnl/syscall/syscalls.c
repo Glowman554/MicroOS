@@ -11,7 +11,7 @@ void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
 	syscall_table[syscall_id] = handler;
 }
 
-cpu_registers_t* syscall_handler(cpu_registers_t* registers) {
+cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
 	// debugf("Handling syscall %d", registers->eax);
 	return syscall_table[registers->eax](registers);
 }
@@ -21,5 +21,5 @@ void init_syscalls() {
 
 	register_syscall(SYS_PUTC_ID, sys_putc);
 
-	register_interrupt_handler(0x30, syscall_handler);
+	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

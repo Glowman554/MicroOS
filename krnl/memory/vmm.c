@@ -3,6 +3,7 @@
 #include <memory/pmm.h>
 #include <scheduler/scheduler.h>
 #include <stdio.h>
+#include <stddef.h>
 
 vmm_context_t* kernel_context;
 
@@ -29,7 +30,7 @@ char* page_fault_get_error(uint32_t error) {
 	}
 }
 
-cpu_registers_t* page_fault_handler(cpu_registers_t* registers) {
+cpu_registers_t* page_fault_handler(cpu_registers_t* registers, void* _) {
 	printf("Page fault!\n");
 	printf("Error: %s\n", page_fault_get_error(registers->error));
 	
@@ -51,7 +52,7 @@ void vmm_init(void) {
 
 	vmm_activate_context(kernel_context);
 
-	register_interrupt_handler(0xe, page_fault_handler);
+	register_interrupt_handler(0xe, page_fault_handler, NULL);
 
 	debugf("Activating paging NOW!");
 	uint32_t cr0;

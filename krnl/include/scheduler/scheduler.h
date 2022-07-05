@@ -21,6 +21,4 @@ extern task_t tasks[MAX_TASKS];
 
 task_t* init_task(void* entry);
 
-cpu_registers_t* schedule(cpu_registers_t* registers);
-
 void init_scheduler();

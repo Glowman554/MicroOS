@@ -8,6 +8,9 @@
 #include <memory/pmm.h>
 #include <memory/vmm.h>
 
+#include <driver/output/serial.h>
+#include <driver/input/ps2_keyboard.h>
+
 #include <utils/multiboot.h>
 
 void init(multiboot_info_t* mb_info) {	
@@ -23,6 +26,11 @@ void init(multiboot_info_t* mb_info) {
 
 	pmm_init();
 	vmm_init();
+
+	register_driver((driver_t*) &serial_output_driver);
+	register_driver((driver_t*) &ps2_keyboard_driver);
+
+	activate_drivers();
 
 	init_syscalls();
 

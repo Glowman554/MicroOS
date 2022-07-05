@@ -1,6 +1,6 @@
 TEST = test.o
 
-CFLAGS = -m32 -Wall -g -fno-stack-protector -nostdinc -I include
+CFLAGS = -m32 -Wall -g -fno-stack-protector -nostdinc -I include -Wno-builtin-declaration-mismatch
 LDFLAGS = -melf_i386
 
 all: test.elf

@@ -70,6 +70,6 @@ typedef struct {
 
 void init_interrupts();
 
-typedef cpu_registers_t* (*interrupt_handler_t)(cpu_registers_t*);
+typedef cpu_registers_t* (*interrupt_handler_t)(cpu_registers_t*, void*);
 
-void register_interrupt_handler(uint8_t intr, interrupt_handler_t handler);
+void register_interrupt_handler(uint8_t intr, interrupt_handler_t handler, void* special_data);

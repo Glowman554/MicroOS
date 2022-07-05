@@ -91,11 +91,13 @@ void init_interrupts() {
 }
 
 interrupt_handler_t interrupt_handlers[256] = { 0 };
+void* interrupt_handlers_special_data[256] = { 0 };
 
-void register_interrupt_handler(uint8_t interrupt_number, interrupt_handler_t handler) {
+void register_interrupt_handler(uint8_t interrupt_number, interrupt_handler_t handler, void* special_data) {
 	debugf("Registering interrupt handler %p for interrupt %d", handler, interrupt_number);
 
 	interrupt_handlers[interrupt_number] = handler;
+	interrupt_handlers_special_data[interrupt_number] = special_data;
 }
 
 cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
@@ -109,7 +111,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 		printf("Exception 0x%x!\n", cpu->intr);
 
 		if (interrupt_handlers[cpu->intr] != 0) {
-			new_cpu = interrupt_handlers[cpu->intr](cpu);
+			new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 			set_tss(1, (uint32_t) (new_cpu + 1));
 		} else {
 			halt();
@@ -118,7 +120,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 		if (cpu->intr >= 0x20 && cpu->intr <= 0x2f) {
 
 			if (interrupt_handlers[cpu->intr] != 0) {
-				new_cpu = interrupt_handlers[cpu->intr](cpu);
+				new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 				set_tss(1, (uint32_t) (new_cpu + 1));
 			}
 
@@ -128,7 +130,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 			outb(0x20, 0x20);
 		} else {
 			if (interrupt_handlers[cpu->intr] != 0) {
-				new_cpu = interrupt_handlers[cpu->intr](cpu);
+				new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 				set_tss(1, (uint32_t) (new_cpu + 1));
 			}
 		}
