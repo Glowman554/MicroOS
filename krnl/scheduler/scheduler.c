@@ -157,7 +157,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 void init_scheduler() {
 	debugf("Initializing scheduler");
 
-	register_interrupt_handler(0x20, schedule, NULL);
+	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
 	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
 	init_elf(modules[0].mod_start);

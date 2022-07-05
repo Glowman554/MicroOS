@@ -18,6 +18,7 @@ typedef struct {
 
 extern task_t tasks[MAX_TASKS];
 
+cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
 task_t* init_task(void* entry);
 

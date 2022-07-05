@@ -11,6 +11,7 @@
 #include <driver/output/serial.h>
 #include <driver/input/ps2_keyboard.h>
 #include <driver/disk/ata.h>
+#include <driver/timer/pit.h>
 
 #include <utils/multiboot.h>
 
@@ -35,6 +36,8 @@ void init(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) get_ata_driver(false, 0x1F0, "ata0_slave"));
 	register_driver((driver_t*) get_ata_driver(true, 0x170, "ata1_master"));
 	register_driver((driver_t*) get_ata_driver(false, 0x170, "ata1_slave"));
+
+	register_driver((driver_t*) &pit_driver);
 
 	activate_drivers();
 
