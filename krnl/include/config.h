@@ -3,7 +3,7 @@
 #include <renderer/text_console.h>
 
 #define PRINTF_OUTPUT_FUNCTION text_console_puts
-// #define DEBUG
+#define DEBUG
 
 #define MAX_TASKS 32
 #define MAX_DRIVERS 32
