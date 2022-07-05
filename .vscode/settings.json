@@ -1,0 +1,9 @@
+{
+	"files.associations": {
+		"text_console.h": "c",
+		"scheduler.h": "c",
+		"multiboot.h": "c",
+		"stdio.h": "c",
+		"vmm.h": "c"
+	}
+}
