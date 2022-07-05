@@ -10,20 +10,20 @@
 extern const void kernel_start;
 extern const void kernel_end;
 
-static uint32_t bitmap[BITMAP_SIZE];
+static uint8_t bitmap[BITMAP_SIZE];
 
 static void pmm_mark_used(void* page);
 
 void bitmap_set(uint32_t bit) {
-	bitmap[bit / 32] &= ~(1 << (bit % 32));
+	bitmap[bit / 32] &= ~(0b10000000000000000000000000000000 >> (bit % 32));
 }
 
 void bitmap_clear(uint32_t bit) {
-	bitmap[bit / 32] |= (1 << (bit % 32));
+	bitmap[bit / 32] |= (0b10000000000000000000000000000000 >> (bit % 32));
 }
 
 int bitmap_test(uint32_t bit) {
-	return !(bitmap[bit / 32] & (1 << (bit % 32)));
+	return !(bitmap[bit / 32] & (0b10000000000000000000000000000000 >> (bit % 32)));
 }
 
 void pmm_init() {

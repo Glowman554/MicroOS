@@ -57,7 +57,7 @@ void vmm_init(void) {
 	debugf("Activating paging NOW!");
 	uint32_t cr0;
 	asm volatile("mov %%cr0, %0" : "=r" (cr0));
-	cr0 |= (1 << 31);
+	cr0 |= 0x80000000;
 	asm volatile("mov %0, %%cr0" : : "r" (cr0));
 
 }
