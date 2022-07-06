@@ -8,9 +8,6 @@ all: test.elf
 test.elf: $(TEST)
 	ld $(LDFLAGS) -Ttext=0x800000 -o $@ $^
 
-install:
-	cp *.elf ../cdrom/bin/ -v
-
 %.o: %.c
 	@echo CC $^
 	@gcc $(CFLAGS) -c -o $@ $^

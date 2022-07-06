@@ -1,7 +1,6 @@
 all:
 	make -C mckrnl
 	make -C user
-	make -C user install
 
 KEYMAP = de
 
