@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install tools
-      run: sudo apt update && sudo apt install xorriso mtools grub-mkrescue -y
+      run: sudo apt update && sudo apt install xorriso mtools -y
     - name: get resources
       run: make res
     - name: make
