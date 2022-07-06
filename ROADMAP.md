@@ -3,10 +3,12 @@
 these points are to be reached in order:
 
 - [x] pit timer
-- [ ] vfs
-- [ ] initrd
-- [ ] better kb driver keymap
+- [x] vfs
+- [x] initrd
+- [x] better kb driver keymap
+- [ ] kernel arg parser
 - [ ] first userspace shell
+- [ ] better ps2 keyboard driver
 - [ ] pci
 - [ ] acpi
 - [ ] hpet timer

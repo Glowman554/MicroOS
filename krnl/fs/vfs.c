@@ -37,6 +37,10 @@ file_t* vfs_open(char* path, int flags) {
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
 			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
+				if (vfs_mounts[j] == NULL) {
+					continue;
+				}
+
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -84,6 +88,10 @@ void vfs_mkdir(char* path) {
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
 			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
+				if (vfs_mounts[j] == NULL) {
+					continue;
+				}
+				
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -110,6 +118,10 @@ void vfs_touch(char* path) {
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
 			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
+				if (vfs_mounts[j] == NULL) {
+					continue;
+				}
+
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -136,6 +148,10 @@ dir_t vfs_dir_at(int idx, char* path) {
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
 			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
+				if (vfs_mounts[j] == NULL) {
+					continue;
+				}
+
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -162,6 +178,10 @@ void vfs_delete_dir(char* path) {
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
 			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
+				if (vfs_mounts[j] == NULL) {
+					continue;
+				}
+				
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
