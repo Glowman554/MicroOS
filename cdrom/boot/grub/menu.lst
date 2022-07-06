@@ -1,4 +1,0 @@
-title MicroOS
-kernel /mckrnl.elf --initrd=/initrd.saf --keymap=initrd:/keymap.fmp
-module /initrd.saf
-boot

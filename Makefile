@@ -15,7 +15,7 @@ iso: all initrd.saf
 	cp mckrnl/mckrnl.elf cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
-	mkisofs -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o cdrom.iso cdrom/
+	grub-mkrescue -o cdrom.iso cdrom/
 
 run: iso
 	qemu-system-i386 -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown

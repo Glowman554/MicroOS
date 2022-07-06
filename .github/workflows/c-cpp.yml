@@ -13,8 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install mkisofs
-      run: sudo apt update && sudo apt install mkisofs -y
+    - name: install tools
+      run: sudo apt update && sudo apt install xorriso mtools grub-mkrescue -y
     - name: get resources
       run: make res
     - name: make
