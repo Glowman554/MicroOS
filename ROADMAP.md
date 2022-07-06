@@ -6,7 +6,8 @@ these points are to be reached in order:
 - [x] vfs
 - [x] initrd
 - [x] better kb driver keymap
-- [ ] kernel arg parser
+- [x] kernel arg parser
+- [ ] file descriptors and sys_read, sys_write, sys_open, sys_close syscalls
 - [ ] first userspace shell
 - [ ] better ps2 keyboard driver
 - [ ] pci

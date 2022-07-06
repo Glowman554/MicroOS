@@ -16,6 +16,9 @@
 #include <fs/initrd.h>
 
 #include <utils/multiboot.h>
+#include <utils/string.h>
+
+#include <utils/argparser.h>
 
 void init(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
@@ -32,7 +35,7 @@ void init(multiboot_info_t* mb_info) {
 	vmm_init();
 
 	register_driver((driver_t*) &serial_output_driver);
-	register_driver((driver_t*) &ps2_keyboard_driver);
+	register_driver((driver_t*) get_ps2_driver());
 
 	register_driver((driver_t*) get_ata_driver(true, 0x1F0, "ata0_master"));
 	register_driver((driver_t*) get_ata_driver(false, 0x1F0, "ata0_slave"));
@@ -46,8 +49,14 @@ void init(multiboot_info_t* mb_info) {
 	vfs_init();
 
 	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
-
-	vfs_mount(initrd_mount(modules[0].mod_start));
+	char initrd_module[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--initrd", initrd_module)) {
+		for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
+			if (strcmp(modules[i].cmdline, initrd_module) == 0) {
+				vfs_mount(initrd_mount((void*) modules[i].mod_start));
+			}
+		}
+	}
 
 	init_syscalls();
 

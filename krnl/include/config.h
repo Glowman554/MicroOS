@@ -12,7 +12,6 @@
 
 #define USER_STACK_SIZE_PAGES 4
 #define KERNEL_STACK_SIZE_PAGES 4
-#define DEFAULT_KEYMAP "initrd:/keymap.fmp"
 
 #define MAX_SYSCALLS 32
 
