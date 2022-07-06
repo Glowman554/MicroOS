@@ -4,7 +4,8 @@
 #define SYS_CLOSE_ID 0x2
 #define SYS_READ_ID 0x3
 #define SYS_WRITE_ID 0x4
-#define SYS_ASYNC_GETC_ID 0x5
+#define SYS_FILESIZE_ID 0x5
+#define SYS_ASYNC_GETC_ID 0x6
 
 int open(char* path, int flags) {
 	int fd = -1;
@@ -35,6 +36,12 @@ void write(int fd, void* buf, int count, int offset) {
 	asm volatile("int $0x30" : : "a"(SYS_WRITE_ID), "b"(fd), "c"(buf), "d"(count), "S"(offset));
 }
 
+int filesize(int fd) {
+	int size = -1;
+	asm volatile("int $0x30" : "=c"(size) : "a"(SYS_FILESIZE_ID), "b"(fd));
+	return size;
+}
+
 int strlen(char* str) {
 	int len = 0;
 	while (str[len]) {
@@ -56,6 +63,19 @@ void _start(void) {
 	// for (int i = 0; i < 5; i++) {
 	// 	*videomem++ = (0x07 << 8) | ('0' + i);
 	// }
+
+	int fd = open("initrd:/test.txt", 0);
+	if (fd < 0) {
+		puts("Failed to open initrd:/test.txt\n");
+		while (1);
+	} else {
+		puts("Opened initrd:/test.txt\n");
+	}
+
+	char buf[1024] = { 0 };
+	read(fd, buf, filesize(fd), 0);
+	puts(buf);
+	close(fd);
 
 	while (1) {
 		char buf[2] = {0};

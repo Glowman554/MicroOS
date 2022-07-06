@@ -6,7 +6,8 @@ file_t* fd_table[MAX_FD] = { 0 };
 
 int file_to_fd(file_t* file) {
 	for (int i = 0; i < MAX_FD; i++) {
-		if (fd_table[i] == file) {
+		if (fd_table[i] == NULL) {
+			fd_table[i] = file;
 			return i + FD_OFFSET;
 		}
 	}

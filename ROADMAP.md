@@ -7,7 +7,7 @@ these points are to be reached in order:
 - [x] initrd
 - [x] better kb driver keymap
 - [x] kernel arg parser
-- [ ] file descriptors and sys_read, sys_write, sys_open, sys_close syscalls
+- [x] file descriptors and sys_read, sys_write, sys_open, sys_close syscalls
 - [ ] first userspace shell
 - [ ] better ps2 keyboard driver
 - [ ] pci
