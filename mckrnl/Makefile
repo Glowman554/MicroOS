@@ -10,7 +10,7 @@ CFLAGS = -fsanitize=undefined -m32 -Wall -g -fno-stack-protector -Wno-builtin-de
 CPPFLAGS = -m32 -Wall -g -fno-stack-protector -nostdinc -Iinclude -fno-use-cxa-atexit -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -Wno-write-strings
 LDFLAGS = -melf_i386 -Tlink.ld
 
-krnl.elf: $(OBJS)
+mckrnl.elf: $(OBJS)
 	@echo LD $^
 	@$(LD) $(LDFLAGS) -o $@ $^
 

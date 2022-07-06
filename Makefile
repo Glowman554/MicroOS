@@ -1,5 +1,5 @@
 all:
-	make -C krnl
+	make -C mckrnl
 	make -C user
 	make -C user install
 
@@ -12,7 +12,7 @@ initrd:
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
 iso: all initrd
-	cp krnl/krnl.elf cdrom/.
+	cp mckrnl/mckrnl.elf cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
 	mkisofs -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o cdrom.iso cdrom/
