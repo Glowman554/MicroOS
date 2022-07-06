@@ -5,6 +5,7 @@
 		"multiboot.h": "c",
 		"stdio.h": "c",
 		"vmm.h": "c",
-		"serial.h": "c"
+		"serial.h": "c",
+		"string.h": "c"
 	}
 }

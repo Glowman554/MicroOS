@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <utils/string.h>
 
+char_input_driver_t* global_char_input_driver;
+
 keymap_t cached_keymap;
 char cached_keymap_path[128] = { 0 };
 

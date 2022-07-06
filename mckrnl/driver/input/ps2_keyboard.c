@@ -21,11 +21,7 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 
 	uint8_t key = inb(DATA_PORT);
 	char c = keymap(&((char*) ps2_keyboard->driver_specific_data)[1], key, &(special_keys_down_t) {0});
-	if (c != 0) {
-		printf("%c", c);
-
-		((char*) ps2_keyboard->driver_specific_data)[0] = c;
-	}
+	((char*) ps2_keyboard->driver_specific_data)[0] = c;
 
 	return registers;
 }
@@ -44,18 +40,17 @@ void ps2_keyboard_init(driver_t* driver) {
 	outb(COMMAND_PORT, 0x60);
 	outb(DATA_PORT, status);
 	outb(DATA_PORT, 0xf4);
+
+	global_char_input_driver = (char_input_driver_t*) driver;
 }
 
 
 
-char ps2_keyboard_getc(char_input_driver_t* driver) {
-	driver->driver.driver_specific_data = (void*) 0;
+char ps2_keyboard_async_getc(char_input_driver_t* driver) {
+	char c = ((char*) driver->driver.driver_specific_data)[0];
+	((char*) driver->driver.driver_specific_data)[0] = 0;
 
-	while(!((char*) driver->driver.driver_specific_data)[0]) {
-		asm volatile("pause");
-	}
-
-	return (char) (uint32_t) driver->driver.driver_specific_data;
+	return c;
 }
 
 char_input_driver_t* get_ps2_driver() {
@@ -66,7 +61,7 @@ char_input_driver_t* get_ps2_driver() {
 	driver->driver.get_device_name = ps2_keyboard_get_device_name;
 	driver->driver.init = ps2_keyboard_init;
 	
-	driver->getc = ps2_keyboard_getc;
+	driver->async_getc = ps2_keyboard_async_getc;
 
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
 	

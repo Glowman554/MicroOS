@@ -19,7 +19,11 @@ cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
 void init_syscalls() {
 	debugf("Initializing syscalls");
 
-	register_syscall(SYS_PUTC_ID, sys_putc);
+	register_syscall(SYS_OPEN_ID, sys_open);
+	register_syscall(SYS_CLOSE_ID, sys_close);
+	register_syscall(SYS_READ_ID, sys_read);
+	register_syscall(SYS_WRITE_ID, sys_write);
+	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

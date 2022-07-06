@@ -5,7 +5,7 @@
 
 typedef struct char_input_driver {
 	driver_t driver;
-	char (*getc)(struct char_input_driver*);
+	char (*async_getc)(struct char_input_driver*);
 } char_input_driver_t;
 
 typedef struct special_keys_down_t {
@@ -34,5 +34,7 @@ typedef struct keymap_t {
 	char layout_shift[0xff];
 	char layout_alt[0xff];
 } keymap_t;
+
+extern char_input_driver_t* global_char_input_driver;
 
 char keymap(char* keymap_path, uint8_t key, special_keys_down_t* special_keys_down);

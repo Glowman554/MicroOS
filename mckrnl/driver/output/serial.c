@@ -18,18 +18,20 @@ void serial_init(driver_t* driver) {
 	outb(PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
 	outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
 	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
+
+	global_char_output_driver = (char_output_driver_t*) driver;
 }
 
-int serial_recived(){
+int serial_recived() {
 	return inb(PORT + 5) & 1;
 }
 
-char read_serial(){
+char read_serial() {
 	while(serial_recived() == 0);
 	return inb(PORT);
 }
 
-int is_transmit_empty(){
+int is_transmit_empty() {
 	return inb(PORT + 5) & 0x20;
 }
 

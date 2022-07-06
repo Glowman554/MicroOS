@@ -34,8 +34,8 @@ run_dbg: iso
 	qemu-system-i386 -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
 
 debug:
-	gdb -ex "target remote localhost:1234" -ex "b init" -ex "continue" krnl/krnl.elf
+	gdb -ex "target remote localhost:1234" -ex "b init" -ex "continue" mckrnl/mckrnl.elf
 
 clean: iso
-	make -C krnl clean
+	make -C mckrnl clean
 	make -C user clean
