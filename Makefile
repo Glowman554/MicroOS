@@ -5,13 +5,14 @@ all:
 
 KEYMAP = de
 
-initrd:
+initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/*.elf ./res/initrd/bin/ -v
 	cp ./res/$(KEYMAP).fmp ./res/initrd/keymap.fmp -v
+	cp -r ./initrd/* ./res/initrd/ -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
-iso: all initrd
+iso: all initrd.saf
 	cp mckrnl/mckrnl.elf cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
