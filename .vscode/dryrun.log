@@ -1,0 +1,7 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/janick/Development/MicroOS'
+make -C krnl
+make -C user
+make -C user install
+make: Leaving directory '/home/janick/Development/MicroOS'
+ 

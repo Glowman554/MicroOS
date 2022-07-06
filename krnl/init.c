@@ -13,6 +13,8 @@
 #include <driver/disk/ata.h>
 #include <driver/timer/pit.h>
 
+#include <fs/initrd.h>
+
 #include <utils/multiboot.h>
 
 void init(multiboot_info_t* mb_info) {	
@@ -40,6 +42,12 @@ void init(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &pit_driver);
 
 	activate_drivers();
+
+	vfs_init();
+
+	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
+
+	vfs_mount(initrd_mount(modules[0].mod_start));
 
 	init_syscalls();
 

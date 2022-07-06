@@ -17,7 +17,7 @@ typedef struct vfs_mount {
 	void (*close)(struct vfs_mount* mount, struct file* file);
 	void (*read)(struct vfs_mount* mount, struct file* file, void* buf, size_t size, size_t offset);
 	void (*write)(struct vfs_mount* mount, struct file* file, void* buf, size_t size, size_t offset);
-	void (*delete)(struct vfs_mount* mount, struct file* file);
+	void (*_delete)(struct vfs_mount* mount, struct file* file);
 	void (*mkdir)(struct vfs_mount* mount, char* path);
 	void (*touch)(struct vfs_mount* mount, char* path);
 

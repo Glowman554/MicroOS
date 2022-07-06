@@ -4,9 +4,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <memory/pmm.h>
+#include <memory/vmm.h>
 #include <utils/string.h>
 #include <utils/multiboot.h>
 #include <scheduler/elf.h>
+#include <fs/vfs.h>
 
 
 task_t tasks[MAX_TASKS] = { 0 };
@@ -159,11 +161,14 @@ void init_scheduler() {
 
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
-	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
-	init_elf(modules[0].mod_start);
+	file_t* file = vfs_open("initrd:/bin/test.elf", 0);
+	void* buffer = vmm_alloc(file->size / 4096 + 1);
+	vfs_read(file, buffer, file->size, 0);
 
-	void* test = vmm_alloc(1);
-	memset(test, 0, 0x1000);
+	init_elf(buffer);
+
+	vmm_free(buffer, file->size / 4096 + 1);
+	vfs_close(file);
 
 	is_scheduler_running = true;
 }

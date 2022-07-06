@@ -1,4 +1,4 @@
 title MicroOS
 kernel /krnl.elf
-module /bin/test.elf
+module /initrd.saf
 boot

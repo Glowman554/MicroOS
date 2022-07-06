@@ -7,11 +7,11 @@
 vfs_mount_t* vfs_mounts[MAX_VFS_MOUNTS] = { 0 };
 
 void vfs_init() {
-	debugf("VFS: Initializing VFS\n");
+	debugf("VFS: Initializing VFS");
 }
 
 void vfs_mount(vfs_mount_t* mount) {
-	debugf("VFS: Mounting %s\n", mount->name(mount));
+	debugf("VFS: Mounting %s", mount->name(mount));
 
 	for (int i = 0; i < MAX_VFS_MOUNTS; i++) {
 		if (vfs_mounts[i] == 0) {
@@ -67,7 +67,7 @@ void vfs_write(file_t* file, void* buf, size_t size, size_t offset) {
 }
 
 void vfs_delete(file_t* file) {
-	file->mount->delete(file->mount, file);
+	file->mount->_delete(file->mount, file);
 }
 
 void vfs_mkdir(char* path) {
