@@ -53,7 +53,21 @@ void pmm_init() {
 		addr += 0x1000;
 	}
 
-	#warning TODO: mark all multiboot structures as used
+	debugf("Marking multiboot structures as used");
+
+	struct multiboot_module* modules = global_multiboot_info->mbs_mods_addr;
+
+	pmm_mark_used(global_multiboot_info);
+	pmm_mark_used(modules);
+
+	int i;
+	for (i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
+		addr = modules[i].mod_start;
+		while (addr < modules[i].mod_end) {
+			pmm_mark_used((void*) addr);
+			addr += 0x1000;
+		}
+	}
 }
 
 void* pmm_alloc() {

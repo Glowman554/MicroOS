@@ -8,6 +8,7 @@
 
 #define MAX_TASKS 32
 #define MAX_DRIVERS 32
+#define MAX_VFS_MOUNTS 32
 
 #define USER_STACK_SIZE_PAGES 4
 #define KERNEL_STACK_SIZE_PAGES 4
