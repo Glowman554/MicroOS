@@ -80,7 +80,7 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 			case 0x3A:
 				switch (key) {
 					case 0xBA: //Caps lock toggle
-						debugf("Caps lock toggle");
+						special_keys_down->caps_lock = !special_keys_down->caps_lock;
 						break;
 				}
 				break;
