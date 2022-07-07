@@ -3,7 +3,7 @@
 #include <sys/file.h>
 
 char getchar() {
-	char input[1];
+	char input[1] = { 0 };
 	read(STDIN, input, 1, 0);
 
 	return input[0];

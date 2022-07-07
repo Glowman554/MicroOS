@@ -46,7 +46,7 @@ void vmm_init(void) {
 	debugf("Initializing virtual memory manager");
 
 	kernel_context = vmm_create_context();
-	for (int i = 0; i < 4096 * 1024; i += 0x1000) {
+	for (int i = 0; i < 32 * MB; i += 0x1000) {
 		vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
 	}
 
@@ -200,6 +200,4 @@ void* vmm_alloc(uint32_t num_pages) {
 
 void vmm_free(void* ptr, uint32_t num_pages) {
 	pmm_free_range(ptr, num_pages);
-
-	vmm_synchronize_task_contexts_with_kernel_context();
 }

@@ -7,7 +7,7 @@ LDFLAGS = -melf_i386
 prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
-	ld $(LDFLAGS) -Ttext=0x800000 -o ../bin/$@ $^ ../lib/libc.o
+	ld $(LDFLAGS) -Ttext=0xA0000000 -o ../bin/$@ $^ ../lib/libc.o
 
 %.o: %.c
 	@echo CC $^

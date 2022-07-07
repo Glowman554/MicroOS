@@ -9,6 +9,8 @@
 
 #define USER_SPACE_OFFSET 0xC0000000
 
+#define MB (1024 * 1024)
+
 typedef struct vmm_context {
     uint32_t* pagedir;
 } vmm_context_t;
