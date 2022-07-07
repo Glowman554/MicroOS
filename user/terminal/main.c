@@ -6,6 +6,17 @@
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
 
+	FILE* file = fopen("initrd:/test.txt", "r");
+	fseek(file, 0, SEEK_END);
+	int len = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	char* buf = malloc(len + 1);
+	fread(buf, 1, len, file);
+	fclose(file);
+	buf[len] = '\0';
+	printf("%s\n", buf);
+	free(buf);
+
     while(1) {
 		printf("> ");
 

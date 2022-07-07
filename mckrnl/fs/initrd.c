@@ -106,9 +106,7 @@ file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 
 	saf_node_file_t* file_node = (saf_node_file_t*) file;
 
-	file_t* f;
-
-	f = (file_t*) vmm_alloc(1);
+	file_t* f = (file_t*) vmm_alloc(1);
 	f->mount = mount;
 	f->size = file_node->size;
 	f->driver_specific_data = (void*) ((uint32_t) mount->driver_specific_data + (uint32_t) file_node->addr);

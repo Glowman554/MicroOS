@@ -10,7 +10,7 @@
 extern const void kernel_start;
 extern const void kernel_end;
 
-static uint8_t bitmap[BITMAP_SIZE];
+static uint32_t bitmap[BITMAP_SIZE];
 
 static void pmm_mark_used(void* page);
 
@@ -68,6 +68,8 @@ void pmm_init() {
 			addr += 0x1000;
 		}
 	}
+
+	pmm_mark_used(NULL);
 }
 
 void* pmm_alloc() {
@@ -94,19 +96,20 @@ void pmm_free(void* page){
 }
 
 void* pmm_alloc_range(int count) {
-	int i;
-
-retry:
-	for (i = 0; i < BITMAP_SIZE * 32; i++) {
+	for (int i = 0; i < BITMAP_SIZE * 32; i++) {
+	retry:
 		if (!bitmap_test(i)) {
-			int j;
-			for (j = 0; j < count; j++) {
+			for (int j = 0; j < count; j++) {
 				if (bitmap_test(i + j)) {
+					i += j;
 					goto retry;
 				}
+			}
 
+			for (int j = 0; j < count; j++) {
 				bitmap_set(i + j);
 			}
+
 			return (void*) (i * 0x1000);
 		}
 	}

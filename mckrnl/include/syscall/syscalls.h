@@ -13,6 +13,13 @@ cpu_registers_t* sys_close(cpu_registers_t* regs);
 cpu_registers_t* sys_read(cpu_registers_t* regs);
 cpu_registers_t* sys_write(cpu_registers_t* regs);
 cpu_registers_t* sys_filesize(cpu_registers_t* regs);
+
+cpu_registers_t* sys_delete(cpu_registers_t* regs);
+cpu_registers_t* sys_mkdir(cpu_registers_t* regs);
+cpu_registers_t* sys_dir_at(cpu_registers_t* regs);
+cpu_registers_t* sys_touch(cpu_registers_t* regs);
+cpu_registers_t* sys_delete_dir(cpu_registers_t* regs);
+
 cpu_registers_t* sys_async_getc(cpu_registers_t* regs);
 cpu_registers_t* sys_exit(cpu_registers_t* regs);
 cpu_registers_t* sys_mmap(cpu_registers_t* regs);

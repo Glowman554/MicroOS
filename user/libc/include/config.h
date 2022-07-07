@@ -5,6 +5,12 @@
 #define SYS_READ_ID 0x3
 #define SYS_WRITE_ID 0x4
 #define SYS_FILESIZE_ID 0x5
-#define SYS_ASYNC_GETC_ID 0x6
-#define SYS_EXIT_ID 0x7
-#define SYS_MMAP_ID 0x8
+#define SYS_DELETE_ID 0x6
+#define SYS_MKDIR_ID 0x7
+#define SYS_DIR_AT_ID 0x8
+#define SYS_TOUCH_ID 0x9
+#define SYS_DELETE_DIR_ID 0xA
+
+#define SYS_ASYNC_GETC_ID 0xB
+#define SYS_EXIT_ID 0xC
+#define SYS_MMAP_ID 0xD

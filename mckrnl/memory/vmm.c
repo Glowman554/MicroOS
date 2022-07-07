@@ -50,6 +50,8 @@ void vmm_init(void) {
 		vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
 	}
 
+	vmm_map_page(kernel_context, (uintptr_t) NULL, (uintptr_t) NULL, 0);
+
 	vmm_activate_context(kernel_context);
 
 	register_interrupt_handler(0xe, page_fault_handler, NULL);
@@ -188,15 +190,16 @@ vmm_context_t vmm_get_current_context(void) {
 void* vmm_alloc(uint32_t num_pages) {
 	void* ptr = pmm_alloc_range(num_pages);
 
-	vmm_map_page(kernel_context, (uintptr_t) ptr, (uintptr_t) ptr, PTE_PRESENT | PTE_WRITE);
+	for (int i = 0; i < num_pages; i++) {
+		vmm_map_page(kernel_context, (uintptr_t) ptr + (i * 0x1000), (uintptr_t) ptr + (i * 0x1000), PTE_PRESENT | PTE_WRITE);
+	}
+	
 	vmm_synchronize_task_contexts_with_kernel_context();
-
 	return ptr;
 }
 
 void vmm_free(void* ptr, uint32_t num_pages) {
 	pmm_free_range(ptr, num_pages);
 
-	vmm_map_page(kernel_context, (uintptr_t) ptr, (uintptr_t) ptr, 0);
 	vmm_synchronize_task_contexts_with_kernel_context();
 }

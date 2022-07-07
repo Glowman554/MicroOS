@@ -6,6 +6,10 @@
 syscall_handler_t syscall_table[MAX_SYSCALLS] = { 0 };
 
 void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
+	if (syscall_id >= MAX_SYSCALLS) {
+		abortf("syscall_id %d is out of range", syscall_id);
+	}
+
 	debugf("Registering syscall %d with handler %p", syscall_id, handler);
 
 	syscall_table[syscall_id] = handler;
@@ -24,6 +28,11 @@ void init_syscalls() {
 	register_syscall(SYS_READ_ID, sys_read);
 	register_syscall(SYS_WRITE_ID, sys_write);
 	register_syscall(SYS_FILESIZE_ID, sys_filesize);
+	register_syscall(SYS_DELETE_ID, sys_delete);
+	register_syscall(SYS_MKDIR_ID, sys_mkdir);
+	register_syscall(SYS_DIR_AT_ID, sys_dir_at);
+	register_syscall(SYS_TOUCH_ID, sys_touch);
+	register_syscall(SYS_DELETE_DIR_ID, sys_delete_dir);
 	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
 	register_syscall(SYS_EXIT_ID, sys_exit);
 	register_syscall(SYS_MMAP_ID, sys_mmap);

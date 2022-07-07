@@ -7,6 +7,12 @@
 | SYS_READ | 0x3 | fd | buf | count | offset | - |
 | SYS_WRITE | 0x4 | fd | buf | count | offset | - |
 | SYS_FILESIZE | 0x5 | fd | size (return) | - | - | - | - |
-| SYS_ASYNC_GETC | 0x6 | c (return) | - | - | - | - | - |
-| SYS_EXIT | 0x7 | status | - | - | - | - | - |
-| SYS_MMAP | 0x8 | addr | - | - | - | - | - |
+| SYS_DELETE | 0x6 | fd | - | - | - | - | - |
+| SYS_MKDIR | 0x7 | path | - | - | - | - | - |
+| SYS_DIR_AT | 0x8 | path | idx | dir_t* | - | - | - |
+| SYS_TOCUH | 0x9 | path | - | - | - | - | - |
+| SYS_DELETE_DIR | 0xa | path | - | - | - | - | - |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_ASYNC_GETC | 0xb | c (return) | - | - | - | - | - |
+| SYS_EXIT | 0xc | status | - | - | - | - | - |
+| SYS_MMAP | 0xd | addr | - | - | - | - | - |

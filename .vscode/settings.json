@@ -10,6 +10,8 @@
 		"config.h": "c",
 		"ps2_keyboard.h": "c",
 		"char_input_driver.h": "c",
-		"stddef.h": "c"
+		"stddef.h": "c",
+		"syscalls.h": "c",
+		"file.h": "c"
 	}
 }
