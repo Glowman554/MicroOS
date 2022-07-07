@@ -2,6 +2,7 @@
 
 #include <driver/driver.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct char_input_driver {
 	driver_t driver;

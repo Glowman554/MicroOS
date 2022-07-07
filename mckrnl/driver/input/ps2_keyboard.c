@@ -66,7 +66,7 @@ char_input_driver_t* get_ps2_driver() {
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
 	
 	if (!is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[1])) {
-		printf("--- FATAL --- set --keymap flag!\n");
+		abortf("set --keymap flag!\n");
 	} else {
 		debugf("Using keymap %s", &((char*) driver->driver.driver_specific_data)[1]);
 	}

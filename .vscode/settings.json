@@ -7,6 +7,8 @@
 		"vmm.h": "c",
 		"serial.h": "c",
 		"string.h": "c",
-		"config.h": "c"
+		"config.h": "c",
+		"ps2_keyboard.h": "c",
+		"char_input_driver.h": "c"
 	}
 }

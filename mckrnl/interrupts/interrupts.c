@@ -100,6 +100,75 @@ void register_interrupt_handler(uint8_t interrupt_number, interrupt_handler_t ha
 	interrupt_handlers_special_data[interrupt_number] = special_data;
 }
 
+char* get_exception_name(int interrupt_number) {
+	switch(interrupt_number){
+		case 0x0:
+			return((char*) "Divide by Zero");
+			break;
+		case 0x1:
+			return((char*) "Debug");
+			break;
+		case 0x2:
+			return((char*) "Non Maskable Interrupt");
+			break;
+		case 0x3:
+			return((char*) "Breakpoint");
+			break;
+		case 0x4:
+			return((char*) "Overflow");
+			break;
+		case 0x5:
+			return((char*) "Bound Range");
+			break;
+		case 0x6:
+			return((char*) "Invalid Opcode");
+			break;
+		case 0x7:
+			return((char*) "Device Not Available");
+			break;
+		case 0x8:
+			return((char*) "Double Fault");
+			break;
+		case 0x9:
+			return((char*) "Coprocessor Segment Overrun");
+			break;
+		case 0xa:
+			return((char*) "Invalid TSS");
+			break;
+		case 0xb:
+			return((char*) "Segment not Present");
+			break;
+		case 0xc:
+			return((char*) "Stack Fault");
+			break;
+		case 0xd:
+			return((char*) "General Protection");
+			break;
+		case 0xe:
+			return((char*) "Page Fault");
+			break;
+		case 0x10:
+			return((char*) "x87 Floating Point");
+			break;
+		case 0x11:
+			return((char*) "Alignment Check");
+			break;
+		case 0x12:
+			return((char*) "Machine Check");
+			break;
+		case 0x13:
+			return((char*) "SIMD Floating Point");
+			break;
+		case 0x1e:
+			return((char*) "Security-sensitive event in Host");
+			break;
+		default:
+			return((char*) "Reserved");
+			break;
+	}
+}
+
+
 cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 	// if (cpu->intr != 32) {
 	// 	debugf("Interrupt: %d", cpu->intr);
@@ -108,13 +177,11 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 	cpu_registers_t* new_cpu = cpu;
 
 	if (cpu->intr <= 0x1f) {
-		printf("Exception 0x%x!\n", cpu->intr);
-
 		if (interrupt_handlers[cpu->intr] != 0) {
 			new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 			set_tss(1, (uint32_t) (new_cpu + 1));
 		} else {
-			halt();
+			abortf("Unhandled exception %s (0x%x)", get_exception_name(cpu->intr), cpu->intr);
 		}
 	} else {
 		if (cpu->intr >= 0x20 && cpu->intr <= 0x2f) {

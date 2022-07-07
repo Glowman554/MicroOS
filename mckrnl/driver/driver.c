@@ -13,7 +13,7 @@ void register_driver(driver_t* driver) {
 		}
 	}
 
-	printf("--- FATAL --- No more drivers available\n");
+	abortf("No more drivers available\n");
 }
 
 void activate_drivers() {

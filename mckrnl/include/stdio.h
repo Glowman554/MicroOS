@@ -5,6 +5,7 @@
 #include <driver/char_output_driver.h>
 
 int printf(const char *format, ...);
+int abortf(const char *format, ...);
 int debugf_intrnl(const char *format, ...);
 
 extern char_output_driver_t* debugf_driver;

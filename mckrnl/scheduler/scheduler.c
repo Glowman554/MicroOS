@@ -23,7 +23,7 @@ task_t* init_task(void* entry) {
 	}
 
 	if (task == NULL) {
-		printf("--- FATAL --- No more tasks available\n");
+		abortf("No more tasks available\n");
 		return NULL;
 	}
 

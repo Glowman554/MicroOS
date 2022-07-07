@@ -1,6 +1,7 @@
 #pragma once
 
 #include <driver/driver.h>
+#include <stdint.h>
 
 typedef struct disk_driver {
 	driver_t driver;
