@@ -17,9 +17,11 @@ typedef struct {
 } task_t;
 
 extern task_t tasks[MAX_TASKS];
+extern int current_task;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
 task_t* init_task(void* entry);
+void exit_task(task_t* task);
 
 void init_scheduler();

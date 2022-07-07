@@ -22,6 +22,7 @@ vmm_context_t vmm_get_current_context(void);
 
 int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags);
 void vmm_clone_kernel_context(vmm_context_t* context);
+void vmm_destroy_context(vmm_context_t* context);
 
 void vmm_activate_context(vmm_context_t* context);
 

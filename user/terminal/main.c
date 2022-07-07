@@ -23,7 +23,7 @@ int main(int argc, char* argv[], char* envp[]) {
 			}
 		}
 
-		if (strcmp(in, "acces-violation") == 0) {
+		if (strcmp(in, "acs") == 0) {
 			asm volatile("hlt");
 		}
 
@@ -34,7 +34,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		if (strcmp(in, "help") == 0) {
 			printf("about - Prints out the about message\n");
 			printf("help - Prints out this help message\n");
-			printf("acces-violation - Causes an access violation\n");
+			printf("acs - Causes an access violation\n");
 		}
 	}
 }

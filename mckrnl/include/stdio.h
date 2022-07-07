@@ -16,3 +16,5 @@ extern char_output_driver_t* printf_driver;
 #else
 #define debugf(fmt, ...)
 #endif
+
+#define here() debugf("here");

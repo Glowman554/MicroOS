@@ -121,7 +121,48 @@ void vmm_clone_kernel_context(vmm_context_t* context) {
 	}
 }
 
+void vmm_destroy_context(vmm_context_t* context) {
+	debugf("Destroying context %p", context);
 
+	for (int i = 0; i < 1024; i++) {
+		if (kernel_context->pagedir[i] & PTE_PRESENT) {
+			uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
+			for (int j = 0; j < 1024; j++) {
+				if (page_table[j] & PTE_PRESENT) {
+					void* virt = (void*) (i * 1024 * 1024 + j * 0x1000);
+					void* phys = (void*) (page_table[j] & ~0xFFF);
+
+					vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, 0);
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 1024; i++) {
+		if (context->pagedir[i] & PTE_PRESENT) {
+			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
+			for (int j = 0; j < 1024; j++) {
+				if (page_table[j] & PTE_PRESENT) {
+					void* virt = (void*) (i * 1024 * 1024 + j * 0x1000);
+					void* phys = (void*) (page_table[j] & ~0xFFF);
+
+					debugf("Unmapping %p / %p", virt, phys);
+					pmm_free(phys);
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 1024; i++) {
+		if (context->pagedir[i] & PTE_PRESENT) {
+			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
+			pmm_free(page_table);
+		}
+	}
+
+	pmm_free(context->pagedir);
+	pmm_free(context);
+}
 
 void vmm_synchronize_task_contexts_with_kernel_context(void) {
 	debugf("Synchronizing task contexts with kernel context");

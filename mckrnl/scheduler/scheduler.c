@@ -112,22 +112,24 @@ void init_elf(void* image) {
 
 // IMPORTANT: This function must be called in ring 0
 // IMPORTANT: This function should free every pmm allocation made in the pagemap witch isnt in the kernel context too
-// void exit_task(task_t* task) {
-// 	asm volatile("cli");
+void exit_task(task_t* task) {
+	asm volatile("cli");
 
-// 	debugf("Exiting task %p", task);
+	vmm_activate_context(kernel_context);
+	vmm_destroy_context(task->context);
 
-// 	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
-// 	pmm_free_range((void*) task->user_stack, USER_STACK_SIZE_PAGES);
+	task->active = false;
 
-// 	task->active = false;
+	debugf("Task %p exited", task);
+	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
-// 	asm volatile("sti");
-// }
+	asm volatile("sti");
+	while(1);
+}
 
-static int current_task = 0;
+int current_task = 0;
 
-static bool is_scheduler_running = false;
+bool is_scheduler_running = false;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	if (!is_scheduler_running) {
@@ -153,6 +155,8 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 		}
 	}
 
+	abortf("All tasks are dead lol\n");
+
 	return registers;
 }
 
@@ -164,9 +168,14 @@ void init_scheduler() {
 	file_t* file = vfs_open("initrd:/bin/terminal.elf", 0);
 	void* buffer = vmm_alloc(file->size / 4096 + 1);
 	vfs_read(file, buffer, file->size, 0);
-
 	init_elf(buffer);
+	vmm_free(buffer, file->size / 4096 + 1);
+	vfs_close(file);
 
+	file = vfs_open("initrd:/bin/test.elf", 0);
+	buffer = vmm_alloc(file->size / 4096 + 1);
+	vfs_read(file, buffer, file->size, 0);
+	init_elf(buffer);
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 
