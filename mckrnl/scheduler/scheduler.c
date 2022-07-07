@@ -172,12 +172,12 @@ void init_scheduler() {
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 
-	file = vfs_open("initrd:/bin/test.elf", 0);
-	buffer = vmm_alloc(file->size / 4096 + 1);
-	vfs_read(file, buffer, file->size, 0);
-	init_elf(buffer);
-	vmm_free(buffer, file->size / 4096 + 1);
-	vfs_close(file);
+	// file = vfs_open("initrd:/bin/test.elf", 0);
+	// buffer = vmm_alloc(file->size / 4096 + 1);
+	// vfs_read(file, buffer, file->size, 0);
+	// init_elf(buffer);
+	// vmm_free(buffer, file->size / 4096 + 1);
+	// vfs_close(file);
 
 	is_scheduler_running = true;
 }

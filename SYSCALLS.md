@@ -9,3 +9,4 @@
 | SYS_FILESIZE | 0x5 | fd | size (return) | - | - | - | - |
 | SYS_ASYNC_GETC | 0x6 | c (return) | - | - | - | - | - |
 | SYS_EXIT | 0x7 | status | - | - | - | - | - |
+| SYS_MMAP | 0x8 | addr | - | - | - | - | - |

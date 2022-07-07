@@ -111,7 +111,7 @@ void vmm_clone_kernel_context(vmm_context_t* context) {
 			uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
 			for (int j = 0; j < 1024; j++) {
 				if (page_table[j] & PTE_PRESENT) {
-					void* virt = (void*) (i * 1024 * 1024 + j * 0x1000);
+					void* virt = (void*) ((i << 22) | (j << 12));
 					void* phys = (void*) (page_table[j] & ~0xFFF);
 
 					vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, page_table[j] & 0xFFF);
@@ -129,7 +129,7 @@ void vmm_destroy_context(vmm_context_t* context) {
 			uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
 			for (int j = 0; j < 1024; j++) {
 				if (page_table[j] & PTE_PRESENT) {
-					void* virt = (void*) (i * 1024 * 1024 + j * 0x1000);
+					void* virt = (void*) ((i << 22) | (j << 12));
 					void* phys = (void*) (page_table[j] & ~0xFFF);
 
 					vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, 0);
@@ -143,7 +143,7 @@ void vmm_destroy_context(vmm_context_t* context) {
 			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
 			for (int j = 0; j < 1024; j++) {
 				if (page_table[j] & PTE_PRESENT) {
-					void* virt = (void*) (i * 1024 * 1024 + j * 0x1000);
+					void* virt = (void*) ((i << 22) | (j << 12));
 					void* phys = (void*) (page_table[j] & ~0xFFF);
 
 					debugf("Unmapping %p / %p", virt, phys);

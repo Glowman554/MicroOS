@@ -12,9 +12,10 @@ these points are to be reached in order:
 - [x] make abortf
 - [x] first userspace shell
 - [x] better ps2 keyboard driver
-- [ ] add malloc / free to libc
+- [x] add malloc / free to libc
 - [ ] add files to libc
 - [ ] add assert to libc
+- [ ] add spawn syscall and proc_info (add pids) syscall and yield syscall
 - [ ] make real shell with subprocesses aka programs
 - [ ] pci
 - [ ] acpi

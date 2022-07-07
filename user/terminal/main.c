@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
@@ -9,7 +10,9 @@ int main(int argc, char* argv[], char* envp[]) {
 		printf("> ");
 
 		int len = 0;
-		char in[100] = {0};
+		char* in = (char*) malloc(128);
+		memset(in, 0, 128);
+
 		bool reading = true;
 
 		while (reading) {
@@ -44,6 +47,8 @@ int main(int argc, char* argv[], char* envp[]) {
 			printf("acs - Causes an access violation\n");
 			printf("exit - Exits the program\n");
 		}
+
+		free(in);
 	}
 
 	return 0;
