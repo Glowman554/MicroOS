@@ -4,7 +4,6 @@
 
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
-	printf("THIS SHELL IS JUST FOR TESTING AND NOT THE FINAL SHELL!\n");
 
     while(1) {
 		printf("> ");

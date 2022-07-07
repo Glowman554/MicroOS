@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <sys/file.h>
+#include <string.h>
 
 int printf(const char *fmt, ...) {
-	char printf_buf[1024 * 4];
 	va_list args;
-	int printed;
+	char buf[1024] = {0};
 
 	va_start(args, fmt);
-	printed = vsprintf(printf_buf, fmt, args);
+	int tmp = vsprintf(buf, fmt, args);
 	va_end(args);
 
-	write(STDOUT, printf_buf, printed, 0);
+	write(STDOUT, buf, strlen(buf), 0);
 
-	return printed;
+	return tmp;
 }
