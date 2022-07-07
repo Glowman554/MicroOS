@@ -12,6 +12,9 @@ these points are to be reached in order:
 - [x] make abortf
 - [x] first userspace shell
 - [ ] better ps2 keyboard driver
+- [ ] add malloc / free to libc
+- [ ] add files to libc
+- [ ] add assert to libc
 - [ ] pci
 - [ ] acpi
 - [ ] hpet timer
