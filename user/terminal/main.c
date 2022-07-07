@@ -1,25 +1,40 @@
 #include <stdio.h>
-#include <sys/file.h>
+#include <stdbool.h>
+#include <string.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
 
-	int fd = open("initrd:/test.txt", 0);
-	if (fd < 0) {
-		printf("Failed to open initrd:/test.txt\n");
-		while (1);
-	} else {
-		printf("Opened initrd:/test.txt as %d\n", fd);
+    while(1) {
+		printf("> ");
+
+		int len = 0;
+		char in[100] = {0};
+		bool reading = true;
+
+		while (reading) {
+			in[len] = getchar();
+			putchar(in[len]);
+			if(in[len] == '\n') {
+				in[len] = '\0';
+				reading = false;
+			} else {
+				len++;
+			}
+		}
+
+		if (strcmp(in, "acces-violation") == 0) {
+			asm volatile("hlt");
+		}
+
+		if (strcmp(in, "about") == 0) {
+			printf("MicroOS Copyright (C) 2022 Glowman554\n\n");
+		}
+
+		if (strcmp(in, "help") == 0) {
+			printf("about - Prints out the about message\n");
+			printf("help - Prints out this help message\n");
+			printf("acces-violation - Causes an access violation\n");
+		}
 	}
-
-	char buf[1024] = { 0 };
-	read(fd, buf, filesize(fd), 0);
-	printf("%s", buf);
-	close(fd);
-
-	while (1) {
-		putchar(getchar());
-	}
-
-    while(1);
 }

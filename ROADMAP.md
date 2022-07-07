@@ -10,7 +10,7 @@ these points are to be reached in order:
 - [x] file descriptors and sys_read, sys_write, sys_open, sys_close syscalls
 - [x] make text_console an char_output_driver and use it for printf and serial for debugf
 - [x] make abortf
-- [ ] first userspace shell
+- [x] first userspace shell
 - [ ] better ps2 keyboard driver
 - [ ] pci
 - [ ] acpi
