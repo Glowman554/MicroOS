@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <memory/vmm.h>
+#include <assert.h>
 
 // special_driver_data: byte 0 == char, byte 1 == bool special_key_next, byte 2 == bool special_code, byte 3 - 1023 == keymap path
 
@@ -169,11 +170,7 @@ char_input_driver_t* get_ps2_driver() {
 
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
 	
-	if (!is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH])) {
-		abortf("set --keymap flag!\n");
-	} else {
-		debugf("Using keymap %s", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH]);
-	}
+	assert(is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH]));
 
 	return driver;
 }

@@ -34,6 +34,8 @@ size_t fprintf(FILE* stream, const char* format, ...);
 size_t fputs(const char* s, FILE* stream);
 size_t fputc(char c, FILE* stream);
 
+#define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
+
 void init_stdio();
 
 int vsprintf(char *buf, const char *str, va_list args);

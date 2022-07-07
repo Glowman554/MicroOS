@@ -2,13 +2,12 @@
 
 #include <stdio.h>
 #include <stddef.h>
+#include <assert.h>
 
 syscall_handler_t syscall_table[MAX_SYSCALLS] = { 0 };
 
 void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
-	if (syscall_id >= MAX_SYSCALLS) {
-		abortf("syscall_id %d is out of range", syscall_id);
-	}
+	assert(syscall_id < MAX_SYSCALLS);
 
 	debugf("Registering syscall %d with handler %p", syscall_id, handler);
 

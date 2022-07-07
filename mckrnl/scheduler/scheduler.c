@@ -9,6 +9,7 @@
 #include <utils/multiboot.h>
 #include <scheduler/elf.h>
 #include <fs/vfs.h>
+#include <assert.h>
 
 
 task_t tasks[MAX_TASKS] = { 0 };
@@ -22,10 +23,7 @@ task_t* init_task(void* entry) {
 		}
 	}
 
-	if (task == NULL) {
-		abortf("No more tasks available\n");
-		return NULL;
-	}
+	assert(task != NULL);
 
 	memset(task, 0, sizeof(task_t));
 
@@ -166,6 +164,7 @@ void init_scheduler() {
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
 	file_t* file = vfs_open("initrd:/bin/terminal.elf", 0);
+	assert(file != NULL);
 	void* buffer = vmm_alloc(file->size / 4096 + 1);
 	vfs_read(file, buffer, file->size, 0);
 	init_elf(buffer);

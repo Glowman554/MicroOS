@@ -14,7 +14,7 @@ these points are to be reached in order:
 - [x] better ps2 keyboard driver
 - [x] add malloc / free to libc
 - [x] add files to libc
-- [ ] add assert to libc
+- [x] add assert to libc
 - [ ] add spawn syscall and proc_info (add pids) syscall and yield syscall and argv/envp
 - [ ] make real shell with subprocesses aka programs
 - [ ] pci

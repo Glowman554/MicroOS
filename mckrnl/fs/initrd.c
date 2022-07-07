@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <memory/vmm.h>
 #include <utils/string.h>
+#include <assert.h>
 
 char** initrd_process_path(char* path) {
 	path++;
@@ -28,10 +29,7 @@ char** initrd_process_path(char* path) {
 }
 
 saf_node_hdr_t* initrd_resolve(saf_node_hdr_t* curr, void* saf_image, int level, char** path) {
-	if(curr->magic != MAGIC_NUMBER) {
-		debugf("curr->magic != MAGIC_NUMBER\n");
-		return NULL;
-	}
+	assert(curr->magic == MAGIC_NUMBER);
 
 	// debugf("level %d (%s), curr->name %s\n", level,  level < 0 ? "-1" : path[level], curr->name);
 
@@ -121,9 +119,8 @@ void initrd_close(vfs_mount_t* mount, file_t* f) {
 }
 
 void initrd_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
-	if (f->size >= offset + size) {
-		debugf("read: %d bytes from %d", size, offset);
-	}
+	assert(f->size >= offset + size);
+
 	memcpy(buffer, (void*) ((uint32_t) f->driver_specific_data + offset), size);
 }
 

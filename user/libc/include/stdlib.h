@@ -26,3 +26,5 @@ void expand_heap(size_t length);
 void* malloc(size_t size);
 void* realloc(void* ptr, size_t size);
 void free(void* address);
+
+void exit(int status);
