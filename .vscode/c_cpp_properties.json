@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/mckrnl/include"
+                "${workspaceFolder}/mckrnl/include",
+                "${workspaceFolder}/user/libc/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

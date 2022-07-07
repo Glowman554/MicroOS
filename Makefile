@@ -6,7 +6,7 @@ KEYMAP = de
 
 initrd.saf:
 	mkdir -p ./res/initrd/bin
-	cp -r ./user/*.elf ./res/initrd/bin/ -v
+	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
 	cp ./res/$(KEYMAP).fmp ./res/initrd/keymap.fmp -v
 	cp -r ./initrd/* ./res/initrd/ -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf

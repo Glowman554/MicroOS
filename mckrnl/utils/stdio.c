@@ -57,7 +57,7 @@ int abortf(const char *format, ...) {
 	char buf[1024] = {0};
 
 	va_start(args, format);
-	int tmp = vsprintf(buf, format, args);
+	vsprintf(buf, format, args);
 	va_end(args);
 
 	printf("(/ o_o)/ Oh no! Something terrible has happened...\n");
