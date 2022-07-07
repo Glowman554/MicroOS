@@ -23,8 +23,6 @@
 void init(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
 
-	printf("MicroOS Copyright (C) 2022 Glowman554\n\n");
-
 	debugf("Setting global multiboot info to %p\n", mb_info);
 	global_multiboot_info = mb_info;
 
@@ -35,6 +33,7 @@ void init(multiboot_info_t* mb_info) {
 	vmm_init();
 
 	register_driver((driver_t*) &serial_output_driver);
+	register_driver((driver_t*) &text_console_driver);
 	register_driver((driver_t*) get_ps2_driver());
 
 	register_driver((driver_t*) get_ata_driver(true, 0x1F0, "ata0_master"));
@@ -59,6 +58,8 @@ void init(multiboot_info_t* mb_info) {
 	}
 
 	init_syscalls();
+
+	printf("MicroOS Copyright (C) 2022 Glowman554\n\n");
 
 	init_scheduler();
 }

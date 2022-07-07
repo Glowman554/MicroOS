@@ -2,6 +2,7 @@
 #define CONSOLE_H
 
 #include <stdint.h>
+#include <driver/char_output_driver.h>
 
 #define VIDEO_MEM 0xb8000
 
@@ -45,5 +46,7 @@
 void text_console_puts(const char *s);
 void text_console_putc(char c);
 void text_console_clrscr();
+
+extern char_output_driver_t text_console_driver;
 
 #endif

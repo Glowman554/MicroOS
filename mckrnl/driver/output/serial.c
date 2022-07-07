@@ -1,6 +1,7 @@
 #include <driver/output/serial.h>
 
 #include <utils/io.h>
+#include <stdio.h>
 
 bool serial_is_device_present(driver_t* driver) {
 	return true;
@@ -20,6 +21,7 @@ void serial_init(driver_t* driver) {
 	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
 
 	global_char_output_driver = (char_output_driver_t*) driver;
+	debugf_driver = (char_output_driver_t*) driver;
 }
 
 int serial_recived() {

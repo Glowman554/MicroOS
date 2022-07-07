@@ -6,6 +6,7 @@
 		"stdio.h": "c",
 		"vmm.h": "c",
 		"serial.h": "c",
-		"string.h": "c"
+		"string.h": "c",
+		"config.h": "c"
 	}
 }

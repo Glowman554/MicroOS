@@ -1,6 +1,7 @@
 #include <renderer/text_console.h>
 
 #include <utils/io.h>
+#include <stdio.h>
 
 int text_console_x = 0;
 int text_console_y = 0;
@@ -63,3 +64,30 @@ void text_console_clrscr(){
 
 	text_console_x = text_console_y = 0;
 }
+
+bool text_console_driver_is_present(driver_t* driver) {
+	return true;
+}
+
+char* text_console_driver_get_device_name(driver_t* driver) {
+	return "text_console";
+}
+
+void text_console_driver_init(driver_t* driver) {
+	text_console_clrscr();
+
+	printf_driver = (char_output_driver_t*) driver;
+}
+
+void text_console_driver_putc(char_output_driver_t* driver, char c) {
+	text_console_putc(c);
+}
+
+char_output_driver_t text_console_driver = {
+	.driver = {
+		.is_device_present = text_console_driver_is_present,
+		.get_device_name = text_console_driver_get_device_name,
+		.init = text_console_driver_init
+	},
+	.putc = text_console_driver_putc
+};
