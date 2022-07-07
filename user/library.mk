@@ -14,5 +14,4 @@ $(LIBRARY): $(OBJS)
 	@gcc $(CFLAGS) -c -o $@ $^
 
 clean:
-	rm *.o
-	rm *.elf
+	rm -f $(OBJS) $(LIBRARY)
