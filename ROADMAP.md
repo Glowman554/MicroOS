@@ -15,6 +15,7 @@ these points are to be reached in order:
 - [ ] add malloc / free to libc
 - [ ] add files to libc
 - [ ] add assert to libc
+- [ ] make real shell with subprocesses aka programs
 - [ ] pci
 - [ ] acpi
 - [ ] hpet timer
