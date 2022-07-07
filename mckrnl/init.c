@@ -20,10 +20,10 @@
 
 #include <utils/argparser.h>
 
-void init(multiboot_info_t* mb_info) {	
+void main(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
 
-	debugf("Setting global multiboot info to %p\n", mb_info);
+	debugf("Setting global multiboot info to %p", mb_info);
 	global_multiboot_info = mb_info;
 
 	init_gdt();

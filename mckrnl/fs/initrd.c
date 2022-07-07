@@ -125,7 +125,7 @@ void initrd_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 }
 
 dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
-	debugf("dir_at: %s (%d)\n", path, idx);
+	debugf("dir_at: %s (%d)", path, idx);
 	char path_cpy[strlen(path) + 1];
 	strcpy(path_cpy, path);
 	path_cpy[strlen(path)] = 0;;

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <sys/file.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
@@ -16,6 +17,16 @@ int main(int argc, char* argv[], char* envp[]) {
 	buf[len] = '\0';
 	printf("%s\n", buf);
 	free(buf);
+
+	dir_t dir = { 0 };
+	int i = 0;
+	while (!dir.is_none) {
+		memset(&dir, 0, sizeof(dir_t));
+		dir_at("initrd:/", i++, &dir);
+		if (!dir.is_none) {
+			printf("%s (%d)\n", dir.name, dir.type);
+		}
+	}
 
     while(1) {
 		printf("> ");

@@ -33,8 +33,10 @@ res:
 run_dbg: iso
 	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
 
+EXECUTABLE = mckrnl/mckrnl.elf
+
 debug:
-	gdb -ex "target remote localhost:1234" -ex "b init" -ex "continue" mckrnl/mckrnl.elf
+	gdb -ex "target remote localhost:1234" -ex "b main" -ex "continue" $(EXECUTABLE)
 
 clean: iso
 	make -C mckrnl clean

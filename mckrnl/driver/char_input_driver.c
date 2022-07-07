@@ -14,7 +14,7 @@ char keymap(char* keymap_path, uint8_t key, special_keys_down_t* special_keys_do
 
 		file_t* file = vfs_open(keymap_path, FILE_OPEN_MODE_READ);
 		if (file == NULL) {
-			debugf("input::keymap: keymap %s not found\n", keymap_path);
+			debugf("input::keymap: keymap %s not found", keymap_path);
 			return 0;
 		}
 
