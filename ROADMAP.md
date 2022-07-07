@@ -11,7 +11,7 @@ these points are to be reached in order:
 - [x] make text_console an char_output_driver and use it for printf and serial for debugf
 - [x] make abortf
 - [x] first userspace shell
-- [ ] better ps2 keyboard driver
+- [x] better ps2 keyboard driver
 - [ ] add malloc / free to libc
 - [ ] add files to libc
 - [ ] add assert to libc

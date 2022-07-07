@@ -8,6 +8,14 @@
 #include <string.h>
 #include <memory/vmm.h>
 
+// special_driver_data: byte 0 == char, byte 1 == bool special_key_next, byte 2 == bool special_code, byte 3 - 1023 == keymap path
+
+#define KBD_CHAR 0
+#define KBD_SPECIAL_KEY_NEXT 1
+#define KBD_SPECIAL_CODE 2
+#define KBD_KEYMAP_PATH 3
+#define KBD_SPECIAL_KEYS 1024
+
 bool ps2_keyboard_is_device_present(driver_t* driver) {
 	return true;
 }
@@ -19,10 +27,106 @@ char* ps2_keyboard_get_device_name(driver_t* driver) {
 cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void* driver) {
 	driver_t* ps2_keyboard = (driver_t*) driver;
 
-	uint8_t key = inb(DATA_PORT);
-	char c = keymap(&((char*) ps2_keyboard->driver_specific_data)[1], key, &(special_keys_down_t) {0});
-	((char*) ps2_keyboard->driver_specific_data)[0] = c;
+	bool* special_key_next = (bool*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_KEY_NEXT];
+	uint8_t* special_code = (uint8_t*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_CODE];
 
+	special_keys_down_t* special_keys_down = (special_keys_down_t*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_KEYS];
+
+	uint8_t key = inb(DATA_PORT);
+
+	if (*special_key_next) {
+		switch (*special_code) {
+			case 0xE0:
+				switch (key) {
+					case 0x38: //Right alt down
+						special_keys_down->right_alt = true;
+						break;
+					case 0xB8: //Right alt up
+						special_keys_down->right_alt = false;
+						break;
+					case 0x1D: //Right ctrl down
+						special_keys_down->right_ctrl = true;
+						break;
+					case 0x9D: //Right ctrl up
+						special_keys_down->right_ctrl = false;
+						break;
+					case 0x48: //Up arrow down
+						special_keys_down->up_arrow = true;
+						break;
+					case 0xC8: //Up arrow up
+						special_keys_down->up_arrow = false;
+						break;
+					case 0x50: //Down arrow down
+						special_keys_down->down_arrow = true;
+						break;
+					case 0xD0: //Down arrow up
+						special_keys_down->down_arrow = false;
+						break;
+					case 0x4B: //Left arrow down
+						special_keys_down->left_arrow = true;
+						break;
+					case 0xCB: //Left arrow down
+						special_keys_down->left_arrow = false;
+						break;
+					case 0x4D: //Right arrow down
+						special_keys_down->right_arrow = true;
+						break;
+					case 0xCD: //Right arrow up
+						special_keys_down->right_arrow = false;
+						break;
+				}
+				break;
+
+			case 0x3A:
+				switch (key) {
+					case 0xBA: //Caps lock toggle
+						debugf("Caps lock toggle");
+						break;
+				}
+				break;
+		}
+
+		*special_key_next = false;
+	} else {
+		switch (key) {
+			case 0xE0:
+			case 0x3A:
+				*special_key_next = true;
+				*special_code = key;
+				break;
+			
+			case 0x38: //Left alt down
+				special_keys_down->left_alt = true;
+				break;
+			case 0xB8: //Left alt up
+				special_keys_down->left_alt = false;
+				break;
+			case 0x1D: //Left ctrl down
+				special_keys_down->left_ctrl = true;
+				break;
+			case 0x9D: //Left ctrl up
+				special_keys_down->left_ctrl = false;
+				break;
+			case 0x2A: //Left shift down
+				special_keys_down->left_shift = true;
+				break;
+			case 0xAA: //Left shift up
+				special_keys_down->left_shift = false;
+				break;
+			case 0x36: //Right shift down
+				special_keys_down->right_shift = true;
+				break; 
+			case 0xB6: //Right shift up
+				special_keys_down->right_shift = false;
+				break;
+			default:
+				{
+					char c = keymap(&((char*) ps2_keyboard->driver_specific_data)[KBD_KEYMAP_PATH], key, special_keys_down);
+					((char*) ps2_keyboard->driver_specific_data)[KBD_CHAR] = c;
+				}
+				break;
+		}
+	}
 	return registers;
 }
 
@@ -47,8 +151,8 @@ void ps2_keyboard_init(driver_t* driver) {
 
 
 char ps2_keyboard_async_getc(char_input_driver_t* driver) {
-	char c = ((char*) driver->driver.driver_specific_data)[0];
-	((char*) driver->driver.driver_specific_data)[0] = 0;
+	char c = ((char*) driver->driver.driver_specific_data)[KBD_CHAR];
+	((char*) driver->driver.driver_specific_data)[KBD_CHAR] = 0;
 
 	return c;
 }
@@ -65,10 +169,10 @@ char_input_driver_t* get_ps2_driver() {
 
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
 	
-	if (!is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[1])) {
+	if (!is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH])) {
 		abortf("set --keymap flag!\n");
 	} else {
-		debugf("Using keymap %s", &((char*) driver->driver.driver_specific_data)[1]);
+		debugf("Using keymap %s", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH]);
 	}
 
 	return driver;
