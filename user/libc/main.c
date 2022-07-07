@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include <sys/exit.h>
+
 int main(int argc, char* argv[], char* envp[]);
 
 void _start() {
@@ -7,5 +9,7 @@ void _start() {
 		NULL
 	};
 
-	int exit = main(0, EMPTY, EMPTY);
+	int error = main(0, EMPTY, EMPTY);
+	
+	exit(error);
 }

@@ -5,6 +5,5 @@
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program 2!\n");
 
-    while(1) {
-	}
+    return 0;
 }

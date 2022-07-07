@@ -6,3 +6,4 @@
 #define SYS_WRITE_ID 0x4
 #define SYS_FILESIZE_ID 0x5
 #define SYS_ASYNC_GETC_ID 0x6
+#define SYS_EXIT_ID 0x7

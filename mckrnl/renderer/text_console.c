@@ -29,6 +29,22 @@ void text_console_putc(char c){
 		return;
 	}
 
+	if (c == '\r') {
+		text_console_x = 0;
+		return;
+	}
+
+	if (c == '\b') {
+		if (text_console_x > 0) {
+			text_console_x--;
+		}
+
+		text_console_video[2 * (text_console_y * SCREEN_WIDTH + text_console_x)] = ' ';
+		text_console_video[2 * (text_console_y * SCREEN_WIDTH + text_console_x) + 1] = text_console_color;
+		text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
+		return;
+	}
+
 	if (text_console_y > SCREEN_HEIGHT - 1) {
 		int i;
 		for (i = 0; i < 2 * (SCREEN_HEIGHT - 1) * SCREEN_WIDTH; i++) {

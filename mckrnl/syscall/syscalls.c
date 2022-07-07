@@ -25,6 +25,7 @@ void init_syscalls() {
 	register_syscall(SYS_WRITE_ID, sys_write);
 	register_syscall(SYS_FILESIZE_ID, sys_filesize);
 	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
+	register_syscall(SYS_EXIT_ID, sys_exit);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

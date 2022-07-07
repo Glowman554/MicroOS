@@ -18,6 +18,9 @@ int main(int argc, char* argv[], char* envp[]) {
 			if(in[len] == '\n') {
 				in[len] = '\0';
 				reading = false;
+			} if (in[len] == '\b') {
+				in[len] = '\0';
+				len--;
 			} else {
 				len++;
 			}
@@ -31,10 +34,17 @@ int main(int argc, char* argv[], char* envp[]) {
 			printf("MicroOS Copyright (C) 2022 Glowman554\n\n");
 		}
 
+		if (strcmp(in, "exit") == 0) {
+			break;
+		}
+
 		if (strcmp(in, "help") == 0) {
 			printf("about - Prints out the about message\n");
 			printf("help - Prints out this help message\n");
 			printf("acs - Causes an access violation\n");
+			printf("exit - Exits the program\n");
 		}
 	}
+
+	return 0;
 }
