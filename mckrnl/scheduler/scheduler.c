@@ -237,3 +237,14 @@ void init_scheduler() {
 
 	is_scheduler_running = true;
 }
+
+
+task_t* get_task_by_pid(int pid) {
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (tasks[i].active && tasks[i].pid == pid) {
+			return &tasks[i];
+		}
+	}
+
+	return NULL;
+}

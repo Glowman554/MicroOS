@@ -32,4 +32,6 @@ task_t* init_task(void* entry);
 int init_elf(void* image, char** argv, char** envp);
 void exit_task(task_t* task);
 
+task_t* get_task_by_pid(int pid);
+
 void init_scheduler();

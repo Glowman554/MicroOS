@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 09:20:50 2022
+# Make data base, printed on Fri Jul  8 11:39:00 2022
 
 # Variables
 
@@ -17,7 +17,7 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8d0d8ae5-05b9-4955-9cc2-42c765dd8933.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2745f8fa-91f1-40f3-ab96-296f2980552c.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
@@ -71,7 +71,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXoaEf4B/agent.1082
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXQOdgEp/agent.1103
 # default
 .SHELLFLAGS := -c
 # environment
@@ -89,13 +89,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1840
+VSCODE_PID = 1684
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1380,unix/nya:/tmp/.ICE-unix/1380
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1405,unix/nya:/tmp/.ICE-unix/1405
 # automatic
 *F = $(notdir $*)
 # environment
@@ -163,7 +163,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 868
+SYSTEMD_EXEC_PID = 880
 # environment
 DISPLAY = :0
 # environment
@@ -177,7 +177,7 @@ MAKE_VERSION := 4.3
 # makefile (from 'Makefile', line 36)
 EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1225
+SSH_AGENT_PID = 1247
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -282,6 +282,7 @@ clean: iso
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 all:
 #  Command line target.
 #  Implicit rule search has not been done.
@@ -293,7 +294,6 @@ all:
 # @ := all
 # automatic
 # * := 
- 
 # automatic
 # < := 
 # automatic
@@ -362,6 +362,6 @@ initrd.saf:
 # strcache performance: lookups = 48 / hit rate = 41%
 # hash-table stats:
 # Load=28/8192=0%, Rehash=0, Collisions=0/48=0%
-# Finished Make data base on Fri Jul  8 09:20:51 2022
+# Finished Make data base on Fri Jul  8 11:39:00 2022
 
  

@@ -3,6 +3,7 @@
 #include <fs/vfs.h>
 #include <scheduler/scheduler.h>
 #include <stdio.h>
+#include <string.h>
 
 cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	char* path = (char*) regs->ebx;
@@ -21,6 +22,9 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	regs->esi = init_elf(buffer, argv, envp);
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
+
+	debugf("copying pwd: %s", tasks[current_task].pwd);
+	strcpy(get_task_by_pid(regs->esi)->pwd, tasks[current_task].pwd);
 
 	return regs;
 }
