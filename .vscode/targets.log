@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 07:25:02 2022
+# Make data base, printed on Fri Jul  8 09:20:50 2022
 
 # Variables
 
@@ -17,7 +17,7 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-1dd5637a-bb7e-4510-8874-958388ec7d38.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8d0d8ae5-05b9-4955-9cc2-42c765dd8933.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
@@ -71,7 +71,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXJAAz6C/agent.1085
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXoaEf4B/agent.1082
 # default
 .SHELLFLAGS := -c
 # environment
@@ -89,13 +89,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1604
+VSCODE_PID = 1840
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1384,unix/nya:/tmp/.ICE-unix/1384
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1380,unix/nya:/tmp/.ICE-unix/1380
 # automatic
 *F = $(notdir $*)
 # environment
@@ -163,7 +163,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 871
+SYSTEMD_EXEC_PID = 868
 # environment
 DISPLAY = :0
 # environment
@@ -174,8 +174,10 @@ DEFAULTS_PATH = /usr/share/gconf/plasma.default.path
 KDE_SESSION_UID = 1000
 # default
 MAKE_VERSION := 4.3
+# makefile (from 'Makefile', line 36)
+EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1228
+SSH_AGENT_PID = 1225
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -217,7 +219,7 @@ KDE_SESSION_VERSION = 5
 # environment
 KDE_FULL_SESSION = true
 # variable set hash-table stats:
-# Load=103/1024=10%, Rehash=0, Collisions=5/136=4%
+# Load=104/1024=10%, Rehash=0, Collisions=5/137=4%
 
 # Pattern-specific Variable Values
 
@@ -225,9 +227,9 @@ KDE_FULL_SESSION = true
 
 # Directories
 
-# . (device 2050, inode 6291871): 16 files, no impossibilities.
+# . (device 2050, inode 6291871): 17 files, no impossibilities.
 
-# 16 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -250,19 +252,19 @@ run_dbg: iso
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 34):
-	qemu-system-i386 -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
 
 debug:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 37):
-	gdb -ex "target remote localhost:1234" -ex "b init" -ex "continue" mckrnl/mckrnl.elf
+#  recipe to execute (from 'Makefile', line 39):
+	gdb -ex "target remote localhost:1234" -ex "b main" -ex "continue" $(EXECUTABLE)
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-07 13:24:14.90444347
+#  Last modified 2022-07-08 07:25:05.801592849
 #  File has been updated.
 #  Successfully updated.
 
@@ -270,14 +272,13 @@ clean: iso
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 40):
+#  recipe to execute (from 'Makefile', line 42):
 	make -C mckrnl clean
 	make -C user clean
 
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -292,6 +293,7 @@ all:
 # @ := all
 # automatic
 # * := 
+ 
 # automatic
 # < := 
 # automatic
@@ -315,7 +317,7 @@ run: iso
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 21):
-	qemu-system-i386 -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown
 
 res:
 #  Implicit rule search has not been done.
@@ -354,12 +356,12 @@ initrd.saf:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 27 / storage = 210 B / avg = 7 B
-# current buf: size = 8162 B / used = 210 B / count = 27 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 28 / storage = 220 B / avg = 7 B
+# current buf: size = 8162 B / used = 220 B / count = 28 / avg = 7 B
 
-# strcache performance: lookups = 47 / hit rate = 42%
+# strcache performance: lookups = 48 / hit rate = 41%
 # hash-table stats:
-# Load=27/8192=0%, Rehash=0, Collisions=0/47=0%
-# Finished Make data base on Fri Jul  8 07:25:02 2022
+# Load=28/8192=0%, Rehash=0, Collisions=0/48=0%
+# Finished Make data base on Fri Jul  8 09:20:51 2022
 
  

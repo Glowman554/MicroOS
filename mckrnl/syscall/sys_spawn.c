@@ -18,7 +18,7 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 
 	void* buffer = vmm_alloc(file->size / 4096 + 1);
 	vfs_read(file, buffer, file->size, 0);
-	regs->esi = init_elf(buffer);
+	regs->esi = init_elf(buffer, argv, envp);
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 

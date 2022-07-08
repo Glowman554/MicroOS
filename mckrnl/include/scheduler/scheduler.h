@@ -16,6 +16,11 @@ typedef struct {
 	void* user_stack;
 
 	int pid;
+
+	char** argv;
+	char** envp;
+
+	char pwd[128];
 } task_t;
 
 extern task_t tasks[MAX_TASKS];
@@ -24,7 +29,7 @@ extern int current_task;
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
 task_t* init_task(void* entry);
-int init_elf(void* image);
+int init_elf(void* image, char** argv, char** envp);
 void exit_task(task_t* task);
 
 void init_scheduler();

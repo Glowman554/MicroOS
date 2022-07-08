@@ -20,3 +20,4 @@
 | SYS_SPAWN | 0xe | path | argv | envp | pid (return) | - | - |
 | SYS_PROC_INFO | 0xf | pid | running (return) | - | - | - | - | - |
 | SYS_YIELD | 0x10 | - | - | - | - | - | - |
+| SYS_ENV | 0x11 | mode | void* data (return?) | - | - | - | - | - |

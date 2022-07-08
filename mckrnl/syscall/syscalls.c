@@ -38,6 +38,7 @@ void init_syscalls() {
 	register_syscall(SYS_SPAWN_ID, sys_spawn);
 	register_syscall(SYS_GET_PROC_INFO_ID, sys_get_proc_info);
 	register_syscall(SYS_YIELD_ID, sys_yield);
+	register_syscall(SYS_ENV_ID, sys_env);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

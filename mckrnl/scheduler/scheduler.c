@@ -74,7 +74,7 @@ task_t* init_task(void* entry) {
 	return task;
 }
 
-int init_elf(void* image) {
+int init_elf(void* image, char** argv, char** envp) {
 
 	struct elf_header* header = image;
 
@@ -107,6 +107,49 @@ int init_elf(void* image) {
 
 		vmm_activate_context(&old);
 	}
+
+	int num_envp = 0;
+	for (num_envp = 0; envp[num_envp] != NULL; num_envp++);
+
+	int num_argv = 0;
+	for (num_argv = 0; argv[num_argv] != NULL; num_argv++);
+
+	debugf("copying %d arguments and %d environment variables", num_argv, num_envp);
+
+	task->argv = (char**) pmm_alloc();
+	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
+
+	here();
+	for (int i = 0; i < num_argv; i++) {
+		task->argv[i] = (char*) pmm_alloc();
+		vmm_map_page(task->context, (uintptr_t) task->argv[i] + USER_SPACE_OFFSET, (uintptr_t) task->argv[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
+		strcpy(task->argv[i], argv[i]);
+	}
+
+	task->argv[num_argv] = NULL;
+
+	task->envp = (char**) pmm_alloc();
+	vmm_map_page(task->context, (uintptr_t) task->envp + USER_SPACE_OFFSET, (uintptr_t) task->envp, PTE_PRESENT | PTE_WRITE | PTE_USER);
+
+	for (int i = 0; i < num_envp; i++) {
+		task->envp[i] = (char*) pmm_alloc();
+		vmm_map_page(task->context, (uintptr_t) task->envp[i] + USER_SPACE_OFFSET, (uintptr_t) task->envp[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
+		strcpy(task->envp[i], envp[i]);
+	}
+
+	task->envp[num_envp] = NULL;
+
+	for (int i = 0; i < num_argv; i++) {
+		task->argv[i] = (char*) ((uint32_t) task->argv[i] + USER_SPACE_OFFSET);
+	}
+
+	task->argv = (char**) ((uint32_t) task->argv + USER_SPACE_OFFSET);
+
+	for (int i = 0; i < num_envp; i++) {
+		task->envp[i] = (char*) ((uint32_t) task->envp[i] + USER_SPACE_OFFSET);
+	}
+
+	task->envp = (char**) ((uint32_t) task->envp + USER_SPACE_OFFSET);
 
 	return task->pid;
 }
@@ -167,11 +210,21 @@ void init_scheduler() {
 
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
+	char* argv[] = {
+		"initrd:/bin/terminal",
+		NULL
+	};
+
+	char* envp[] = {
+		"ROOT=initrd:",
+		NULL
+	};
+
 	file_t* file = vfs_open("initrd:/bin/terminal.elf", 0);
 	assert(file != NULL);
 	void* buffer = vmm_alloc(file->size / 4096 + 1);
 	vfs_read(file, buffer, file->size, 0);
-	init_elf(buffer);
+	init_elf(buffer, argv, envp);
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 

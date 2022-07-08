@@ -9,6 +9,14 @@
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
 
+	for (int i = 0; i < argc; i++) {
+		printf("argv[%d] = %s\n", i, argv[i]);
+	}
+
+	for (int i = 0; envp[i]; i++) {
+		printf("envp[%d] = %s\n", i, envp[i]);
+	}
+
 	FILE* file = fopen("initrd:/test.txt", "r");
 	assert(file != NULL);
 	fsize(file, len);
@@ -29,7 +37,9 @@ int main(int argc, char* argv[], char* envp[]) {
 		}
 	}
 
-	int pid = spawn("initrd:/bin/test.elf", NULL, NULL);
+	char* new_argv [] = { "initrd:/bin/test.elf", NULL };
+
+	int pid = spawn("initrd:/bin/test.elf", (const char**) new_argv, (const char**) envp);
 	printf("Spawned pid %d\n", pid);
 	while (get_proc_info(pid)) {
 		yield();
