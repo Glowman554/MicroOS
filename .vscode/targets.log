@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 13:41:38 2022
+# Make data base, printed on Fri Jul  8 15:02:53 2022
 
 # Variables
 
@@ -227,9 +227,9 @@ KDE_FULL_SESSION = true
 
 # Directories
 
-# . (device 2050, inode 6291871): 17 files, no impossibilities.
+# . (device 2050, inode 6291871): 18 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 18 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -285,7 +285,6 @@ clean: iso
 all:
 #  Command line target.
 #  Implicit rule search has not been done.
- 
 #  Implicit/static pattern stem: ''
 #  File does not exist.
 #  File has been updated.
@@ -298,6 +297,7 @@ all:
 # < := 
 # automatic
 # + := 
+ 
 # automatic
 # % := 
 # automatic
@@ -356,12 +356,12 @@ initrd.saf:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 28 / storage = 220 B / avg = 7 B
-# current buf: size = 8162 B / used = 220 B / count = 28 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 29 / storage = 232 B / avg = 8 B
+# current buf: size = 8162 B / used = 232 B / count = 29 / avg = 8 B
 
-# strcache performance: lookups = 48 / hit rate = 41%
+# strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
-# Load=28/8192=0%, Rehash=0, Collisions=0/48=0%
-# Finished Make data base on Fri Jul  8 13:41:38 2022
+# Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
+# Finished Make data base on Fri Jul  8 15:02:53 2022
 
  

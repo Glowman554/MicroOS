@@ -30,6 +30,7 @@ int print_num(unsigned long x, int base, char* str) {
 int vsprintf(char *buf, const char *str, va_list args) {
 	const char* s;
 	unsigned long n;
+	char* orig_buf = buf;
 
 	while(*str) {
 		if(*str == '%') {
@@ -73,5 +74,5 @@ int vsprintf(char *buf, const char *str, va_list args) {
 	}
 
 out:
-	return strlen(buf);
+	return strlen(orig_buf);
 }

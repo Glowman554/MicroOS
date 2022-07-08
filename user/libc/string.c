@@ -142,3 +142,16 @@ char* strtok(char* src_string, char* delim) {
 		src_string++;
 	}
 }
+
+int strncmp(char* str1, char* str2, int n) {
+	while (n && *str1 && (*str1 == *str2)) {
+		++str1;
+		++str2;
+		--n;
+	}
+	if (n == 0) {
+		return 0;
+	} else {
+		return *str1 - *str2;
+	}
+}

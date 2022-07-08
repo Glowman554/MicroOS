@@ -35,6 +35,7 @@ size_t fprintf(FILE* stream, const char* format, ...);
 size_t fputs(const char* s, FILE* stream);
 size_t fputc(char c, FILE* stream);
 bool resolve(char* path, char* output);
+bool resolve_check(char* path, char* output, bool check_childs);
 
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 

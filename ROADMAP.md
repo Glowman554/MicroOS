@@ -16,7 +16,7 @@ these points are to be reached in order:
 - [x] add files to libc
 - [x] add assert to libc
 - [x] add spawn syscall and proc_info (add pids) syscall and yield syscall and argv/envp
-- [ ] make real shell with subprocesses aka programs
+- [x] make real shell with subprocesses aka programs
 - [ ] pci
 - [ ] acpi
 - [ ] hpet timer

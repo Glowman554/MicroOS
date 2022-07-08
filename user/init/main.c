@@ -14,7 +14,7 @@ int main(int argc, char* argv[], char* envp[]) {
 	};
 
 	while (true) {
-		int pid = spawn(new_argv[0], new_argv, envp);
+		int pid = spawn(new_argv[0], (const char**) new_argv, (const char**) envp);
 
 		while (get_proc_info(pid)) {
 			yield();

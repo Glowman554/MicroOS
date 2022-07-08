@@ -218,6 +218,7 @@ void init_scheduler() {
 
 	char* envp[] = {
 		"ROOT=initrd:",
+		"PATH=initrd:/bin",
 		NULL
 	};
 
