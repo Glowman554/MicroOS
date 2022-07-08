@@ -35,6 +35,7 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 
 		case SYS_SET_PWD_ID:
 			{
+				memset(tasks[current_task].pwd, 0, sizeof(tasks[current_task].pwd));
 				strcpy(tasks[current_task].pwd, (char*) regs->ecx);
 			}
 			break;
