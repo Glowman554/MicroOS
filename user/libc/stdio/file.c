@@ -104,7 +104,7 @@ size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream) {
 size_t fprintf(FILE* stream, const char* format, ...) {
 	va_list args;
 	int i;
-	char buf[1024];
+	char buf[1024] = {0};
 
 	va_start(args, format);
 	i = vsprintf(buf, format, args);

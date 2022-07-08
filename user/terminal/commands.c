@@ -145,7 +145,7 @@ void append_stdin(char* buffer, uint64_t size) {
 }
 
 int term_printf(const char *fmt, ...) {
-	char printf_buf[1024 * 4];
+	char printf_buf[1024] = {0};
 	va_list args;
 	int printed;
 
