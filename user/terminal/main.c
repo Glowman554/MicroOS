@@ -17,7 +17,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		printf("envp[%d] = %s\n", i, envp[i]);
 	}
 
-	FILE* file = fopen("initrd:/test.txt", "r");
+	FILE* file = fopen("test.txt", "r");
 	assert(file != NULL);
 	fsize(file, len);
 	char* buf = malloc(len + 1);

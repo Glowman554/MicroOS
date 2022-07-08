@@ -9,8 +9,13 @@ struct FILE* stdin;
 struct FILE* stderr;
 
 FILE* fopen(const char* filename, const char* mode) {
-	#warning TODO: Resolve path so .. and . are handled correctly as well as relative paths.
-	#warning TODO: Create file if w / wb / w+ is set and it doesn't exist.
+	char filename_full[256];
+	memset(filename_full, 0, 256);
+	bool exists = resolve((char*) filename, filename_full);
+
+	if (!exists && (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "w+") == 0)) {
+		touch(filename_full);
+	}
 
 	int file_mode = 0;
 	if (strcmp((char*) mode, "r") == 0) {
@@ -23,7 +28,7 @@ FILE* fopen(const char* filename, const char* mode) {
 		return NULL;
 	}
 
-	int fd = open((char*) filename, file_mode);
+	int fd = open((char*) filename_full, file_mode);
 	if (fd == -1) {
 		return NULL;
 	}

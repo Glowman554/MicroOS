@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -33,6 +34,7 @@ size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream);
 size_t fprintf(FILE* stream, const char* format, ...);
 size_t fputs(const char* s, FILE* stream);
 size_t fputc(char c, FILE* stream);
+bool resolve(char* path, char* output);
 
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 

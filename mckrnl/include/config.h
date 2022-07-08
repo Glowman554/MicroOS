@@ -24,12 +24,13 @@
 #define SYS_DIR_AT_ID 0x8
 #define SYS_TOUCH_ID 0x9
 #define SYS_DELETE_DIR_ID 0xA
+#define SYS_FS_AT_ID 0xB
 
-#define SYS_ASYNC_GETC_ID 0xB
-#define SYS_EXIT_ID 0xC
-#define SYS_MMAP_ID 0xD
+#define SYS_ASYNC_GETC_ID 0xc
+#define SYS_EXIT_ID 0xd
+#define SYS_MMAP_ID 0xe
 
-#define SYS_SPAWN_ID 0xE
-#define SYS_GET_PROC_INFO_ID 0xF
-#define SYS_YIELD_ID 0x10
-#define SYS_ENV_ID 0x11
+#define SYS_SPAWN_ID 0xf
+#define SYS_GET_PROC_INFO_ID 0x10
+#define SYS_YIELD_ID 0x11
+#define SYS_ENV_ID 0x12

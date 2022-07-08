@@ -8,7 +8,6 @@
 #include <stdio.h>
 
 cpu_registers_t* sys_dir_at(cpu_registers_t* regs) {
-	here();
 	char* path = (char*) regs->ebx;
 	int idx = regs->ecx;
 	dir_t* user_dir = (dir_t*) regs->edx;

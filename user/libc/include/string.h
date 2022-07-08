@@ -14,3 +14,5 @@ int sprintf(char *buf, const char *fmt, ...);
 void* memcpy(void* dest, const void* src, int n);
 int memcmp(const void * _s1, const void* _s2, int n); // X
 void* memset(void* start, uint8_t value, uint32_t num);
+
+char* strtok(char* src_string, char* delim);

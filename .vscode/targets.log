@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 11:39:00 2022
+# Make data base, printed on Fri Jul  8 13:41:38 2022
 
 # Variables
 
@@ -157,7 +157,7 @@ GNUMAKEFLAGS :=
 # environment
 LOGNAME = janick
 # environment
-PLATFORMIO_PATH = /home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PLATFORMIO_PATH = /home/janick/.platformio/penv/bin:/home/janick/.platformio/penv:/home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_VTNR = 1
 # makefile
@@ -282,10 +282,10 @@ clean: iso
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 all:
 #  Command line target.
 #  Implicit rule search has not been done.
+ 
 #  Implicit/static pattern stem: ''
 #  File does not exist.
 #  File has been updated.
@@ -362,6 +362,6 @@ initrd.saf:
 # strcache performance: lookups = 48 / hit rate = 41%
 # hash-table stats:
 # Load=28/8192=0%, Rehash=0, Collisions=0/48=0%
-# Finished Make data base on Fri Jul  8 11:39:00 2022
+# Finished Make data base on Fri Jul  8 13:41:38 2022
 
  

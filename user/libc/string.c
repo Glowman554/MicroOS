@@ -87,3 +87,58 @@ int strcmp(char* str1, char* str2) {
 	}
 	return *str1 - *str2;
 }
+
+
+unsigned int __is_delim(char c, char* delim) {
+	while(*delim != '\0') {
+		if(c == *delim)
+			return 1;
+		delim++;
+	}
+	return 0;
+}
+
+char* strtok(char* src_string, char* delim) {
+	static char* backup_string; // start of the next search
+
+	if(!src_string) {
+		src_string = backup_string;
+	}
+
+	if(!src_string) {
+		// user is bad user
+		return NULL;
+	}
+
+	// handle beginning of the string containing delims
+	while(1) {
+		if(__is_delim(*src_string, delim)) {
+			src_string++;
+			continue;
+		}
+
+		if(*src_string == '\0') {
+			// we've reached the end of the string
+			return NULL; 
+		}
+		break;
+	}
+
+	char* ret = src_string;
+	while(1) {
+		if(*src_string == '\0') {
+			/*end of the input string and
+			next exec will return NULL*/
+			backup_string = src_string;
+			return ret;
+		}
+
+		if(__is_delim(*src_string, delim)) {
+			*src_string = '\0';
+			backup_string = src_string + 1;
+			return ret;
+		}
+
+		src_string++;
+	}
+}

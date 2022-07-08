@@ -119,10 +119,10 @@ int init_elf(void* image, char** argv, char** envp) {
 	task->argv = (char**) pmm_alloc();
 	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
 
-	here();
 	for (int i = 0; i < num_argv; i++) {
 		task->argv[i] = (char*) pmm_alloc();
 		vmm_map_page(task->context, (uintptr_t) task->argv[i] + USER_SPACE_OFFSET, (uintptr_t) task->argv[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
+		memset(task->argv[i], 0, 0x1000);
 		strcpy(task->argv[i], argv[i]);
 	}
 
@@ -134,6 +134,7 @@ int init_elf(void* image, char** argv, char** envp) {
 	for (int i = 0; i < num_envp; i++) {
 		task->envp[i] = (char*) pmm_alloc();
 		vmm_map_page(task->context, (uintptr_t) task->envp[i] + USER_SPACE_OFFSET, (uintptr_t) task->envp[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
+		memset(task->envp[i], 0, 0x1000);
 		strcpy(task->envp[i], envp[i]);
 	}
 
@@ -220,7 +221,7 @@ void init_scheduler() {
 		NULL
 	};
 
-	file_t* file = vfs_open("initrd:/bin/terminal.elf", 0);
+	file_t* file = vfs_open("initrd:/bin/init.elf", 0);
 	assert(file != NULL);
 	void* buffer = vmm_alloc(file->size / 4096 + 1);
 	vfs_read(file, buffer, file->size, 0);

@@ -12,6 +12,8 @@
 		"char_input_driver.h": "c",
 		"stddef.h": "c",
 		"syscalls.h": "c",
-		"file.h": "c"
+		"file.h": "c",
+		"env.h": "c",
+		"cstdio": "c"
 	}
 }

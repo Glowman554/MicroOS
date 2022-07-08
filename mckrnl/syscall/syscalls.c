@@ -15,7 +15,7 @@ void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
 }
 
 cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
-	// debugf("Handling syscall %d", registers->eax);
+	// debugf("Handling syscall %d %x", registers->eax, syscall_table[registers->eax]);
 	return syscall_table[registers->eax](registers);
 }
 
@@ -32,6 +32,7 @@ void init_syscalls() {
 	register_syscall(SYS_DIR_AT_ID, sys_dir_at);
 	register_syscall(SYS_TOUCH_ID, sys_touch);
 	register_syscall(SYS_DELETE_DIR_ID, sys_delete_dir);
+	register_syscall(SYS_FS_AT_ID, sys_fs_at);
 	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
 	register_syscall(SYS_EXIT_ID, sys_exit);
 	register_syscall(SYS_MMAP_ID, sys_mmap);

@@ -56,3 +56,9 @@ void touch(char* path) {
 void delete_dir(char* path) {
 	asm volatile("int $0x30" : : "a"(SYS_DELETE_DIR_ID), "b"(path));
 }
+
+bool fs_at(char* path, int idx) {
+	bool is_none = false;
+	asm volatile("int $0x30" : "=d"(is_none) : "a"(SYS_FS_AT_ID), "b"(idx), "c"(path));
+	return is_none;
+}
