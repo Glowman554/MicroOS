@@ -31,6 +31,9 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	int pid = spawn("initrd:/bin/test.elf", NULL, NULL);
 	printf("Spawned pid %d\n", pid);
+	while (get_proc_info(pid)) {
+		yield();
+	}
 
     while(1) {
 		printf("> ");

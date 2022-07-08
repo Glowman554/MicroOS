@@ -15,4 +15,6 @@
 #define SYS_EXIT_ID 0xC
 #define SYS_MMAP_ID 0xD
 
-#define SYS_SPAWN 0xE
+#define SYS_SPAWN_ID 0xE
+#define SYS_GET_PROC_INFO_ID 0xF
+#define SYS_YIELD_ID 0x10
