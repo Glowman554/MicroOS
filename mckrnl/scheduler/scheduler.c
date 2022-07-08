@@ -12,6 +12,7 @@
 #include <assert.h>
 
 
+int current_pid = 0;
 task_t tasks[MAX_TASKS] = { 0 };
 
 task_t* init_task(void* entry) {
@@ -56,6 +57,7 @@ task_t* init_task(void* entry) {
 	task->active = true;
 	task->stack = stack;
 	task->user_stack = user_stack;
+	task->pid = current_pid++;
 
 	task->context = vmm_create_context();
 	vmm_clone_kernel_context(task->context);
@@ -72,13 +74,13 @@ task_t* init_task(void* entry) {
 	return task;
 }
 
-void init_elf(void* image) {
+int init_elf(void* image) {
 
 	struct elf_header* header = image;
 
 	if (header->magic != ELF_MAGIC) {
 		printf("ELF magic mismatch\n");
-		return;
+		return -1;
 	}
 
 	task_t* task = init_task((void*) header->entry);
@@ -105,6 +107,8 @@ void init_elf(void* image) {
 
 		vmm_activate_context(&old);
 	}
+
+	return task->pid;
 }
 
 

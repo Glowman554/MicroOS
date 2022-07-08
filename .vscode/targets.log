@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 13:47:17 2022
+# Make data base, printed on Fri Jul  8 07:25:02 2022
 
 # Variables
 
@@ -17,7 +17,7 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-91c206dd-23c3-47b0-9e0f-7eb92e074820.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-1dd5637a-bb7e-4510-8874-958388ec7d38.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
@@ -71,7 +71,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXlpo36Z/agent.1089
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXJAAz6C/agent.1085
 # default
 .SHELLFLAGS := -c
 # environment
@@ -89,13 +89,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1633
+VSCODE_PID = 1604
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1386,unix/nya:/tmp/.ICE-unix/1386
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1384,unix/nya:/tmp/.ICE-unix/1384
 # automatic
 *F = $(notdir $*)
 # environment
@@ -163,7 +163,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 864
+SYSTEMD_EXEC_PID = 871
 # environment
 DISPLAY = :0
 # environment
@@ -175,7 +175,7 @@ KDE_SESSION_UID = 1000
 # default
 MAKE_VERSION := 4.3
 # environment
-SSH_AGENT_PID = 1230
+SSH_AGENT_PID = 1228
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -262,7 +262,7 @@ debug:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-07 08:55:56.245124631
+#  Last modified 2022-07-07 13:24:14.90444347
 #  File has been updated.
 #  Successfully updated.
 
@@ -277,6 +277,7 @@ clean: iso
 # Not a target:
 .DEFAULT:
 #  Implicit rule search has not been done.
+ 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -285,7 +286,6 @@ all:
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
 #  File does not exist.
- 
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -335,7 +335,7 @@ initrd.saf:
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
 	mkdir -p ./res/initrd/bin
-	cp -r ./user/*.elf ./res/initrd/bin/ -v
+	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
 	cp ./res/$(KEYMAP).fmp ./res/initrd/keymap.fmp -v
 	cp -r ./initrd/* ./res/initrd/ -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
@@ -360,6 +360,6 @@ initrd.saf:
 # strcache performance: lookups = 47 / hit rate = 42%
 # hash-table stats:
 # Load=27/8192=0%, Rehash=0, Collisions=0/47=0%
-# Finished Make data base on Thu Jul  7 13:47:18 2022
+# Finished Make data base on Fri Jul  8 07:25:02 2022
 
  

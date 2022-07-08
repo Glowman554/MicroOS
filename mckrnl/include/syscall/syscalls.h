@@ -23,3 +23,5 @@ cpu_registers_t* sys_delete_dir(cpu_registers_t* regs);
 cpu_registers_t* sys_async_getc(cpu_registers_t* regs);
 cpu_registers_t* sys_exit(cpu_registers_t* regs);
 cpu_registers_t* sys_mmap(cpu_registers_t* regs);
+
+cpu_registers_t* sys_spawn(cpu_registers_t* regs);

@@ -28,3 +28,5 @@
 #define SYS_ASYNC_GETC_ID 0xB
 #define SYS_EXIT_ID 0xC
 #define SYS_MMAP_ID 0xD
+
+#define SYS_SPAWN 0xE

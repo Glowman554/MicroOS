@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <sys/file.h>
+#include <sys/spawn.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	printf("Hello, world from a userspace program!\n");
@@ -27,6 +28,9 @@ int main(int argc, char* argv[], char* envp[]) {
 			printf("%s (%d)\n", dir.name, dir.type);
 		}
 	}
+
+	int pid = spawn("initrd:/bin/test.elf", NULL, NULL);
+	printf("Spawned pid %d\n", pid);
 
     while(1) {
 		printf("> ");

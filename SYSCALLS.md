@@ -16,3 +16,5 @@
 | SYS_ASYNC_GETC | 0xb | c (return) | - | - | - | - | - |
 | SYS_EXIT | 0xc | status | - | - | - | - | - |
 | SYS_MMAP | 0xd | addr | - | - | - | - | - |
+
+| SYS_SPAWN | 0xe | path | argv | envp | pid (return) | - | - |

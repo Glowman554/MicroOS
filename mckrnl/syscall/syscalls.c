@@ -35,6 +35,7 @@ void init_syscalls() {
 	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
 	register_syscall(SYS_EXIT_ID, sys_exit);
 	register_syscall(SYS_MMAP_ID, sys_mmap);
+	register_syscall(SYS_SPAWN, sys_spawn);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }
