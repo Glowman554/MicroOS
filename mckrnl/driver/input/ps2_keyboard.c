@@ -131,7 +131,6 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 	return registers;
 }
 
-#warning TODO: implement shift and special keys
 void ps2_keyboard_init(driver_t* driver) {
 	register_interrupt_handler(0x21, ps2_keyboard_interrupt_handler, driver);
 
