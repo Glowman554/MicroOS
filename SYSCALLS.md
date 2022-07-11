@@ -17,8 +17,8 @@
 | SYS_ASYNC_GETC | 0xc | c (return) | - | - | - | - | - |
 | SYS_EXIT | 0xd | status | - | - | - | - | - |
 | SYS_MMAP | 0xe | addr | - | - | - | - | - |
-
 | SYS_SPAWN | 0xf | path | argv | envp | pid (return) | - | - |
 | SYS_PROC_INFO | 0x10 | pid | running (return) | - | - | - | - | - |
 | SYS_YIELD | 0x11 | - | - | - | - | - | - |
 | SYS_ENV | 0x12 | mode | void* data (return?) | - | - | - | - | - |
+| SYS_MMMAP | 0x13 | ptr | pid | - | - | - |

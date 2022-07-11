@@ -40,6 +40,7 @@ void init_syscalls() {
 	register_syscall(SYS_GET_PROC_INFO_ID, sys_get_proc_info);
 	register_syscall(SYS_YIELD_ID, sys_yield);
 	register_syscall(SYS_ENV_ID, sys_env);
+	register_syscall(SYS_MMMAP_ID, sys_mmmap);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

@@ -13,6 +13,8 @@
 
 #include <argv_tools.h>
 
+#include <ipc.h>
+
 #define GET_CWD(cwd) char cwd[64] = { 0 }; set_env(SYS_GET_PWD_ID, cwd)
 
 char* term_stdout = NULL;
@@ -412,6 +414,8 @@ void pwd() {
 	term_printf("%s\n", cwd);
 }
 
+bool already_in_ipc = false;
+
 int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	assert(stdout == NULL);
 	assert(stdin == NULL);
@@ -425,10 +429,41 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 		return -1;
 	}
 
+	if (already_in_ipc) {
+		goto normal_wait;
+	}
+
+	already_in_ipc = true;
+
+	ipc_init_mapping(IPC_CONNECTION_TERMINAL, pid);
+	while (get_proc_info(pid)) {
+		if (ipc_init_host(IPC_CONNECTION_TERMINAL)) {
+			goto ipc_tunnel_ok;
+		}
+		yield();
+	}
+
+	goto done;
+
+ipc_tunnel_ok:
+	while (get_proc_info(pid)) {
+		char out[0x1000] = { 0 };
+		if (ipc_message_ready(IPC_CONNECTION_TERMINAL, (void*) out)) {
+			bool should_break = false;
+			command_received(out, &should_break, NULL);
+			ipc_ok(IPC_CONNECTION_TERMINAL);
+		}
+		yield();
+	}
+
+	already_in_ipc = false;
+
+normal_wait:
 	while (get_proc_info(pid)) {
 		yield();
 	}
 
+done:
 	free(executable);
 	return pid;
 }

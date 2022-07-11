@@ -34,3 +34,4 @@
 #define SYS_GET_PROC_INFO_ID 0x10
 #define SYS_YIELD_ID 0x11
 #define SYS_ENV_ID 0x12
+#define SYS_MMMAP_ID 0x13

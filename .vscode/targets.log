@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  8 15:02:53 2022
+# Make data base, printed on Mon Jul 11 13:22:09 2022
 
 # Variables
 
@@ -17,17 +17,23 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2745f8fa-91f1-40f3-ab96-296f2980552c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-c3521bc1-87f1-4ded-a181-fe08fac9ee3c.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
-VSCODE_CWD = /home/janick
+KONSOLE_DBUS_SERVICE = :1.34
+# environment
+VSCODE_CWD = /home/janick/Development/MicroOS
+# environment
+WINDOWID = 41943047
 # default
 MAKE_COMMAND := make
 # environment
 QT_ACCESSIBILITY = 1
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
+# environment
+KONSOLE_VERSION = 211203
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -56,6 +62,8 @@ XAUTHORITY = /home/janick/.Xauthority
 .LOADED := 
 # default
 .INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# environment
+COLORFGBG = 15;0
 # makefile
 MAKEFLAGS = pqrR
 # makefile
@@ -71,7 +79,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXQOdgEp/agent.1103
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXftc48i/agent.1085
 # default
 .SHELLFLAGS := -c
 # environment
@@ -89,13 +97,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1684
+VSCODE_PID = 1674
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1405,unix/nya:/tmp/.ICE-unix/1405
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1386,unix/nya:/tmp/.ICE-unix/1386
 # automatic
 *F = $(notdir $*)
 # environment
@@ -120,6 +128,8 @@ DENO_INSTALL = /home/janick/.deno
 SHLVL = 1
 # makefile (from 'Makefile', line 5)
 KEYMAP = de
+# environment
+PROFILEHOME = 
 # environment
 MAKELEVEL := 0
 # default
@@ -157,13 +167,13 @@ GNUMAKEFLAGS :=
 # environment
 LOGNAME = janick
 # environment
-PLATFORMIO_PATH = /home/janick/.platformio/penv/bin:/home/janick/.platformio/penv:/home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PLATFORMIO_PATH = /home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 880
+SYSTEMD_EXEC_PID = 867
 # environment
 DISPLAY = :0
 # environment
@@ -174,14 +184,18 @@ DEFAULTS_PATH = /usr/share/gconf/plasma.default.path
 KDE_SESSION_UID = 1000
 # default
 MAKE_VERSION := 4.3
+# environment
+KONSOLE_DBUS_SESSION = /Sessions/1
 # makefile (from 'Makefile', line 36)
 EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1247
+SSH_AGENT_PID = 1228
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
+# environment
+COLORTERM = truecolor
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -197,6 +211,8 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-c8697ad9-1.67.2-main.sock
 # environment
+TERM = xterm-256color
+# environment
 XDG_SESSION_ID = 4
 # environment
 XCURSOR_SIZE = 24
@@ -211,7 +227,13 @@ SUFFIXES :=
 # environment
 QT_AUTO_SCREEN_SCALE_FACTOR = 0
 # environment
+VSCODE_CLI = 1
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
 DEBUG = WARN
+# environment
+SHELL_SESSION_ID = 986f2b6e0846495eba010fb12604e524
 # environment
 KDE_SESSION_VERSION = 5
 # default
@@ -219,7 +241,7 @@ KDE_SESSION_VERSION = 5
 # environment
 KDE_FULL_SESSION = true
 # variable set hash-table stats:
-# Load=104/1024=10%, Rehash=0, Collisions=5/137=4%
+# Load=115/1024=11%, Rehash=0, Collisions=9/148=6%
 
 # Pattern-specific Variable Values
 
@@ -255,6 +277,7 @@ run_dbg: iso
 	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
 
 debug:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -264,7 +287,7 @@ debug:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-08 07:25:05.801592849
+#  Last modified 2022-07-08 15:35:48.376089817
 #  File has been updated.
 #  Successfully updated.
 
@@ -297,7 +320,6 @@ all:
 # < := 
 # automatic
 # + := 
- 
 # automatic
 # % := 
 # automatic
@@ -362,6 +384,6 @@ initrd.saf:
 # strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
-# Finished Make data base on Fri Jul  8 15:02:53 2022
+# Finished Make data base on Mon Jul 11 13:22:09 2022
 
  

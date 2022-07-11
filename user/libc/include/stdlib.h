@@ -30,3 +30,5 @@ void free(void* address);
 void exit(int status);
 
 char* getenv(const char* name);
+
+void system(char* in);
