@@ -30,7 +30,8 @@ void write_disk(int disk_id, uint64_t sector, uint32_t count, void* buffer) {
 }
 
 void flush_disk(int disk_id) {
-	assert(disk_id >= 0 && disk_id < MAX_DISKS);
-	assert(disks[disk_id] != 0);
-	disks[disk_id]->flush(disks[disk_id]);
+	// assert(disk_id >= 0 && disk_id < MAX_DISKS);
+	// assert(disks[disk_id] != 0);
+	// disks[disk_id]->flush(disks[disk_id]);
+	abortf("The driver should flush when needed!");
 }

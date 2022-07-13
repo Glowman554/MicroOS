@@ -159,6 +159,7 @@ void ata_driver_write(disk_driver_t* driver, uint64_t sector, uint32_t count, vo
 
 	for (uint32_t i = 0; i < count; i++) {
 		ata_driver_write28(data, sector + i, (uint8_t*) buffer + i * 512);
+		driver->flush(driver);
 	}
 }
 
