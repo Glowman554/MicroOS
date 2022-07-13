@@ -27,8 +27,12 @@ void* malloc(size_t size);
 void* realloc(void* ptr, size_t size);
 void free(void* address);
 
+__attribute__((noreturn))
 void exit(int status);
 
 char* getenv(const char* name);
 
 void system(char* in);
+
+__attribute__((noreturn))
+void abort(void);
