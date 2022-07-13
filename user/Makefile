@@ -8,6 +8,7 @@ all:
 	make -C ls prog
 	make -C cat prog
 	make -C test prog
+	make -C echo prog
 
 clean:
 	make -C libc clean
@@ -17,3 +18,4 @@ clean:
 	make -C ls clean
 	make -C cat clean
 	make -C test clean
+	make -C echo clean
