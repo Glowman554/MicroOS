@@ -45,8 +45,8 @@ int main(int argc, char *argv[]) {
 		printf("Usage: ls [OPTION]... [FILE]...\n");
 		printf("List information about the FILEs (the current directory by default).\n");
 		printf("\n");
-		printf("  -f, --lsfs      list mounted filesystems\n");
-		printf("  -h, --help      display this help and exit\n");
+		printf("\t-f, --lsfs\t\t\tlist mounted filesystems\n");
+		printf("\t-h, --help\t\t\tdisplay this help and exit\n");
 	} else {
 		int fd = open(ls_path, FILE_OPEN_MODE_READ);
 		if (fd != -1) {

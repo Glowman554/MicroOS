@@ -34,6 +34,15 @@ void text_console_putc(char c){
 		return;
 	}
 
+	if (c == '\t') {
+		if (text_console_x % 4 == 0) {
+			text_console_x += 4;
+		} else {
+			text_console_x += (4 - (text_console_x % 4));
+		}
+		return;
+	}
+
 	if (c == '\b') {
 		if (text_console_x > 0) {
 			text_console_x--;
