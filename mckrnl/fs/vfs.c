@@ -3,11 +3,15 @@
 #include <utils/string.h>
 #include <stdio.h>
 #include <config.h>
+#include <driver/disk_driver.h>
 
 vfs_mount_t* vfs_mounts[MAX_VFS_MOUNTS] = { 0 };
+fs_scanner vfs_scanner[MAX_VFS_SCANNERS] = { 0 };
 
 void vfs_init() {
 	debugf("VFS: Initializing VFS");
+	memset(vfs_mounts, 0, sizeof(vfs_mounts));
+	memset(vfs_scanner, 0, sizeof(vfs_scanner));
 }
 
 void vfs_mount(vfs_mount_t* mount) {
@@ -55,7 +59,12 @@ file_t* vfs_open(char* path, int flags) {
 		return NULL;
 	}
 
-	return mount->open(mount, file_path, flags);
+	file_t* f = mount->open(mount, file_path, flags);
+	if (f) {
+		f->mode = flags;
+	}
+
+	return f;
 }
 
 void vfs_close(file_t* file) {
@@ -206,4 +215,30 @@ bool vfs_fs_at(int idx, char* out) {
 	strcpy(out, vfs_mounts[idx]->name(vfs_mounts[idx]));
 	
 	return true;
+}
+
+void vfs_register_fs_scanner(fs_scanner scanner) {
+	for (int i = 0; i < MAX_VFS_SCANNERS; i++) {
+		if (vfs_scanner[i] == NULL) {
+			vfs_scanner[i] = scanner;
+			return;
+		}
+	}
+
+	abortf("No more space for fs scanners");
+}
+
+void vfs_scan_fs() {
+	for (int i = 0; i < num_disks; i++) {
+		for (int j = 0; j < MAX_VFS_SCANNERS; j++) {
+			if (vfs_scanner[j] == NULL) {
+				continue;
+			}
+			vfs_mount_t* mount = vfs_scanner[j](i);
+			if (mount != NULL) {
+				vfs_mount(mount);
+				break;
+			}
+		}
+	}
 }

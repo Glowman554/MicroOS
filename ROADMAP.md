@@ -21,7 +21,7 @@ these points are to be reached in order:
 - [ ] acpi
 - [ ] hpet timer
 - [ ] ahci driver
-- [ ] gpt driver
+- [x] gpt driver
 - [ ] mbr driver
-- [ ] fat32 driver
+- [x] fat32 driver
 - [ ] clock driver

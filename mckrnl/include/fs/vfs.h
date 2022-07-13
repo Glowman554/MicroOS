@@ -32,6 +32,7 @@ typedef struct vfs_mount {
 
 typedef struct file {
 	vfs_mount_t* mount;
+	int mode;
 	void* driver_specific_data;
 	char buffer[512];
 	size_t size;
@@ -65,3 +66,7 @@ dir_t vfs_dir_at(int idx, char* path);
 void vfs_delete_dir(char* path);
 
 bool vfs_fs_at(int idx, char* out);
+
+typedef vfs_mount_t* (*fs_scanner)(int disk_id);
+void vfs_register_fs_scanner(fs_scanner scanner);
+void vfs_scan_fs();

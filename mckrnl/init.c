@@ -14,6 +14,7 @@
 #include <driver/timer/pit.h>
 
 #include <fs/initrd.h>
+#include <fs/fatfs/fatdrv.h>
 
 #include <utils/multiboot.h>
 #include <utils/string.h>
@@ -56,6 +57,10 @@ void main(multiboot_info_t* mb_info) {
 			}
 		}
 	}
+
+	vfs_register_fs_scanner(fatfs_scanner);
+
+	vfs_scan_fs();
 
 	init_syscalls();
 

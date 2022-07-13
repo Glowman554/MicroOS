@@ -5,7 +5,9 @@
 
 #define MAX_TASKS 32
 #define MAX_DRIVERS 32
+#define MAX_DISKS 32
 #define MAX_VFS_MOUNTS 32
+#define MAX_VFS_SCANNERS 32
 #define MAX_SYSCALLS 32
 #define MAX_FD 32
 
