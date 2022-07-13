@@ -24,7 +24,7 @@ void vfs_mount(vfs_mount_t* mount) {
 		}
 	}
 
-	printf("VFS: Error: No more mount points available\n");
+	abortf("VFS: Error: No more mount points available\n");
 }
 
 file_t* vfs_open(char* path, int flags) {
@@ -55,7 +55,7 @@ file_t* vfs_open(char* path, int flags) {
 	}
 
 	if (mount == NULL) {
-		printf("No device found for path: %s\n", path);
+		debugf("No device found for path: %s\n", path);
 		return NULL;
 	}
 

@@ -63,8 +63,6 @@ void main(multiboot_info_t* mb_info) {
 	vfs_scan_fs();
 
 	init_syscalls();
-
-	printf("MicroOS Copyright (C) 2022 Glowman554\n\n");
-
+	
 	init_scheduler();
 }
