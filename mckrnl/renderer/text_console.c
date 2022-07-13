@@ -24,10 +24,10 @@ void text_console_putc(char c){
 	
 	//if(SERIAL_DEBUG) write_serial(c);
 
-	if (c == '\n') {
+	// if (c == '\n') {
 	//	if(SERIAL_DEBUG) write_serial('\r');
-		return;
-	}
+		// return;
+	// }
 
 	if (c == '\r') {
 		text_console_x = 0;
@@ -55,6 +55,10 @@ void text_console_putc(char c){
 			text_console_video[i] = 0;
 		}
 		text_console_y--;
+	}
+
+	if (c == '\n') {
+		return;
 	}
 
 	text_console_video[2 * (text_console_y * SCREEN_WIDTH + text_console_x)] = c;
