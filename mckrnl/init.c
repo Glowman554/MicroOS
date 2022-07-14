@@ -12,6 +12,7 @@
 #include <driver/input/ps2_keyboard.h>
 #include <driver/disk/ata.h>
 #include <driver/timer/pit.h>
+#include <driver/pci/pci.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -32,6 +33,8 @@ void main(multiboot_info_t* mb_info) {
 
 	pmm_init();
 	vmm_init();
+
+	enumerate_pci();
 
 	register_driver((driver_t*) &serial_output_driver);
 	register_driver((driver_t*) &text_console_driver);

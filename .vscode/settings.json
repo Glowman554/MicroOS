@@ -15,6 +15,15 @@
 		"file.h": "c",
 		"env.h": "c",
 		"cstdio": "c",
-		"type_traits": "c"
+		"type_traits": "c",
+		"io.h": "c",
+		"optional": "c",
+		"istream": "c",
+		"ostream": "c",
+		"system_error": "c",
+		"array": "c",
+		"functional": "c",
+		"tuple": "c",
+		"utility": "c"
 	}
 }
