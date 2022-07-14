@@ -18,8 +18,8 @@ these points are to be reached in order:
 - [x] add spawn syscall and proc_info (add pids) syscall and yield syscall and argv/envp
 - [x] make real shell with subprocesses aka programs
 - [x] pci
-- [ ] acpi
-- [ ] hpet timer
+- [x] acpi
+- [ ] shutdown / reboot
 - [ ] ahci driver
 - [x] gpt driver
 - [ ] mbr driver
