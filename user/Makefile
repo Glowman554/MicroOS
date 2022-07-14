@@ -10,6 +10,7 @@ all:
 	make -C test prog
 	make -C echo prog
 	make -C calc prog
+	make -C pwr prog
 
 clean:
 	make -C libc clean
@@ -21,3 +22,4 @@ clean:
 	make -C test clean
 	make -C echo clean
 	make -C calc clean
+	make -C pwr clean

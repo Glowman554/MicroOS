@@ -20,7 +20,7 @@ iso: all initrd.saf
 	grub-mkrescue -o cdrom.iso cdrom/
 
 run: iso
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
 
 res:
 	mkdir res

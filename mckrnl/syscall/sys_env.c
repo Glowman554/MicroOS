@@ -1,6 +1,7 @@
 #include <syscall/syscalls.h>
 
 #include <scheduler/scheduler.h>
+#include <driver/acpi/power.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -8,6 +9,9 @@
 #define SYS_GET_ENVP_ID 0x01
 #define SYS_GET_PWD_ID 0x02
 #define SYS_SET_PWD_ID 0x03
+
+#define SYS_PWR_RESET_ID 0x04
+#define SYS_PWR_SHUTDOWN_ID 0x05
 
 cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	int id = regs->ebx;
@@ -37,6 +41,18 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 			{
 				memset(tasks[current_task].pwd, 0, sizeof(tasks[current_task].pwd));
 				strcpy(tasks[current_task].pwd, (char*) regs->ecx);
+			}
+			break;
+
+		case SYS_PWR_RESET_ID:
+			{
+				acpi_reset();
+			}
+			break;
+
+		case SYS_PWR_SHUTDOWN_ID:
+			{
+				acpi_power_off();
 			}
 			break;
 

@@ -19,7 +19,7 @@ these points are to be reached in order:
 - [x] make real shell with subprocesses aka programs
 - [x] pci
 - [x] acpi
-- [ ] shutdown / reboot
+- [x] shutdown / reboot
 - [ ] ahci driver
 - [x] gpt driver
 - [ ] mbr driver

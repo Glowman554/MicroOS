@@ -14,6 +14,7 @@
 #include <driver/timer/pit.h>
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
+#include <driver/acpi/dsdt.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -38,6 +39,8 @@ void main(multiboot_info_t* mb_info) {
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
 
 	rsdp_init();
+	dsdt_init();
+
 	enumerate_pci();
 
 	register_driver((driver_t*) &serial_output_driver);
