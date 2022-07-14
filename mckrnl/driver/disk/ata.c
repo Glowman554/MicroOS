@@ -185,3 +185,10 @@ disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name) {
 
 	return driver;
 }
+
+void ata_pci_found(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
+	register_driver((driver_t*) get_ata_driver(true, 0x1F0, "ata0_master"));
+	register_driver((driver_t*) get_ata_driver(false, 0x1F0, "ata0_slave"));
+	register_driver((driver_t*) get_ata_driver(true, 0x170, "ata1_master"));
+	register_driver((driver_t*) get_ata_driver(false, 0x170, "ata1_slave"));
+}

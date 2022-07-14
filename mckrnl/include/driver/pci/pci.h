@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-
+#include <stdbool.h>
 
 typedef struct pci_device_header {
 	uint16_t vendor_id;
@@ -27,6 +27,19 @@ typedef struct pci_device {
 	uint64_t function;
 } pci_device_t;
 
+typedef struct pci_driver {
+	uint8_t _class;
+	uint8_t subclass;
+	uint8_t prog_IF;
+	bool use_class_subclass_prog_IF;
+
+	uint16_t vendor_id;
+	uint16_t device_id;
+	bool use_vendor_device_id;
+
+	void (*load_driver)(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function);
+} pci_driver_t;
+
 extern const char* device_classes[];
 
 const char* get_vendor_name(uint16_t vendor_ID);
@@ -50,3 +63,6 @@ void enable_mmio(uint16_t bus, uint16_t device, uint16_t function);
 void become_bus_master(uint16_t bus, uint16_t device, uint16_t function);
 
 void enumerate_pci();
+
+void register_pci_driver_cs(uint8_t _class, uint8_t subclass, uint8_t prog_IF, void (*load_driver)(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function));
+void register_pci_driver_vd(uint16_t vendor_id, uint16_t device_id, void (*load_driver)(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function));

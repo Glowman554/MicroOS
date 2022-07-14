@@ -34,17 +34,13 @@ void main(multiboot_info_t* mb_info) {
 	pmm_init();
 	vmm_init();
 
+	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
+
 	enumerate_pci();
 
 	register_driver((driver_t*) &serial_output_driver);
 	register_driver((driver_t*) &text_console_driver);
 	register_driver((driver_t*) get_ps2_driver());
-
-	register_driver((driver_t*) get_ata_driver(true, 0x1F0, "ata0_master"));
-	register_driver((driver_t*) get_ata_driver(false, 0x1F0, "ata0_slave"));
-	register_driver((driver_t*) get_ata_driver(true, 0x170, "ata1_master"));
-	register_driver((driver_t*) get_ata_driver(false, 0x170, "ata1_slave"));
-
 	register_driver((driver_t*) &pit_driver);
 
 	activate_drivers();

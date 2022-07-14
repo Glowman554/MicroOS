@@ -46,7 +46,9 @@ void __ubsan_handle_mul_overflow(const overflow_data_t* data, void* _, void* __)
 }
 
 void __ubsan_handle_shift_out_of_bounds(const shift_out_of_bounds_data_t* data, void* _, void*__) {
+#ifndef UBSAN_IGNORE_SHIFT_OUT_OF_BOUNDS
 	log("shift_out_of_bounds: %s:%d", data->location.file, data->location.line);
+#endif
 }
 
 void __ubsan_handle_divrem_overflow(const overflow_data_t* data, void* _, void* __) {

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <driver/disk_driver.h>
-
+#include <driver/pci/pci.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct ata_driver_data {
 	char name[32];
@@ -21,3 +22,5 @@ typedef struct ata_driver_data {
 #define CONTROL_PORT_OFFSET 0x206
 
 disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name);
+
+void ata_pci_found(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function);

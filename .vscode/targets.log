@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 11 13:22:09 2022
+# Make data base, printed on Thu Jul 14 11:28:20 2022
 
 # Variables
 
@@ -17,15 +17,15 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-c3521bc1-87f1-4ded-a181-fe08fac9ee3c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-cf6e83a6-28a7-4409-9a95-05074321567c.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
-KONSOLE_DBUS_SERVICE = :1.34
+KONSOLE_DBUS_SERVICE = :1.35
 # environment
 VSCODE_CWD = /home/janick/Development/MicroOS
 # environment
-WINDOWID = 41943047
+WINDOWID = 56623111
 # default
 MAKE_COMMAND := make
 # environment
@@ -79,7 +79,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXftc48i/agent.1085
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXbLUe55/agent.1094
 # default
 .SHELLFLAGS := -c
 # environment
@@ -97,13 +97,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1674
+VSCODE_PID = 1783
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1386,unix/nya:/tmp/.ICE-unix/1386
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1393,unix/nya:/tmp/.ICE-unix/1393
 # automatic
 *F = $(notdir $*)
 # environment
@@ -173,7 +173,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 867
+SYSTEMD_EXEC_PID = 854
 # environment
 DISPLAY = :0
 # environment
@@ -186,10 +186,10 @@ KDE_SESSION_UID = 1000
 MAKE_VERSION := 4.3
 # environment
 KONSOLE_DBUS_SESSION = /Sessions/1
-# makefile (from 'Makefile', line 36)
+# makefile (from 'Makefile', line 39)
 EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1228
+SSH_AGENT_PID = 1235
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -263,7 +263,7 @@ iso: all initrd.saf
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 15):
+#  recipe to execute (from 'Makefile', line 17):
 	cp mckrnl/mckrnl.elf cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
@@ -273,21 +273,21 @@ run_dbg: iso
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 34):
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -s -S
+#  recipe to execute (from 'Makefile', line 37):
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img -s -S
 
 debug:
  
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 39):
+#  recipe to execute (from 'Makefile', line 42):
 	gdb -ex "target remote localhost:1234" -ex "b main" -ex "continue" $(EXECUTABLE)
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-08 15:35:48.376089817
+#  Last modified 2022-07-14 11:28:02.053377326
 #  File has been updated.
 #  Successfully updated.
 
@@ -295,7 +295,7 @@ clean: iso
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 42):
+#  recipe to execute (from 'Makefile', line 45):
 	make -C mckrnl clean
 	make -C user clean
 
@@ -338,20 +338,21 @@ run: iso
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 21):
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown
+#  recipe to execute (from 'Makefile', line 23):
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img
 
 res:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 24):
+#  recipe to execute (from 'Makefile', line 26):
 	mkdir res
 	git clone https://github.com/chocabloc/saf.git --depth=1 ./res/saf
 	make -C res/saf
 	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/de.fmp -O res/de.fmp
 	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/us.fmp -O res/us.fmp
 	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/fr.fmp -O res/fr.fmp
+	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
 
 initrd.saf:
 #  Implicit rule search has not been done.
@@ -362,6 +363,8 @@ initrd.saf:
 	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
 	cp ./res/$(KEYMAP).fmp ./res/initrd/keymap.fmp -v
 	cp -r ./initrd/* ./res/initrd/ -v
+	cp LICENSE ./res/initrd/LICENSE -v
+	cp *.md ./res/initrd/. -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
 # Not a target:
@@ -378,12 +381,12 @@ initrd.saf:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 29 / storage = 232 B / avg = 8 B
-# current buf: size = 8162 B / used = 232 B / count = 29 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 29 / storage = 230 B / avg = 7 B
+# current buf: size = 8162 B / used = 230 B / count = 29 / avg = 7 B
 
 # strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
-# Finished Make data base on Mon Jul 11 13:22:09 2022
+# Finished Make data base on Thu Jul 14 11:28:21 2022
 
  
