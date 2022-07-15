@@ -25,6 +25,7 @@
 		"functional": "c",
 		"tuple": "c",
 		"utility": "c",
-		"dsdt.h": "c"
+		"dsdt.h": "c",
+		"unix_time.h": "c"
 	}
 }

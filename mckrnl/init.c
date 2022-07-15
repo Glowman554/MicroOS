@@ -15,6 +15,7 @@
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
+#include <driver/clock/cmos.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -47,6 +48,7 @@ void main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &text_console_driver);
 	register_driver((driver_t*) get_ps2_driver());
 	register_driver((driver_t*) &pit_driver);
+	register_driver((driver_t*) &cmos_driver);
 
 	activate_drivers();
 
@@ -68,5 +70,7 @@ void main(multiboot_info_t* mb_info) {
 
 	init_syscalls();
 	
+	debugf("Boot finished at %d", time(global_clock_driver));
+
 	init_scheduler();
 }

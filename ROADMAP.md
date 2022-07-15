@@ -24,4 +24,4 @@ these points are to be reached in order:
 - [x] gpt driver
 - [ ] mbr driver
 - [x] fat32 driver
-- [ ] clock driver
+- [x] clock driver
