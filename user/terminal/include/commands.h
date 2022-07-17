@@ -17,5 +17,6 @@ void cd(char** argv);
 void pwd();
 void export(char* command);
 void read_(char* command);
+void fault(char* command);
 
 int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin);

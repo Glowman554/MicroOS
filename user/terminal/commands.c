@@ -195,6 +195,10 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, char**
 		char* argv_str = read_env(command);
 		export(argv_str);
 		free(argv_str);
+	} else if (strncmp(command, (char*)"fault ", 6) == 0) {
+		char* argv_str = read_env(command);
+		fault(argv_str);
+		free(argv_str);
 	} else if (strncmp(command, (char*)"read ", 5) == 0) {
 		read_(command);
 	} else if (strcmp(command, (char*)"exit") == 0) {
@@ -377,6 +381,21 @@ void export(char* command) {
 	}
 
 	free(env_name_tmp);
+}
+
+void fault(char* command) {
+	if (strcmp("#pf", &command[6]) == 0) {
+		uint8_t* ptr = (uint8_t*) ~0;
+		*ptr = 69;
+	} else if (strcmp("#de", &command[6]) == 0) {
+		printf("%d\n", 1 / 0);
+	} else if (strcmp("#gp", &command[6]) == 0) {
+		asm volatile ("hlt");
+	} else if (strcmp("help", &command[6]) == 0) {
+		printf("fault #pf, #de, #gp");
+	} else {
+		term_printf("Unknown fault: %s", &command[6]);
+	}
 }
 
 void read_(char* command) {

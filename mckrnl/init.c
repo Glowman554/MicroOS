@@ -5,6 +5,7 @@
 #include <interrupts/interrupts.h>
 #include <syscall/syscalls.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/killer.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
 
@@ -72,5 +73,6 @@ void main(multiboot_info_t* mb_info) {
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
 
+	init_killer();
 	init_scheduler();
 }
