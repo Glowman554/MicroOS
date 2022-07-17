@@ -11,7 +11,7 @@ uint8_t cmos_read(uint8_t address) {
 	}
 
 	outb(0x70, address);
-	return inb(0x72);
+	return inb(0x71);
 }
 
 uint8_t cmos_convert(uint8_t num) {
