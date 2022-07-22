@@ -26,8 +26,22 @@ int main(int argc, char* argv[], char* envp[]) {
 		run_script(argv[1]);
 		return 0;
 	} else if (argc != 1) {
-		printf("Usage: terminal [script?]\n");
-		return 1;
+		if (strcmp(argv[1], "-e") == 0) {
+			char command[MAX_BUFFER_SIZE] = { 0 };
+			strcpy(command, argv[2]);
+			for (int i = 3; i < argc; i++) {
+				strcat(command, " ");
+				strcat(command, argv[i]);
+			}
+
+			bool should_break = false;
+			run_command(command, terminal_envp, &should_break, NULL, NULL);
+			
+			return 0;
+		} else {
+			printf("Usage: terminal [script?]\n");
+			return 1;
+		}
 	}
 
 	GET_CWD(cwd_buf);

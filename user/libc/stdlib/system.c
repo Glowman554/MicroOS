@@ -10,5 +10,8 @@ void system(char* in) {
 		ipc_initialised = true;
 	}
 
-	ipc_message_send(IPC_CONNECTION_TERMINAL, in, strlen(in));
+	char command[512] = { 0 };
+	sprintf(command, "terminal -e %s", in);
+
+	ipc_message_send(IPC_CONNECTION_TERMINAL, command, strlen(command));
 }

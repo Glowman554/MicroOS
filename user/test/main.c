@@ -10,6 +10,6 @@ int main(int argc, char* argv[], char* envp[]) {
 		vpoke(i * 2, hw[i]);
 		vpoke(i * 2 + 1, 0x07);
 	}
-	
+
 	return 0;
 }
