@@ -1,4 +1,7 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: Warning: File 'Makefile' has modification time 7180 s in the future
+make: warning:  Clock skew detected.  Your build may be incomplete.
+
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +9,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul 14 11:28:20 2022
+# Make data base, printed on Fri Jul 22 14:48:14 2022
 
 # Variables
 
@@ -17,15 +20,15 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-cf6e83a6-28a7-4409-9a95-05074321567c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f47d6b5f-e5bf-427c-b55f-32f64cac1851.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
-KONSOLE_DBUS_SERVICE = :1.35
+KONSOLE_DBUS_SERVICE = :1.33
 # environment
 VSCODE_CWD = /home/janick/Development/MicroOS
 # environment
-WINDOWID = 56623111
+WINDOWID = 50331655
 # default
 MAKE_COMMAND := make
 # environment
@@ -79,7 +82,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXXbLUe55/agent.1094
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXX0r5FX6/agent.1136
 # default
 .SHELLFLAGS := -c
 # environment
@@ -97,13 +100,13 @@ MAKEFILE_LIST := Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 1783
+VSCODE_PID = 1737
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1393,unix/nya:/tmp/.ICE-unix/1393
+SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1438,unix/nya:/tmp/.ICE-unix/1438
 # automatic
 *F = $(notdir $*)
 # environment
@@ -173,7 +176,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 854
+SYSTEMD_EXEC_PID = 881
 # environment
 DISPLAY = :0
 # environment
@@ -189,7 +192,7 @@ KONSOLE_DBUS_SESSION = /Sessions/1
 # makefile (from 'Makefile', line 39)
 EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1235
+SSH_AGENT_PID = 1279
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -277,7 +280,6 @@ run_dbg: iso
 	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img -s -S
 
 debug:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -287,7 +289,8 @@ debug:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-14 11:28:02.053377326
+ 
+#  Last modified 2022-07-22 16:47:55.034952963
 #  File has been updated.
 #  Successfully updated.
 
@@ -339,7 +342,7 @@ run: iso
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 23):
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img
+	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
 
 res:
 #  Implicit rule search has not been done.
@@ -387,6 +390,6 @@ initrd.saf:
 # strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
-# Finished Make data base on Thu Jul 14 11:28:21 2022
+# Finished Make data base on Fri Jul 22 14:48:16 2022
 
  

@@ -106,10 +106,19 @@ void text_console_driver_init(driver_t* driver) {
 	text_console_clrscr();
 
 	printf_driver = (char_output_driver_t*) driver;
+	global_char_output_driver = (char_output_driver_t*) driver;
 }
 
 void text_console_driver_putc(char_output_driver_t* driver, char c) {
 	text_console_putc(c);
+}
+
+int text_console_driver_vmode(char_output_driver_t* driver) {
+	return TEXT_80x25;
+}
+
+void text_console_driver_vpoke(char_output_driver_t* driver, uint32_t offset, uint8_t value) {
+	text_console_video[offset] = value;
 }
 
 char_output_driver_t text_console_driver = {
@@ -118,5 +127,7 @@ char_output_driver_t text_console_driver = {
 		.get_device_name = text_console_driver_get_device_name,
 		.init = text_console_driver_init
 	},
-	.putc = text_console_driver_putc
+	.putc = text_console_driver_putc,
+	.vmode = text_console_driver_vmode,
+	.vpoke = text_console_driver_vpoke
 };

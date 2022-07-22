@@ -4,3 +4,6 @@ make -C mckrnl
 make -C user
 make: Leaving directory '/home/janick/Development/MicroOS'
  
+make: Warning: File 'Makefile' has modification time 7182 s in the future
+make: warning:  Clock skew detected.  Your build may be incomplete.
+

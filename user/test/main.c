@@ -1,20 +1,15 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
+#include <sys/graphics.h>
+#include <assert.h>
 
 int main(int argc, char* argv[], char* envp[]) {
-	printf("Hello, world from a userspace program 2!\n");
+	assert(vmode() == TEXT_80x25);
 
-	for (int i = 0; i < argc; i++) {
-		printf("argv[%d] = %s\n", i, argv[i]);
+	const char hw[] = "Hello World!";
+
+	for (int i = 0; hw[i] != '\0'; i++) {
+		vpoke(i * 2, hw[i]);
+		vpoke(i * 2 + 1, 0x07);
 	}
-
-	for (int i = 0; envp[i]; i++) {
-		printf("envp[%d] = %s\n", i, envp[i]);
-	}
-
-	system("ls");
-
-    return 0;
+	
+	return 0;
 }

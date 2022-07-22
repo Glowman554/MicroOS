@@ -21,3 +21,6 @@
 #define SYS_YIELD_ID 0x11
 #define SYS_ENV_ID 0x12
 #define SYS_MMMAP_ID 0x13
+
+#define SYS_VMODE_ID 0x14
+#define SYS_VPOKE_ID 0x15

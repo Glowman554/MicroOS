@@ -30,3 +30,6 @@ cpu_registers_t* sys_get_proc_info(cpu_registers_t* regs);
 cpu_registers_t* sys_yield(cpu_registers_t* regs);
 cpu_registers_t* sys_env(cpu_registers_t* regs);
 cpu_registers_t* sys_mmmap(cpu_registers_t* regs);
+
+cpu_registers_t* sys_vmode(cpu_registers_t* regs);
+cpu_registers_t* sys_vpoke(cpu_registers_t* regs);

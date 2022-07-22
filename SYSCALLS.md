@@ -22,3 +22,7 @@
 | SYS_YIELD | 0x11 | - | - | - | - | - | - |
 | SYS_ENV | 0x12 | mode | void* data (return?) | - | - | - | - | - |
 | SYS_MMMAP | 0x13 | ptr | pid | - | - | - |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_VMODE | 0x14 | mode (return?) | - | - | - | - | - |
+| SYS_VPOKE | 0x15 | offset | data | - | - | - | - |

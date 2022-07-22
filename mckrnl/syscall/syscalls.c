@@ -41,6 +41,8 @@ void init_syscalls() {
 	register_syscall(SYS_YIELD_ID, sys_yield);
 	register_syscall(SYS_ENV_ID, sys_env);
 	register_syscall(SYS_MMMAP_ID, sys_mmmap);
+	register_syscall(SYS_VMODE_ID, sys_vmode);
+	register_syscall(SYS_VPOKE_ID, sys_vpoke);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

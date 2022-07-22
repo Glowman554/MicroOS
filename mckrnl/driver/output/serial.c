@@ -20,7 +20,6 @@ void serial_init(driver_t* driver) {
 	outb(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
 	outb(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
 
-	global_char_output_driver = (char_output_driver_t*) driver;
 	debugf_driver = (char_output_driver_t*) driver;
 }
 
