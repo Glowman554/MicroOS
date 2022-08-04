@@ -1,7 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: Warning: File 'Makefile' has modification time 7180 s in the future
-make: warning:  Clock skew detected.  Your build may be incomplete.
-
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -9,7 +6,7 @@ make: warning:  Clock skew detected.  Your build may be incomplete.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul 22 14:48:14 2022
+# Make data base, printed on Thu Aug  4 19:01:08 2022
 
 # Variables
 
@@ -20,15 +17,13 @@ LC_ALL = C
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/janick/.gtkrc:/home/janick/.config/gtkrc
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f47d6b5f-e5bf-427c-b55f-32f64cac1851.sock
-# environment
 MANDATORY_PATH = /usr/share/gconf/plasma.mandatory.path
 # environment
-KONSOLE_DBUS_SERVICE = :1.33
+KONSOLE_DBUS_SERVICE = :1.1546
 # environment
 VSCODE_CWD = /home/janick/Development/MicroOS
 # environment
-WINDOWID = 50331655
+WINDOWID = 117440519
 # default
 MAKE_COMMAND := make
 # environment
@@ -47,14 +42,14 @@ PWD = /home/janick/Development/MicroOS
 %D = $(patsubst %/,%,$(dir $%))
 # environment
 XDG_DATA_DIRS = /usr/share/plasma:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+# environment
+KONSOLE_DBUS_WINDOW = /Windows/1
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
-# environment
-VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/janick/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+VSCODE_CODE_CACHE_PATH = /home/janick/.config/Code/CachedData/3b889b090b5ad5793f524b5d1d39fda662b96a2a
 # environment
 XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session1
 # environment
@@ -72,8 +67,6 @@ MAKEFLAGS = pqrR
 # makefile
 CURDIR := /home/janick/Development/MicroOS
 # environment
-VSCODE_PIPE_LOGGING = true
-# environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
@@ -82,7 +75,7 @@ PAM_KWALLET5_LOGIN = /run/user/1000/kwallet5.socket
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-XXXXXX0r5FX6/agent.1136
+SSH_AUTH_SOCK = /tmp/ssh-XXXXXXDyVwD3/agent.1179
 # default
 .SHELLFLAGS := -c
 # environment
@@ -98,15 +91,11 @@ MAKEFILE_LIST := Makefile
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_VERBOSE_LOGGING = true
-# environment
-VSCODE_PID = 1737
+VSCODE_PID = 64458
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
-# environment
-SESSION_MANAGER = local/nya:@/tmp/.ICE-unix/1438,unix/nya:/tmp/.ICE-unix/1438
 # automatic
 *F = $(notdir $*)
 # environment
@@ -116,7 +105,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # environment
-VSCODE_NLS_CONFIG = {"locale":"furry","availableLanguages":{"*":"furry"},"_languagePackId":"6aace7082e0472b432759462767d1ba2.furry","_translationsConfigFile":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/tcf.json","_cacheRoot":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry","_resolvedLanguagePackCoreLocation":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5","_corruptedFile":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"furry","availableLanguages":{"*":"furry"},"_languagePackId":"6aace7082e0472b432759462767d1ba2.furry","_translationsConfigFile":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/tcf.json","_cacheRoot":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry","_resolvedLanguagePackCoreLocation":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/3b889b090b5ad5793f524b5d1d39fda662b96a2a","_corruptedFile":"/home/janick/.config/Code/clp/6aace7082e0472b432759462767d1ba2.furry/corrupted.info","_languagePackSupport":true}
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # makefile
@@ -145,8 +134,6 @@ MAKEFILES :=
 LANGUAGE = 
 # automatic
 ^F = $(notdir $^)
-# environment
-VSCODE_LOG_NATIVE = false
 # automatic
 ?F = $(notdir $?)
 # environment
@@ -157,6 +144,8 @@ XDG_SEAT = seat0
 NO_PROXY = 127.0.0.1
 # environment
 XDG_CURRENT_DESKTOP = KDE
+# environment
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
 # automatic
 +F = $(notdir $+)
 # environment
@@ -176,7 +165,7 @@ XDG_VTNR = 1
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 881
+SYSTEMD_EXEC_PID = 926
 # environment
 DISPLAY = :0
 # environment
@@ -192,7 +181,7 @@ KONSOLE_DBUS_SESSION = /Sessions/1
 # makefile (from 'Makefile', line 39)
 EXECUTABLE = mckrnl/mckrnl.elf
 # environment
-SSH_AGENT_PID = 1279
+SSH_AGENT_PID = 1322
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -204,7 +193,7 @@ XDG_SESSION_CLASS = user
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-PLATFORMIO_IDE = 2.5.0
+PLATFORMIO_IDE = 2.5.1
 # environment
 GTK2_RC_FILES = /etc/gtk-2.0/gtkrc:/home/janick/.gtkrc-2.0:/home/janick/.config/gtkrc-2.0
 # environment
@@ -212,7 +201,7 @@ HOME = /home/janick
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-c8697ad9-1.67.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-c8697ad9-1.69.2-main.sock
 # environment
 TERM = xterm-256color
 # environment
@@ -236,7 +225,7 @@ ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 DEBUG = WARN
 # environment
-SHELL_SESSION_ID = 986f2b6e0846495eba010fb12604e524
+SHELL_SESSION_ID = 7a95e151a8804675bab774bb341fd390
 # environment
 KDE_SESSION_VERSION = 5
 # default
@@ -244,7 +233,7 @@ KDE_SESSION_VERSION = 5
 # environment
 KDE_FULL_SESSION = true
 # variable set hash-table stats:
-# Load=115/1024=11%, Rehash=0, Collisions=9/148=6%
+# Load=111/1024=11%, Rehash=0, Collisions=8/144=6%
 
 # Pattern-specific Variable Values
 
@@ -252,7 +241,7 @@ KDE_FULL_SESSION = true
 
 # Directories
 
-# . (device 2050, inode 6291871): 18 files, no impossibilities.
+# . (device 2050, inode 6817674): 18 files, no impossibilities.
 
 # 18 files, no impossibilities in 1 directories.
 
@@ -286,11 +275,11 @@ debug:
 #  recipe to execute (from 'Makefile', line 42):
 	gdb -ex "target remote localhost:1234" -ex "b main" -ex "continue" $(EXECUTABLE)
 
+ 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-07-22 16:47:55.034952963
+#  Last modified 2022-08-04 18:52:49.355243073
 #  File has been updated.
 #  Successfully updated.
 
@@ -390,6 +379,6 @@ initrd.saf:
 # strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
-# Finished Make data base on Fri Jul 22 14:48:16 2022
+# Finished Make data base on Thu Aug  4 19:01:08 2022
 
  
