@@ -25,4 +25,4 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_VMODE | 0x14 | mode (return?) | - | - | - | - | - |
-| SYS_VPOKE | 0x15 | offset | data | - | - | - | - |
+| SYS_VPOKE | 0x15 | offset | &data | range | - | - | - |

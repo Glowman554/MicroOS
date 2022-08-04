@@ -4,9 +4,12 @@
 
 cpu_registers_t* sys_vpoke(cpu_registers_t* regs) {
 	uint32_t offset = regs->ebx;
-	uint8_t value = regs->ecx;
+	uint8_t* value = regs->ecx;
+	uint32_t range = regs->edx;
 
-	global_char_output_driver->vpoke(global_char_output_driver, offset, value);
+	for (uint32_t i = 0; i < range; i++) {
+		global_char_output_driver->vpoke(global_char_output_driver, offset + i, value[i]);
+	}
 
 	return regs;
 }

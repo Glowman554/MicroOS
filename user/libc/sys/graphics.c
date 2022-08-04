@@ -8,6 +8,6 @@ int vmode() {
 	return mode;
 }
 
-void vpoke(uint32_t offset, uint8_t val) {
-	asm volatile("int $0x30" : : "a"(SYS_VPOKE_ID), "b"(offset), "c"(val));
+void vpoke(uint32_t offset, uint8_t* val, uint32_t range) {
+	asm volatile("int $0x30" : : "a"(SYS_VPOKE_ID), "b"(offset), "c"(val), "d"(range));
 }

@@ -1,13 +1,10 @@
 #include <render.h>
 
 #include <graphics.h>
+#include <string.h>
 
 void render_tui(edit_state_t* state) {
-	for (int y = 0; y < get_height(); y++) {
-		for (int x = 0; x < get_width(); x++) {
-			draw_char(x, y, ' ', 0);
-		}
-	}
+	start_frame();
 
 	int width = get_width();
 	int height = get_height();
@@ -79,4 +76,6 @@ void render_tui(edit_state_t* state) {
 		}
 		draw_char(cur_x, cur_y, '|', BACKGROUND_BLACK | FOREGROUND_CYAN);
 	}
+
+	end_frame();
 }
