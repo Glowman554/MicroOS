@@ -6,9 +6,25 @@
 #include <string.h>
 #include <input.h>
 
+void print_usage(char* prog) {
+	printf("Usage: %s <file-name>\n\n", prog);
+
+	printf("Cheat sheet\n");
+	printf("w        -> move up a line\n");
+	printf("a        -> move left a character\n");
+	printf("s        -> move down a line\n");
+	printf("d        -> move right a char\n");
+	printf("+        -> write changes to file\n");
+	printf("q        -> quit\n");
+
+	printf("\n");
+	printf("Those commands work in the EDIT mode witch can be activated by pressing 'esc'.\n");
+	printf("To exit EDIT mode press 'esc' again.\n");
+}
+
 int main(int argc, char* argv[], char* envp[]) {
 	if (argc != 2) {
-		printf("Usage: %s <file>\n", argv[0]);
+		print_usage(argv[0]);
 		return 1;
 	}
 	
