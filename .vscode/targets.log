@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug  4 19:01:08 2022
+# Make data base, printed on Thu Aug  4 19:58:38 2022
 
 # Variables
 
@@ -159,7 +159,7 @@ GNUMAKEFLAGS :=
 # environment
 LOGNAME = janick
 # environment
-PLATFORMIO_PATH = /home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PLATFORMIO_PATH = /home/janick/.platformio/penv/bin:/home/janick/.platformio/penv:/home/janick/.platformio/python3/bin:/home/janick/.deno/bin:/home/janick/.deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_VTNR = 1
 # makefile
@@ -379,6 +379,6 @@ initrd.saf:
 # strcache performance: lookups = 49 / hit rate = 40%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/49=0%
-# Finished Make data base on Thu Aug  4 19:01:08 2022
+# Finished Make data base on Thu Aug  4 19:58:38 2022
 
  

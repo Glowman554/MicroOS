@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/mckrnl/include",
                 "${workspaceFolder}/user/libc/include",
-                "${workspaceFolder}/user/terminal/include"
+                "${workspaceFolder}/user/terminal/include",
+                "${workspaceFolder}/user/edit/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

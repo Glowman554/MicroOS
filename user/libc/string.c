@@ -78,6 +78,23 @@ int memcmp(const void * _s1, const void* _s2, int n) {
 	return 0;
 }
 
+void* memmove(void* dest, const void* src, uint32_t len) {
+	char* d = (char*) dest;
+	char* s = (char*) src;
+	if(d < s) {
+		while(len--) {
+			*d++ = *s++;
+		}
+	} else {
+		d += len;
+		s += len;
+		while(len--) {
+			*--d = *--s;
+		}
+	}
+	return dest;
+}
+
 int strcmp(char* str1, char* str2) {
 	while (*str1 && *str2) {
 		if (*str1 != *str2)

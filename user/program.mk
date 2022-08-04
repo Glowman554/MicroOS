@@ -4,7 +4,7 @@ OBJS = $(addsuffix .o,$(basename $(SRCS)))
 CFLAGS = -m32 -Wall -g -fno-stack-protector -nostdinc -I include -Wno-builtin-declaration-mismatch -fno-builtin -I../libc/include
 LDFLAGS = -melf_i386
 
-LOAD_ADDR = 0xA0000000
+LOAD_ADDR = 0xB0000000
 
 prog: $(PROGRAM)
 

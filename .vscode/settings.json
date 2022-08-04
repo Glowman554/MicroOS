@@ -26,6 +26,8 @@
 		"tuple": "c",
 		"utility": "c",
 		"dsdt.h": "c",
-		"unix_time.h": "c"
+		"unix_time.h": "c",
+		"assert.h": "c",
+		"graphics.h": "c"
 	}
 }

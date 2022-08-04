@@ -11,6 +11,7 @@ all:
 	make -C echo prog
 	make -C calc prog
 	make -C pwr prog
+	make -C edit prog
 
 clean:
 	make -C libc clean
@@ -23,3 +24,4 @@ clean:
 	make -C echo clean
 	make -C calc clean
 	make -C pwr clean
+	make -C edit clean
