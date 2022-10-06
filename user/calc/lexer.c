@@ -25,35 +25,20 @@ void lexer_delete(dynamic_array_t* token) {
 }
 
 int _lexer_parse_number(dynamic_array_t* token, char* input) {
-	bool hex = false;
-	bool bin = false;
-
-	int start_offset = 0;
+	int idx = 0;
+	int number_system_base = 10;
 
 	if (input[0] == '0') {
 		if (input[1] == 'x') {
-			hex = true;
-			start_offset = 2;
+			number_system_base = 16;
+			idx = 2;
 		} else if (input[1] == 'b') {
-			bin = true;
-			start_offset = 2;
+			number_system_base = 2;
+			idx = 2;
 		}
 	}
 
-	// printf("_lexer_parse_number: hex = %d, bin = %d, dec = %d\n", hex, bin, dec);
-
-	int number_system_base = 0;
-
-	if (hex) {
-		number_system_base = 16;
-	} else if (bin) {
-		number_system_base = 2;
-	} else {
-		number_system_base = 10;
-	}
-
 	int _number = 0;
-	int idx = start_offset;
 
 	while (input[idx] != '\0') {
 		if (input[idx] >= '0' && input[idx] <= '9') {
