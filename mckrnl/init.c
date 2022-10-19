@@ -26,6 +26,8 @@
 
 #include <utils/argparser.h>
 
+void rust_main();
+
 void main(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
 
@@ -70,6 +72,8 @@ void main(multiboot_info_t* mb_info) {
 	vfs_scan_fs();
 
 	init_syscalls();
+
+	rust_main();
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
 

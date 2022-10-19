@@ -51,6 +51,13 @@ int debugf_intrnl(const char *format, ...) {
 	return tmp;
 }
 
+int _debugf(const char* str) {
+#ifdef DEBUG
+	return debugf_intrnl(str);
+#else
+	return 0;
+#endif
+}
 
 int abortf(const char *format, ...) {
 	va_list args;
