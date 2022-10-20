@@ -17,8 +17,9 @@ jobs:
       run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin -y
     - name: rust-toolchain
       uses: actions-rs/toolchain@v1.0.6
-      with:
-       toolchain: nightly-i686-unknown-linux-gnu
+    - name: rust setp
+      run:
+        rustup default nightly
     - name: get resources
       run: make res
     - name: make
