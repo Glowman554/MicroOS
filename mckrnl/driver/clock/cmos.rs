@@ -1,10 +1,9 @@
 use core::ffi::c_char;
+
+use crate::{bindings::driver::{Driver, clock_driver::{ClockResult, ClockDriver, global_clock_driver}}, utils::io::{io_out_u8, io_in_u8}, debugln};
 use cstr_core::CString;
 use lazy_static::lazy_static;
-use crate::bindings::driver::clock_driver::{ClockDriver, ClockResult, global_clock_driver};
-use crate::bindings::driver::Driver;
-use crate::debugln;
-use crate::utils::io::{io_in_u8, io_out_u8};
+
 
 static CMOS_READ_SEC: u8 =		0x00;
 static CMOS_READ_MIN: u8 =		0x02;

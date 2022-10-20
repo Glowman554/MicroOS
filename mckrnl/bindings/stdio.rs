@@ -1,8 +1,8 @@
-use core::ffi::c_char;
-use core::fmt;
-use lazy_static::lazy_static;
+use core::{fmt, ffi::c_char};
 use cstr_core::CString;
+use lazy_static::lazy_static;
 use spin::Mutex;
+
 
 extern "C" {
 	pub fn printf(s: *const c_char) -> i32;

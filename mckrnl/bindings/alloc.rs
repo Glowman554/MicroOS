@@ -1,6 +1,4 @@
-use core::alloc::Layout;
-use core::alloc::GlobalAlloc;
-use core::ffi::c_void;
+use core::{ffi::c_void, alloc::{GlobalAlloc, Layout}};
 
 // void* vmm_alloc(uint32_t num_pages)
 // void vmm_free(void* ptr, uint32_t num_pages)

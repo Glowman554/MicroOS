@@ -1,7 +1,8 @@
-use crate::bindings::stdio::*;
-use cstr_core::CString;
-use crate::debugln;
 use core::panic::PanicInfo;
+use cstr_core::CString;
+use crate::{debugln, bindings::stdio::abortf};
+
+
 
 #[panic_handler]
 fn panic(info: &PanicInfo<'_>) -> ! {

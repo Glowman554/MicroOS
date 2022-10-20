@@ -1,9 +1,8 @@
 use core::ffi::{c_char, c_int};
 use cstr_core::CString;
 use lazy_static::lazy_static;
-use crate::bindings::driver::char_output_driver::{debugf_driver, CharOutputDriver};
-use crate::bindings::driver::Driver;
-use crate::utils::io::{io_in_u8, io_out_u8};
+use crate::{bindings::driver::{Driver, char_output_driver::{debugf_driver, CharOutputDriver}}, utils::io::{io_out_u8, io_in_u8}};
+
 
 extern "C" fn serial_is_device_present(_driver: *mut Driver) -> bool {
 	true
