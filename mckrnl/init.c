@@ -26,6 +26,9 @@
 
 #include <utils/argparser.h>
 
+void rust_register_pci_drivers();
+void rust_register_drivers();
+void rust_register_fs_scanners();
 void rust_main();
 
 void main(multiboot_info_t* mb_info) {	
@@ -42,6 +45,8 @@ void main(multiboot_info_t* mb_info) {
 
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
 
+    rust_register_pci_drivers();
+
 	rsdp_init();
 	dsdt_init();
 
@@ -52,6 +57,8 @@ void main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) get_ps2_driver());
 	register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &cmos_driver);
+
+    rust_register_drivers();
 
 	activate_drivers();
 
@@ -68,6 +75,8 @@ void main(multiboot_info_t* mb_info) {
 	}
 
 	vfs_register_fs_scanner(fatfs_scanner);
+
+    rust_register_fs_scanners();
 
 	vfs_scan_fs();
 

@@ -106,7 +106,7 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
 }
 
 void vmm_clone_kernel_context(vmm_context_t* context) {
-	debugf("Mapping kernel into context %p", context);
+	// debugf("Mapping kernel into context %p", context);
 
 	for (int i = 0; i < 1024; i++) {
 		if (kernel_context->pagedir[i] & PTE_PRESENT) {
@@ -124,7 +124,7 @@ void vmm_clone_kernel_context(vmm_context_t* context) {
 }
 
 void vmm_destroy_context(vmm_context_t* context) {
-	debugf("Destroying context %p", context);
+	// debugf("Destroying context %p", context);
 
 	for (int i = 0; i < 1024; i++) {
 		if (kernel_context->pagedir[i] & PTE_PRESENT) {
@@ -167,7 +167,7 @@ void vmm_destroy_context(vmm_context_t* context) {
 }
 
 void vmm_synchronize_task_contexts_with_kernel_context(void) {
-	debugf("Synchronizing task contexts with kernel context");
+	// debugf("Synchronizing task contexts with kernel context");
 
 	for (int i = 0; i < MAX_TASKS; i++) {
 		if (tasks[i].active) {

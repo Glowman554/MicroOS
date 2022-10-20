@@ -3,4 +3,4 @@
 *.iso
 *.saf
 res
-target/**
+mckrnl/target
