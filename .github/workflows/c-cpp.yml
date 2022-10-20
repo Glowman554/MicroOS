@@ -16,7 +16,7 @@ jobs:
     - name: install tools
       run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin -y
     - name: rust setp
-      run:
+      run: |
         rustup default nightly
         rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
     - name: get resources
