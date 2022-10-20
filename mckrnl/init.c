@@ -9,7 +9,6 @@
 #include <memory/pmm.h>
 #include <memory/vmm.h>
 
-#include <driver/output/serial.h>
 #include <driver/input/ps2_keyboard.h>
 #include <driver/disk/ata.h>
 #include <driver/timer/pit.h>
@@ -52,7 +51,6 @@ void _main(multiboot_info_t* mb_info) {
 
 	enumerate_pci();
 
-	register_driver((driver_t*) &serial_output_driver);
 	register_driver((driver_t*) &text_console_driver);
 	register_driver((driver_t*) get_ps2_driver());
 	register_driver((driver_t*) &pit_driver);

@@ -1,6 +1,7 @@
 use core::ffi::{c_char};
 
 pub mod clock_driver;
+pub mod char_output_driver;
 
 extern {
 	pub fn register_driver(driver: *mut Driver);
