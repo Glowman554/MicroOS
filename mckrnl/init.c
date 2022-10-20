@@ -16,7 +16,7 @@
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
-#include <driver/clock/cmos.h>
+#include <driver/clock_driver.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -31,7 +31,7 @@ void rust_register_drivers();
 void rust_register_fs_scanners();
 void rust_main();
 
-void main(multiboot_info_t* mb_info) {	
+void _main(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
 
 	debugf("Setting global multiboot info to %p", mb_info);
@@ -56,7 +56,6 @@ void main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &text_console_driver);
 	register_driver((driver_t*) get_ps2_driver());
 	register_driver((driver_t*) &pit_driver);
-	register_driver((driver_t*) &cmos_driver);
 
     rust_register_drivers();
 
