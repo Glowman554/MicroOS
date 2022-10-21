@@ -22,6 +22,9 @@ iso: all initrd.saf
 run: iso
 	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
 
+test: iso
+	make -C test
+
 res:
 	mkdir res
 	git clone https://github.com/chocabloc/saf.git --depth=1 ./res/saf
