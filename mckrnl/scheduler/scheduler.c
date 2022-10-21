@@ -63,7 +63,7 @@ task_t* init_task(void* entry) {
 	vmm_clone_kernel_context(task->context);
 
 	for (int i = 0; i < KERNEL_STACK_SIZE_PAGES; i++) {
-		vmm_map_page(task->context, (uintptr_t) stack + i * 4096, (uintptr_t) stack + i * 4096, PTE_PRESENT | PTE_WRITE);
+		// vmm_map_page(task->context, (uintptr_t) stack + i * 4096, (uintptr_t) stack + i * 4096, PTE_PRESENT | PTE_WRITE);
 	}
 
 	for (int i = 0; i < USER_STACK_SIZE_PAGES; i++) {
