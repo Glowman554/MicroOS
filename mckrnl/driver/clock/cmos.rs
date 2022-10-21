@@ -1,6 +1,6 @@
-use core::ffi::c_char;
+use core::ffi::{c_char, c_void};
 
-use crate::{bindings::driver::{Driver, clock_driver::{ClockResult, ClockDriver, global_clock_driver}}, utils::io::{io_out_u8, io_in_u8}, debugln};
+use crate::{bindings::driver::{Driver, clock_driver::{ClockResult, ClockDriver, global_clock_driver}}, utils::{io::{io_out_u8, io_in_u8}, ptr::CPtr}, debugln};
 use cstr_core::CString;
 use lazy_static::lazy_static;
 
@@ -81,7 +81,7 @@ pub static CMOS_DRIVER: ClockDriver = ClockDriver {
 		is_device_present: cmos_is_device_present,
 		get_device_name: cmos_get_device_name,
 		init: cmos_init,
-		driver_specific_data: 0
+		driver_specific_data: CPtr(0x0 as *mut c_void)
 	},
 	get_time: cmos_get_time
 };
