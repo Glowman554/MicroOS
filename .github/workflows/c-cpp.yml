@@ -27,4 +27,6 @@ jobs:
       with:
         name: "iso"
         path: | 
-            cdrom.iso
+          cdrom.iso
+    - name: test
+      run: bash test.sh

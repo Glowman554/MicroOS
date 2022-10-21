@@ -1,0 +1,5 @@
+libv86.js
+seabios.bin
+v86-fallback.wasm
+v86.wasm
+vgabios.bin
