@@ -4,6 +4,9 @@ all:
 
 KEYMAP = de
 
+QEMU_FLAGS = -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
+QEMU_FLAGS += -netdev user,id=u1 -device rtl8139,netdev=u1,mac=00:11:22:33:44:55 -object filter-dump,id=f1,netdev=u1,file=dump.dat
+
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
@@ -20,7 +23,7 @@ iso: all initrd.saf
 	grub-mkrescue -o cdrom.iso cdrom/
 
 run: iso
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
+	qemu-system-i386 $(QEMU_FLAGS)
 
 test: iso
 	make -C test
@@ -37,7 +40,7 @@ res:
 
 
 run_dbg: iso
-	qemu-system-i386 -m 1G -cdrom cdrom.iso -boot d -serial stdio --no-reboot --no-shutdown -hda res/foxos.img -s -S
+	qemu-system-i386 $(QEMU_FLAGS) --no-reboot --no-shutdown -s -S
 
 EXECUTABLE = mckrnl/mckrnl.elf
 

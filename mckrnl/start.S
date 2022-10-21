@@ -35,5 +35,5 @@ _start:
 // 8 kB Stack fuer den Kernel. Das Label steht hinter dem freien Speicher,
 // weil der Stack nach unten waechst
 .section .bss
-.space 8192
+.space 8192 * 64
 kernel_stack:

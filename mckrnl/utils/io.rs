@@ -61,11 +61,11 @@ pub fn io_in_u16(addr: u16) -> u16 {
 	ret
 }
 
-pub fn io_in_32(addr: u16) -> u32 {
+pub fn io_in_u32(addr: u16) -> u32 {
 	let ret: u32;
 	unsafe {
 		asm!(
-			"in al, eax",
+			"in eax, dx",
 			in("dx") addr,
 			out("eax") ret,
 			options(preserves_flags, nomem, nostack)

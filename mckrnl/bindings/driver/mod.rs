@@ -4,6 +4,8 @@ use crate::utils::ptr::CPtr;
 
 pub mod clock_driver;
 pub mod char_output_driver;
+pub mod nic_driver;
+pub mod pci;
 
 extern {
 	pub fn register_driver(driver: *mut Driver);

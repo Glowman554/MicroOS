@@ -8,9 +8,13 @@ pub mod utils;
 #[no_mangle]
 extern "C" fn rust_register_pci_drivers() {
 	debugln!("in rust_register_pci_drivers");
+
+	unsafe {
+		register_pci_driver_vd(0x10EC, 0x8139, rtl8139_found);
+	}
 }
 
-use crate::{driver::{clock::cmos::CMOS_DRIVER, output::serial::SERIAL_DRIVER}, bindings::driver::{register_driver, Driver, clock_driver::ClockDriver, char_output_driver::CharOutputDriver}};
+use crate::{driver::{clock::cmos::CMOS_DRIVER, output::serial::SERIAL_DRIVER, network::rtl8139::rtl8139_found}, bindings::driver::{register_driver, Driver, clock_driver::ClockDriver, char_output_driver::CharOutputDriver, pci::register_pci_driver_vd}};
 
 #[no_mangle]
 extern "C" fn rust_register_drivers() {
