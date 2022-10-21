@@ -5,10 +5,15 @@
 #include <driver/acpi/rsdp.h>
 #include <utils/io.h>
 #include <driver/pci/pci.h>
+#include <stddef.h>
 
 void acpi_reset() {
 	debugf("ACPI reboot...");
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP");
+
+	if (fadt == NULL) {
+		abortf("FADT can not be found!");
+	}
 
 	switch (fadt->reset_reg.address_space ) {
 		case GENERIC_ADDRESS_SPACE_SYSTEM_IO:
@@ -42,6 +47,10 @@ void acpi_reset() {
 void acpi_power_off() {
 	debugf("ACPI shutdown...");
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP");
+
+	if (fadt == NULL) {
+		abortf("FADT can not be found!");
+	}
 
 	outw(fadt->PM1a_control_block, (inw(fadt->PM1a_control_block) & 0xE3FF) | ((SLP_TYPa << 10) | 0x2000));
 
