@@ -4,7 +4,7 @@ use alloc::vec::Vec;
 use core::ffi::{c_char, c_void};
 use cstr_core::CString;
 use lazy_static::lazy_static;
-use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}}, debugln, utils::{ptr::CPtr, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
+use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv, register_nic_driver}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}, net::stack::load_network_stack}, debugln, utils::{ptr::CPtr, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
 
 pub extern "C" fn rtl8139_found(header: PciDeviceHeader, bus: u16, device: u16, function: u16) {
 	debugln!("{:?} {}:{}:{}", header, bus, device, function);
@@ -90,7 +90,7 @@ extern "C" fn rtl8139_interrupt(registers: *mut CpuRegisters, data: CPtr) -> *mu
 	if (status & (1 << 0)) != 0 {
 		debugln!("rtl8139: Received packet");
 		rtl8139_recieve(driver);
-	}
+    }
 
 	registers
 }
@@ -131,10 +131,11 @@ extern "C" fn rtl8139_init(driver: *mut Driver) {
 
 	unsafe {
 		register_interrupt_handler(driver.header.interrupt_line + 0x20, rtl8139_interrupt, CPtr(driver as *mut Rtl8139Driver as *mut c_void));
+		register_nic_driver(driver as *mut Rtl8139Driver as *mut NicDriver);
+		load_network_stack(driver as *mut Rtl8139Driver as *mut NicDriver);
 	}
 
 	let mut data: [u8; 8] = [0,1,2,3,4,5,6,7];
-
 	(driver.driver.send)(driver as *mut Rtl8139Driver as *mut NicDriver, data.as_mut_ptr(), 8);
 }
 

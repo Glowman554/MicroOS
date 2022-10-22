@@ -12,6 +12,9 @@
 #define MAX_VFS_SCANNERS 32
 #define MAX_SYSCALLS 32
 #define MAX_FD 32
+#define MAX_NIC_DRIVERS 32
+
+#define MAX_ETHERFRAME_HANDLERS 32
 
 #define FD_OFFSET 5
 

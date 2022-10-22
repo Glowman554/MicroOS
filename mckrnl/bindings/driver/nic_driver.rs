@@ -43,6 +43,10 @@ pub struct NicDriver {
 	pub mac: Mac
 }
 
+extern {
+	pub fn register_nic_driver(driver: *mut NicDriver);
+}
+
 pub extern "C" fn default_nic_recv(_driver: *mut NicDriver, _data: *mut u8, len: u32) {
 	debugln!("recieved {} bytes!", len);
 }
