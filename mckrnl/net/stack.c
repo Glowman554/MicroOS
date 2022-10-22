@@ -11,7 +11,7 @@ void load_network_stack(nic_driver_t* nic) {
 	nic->recv = etherframe_nic_recv;
 
     ether_frame_handler_t handler = { 0 };
-    handler.ether_type_be = 0x8000;
+    handler.ether_type_be = 0x0080;
 
     char test[] = "hello";
     ehterframe_send(&handler, nic, 0x112233445566, test, sizeof(test));
