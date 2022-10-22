@@ -1,7 +1,6 @@
 #pragma once
 
 #include <driver/nic_driver.h>
-
 #include <net/etherframe.h>
 
 typedef struct network_stack {
