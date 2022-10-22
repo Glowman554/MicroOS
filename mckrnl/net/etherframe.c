@@ -31,5 +31,5 @@ void ehterframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, 
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {
-    abortf("lol");
+    todo();
 }
