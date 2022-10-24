@@ -135,8 +135,8 @@ extern "C" fn rtl8139_init(driver: *mut Driver) {
 		load_network_stack(driver as *mut Rtl8139Driver as *mut NicDriver);
 	}
 
-	let mut data: [u8; 8] = [0,1,2,3,4,5,6,7];
-	(driver.driver.send)(driver as *mut Rtl8139Driver as *mut NicDriver, data.as_mut_ptr(), 8);
+	// let mut data: [u8; 8] = [0,1,2,3,4,5,6,7];
+	// (driver.driver.send)(driver as *mut Rtl8139Driver as *mut NicDriver, data.as_mut_ptr(), 8);
 }
 
 static TSAD_ARRAY: [u16; 4] = [ 0x20, 0x24, 0x28, 0x2C ];

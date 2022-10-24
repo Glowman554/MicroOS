@@ -18,5 +18,5 @@ extern char_output_driver_t* printf_driver;
 #endif
 
 #define todo() abortf("%s not implemented! (yet i hope)", __FUNCTION__)
-
+#define note(n) debugf("note in %s (%s:%d): %s", __FUNCTION__, __FILE__, __LINE__, n)
 #define here() debugf("here");

@@ -1,3 +1,4 @@
+#include "net/etherframe.h"
 #include <net/stack.h>
 #include <net/swap.h>
 #include <memory/vmm.h>
@@ -12,10 +13,12 @@ void load_network_stack(nic_driver_t* nic) {
 
 	nic->driver.driver_specific_data = stack;
 	nic->recv = etherframe_nic_recv;
+	stack->driver = nic;
 
 	stack->arp.handler.ether_type_be = BSWAP16(0x806);
 	stack->arp.handler.data = stack;
 	stack->arp.handler.recv = arp_etherframe_recv;
+	ehterframe_register(&stack->ehter_frame, stack->arp.handler);
 
 	nic->ip = my_ip;
 

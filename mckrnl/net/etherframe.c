@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <memory/vmm.h>
 #include <string.h>
+#include <net/stack.h>
+#include <net/swap.h>
 
 void ehterframe_register(ether_frame_provider_t* provider, ether_frame_handler_t handler) {
     for (int i = 0; i < MAX_ETHERFRAME_HANDLERS; i++) {
@@ -31,5 +33,21 @@ void ehterframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, 
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {
-    todo();
+	ether_frame_header_t* frame = (ether_frame_header_t*) data;
+
+	network_stack_t* stack = driver->driver.driver_specific_data;
+
+	if (frame->dest_mac_be == 0xFFFFFFFFFFFF || frame->dest_mac_be == driver->mac.mac) {
+		bool handled = false;
+		for (int i = 0; i < MAX_ETHERFRAME_HANDLERS; i++) {
+			if (stack->ehter_frame.handler[i].ether_type_be == frame->ether_type_be) {
+				stack->ehter_frame.handler[i].recv(&stack->ehter_frame.handler[i], data + sizeof(ether_frame_header_t), len - sizeof(ether_frame_header_t));
+				handled = true;
+			}
+		}
+
+		if (!handled) {
+			abortf("--- WARNING --- Unhandled etherframe %x!", frame->ether_type_be);
+		}
+	}
 }
