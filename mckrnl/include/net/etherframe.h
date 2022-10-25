@@ -19,10 +19,10 @@ typedef struct ether_frame_handler {
 } ether_frame_handler_t;
 
 typedef struct ether_frame_provider {
-	ether_frame_handler_t handler[MAX_ETHERFRAME_HANDLERS];
+	ether_frame_handler_t handlers[MAX_ETHERFRAME_HANDLERS];
 } ether_frame_provider_t;
 
-void ehterframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, uint64_t dest_mac_be, uint8_t* payload, uint32_t size);
-void ehterframe_register(ether_frame_provider_t* provider, ether_frame_handler_t handler);
+void etherframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, uint64_t dest_mac_be, uint8_t* payload, uint32_t size);
+void etherframe_register(ether_frame_provider_t* provider, ether_frame_handler_t handler);
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len);

@@ -22,7 +22,7 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint3
 						arp->dest_mac = arp->src_mac;
 						arp->src_ip = stack->driver->ip.ip;
 						arp->src_mac = stack->driver->mac.mac;
-						ehterframe_send(&stack->arp.handler, stack->driver, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
+						etherframe_send(&stack->arp.handler, stack->driver, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
 					}
 					break;
 				case 0x0200: // response
@@ -52,7 +52,7 @@ void arp_broadcast_mac(arp_provider_t* provider, nic_driver_t* driver, ip_u ip) 
 		.dest_ip = ip.ip
 	};
 
-	ehterframe_send(&provider->handler, driver, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
+	etherframe_send(&provider->handler, driver, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
 }
 
 void arp_request_mac(arp_provider_t* provider, nic_driver_t* driver, ip_u ip) {
@@ -68,7 +68,7 @@ void arp_request_mac(arp_provider_t* provider, nic_driver_t* driver, ip_u ip) {
 		.dest_ip = ip.ip
 	};
 
-	ehterframe_send(&provider->handler, driver, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
+	etherframe_send(&provider->handler, driver, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
 }
 
 mac_u arp_get_mac_from_cache(arp_provider_t* provider, ip_u ip) {

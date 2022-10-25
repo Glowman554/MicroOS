@@ -5,11 +5,11 @@
 #include <net/stack.h>
 #include <net/swap.h>
 
-void ehterframe_register(ether_frame_provider_t* provider, ether_frame_handler_t handler) {
+void etherframe_register(ether_frame_provider_t* provider, ether_frame_handler_t handler) {
     for (int i = 0; i < MAX_ETHERFRAME_HANDLERS; i++) {
-        if (provider->handler[i].recv == 0) {
+        if (provider->handlers[i].recv == 0) {
             debugf("registering ehter frame handler at %d for 0x%x!", i, handler.ether_type_be);
-            provider->handler[i] = handler;
+            provider->handlers[i] = handler;
             return;
         }
     }
@@ -17,7 +17,7 @@ void ehterframe_register(ether_frame_provider_t* provider, ether_frame_handler_t
     abortf("no more handler slots free!");
 }
 
-void ehterframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, uint64_t dest_mac_be, uint8_t* payload, uint32_t size) {
+void etherframe_send(ether_frame_handler_t* handler, struct nic_driver* driver, uint64_t dest_mac_be, uint8_t* payload, uint32_t size) {
     uint8_t* buffer = vmm_alloc((sizeof(ether_frame_header_t) + size) / 4096 + 1);
 
     ether_frame_header_t* frame = (ether_frame_header_t*) buffer;
@@ -40,8 +40,8 @@ void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len)
 	if (frame->dest_mac_be == 0xFFFFFFFFFFFF || frame->dest_mac_be == driver->mac.mac) {
 		bool handled = false;
 		for (int i = 0; i < MAX_ETHERFRAME_HANDLERS; i++) {
-			if (stack->ehter_frame.handler[i].ether_type_be == frame->ether_type_be) {
-				stack->ehter_frame.handler[i].recv(&stack->ehter_frame.handler[i], data + sizeof(ether_frame_header_t), len - sizeof(ether_frame_header_t));
+			if (stack->ehter_frame.handlers[i].ether_type_be == frame->ether_type_be) {
+				stack->ehter_frame.handlers[i].recv(&stack->ehter_frame.handlers[i], data + sizeof(ether_frame_header_t), len - sizeof(ether_frame_header_t));
 				handled = true;
 			}
 		}
