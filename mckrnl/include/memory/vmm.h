@@ -34,3 +34,5 @@ void vmm_synchronize_task_contexts_with_kernel_context();
 
 void* vmm_alloc(uint32_t num_pages);
 void vmm_free(void* ptr, uint32_t num_pages);
+
+#define PAGES_OF(type) (sizeof(type) / 0x1000 + 1)

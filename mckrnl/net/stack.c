@@ -1,7 +1,10 @@
 #include <net/stack.h>
-#include <net/swap.h>
 #include <memory/vmm.h>
 #include <string.h>
+
+#include <net/etherframe.h>
+#include <net/arp.h>
+#include <net/ipv4.h>
 
 void load_network_stack(nic_driver_t* nic) {
 	ip_u my_ip = {.ip_p = {10, 0, 2, 15}};
@@ -12,30 +15,21 @@ void load_network_stack(nic_driver_t* nic) {
 	memset(stack, 0, sizeof(network_stack_t));
 
 	nic->driver.driver_specific_data = stack;
-	nic->recv = etherframe_nic_recv;
 	stack->driver = nic;
 
-	stack->arp.handler.ether_type_be = BSWAP16(0x806);
-	stack->arp.handler.data = stack;
-	stack->arp.handler.recv = arp_etherframe_recv;
-	etherframe_register(&stack->ehter_frame, stack->arp.handler);
-
-	stack->ipv4.handler.ether_type_be = BSWAP16(0x0800);
-	stack->ipv4.handler.data = stack;
-	stack->arp.handler.recv = ipv4_etherframe_recv;
-	etherframe_register(&stack->ehter_frame, stack->ipv4.handler);
-	stack->ipv4.gateway_ip = gateway_ip;
-	stack->ipv4.subnet_mask = subnet_mask;
+	etherframe_init(stack);
+	arp_init(stack);
+	ipv4_init(stack, gateway_ip, subnet_mask);
 
 	nic->ip = my_ip;
 
-	arp_broadcast_mac(&stack->arp, nic, gateway_ip);
+	arp_broadcast_mac(stack, gateway_ip);
 
 	ipv4_handler_t h = {
 		.protocol = 10,
 		.recv = 0,
-		.data = &stack
+		.stack = stack
 	};
 
-	ipv4_send(&h, &stack->ipv4, &stack->arp, nic, (ip_u) {.ip_p = {8, 8, 8, 8}}, "hello world", 11);
+	ipv4_send(&h, stack, (ip_u) {.ip_p = {8, 8, 8, 8}}, (uint8_t*) "hello world", 11);
 }

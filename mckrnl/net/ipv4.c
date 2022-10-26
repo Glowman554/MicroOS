@@ -1,13 +1,17 @@
 #include <net/ipv4.h>
+#include <net/arp.h>
 #include <stdio.h>
 #include <memory/vmm.h>
 #include <string.h>
 
-void ipv4_register(ipv4_provider_t* provider, ipv4_handler_t handler) {
+#include <memory/vmm.h>
+#include <string.h>
+
+void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 	for (int i = 0; i < MAX_IPV4_HANDLERS; i++) {
-        if (provider->handlers[i].recv == 0) {
+        if (stack->ipv4->handlers[i].recv == 0) {
             debugf("registering ipv4 handler at %d for 0x%x!", i, handler.protocol);
-            provider->handlers[i] = handler;
+            stack->ipv4->handlers[i] = handler;
             return;
         }
     }
@@ -15,7 +19,7 @@ void ipv4_register(ipv4_provider_t* provider, ipv4_handler_t handler) {
     abortf("no more handler slots free!");
 }
 
-void ipv4_send(ipv4_handler_t* handler, ipv4_provider_t* provider, arp_provider_t* arp_provider, struct nic_driver* driver, ip_u dest_ip, uint8_t* payload, uint32_t size) {
+void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size) {
 	uint8_t* buffer = vmm_alloc((size + sizeof(ipv4_message_t)) / 0x1000 + 1);
 
 	ipv4_message_t* ipv4 = (ipv4_message_t*) buffer;
@@ -34,7 +38,7 @@ void ipv4_send(ipv4_handler_t* handler, ipv4_provider_t* provider, arp_provider_
 	ipv4->time_to_live = 0x40;
 	ipv4->protocol = handler->protocol;
 	ipv4->destination_address = dest_ip.ip;
-	ipv4->source_address = driver->ip.ip;
+	ipv4->source_address = stack->driver->ip.ip;
 
 	ipv4->header_checksum = 0;
 	ipv4->header_checksum = ipv4_checksum((uint16_t*) ipv4, sizeof(ipv4_message_t));
@@ -42,11 +46,11 @@ void ipv4_send(ipv4_handler_t* handler, ipv4_provider_t* provider, arp_provider_
 	memcpy(buffer + sizeof(ipv4_message_t), payload, size);
 
 	ip_u route = dest_ip;
-	if((dest_ip.ip & provider->subnet_mask.ip) != (ipv4->source_address & provider->subnet_mask.ip)) {
-		route = provider->gateway_ip;
+	if((dest_ip.ip & stack->ipv4->subnet_mask.ip) != (ipv4->source_address & stack->ipv4->subnet_mask.ip)) {
+		route = stack->ipv4->gateway_ip;
 	}
 
-	etherframe_send(&provider->handler, driver, arp_resolve(arp_provider, driver, route).mac, buffer, size + sizeof(ipv4_message_t));
+	etherframe_send(&stack->ipv4->handler, stack, arp_resolve(stack, route).mac, buffer, size + sizeof(ipv4_message_t));
 
 	vmm_free(buffer, (size + sizeof(ipv4_message_t)) / 0x1000 + 1);
 }
@@ -71,4 +75,16 @@ uint16_t ipv4_checksum(uint16_t* data, uint32_t size) {
 	}
 
 	return ((~temp & 0xFF00) >> 8) | ((~temp & 0x00FF) << 8);
+}
+
+void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask) {
+	stack->ipv4 = vmm_alloc(PAGES_OF(ipv4_provider_t));
+	memset(stack->ipv4, 0, sizeof(ipv4_provider_t));
+
+	stack->ipv4->handler.ether_type_be = BSWAP16(0x0800);
+	stack->ipv4->handler.stack = stack;
+	stack->ipv4->handler.recv = ipv4_etherframe_recv;
+	etherframe_register(stack, stack->ipv4->handler);
+	stack->ipv4->gateway_ip = gateway_ip;
+	stack->ipv4->subnet_mask = subnet_mask;
 }

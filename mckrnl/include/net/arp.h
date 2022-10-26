@@ -1,7 +1,7 @@
 #pragma once
 
-#include <driver/nic_driver.h>
 #include <stdint.h>
+#include <net/stack.h>
 #include <net/etherframe.h>
 
 typedef struct arp_message {
@@ -29,7 +29,9 @@ typedef struct arp_provider {
 
 void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint32_t size);
 
-void arp_broadcast_mac(arp_provider_t* provider, nic_driver_t* driver, ip_u ip);
-void arp_request_mac(arp_provider_t* provider, nic_driver_t* driver, ip_u ip); 
-mac_u arp_get_mac_from_cache(arp_provider_t* provider, ip_u ip);
-mac_u arp_resolve(arp_provider_t* provider, nic_driver_t* driver, ip_u ip);
+void arp_broadcast_mac(network_stack_t* stack, ip_u ip);
+void arp_request_mac(network_stack_t* stack, ip_u ip); 
+mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip);
+mac_u arp_resolve(network_stack_t* stack, ip_u ip);
+
+void arp_init(network_stack_t* stack);

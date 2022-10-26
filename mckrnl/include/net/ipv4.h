@@ -1,7 +1,7 @@
 #pragma once
 
-#include <driver/nic_driver.h>
-#include <net/arp.h>
+#include <net/stack.h>
+#include <net/etherframe.h>
 #include <stdint.h>
 #include <config.h>
 
@@ -25,7 +25,7 @@ typedef struct ipv4_message {
 typedef struct ipv4_handler {
 	uint8_t protocol;
 	void (*recv)(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);
-	void* data;
+	void* stack;
 } ipv4_handler_t;
 
 typedef struct ipv4_provider {
@@ -35,9 +35,11 @@ typedef struct ipv4_provider {
 	ether_frame_handler_t handler; 
 } ipv4_provider_t;
 
-void ipv4_send(ipv4_handler_t* handler, ipv4_provider_t* provider, arp_provider_t* arp_provider, struct nic_driver* driver, ip_u dest_ip, uint8_t* payload, uint32_t size);
-void ipv4_register(ipv4_provider_t* provider, ipv4_handler_t handler);
+void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size);
+void ipv4_register(network_stack_t* stack, ipv4_handler_t handler);
 
 uint16_t ipv4_checksum(uint16_t* data, uint32_t size);
 
 void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size);
+
+void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask);
