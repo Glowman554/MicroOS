@@ -16,6 +16,7 @@
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
 #include <driver/clock_driver.h>
+#include <driver/nic_driver.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -78,6 +79,9 @@ void _main(multiboot_info_t* mb_info) {
 	vfs_scan_fs();
 
 	init_syscalls();
+
+	load_network_stacks();
+
 
 	rust_main();
 	

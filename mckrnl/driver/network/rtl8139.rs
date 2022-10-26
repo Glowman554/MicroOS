@@ -132,7 +132,7 @@ extern "C" fn rtl8139_init(driver: *mut Driver) {
 	unsafe {
 		register_interrupt_handler(driver.header.interrupt_line + 0x20, rtl8139_interrupt, CPtr(driver as *mut Rtl8139Driver as *mut c_void));
 		register_nic_driver(driver as *mut Rtl8139Driver as *mut NicDriver);
-		load_network_stack(driver as *mut Rtl8139Driver as *mut NicDriver);
+		// load_network_stack(driver as *mut Rtl8139Driver as *mut NicDriver);
 	}
 
 	// let mut data: [u8; 8] = [0,1,2,3,4,5,6,7];

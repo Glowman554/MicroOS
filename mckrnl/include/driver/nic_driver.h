@@ -27,3 +27,5 @@ typedef struct nic_driver {
 extern nic_driver_t* nic_drivers[MAX_NIC_DRIVERS];
 
 void register_nic_driver(nic_driver_t* driver);
+
+void load_network_stacks();

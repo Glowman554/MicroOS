@@ -17,9 +17,9 @@ void icmp_send_echo_request(network_stack_t* stack, ip_u ip) {
 }
 
 bool icmp_send_echo_reqest_and_wait(network_stack_t* stack, ip_u ip) {
-	icmp_send_echo_request(stack, ip);
-
 	stack->icmp->last_echo_reply_ip = 0;
+
+	icmp_send_echo_request(stack, ip);
 
 	int timeout = 10000000;
 	note("this isnt the best way to implement a timeout. FIXME!");
@@ -34,7 +34,31 @@ bool icmp_send_echo_reqest_and_wait(network_stack_t* stack, ip_u ip) {
 }
 
 void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
-	todo();
+	if (size < sizeof(icmp_message_t)) {
+		return;
+	}
+
+	icmp_message_t* icmp = (icmp_message_t*) payload;
+
+	switch (icmp->type) {
+		case 0:
+			{
+				// Echo reply
+				handler->stack->icmp->last_echo_reply_ip = srcIP.ip;
+
+				debugf("ICMP: Echo reply from %d.%d.%d.%d", srcIP.ip_p[0], srcIP.ip_p[1], srcIP.ip_p[2], srcIP.ip_p[3]);
+			}
+			break;
+		case 8:
+			{
+				// Echo request
+				icmp->type = 0;
+				icmp->checksum = 0;
+				icmp->checksum = ipv4_checksum((uint16_t*) icmp, sizeof(icmp_message_t));
+				ipv4_send(handler, handler->stack, srcIP, (uint8_t*) icmp, sizeof(icmp_message_t));
+			}
+			break;
+	}
 }
 
 void icmp_init(network_stack_t* stack) {

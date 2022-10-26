@@ -29,6 +29,6 @@ void load_network_stack(nic_driver_t* nic) {
 
 	arp_broadcast_mac(stack, gateway_ip);
 
-	debugf("icmp: %s", icmp_send_echo_reqest_and_wait(stack, (ip_u) {.ip_p = {10, 0, 2, 2}}) ? "true" : "false");
-	while(true) {};
+	bool res = icmp_send_echo_reqest_and_wait(stack, (ip_u) {.ip_p = {10, 0, 2, 2}});
+	debugf("icmp: %s", res ? "true" : "false");
 }

@@ -25,7 +25,7 @@ typedef struct ipv4_message {
 typedef struct ipv4_handler {
 	uint8_t protocol;
 	void (*recv)(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);
-	void* stack;
+	network_stack_t* stack;
 } ipv4_handler_t;
 
 typedef struct ipv4_provider {
