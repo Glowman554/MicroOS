@@ -56,7 +56,30 @@ void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, ui
 }
 
 void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size) {
-	todo();
+	if (size < sizeof(ipv4_message_t)) {
+		return;
+	}
+
+	ipv4_message_t* ipv4 = (ipv4_message_t*) payload;
+
+	if (ipv4->destination_address == handler->stack->driver->ip.ip || ipv4->destination_address == 0xFFFFFFFF || handler->stack->driver->ip.ip == 0) {
+		int length = ipv4->total_length;
+		if (length > size) {
+			length = size;
+		}
+
+		bool handled = false;
+		for (int i = 0; i < MAX_IPV4_HANDLERS; i++) {
+			if (handler->stack->ipv4->handlers[i].protocol == ipv4->protocol) {
+				handler->stack->ipv4->handlers[i].recv(&handler->stack->ipv4->handlers[i], (ip_u) { .ip = ipv4->source_address }, (ip_u) { .ip = ipv4->destination_address }, payload + 4 * ipv4->header_length, length - 4 * ipv4->header_length);
+				handled = true;
+			}
+		}
+
+		if (!handled) {
+			abortf("--- WARNING --- Unhandled ipv4 %x!", ipv4->protocol);
+		}
+	}
 }
 
 uint16_t ipv4_checksum(uint16_t* data, uint32_t size) {

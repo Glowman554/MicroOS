@@ -2,14 +2,11 @@
 
 #include <driver/nic_driver.h>
 
-struct ether_frame_provider;
-struct arp_provider;
-struct ipv4_provider;
-
 typedef struct network_stack {
 	struct ether_frame_provider* ether_frame;
 	struct arp_provider* arp;
 	struct ipv4_provider* ipv4;
+	struct icmp_provider* icmp;
 	nic_driver_t* driver;
 } network_stack_t;
 

@@ -5,6 +5,9 @@
 #include <net/etherframe.h>
 #include <net/arp.h>
 #include <net/ipv4.h>
+#include <net/icmp.h>
+
+#include <stdio.h>
 
 void load_network_stack(nic_driver_t* nic) {
 	ip_u my_ip = {.ip_p = {10, 0, 2, 15}};
@@ -20,16 +23,12 @@ void load_network_stack(nic_driver_t* nic) {
 	etherframe_init(stack);
 	arp_init(stack);
 	ipv4_init(stack, gateway_ip, subnet_mask);
+	icmp_init(stack);
 
 	nic->ip = my_ip;
 
 	arp_broadcast_mac(stack, gateway_ip);
 
-	ipv4_handler_t h = {
-		.protocol = 10,
-		.recv = 0,
-		.stack = stack
-	};
-
-	ipv4_send(&h, stack, (ip_u) {.ip_p = {8, 8, 8, 8}}, (uint8_t*) "hello world", 11);
+	debugf("icmp: %s", icmp_send_echo_reqest_and_wait(stack, (ip_u) {.ip_p = {10, 0, 2, 2}}) ? "true" : "false");
+	while(true) {};
 }
