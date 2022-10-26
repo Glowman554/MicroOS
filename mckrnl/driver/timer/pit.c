@@ -32,6 +32,8 @@ void pit_init(driver_t* driver) {
 	register_interrupt_handler(0x20, pit_interrupt_handler, driver);
 
 	pit_set_divisor(PIT_DIVISOR);
+
+	global_timer_driver = (timer_driver_t*) driver;
 }
 
 void pit_sleep(timer_driver_t* driver, uint32_t ms) {

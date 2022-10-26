@@ -93,18 +93,13 @@ mac_u arp_resolve(network_stack_t* stack, ip_u ip) {
 	if (result.mac == 0xFFFFFFFFFFFF) {
 		arp_request_mac(stack, ip);
 	}
-
-	int timeout = 10000000;
-	note("this isnt the best way to implement a timeout. FIXME!");
 	
-	while (result.mac == 0xFFFFFFFFFFFF) {
-		result = arp_get_mac_from_cache(stack, ip);
-		if (--timeout == 0) {
-			debugf("timeout for arp request!\n");
-			mac_u m = { .mac = 0 };
-			return m;
+	NET_TIMEOUT(
+		if (result.mac != 0xFFFFFFFFFFFF) {
+			return result;
 		}
-	}
+		result = arp_get_mac_from_cache(stack, ip);
+	);
 
 	return result;
 }
