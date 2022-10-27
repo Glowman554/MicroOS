@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include <config.h>
 
-pci_driver_t pci_drivers[MAX_PCI_DRIVERS] = { 0 };
+#include <stddef.h>
+#include <memory/vmm.h>
+
+pci_driver_t* pci_drivers = NULL;
 int num_pci_drivers = 0;
 
 void enumerate_pci() {
@@ -45,6 +48,7 @@ void register_pci_driver_cs(uint8_t _class, uint8_t subclass, uint8_t prog_IF, v
 	driver.prog_IF = prog_IF;
 	driver.use_class_subclass_prog_IF = true;
 	driver.load_driver = load_driver;
+	pci_drivers = vmm_resize(sizeof(pci_driver_t), num_pci_drivers, num_pci_drivers + 1, pci_drivers);
 	pci_drivers[num_pci_drivers++] = driver;
 
 	debugf("Registered PCI driver with class %d, subclass %d, prog_IF %d", _class, subclass, prog_IF);
@@ -56,6 +60,7 @@ void register_pci_driver_vd(uint16_t vendor_id, uint16_t device_id, void (*load_
 	driver.device_id = device_id;
 	driver.use_vendor_device_id = true;
 	driver.load_driver = load_driver;
+	pci_drivers = vmm_resize(sizeof(pci_driver_t), num_pci_drivers, num_pci_drivers + 1, pci_drivers);
 	pci_drivers[num_pci_drivers++] = driver;
 
 	debugf("Registered PCI driver with vendor_id %x, device_id %x", vendor_id, device_id);

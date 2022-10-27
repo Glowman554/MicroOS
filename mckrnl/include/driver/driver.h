@@ -11,7 +11,8 @@ typedef struct driver {
 	void* driver_specific_data;
 } driver_t;
 
-extern driver_t* drivers[MAX_DRIVERS];
+extern driver_t** drivers;
+extern int num_drivers;
 
 void register_driver(driver_t* driver);
 void activate_drivers();
