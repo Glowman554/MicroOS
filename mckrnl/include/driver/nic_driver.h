@@ -24,7 +24,7 @@ typedef struct nic_driver {
     mac_u mac;
 } nic_driver_t;
 
-extern nic_driver_t* nic_drivers[MAX_NIC_DRIVERS];
+extern nic_driver_t** nic_drivers;
 
 void register_nic_driver(nic_driver_t* driver);
 

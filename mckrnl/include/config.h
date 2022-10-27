@@ -6,11 +6,6 @@
 
 #define MAX_TASKS 32
 
-#define MAX_NIC_DRIVERS 32
-
-#define MAX_ETHERFRAME_HANDLERS 32
-#define MAX_IPV4_HANDLERS 32
-
 #define FD_OFFSET 5
 
 #define USER_STACK_SIZE_PAGES 4

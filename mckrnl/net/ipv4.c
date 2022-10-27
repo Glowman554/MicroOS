@@ -8,15 +8,9 @@
 #include <string.h>
 
 void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
-	for (int i = 0; i < MAX_IPV4_HANDLERS; i++) {
-        if (stack->ipv4->handlers[i].recv == 0) {
-            debugf("registering ipv4 handler at %d for 0x%x!", i, handler.protocol);
-            stack->ipv4->handlers[i] = handler;
-            return;
-        }
-    }
-
-    abortf("no more handler slots free!");
+	stack->ipv4->handlers = vmm_resize(sizeof(ipv4_handler_t), stack->ipv4->num_handlers, stack->ipv4->num_handlers + 1, stack->ipv4->handlers);
+	stack->ipv4->handlers[stack->ipv4->num_handlers] = handler;
+	stack->ipv4->num_handlers++;
 }
 
 void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size) {
@@ -69,7 +63,7 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload,
 		}
 
 		bool handled = false;
-		for (int i = 0; i < MAX_IPV4_HANDLERS; i++) {
+		for (int i = 0; i < handler->stack->ipv4->num_handlers; i++) {
 			if (handler->stack->ipv4->handlers[i].protocol == ipv4->protocol) {
 				handler->stack->ipv4->handlers[i].recv(&handler->stack->ipv4->handlers[i], (ip_u) { .ip = ipv4->source_address }, (ip_u) { .ip = ipv4->destination_address }, payload + 4 * ipv4->header_length, length - 4 * ipv4->header_length);
 				handled = true;

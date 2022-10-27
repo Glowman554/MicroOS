@@ -29,7 +29,8 @@ typedef struct ipv4_handler {
 } ipv4_handler_t;
 
 typedef struct ipv4_provider {
-	ipv4_handler_t handlers[MAX_IPV4_HANDLERS];
+	ipv4_handler_t* handlers;
+	int num_handlers;
 	ip_u gateway_ip;
 	ip_u subnet_mask;
 	ether_frame_handler_t handler; 

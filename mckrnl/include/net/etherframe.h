@@ -19,7 +19,8 @@ typedef struct ether_frame_handler {
 } ether_frame_handler_t;
 
 typedef struct ether_frame_provider {
-	ether_frame_handler_t handlers[MAX_ETHERFRAME_HANDLERS];
+	ether_frame_handler_t* handlers;
+	int num_handlers;
 } ether_frame_provider_t;
 
 void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uint64_t dest_mac_be, uint8_t* payload, uint32_t size);
