@@ -233,6 +233,8 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 		} else {
 			memcpy(new_ptr, ptr, new_size);
 		}
+		
+		vmm_free(ptr, old_size_p);
 
 		return new_ptr;
 	}
