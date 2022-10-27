@@ -1,18 +1,25 @@
 #include <fs/fd.h>
 
 #include <config.h>
+#include <memory/vmm.h>
+#include <stddef.h>
 
-file_t* fd_table[MAX_FD] = { 0 };
+file_t** fd_table;
+int num_fd = 0;
 
 int file_to_fd(file_t* file) {
-	for (int i = 0; i < MAX_FD; i++) {
+	for (int i = 0; i < num_fd; i++) {
 		if (fd_table[i] == NULL) {
 			fd_table[i] = file;
 			return i + FD_OFFSET;
 		}
 	}
 
-	return -1;
+	fd_table = vmm_resize(sizeof(file_t*), num_fd, num_fd + 1, fd_table);
+	fd_table[num_fd] = file;
+    num_fd++;
+
+	return num_fd - 1 + FD_OFFSET;
 };
 
 file_t* fd_to_file(int fd) {

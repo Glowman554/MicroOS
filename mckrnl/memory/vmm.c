@@ -4,6 +4,7 @@
 #include <scheduler/scheduler.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <string.h>
 
 vmm_context_t* kernel_context;
 
@@ -200,4 +201,27 @@ void* vmm_alloc(uint32_t num_pages) {
 
 void vmm_free(void* ptr, uint32_t num_pages) {
 	pmm_free_range(ptr, num_pages);
+}
+
+void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
+	if (ptr == NULL) {
+		return vmm_alloc((data_size * new_size) / 0x1000 + 1);
+	}
+
+	int new_size_p = (data_size * new_size) / 0x1000 + 1;
+	int old_size_p = (data_size * new_size) / 0x1000 + 1;
+
+	if (new_size_p != old_size_p) {
+		debugf("resizing %d pages to %d pages!", old_size_p, new_size_p);
+		void* new_ptr = vmm_alloc(new_size);
+		if (new_size_p < old_size_p) {
+			memcpy(new_ptr, ptr, old_size);
+		} else {
+			memcpy(new_ptr, ptr, new_size);
+		}
+
+		return new_ptr;
+	}
+
+	return ptr;
 }

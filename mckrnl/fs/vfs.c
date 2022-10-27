@@ -5,26 +5,24 @@
 #include <config.h>
 #include <driver/disk_driver.h>
 
-vfs_mount_t* vfs_mounts[MAX_VFS_MOUNTS] = { 0 };
-fs_scanner vfs_scanner[MAX_VFS_SCANNERS] = { 0 };
+#include <memory/vmm.h>
+#include <stddef.h>
+
+vfs_mount_t** vfs_mounts = NULL;
+int num_vfs_mounts = 0;
+fs_scanner* vfs_scanner = NULL;
+int num_vfs_scanners = 0;
 
 void vfs_init() {
 	debugf("VFS: Initializing VFS");
-	memset(vfs_mounts, 0, sizeof(vfs_mounts));
-	memset(vfs_scanner, 0, sizeof(vfs_scanner));
 }
 
 void vfs_mount(vfs_mount_t* mount) {
 	debugf("VFS: Mounting %s", mount->name(mount));
 
-	for (int i = 0; i < MAX_VFS_MOUNTS; i++) {
-		if (vfs_mounts[i] == 0) {
-			vfs_mounts[i] = mount;
-			return;
-		}
-	}
-
-	abortf("VFS: Error: No more mount points available\n");
+	vfs_mounts = vmm_resize(sizeof(vfs_mount_t*), num_vfs_mounts, num_vfs_mounts + 1, vfs_mounts);
+	vfs_mounts[num_vfs_mounts] = mount;
+	num_vfs_mounts++;
 }
 
 file_t* vfs_open(char* path, int flags) {
@@ -40,11 +38,7 @@ file_t* vfs_open(char* path, int flags) {
 			_filename[i] = 0;
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
-			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
-				if (vfs_mounts[j] == NULL) {
-					continue;
-				}
-
+			for (int j = 0; j < num_vfs_mounts; j++) {
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -96,11 +90,7 @@ void vfs_mkdir(char* path) {
 			_filename[i] = 0;
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
-			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
-				if (vfs_mounts[j] == NULL) {
-					continue;
-				}
-				
+			for (int j = 0; j < num_vfs_mounts; j++) {
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -126,11 +116,7 @@ void vfs_touch(char* path) {
 			_filename[i] = 0;
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
-			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
-				if (vfs_mounts[j] == NULL) {
-					continue;
-				}
-
+			for (int j = 0; j < num_vfs_mounts; j++) {
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -156,11 +142,7 @@ dir_t vfs_dir_at(int idx, char* path) {
 			_filename[i] = 0;
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
-			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
-				if (vfs_mounts[j] == NULL) {
-					continue;
-				}
-
+			for (int j = 0; j < num_vfs_mounts; j++) {
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -186,11 +168,7 @@ void vfs_delete_dir(char* path) {
 			_filename[i] = 0;
 			file_path = (char*) ((uint32_t) &_filename[i] + 1);
 
-			for (int j = 0; j < MAX_VFS_MOUNTS; j++) {
-				if (vfs_mounts[j] == NULL) {
-					continue;
-				}
-				
+			for (int j = 0; j < num_vfs_mounts; j++) {
 				if (strcmp(vfs_mounts[j]->name(vfs_mounts[j]), _filename) == 0) {
 					mount = vfs_mounts[j];
 					break;
@@ -204,11 +182,7 @@ void vfs_delete_dir(char* path) {
 }
 
 bool vfs_fs_at(int idx, char* out) {
-	if (idx >= MAX_VFS_MOUNTS) {
-		return false;
-	}
-
-	if (vfs_mounts[idx] == 0) {
+	if (idx >= num_vfs_mounts) {
 		return false;
 	}
 
@@ -218,22 +192,14 @@ bool vfs_fs_at(int idx, char* out) {
 }
 
 void vfs_register_fs_scanner(fs_scanner scanner) {
-	for (int i = 0; i < MAX_VFS_SCANNERS; i++) {
-		if (vfs_scanner[i] == NULL) {
-			vfs_scanner[i] = scanner;
-			return;
-		}
-	}
-
-	abortf("No more space for fs scanners");
+	vfs_scanner = vmm_resize(sizeof(fs_scanner), num_vfs_scanners, num_vfs_scanners + 1, vfs_scanner);
+	vfs_scanner[num_vfs_scanners] = scanner;
+	num_vfs_scanners++;
 }
 
 void vfs_scan_fs() {
 	for (int i = 0; i < num_disks; i++) {
-		for (int j = 0; j < MAX_VFS_SCANNERS; j++) {
-			if (vfs_scanner[j] == NULL) {
-				continue;
-			}
+		for (int j = 0; j < num_vfs_scanners; j++) {
 			vfs_mount_t* mount = vfs_scanner[j](i);
 			if (mount != NULL) {
 				vfs_mount(mount);

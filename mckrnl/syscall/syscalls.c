@@ -2,14 +2,20 @@
 
 #include <stdio.h>
 #include <stddef.h>
+#include <memory/vmm.h>
 #include <assert.h>
 
-syscall_handler_t syscall_table[MAX_SYSCALLS] = { 0 };
+syscall_handler_t* syscall_table = { 0 };
+int num_syscall_handlers = 0;
 
 void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
-	assert(syscall_id < MAX_SYSCALLS);
-
 	debugf("Registering syscall %d with handler %p", syscall_id, handler);
+
+	if (syscall_id > num_syscall_handlers) {
+		int old_num_syscall_handlers = num_syscall_handlers;
+		num_syscall_handlers = syscall_id + 1;
+		syscall_table = vmm_resize(sizeof(syscall_handler_t), old_num_syscall_handlers, num_syscall_handlers, syscall_table);
+	}
 
 	syscall_table[syscall_id] = handler;
 }

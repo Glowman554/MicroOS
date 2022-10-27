@@ -3,13 +3,14 @@
 #include <config.h>
 #include <assert.h>
 #include <stdio.h>
+#include <memory/vmm.h>
+#include <stddef.h>
 
-int num_disks;
-
-disk_driver_t* disks[MAX_DISKS] = { 0 };
+int num_disks = 0;
+disk_driver_t** disks = NULL;
 
 int register_disk(disk_driver_t* disk) {
-	assert(num_disks < MAX_DISKS);
+	disks = vmm_resize(sizeof(disk_driver_t*), num_disks, num_disks + 1, disks);
 	disks[num_disks] = disk;
 	debugf("Registered disk %d", num_disks);
 	num_disks++;
@@ -18,13 +19,13 @@ int register_disk(disk_driver_t* disk) {
 }
 
 void read_disk(int disk_id, uint64_t sector, uint32_t count, void* buffer) {
-	assert(disk_id >= 0 && disk_id < MAX_DISKS);
+	assert(disk_id >= 0 && disk_id < num_disks);
 	assert(disks[disk_id] != 0);
 	disks[disk_id]->read(disks[disk_id], sector, count, buffer);
 }
 
 void write_disk(int disk_id, uint64_t sector, uint32_t count, void* buffer) {
-	assert(disk_id >= 0 && disk_id < MAX_DISKS);
+	assert(disk_id >= 0 && disk_id < num_disks);
 	assert(disks[disk_id] != 0);
 	disks[disk_id]->write(disks[disk_id], sector, count, buffer);
 }

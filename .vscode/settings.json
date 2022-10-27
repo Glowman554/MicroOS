@@ -28,6 +28,7 @@
 		"dsdt.h": "c",
 		"unix_time.h": "c",
 		"assert.h": "c",
-		"graphics.h": "c"
+		"graphics.h": "c",
+		"disk_driver.h": "c"
 	}
 }
