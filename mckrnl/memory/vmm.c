@@ -89,6 +89,12 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
 		return -1;
 	}
 
+	if (context != kernel_context) {
+		if (kernel_context->pagedir[pd_index] & PTE_PRESENT) {
+			abortf("%x is overlapping with the kernel!", virt);
+		}
+	}
+
 	if (context->pagedir[pd_index] & PTE_PRESENT) {
 		page_table = (uint32_t*) (context->pagedir[pd_index] & ~0xFFF);
 	} else {
@@ -111,15 +117,17 @@ void vmm_clone_kernel_context(vmm_context_t* context) {
 
 	for (int i = 0; i < 1024; i++) {
 		if (kernel_context->pagedir[i] & PTE_PRESENT) {
-			uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
-			for (int j = 0; j < 1024; j++) {
-				if (page_table[j] & PTE_PRESENT) {
-					void* virt = (void*) ((i << 22) | (j << 12));
-					void* phys = (void*) (page_table[j] & ~0xFFF);
+			// uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
+			// for (int j = 0; j < 1024; j++) {
+			// 	if (page_table[j] & PTE_PRESENT) {
+			// 		void* virt = (void*) ((i << 22) | (j << 12));
+			// 		void* phys = (void*) (page_table[j] & ~0xFFF);
 
-					vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, page_table[j] & 0xFFF);
-				}
-			}
+			// 		vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, page_table[j] & 0xFFF);
+			// 	}
+			// }
+
+			context->pagedir[i] = kernel_context->pagedir[i];
 		}
 	}
 }
@@ -127,22 +135,26 @@ void vmm_clone_kernel_context(vmm_context_t* context) {
 void vmm_destroy_context(vmm_context_t* context) {
 	// debugf("Destroying context %p", context);
 
-	for (int i = 0; i < 1024; i++) {
-		if (kernel_context->pagedir[i] & PTE_PRESENT) {
-			uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
-			for (int j = 0; j < 1024; j++) {
-				if (page_table[j] & PTE_PRESENT) {
-					void* virt = (void*) ((i << 22) | (j << 12));
-					void* phys = (void*) (page_table[j] & ~0xFFF);
+	// for (int i = 0; i < 1024; i++) {
+	// 	if (kernel_context->pagedir[i] & PTE_PRESENT) {
+	// 		uint32_t* page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
+	// 		for (int j = 0; j < 1024; j++) {
+	// 			if (page_table[j] & PTE_PRESENT) {
+	// 				void* virt = (void*) ((i << 22) | (j << 12));
+	// 				void* phys = (void*) (page_table[j] & ~0xFFF);
 
-					vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, 0);
-				}
-			}
-		}
-	}
+	// 				vmm_map_page(context, (uintptr_t) virt, (uintptr_t) phys, 0);
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	for (int i = 0; i < 1024; i++) {
 		if (context->pagedir[i] & PTE_PRESENT) {
+			if (context->pagedir[i] == kernel_context->pagedir[i]) {
+				continue;
+			}
+
 			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
 			for (int j = 0; j < 1024; j++) {
 				if (page_table[j] & PTE_PRESENT) {
@@ -153,15 +165,17 @@ void vmm_destroy_context(vmm_context_t* context) {
 					pmm_free(phys);
 				}
 			}
-		}
-	}
 
-	for (int i = 0; i < 1024; i++) {
-		if (context->pagedir[i] & PTE_PRESENT) {
-			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
 			pmm_free(page_table);
 		}
 	}
+
+	// for (int i = 0; i < 1024; i++) {
+	// 	if (context->pagedir[i] & PTE_PRESENT) {
+	// 		uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
+	// 		pmm_free(page_table);
+	// 	}
+	// }
 
 	pmm_free(context->pagedir);
 	pmm_free(context);
@@ -170,11 +184,11 @@ void vmm_destroy_context(vmm_context_t* context) {
 void vmm_synchronize_task_contexts_with_kernel_context(void) {
 	// debugf("Synchronizing task contexts with kernel context");
 
-	for (int i = 0; i < MAX_TASKS; i++) {
-		if (tasks[i].active) {
-			vmm_clone_kernel_context(tasks[i].context);
-		}
-	}
+	// for (int i = 0; i < MAX_TASKS; i++) {
+	// 	if (tasks[i].active) {
+	// 		vmm_clone_kernel_context(tasks[i].context);
+	// 	}
+	// }
 }
 
 void vmm_activate_context(vmm_context_t* context) {
