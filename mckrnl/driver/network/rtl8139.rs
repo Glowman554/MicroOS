@@ -4,7 +4,7 @@ use alloc::vec::Vec;
 use core::ffi::{c_char, c_void};
 use cstr_core::CString;
 use lazy_static::lazy_static;
-use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv, register_nic_driver}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}}, debugln, utils::{ptr::CPtr, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
+use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv, register_nic_driver}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}}, debugln, utils::{ptr::{CPtr, CPtrArray}, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
 
 pub extern "C" fn rtl8139_found(header: PciDeviceHeader, bus: u16, device: u16, function: u16) {
 	debugln!("{:?} {}:{}:{}", header, bus, device, function);
@@ -53,14 +53,13 @@ fn rtl8139_get_mac(driver: &Rtl8139Driver) -> Mac {
 static RX_BUF_SIZE: u32 = 8192;
 
 fn rtl8139_recieve(driver: &mut Rtl8139Driver) {
-	let t = ((driver.rx_buffer.as_ptr() as u32) + driver.current_packet_ptr) as *mut u16;
+	let t = CPtrArray(((driver.rx_buffer.as_ptr() as u32) + driver.current_packet_ptr) as *mut u16);
 
-	let len = unsafe {
-		*(((t as u32) + 2) as *mut u16)
-	};
+	let len = t[1];
+
 	debugln!("rtl8139: received packet of length {}", len);
 
-	let t = ((t as u32) + 4) as *mut u8;
+	let t = ((t.0 as u32) + 4) as *mut u8;
 
 	(driver.driver.recv)(driver as *mut Rtl8139Driver as *mut NicDriver, t, len as u32);
 
