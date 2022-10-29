@@ -36,4 +36,5 @@ void* vmm_alloc(uint32_t num_pages);
 void vmm_free(void* ptr, uint32_t num_pages);
 
 #define PAGES_OF(type) (sizeof(type) / 0x1000 + 1)
+#define TO_PAGES(num) (num / 0x1000 + 1)
 void* vmm_resize(int data_size, int old_size, int new_size, void* ptr);

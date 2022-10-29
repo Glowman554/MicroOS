@@ -22,4 +22,6 @@ bool icmp_send_echo_reqest_and_wait(network_stack_t* stack, ip_u ip);
 
 void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);
 
+char* icmp_destination_unreachable_to_str(uint8_t code);
+
 void icmp_init(network_stack_t* stack);

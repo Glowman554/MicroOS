@@ -6,6 +6,7 @@
 #include <net/arp.h>
 #include <net/ipv4.h>
 #include <net/icmp.h>
+#include <net/udp.h>
 
 #include <stdio.h>
 
@@ -24,6 +25,7 @@ void load_network_stack(nic_driver_t* nic) {
 	arp_init(stack);
 	ipv4_init(stack, gateway_ip, subnet_mask);
 	icmp_init(stack);
+	udp_init(stack);
 
 	nic->ip = my_ip;
 
@@ -31,4 +33,9 @@ void load_network_stack(nic_driver_t* nic) {
 
 	bool res = icmp_send_echo_reqest_and_wait(stack, (ip_u) {.ip_p = {10, 0, 2, 2}});
 	debugf("icmp: %s", res ? "true" : "false");
+
+	char buf[] = "hello world";
+	udp_socket_t* sock = udp_connect(stack, gateway_ip, 9999);
+	udp_socket_send(sock, buf, sizeof(buf));
+	udp_socket_disconnect(sock);
 }
