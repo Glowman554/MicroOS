@@ -1,7 +1,7 @@
 extern crate alloc;
 use alloc::vec::Vec;
 
-use core::ffi::{c_char, c_void};
+use core::{arch::asm, ffi::{c_char, c_void}};
 use cstr_core::CString;
 use lazy_static::lazy_static;
 use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv, register_nic_driver}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}}, debugln, utils::{ptr::{CPtr, CPtrArray}, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
@@ -143,10 +143,14 @@ static TSD_ARRAY: [u16; 4] = [ 0x10, 0x14, 0x18, 0x1C ];
 
 
 extern "C" fn rtl8139_send(driver: *mut NicDriver, data: *mut u8, len: u32) {
+	debugln!("rtl8139_send()");
 	let driver = unsafe {
 		&mut *(driver as *mut Rtl8139Driver)
 	};
 	
+	debugln!("tx_cur: {}", driver.tx_cur);
+
+	unsafe { asm!("cli"); }
 	io_out_u32(driver.io_base + TSAD_ARRAY.get(driver.tx_cur as usize).unwrap(), data as u32);
 	io_out_u32(driver.io_base + TSD_ARRAY.get(driver.tx_cur as usize).unwrap(), len);
 
@@ -155,6 +159,7 @@ extern "C" fn rtl8139_send(driver: *mut NicDriver, data: *mut u8, len: u32) {
 	if driver.tx_cur > 3 {
 		driver.tx_cur = 0;
 	}
+	unsafe { asm!("sti"); }
 }
 
 pub struct Rtl8139Driver {
