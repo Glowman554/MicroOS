@@ -7,6 +7,7 @@
 #include <net/ipv4.h>
 #include <net/icmp.h>
 #include <net/udp.h>
+#include <net/dhcp.h>
 
 #include <stdio.h>
 
@@ -23,11 +24,16 @@ void load_network_stack(nic_driver_t* nic) {
 
 	etherframe_init(stack);
 	arp_init(stack);
-	ipv4_init(stack, gateway_ip, subnet_mask);
+	ipv4_init(stack, (ip_u) {.ip = 0xffffffff}, (ip_u) {.ip = 0xffffffff});
 	icmp_init(stack);
 	udp_init(stack);
+    dhcp_init(stack);
 
-	nic->ip = my_ip;
+    dhcp_request(stack);
+
+	nic->ip = stack->dhcp->ip;
+    stack->ipv4->gateway_ip = stack->dhcp->gateway;
+    stack->ipv4->subnet_mask = stack->dhcp->subnet;
 
 	arp_broadcast_mac(stack, gateway_ip);
 

@@ -98,7 +98,37 @@ udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port) {
 }
 
 void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
-	todo();
+	if (size < sizeof(udp_header_t)) {
+		return;
+	}
+
+	udp_header_t* udp = (udp_header_t*) payload;
+
+    udp_socket_t* socket = NULL;
+
+    for (int i = 0; i < handler->stack->udp->num_binds; i++) {
+		if (handler->stack->udp->binds[i].socket != NULL) {
+	    udp_bind_t bind = handler->stack->udp->binds[i];
+            if (bind.socket->local_port == udp->dst_port && bind.socket->local_ip.ip == dstIP.ip && bind.socket->listening) {
+			    bind.socket->listening = false;
+			    bind.socket->remote_port = udp->src_port;
+			    bind.socket->remote_ip = srcIP;
+		        socket = bind.socket;
+                break;
+            }
+
+		    if (bind.socket->remote_port == udp->src_port && (bind.socket->remote_ip.ip == srcIP.ip || dstIP.ip == 0xFFFFFFFF || srcIP.ip == 0xFFFFFFFF || bind.socket->remote_ip.ip == 0xFFFFFFFF)) {
+		        socket = bind.socket;
+                break;
+		    }
+        }
+    }
+
+    if (socket == NULL) {
+        debugf("UDP message cannot be routed to valid socket!");
+    } else {
+        socket->recv(socket, payload + sizeof(udp_header_t), size - sizeof(udp_header_t));
+    }
 }
 
 void udp_init(network_stack_t* stack) {

@@ -2,7 +2,7 @@
 
 #include <driver/nic_driver.h>
 #include <driver/timer_driver.h>
-
+#include <stdio.h>
 
 typedef struct network_stack {
 	struct ether_frame_provider* ether_frame;
@@ -10,6 +10,7 @@ typedef struct network_stack {
 	struct ipv4_provider* ipv4;
 	struct icmp_provider* icmp;
     struct udp_provider* udp;
+    struct dhcp_provider* dhcp;
     nic_driver_t* driver;
 } network_stack_t;
 
