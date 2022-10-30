@@ -40,7 +40,7 @@ void dhcp_request(network_stack_t* stack);
 void dhcp_request_ip(network_stack_t* stack, ip_u ip);
 
 void dhcp_make_packet(network_stack_t* stack, dhcp_packet_t* packet, uint8_t msg_type, uint32_t request_ip);
-void* dhcp_get_dhcp_options(network_stack_t* stack, dhcp_packet_t* packet, uint8_t type);
+void* dhcp_get_options(dhcp_packet_t* packet, uint8_t type);
 
 void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size);
 

@@ -222,8 +222,16 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 		return vmm_alloc((data_size * new_size) / 0x1000 + 1);
 	}
 
+
+
 	int new_size_p = (data_size * new_size) / 0x1000 + 1;
 	int old_size_p = (data_size * new_size) / 0x1000 + 1;
+
+	if (new_size == 0) {
+		debugf("Deallocating...");
+		vmm_free(ptr, old_size_p);
+		return NULL;
+	}
 
 	if (new_size_p != old_size_p) {
 		debugf("resizing %d pages to %d pages!", old_size_p, new_size_p);

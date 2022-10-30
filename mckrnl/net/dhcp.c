@@ -2,6 +2,7 @@
 
 #include <memory/vmm.h>
 #include <string.h>
+#include <stddef.h>
 
 void dhcp_request(network_stack_t* stack) {
 	dhcp_packet_t packet;
@@ -88,10 +89,38 @@ void dhcp_make_packet(network_stack_t* stack, dhcp_packet_t* packet, uint8_t msg
 	*(options++) = 0xff; // End of dhcp packet
 }
 
-void* dhcp_get_dhcp_options(network_stack_t* stack, dhcp_packet_t* packet, uint8_t type);
+void* dhcp_get_options(dhcp_packet_t* packet, uint8_t type) {
+	uint8_t* options = packet->options + 4;
+	uint8_t curr_type = *options;
+	while(curr_type != 0xff) {
+		uint8_t len = *(options + 1);
+		if(curr_type == type) {
+			return options + 2;
+		}
+		options += (2 + len);
+		curr_type = *options;
+	}
+
+	return NULL;
+}
 
 void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
-    todo();
+    dhcp_packet_t* packet = (dhcp_packet_t*) data;
+
+	uint8_t* type = (uint8_t*) dhcp_get_options(packet, 53);
+
+	switch (*type) {
+		case 2:
+			dhcp_request_ip(socket->stack, (ip_u) {.ip = packet->your_ip});
+			break;
+		case 5:
+			socket->stack->dhcp->ip = (ip_u) {.ip = packet->your_ip};
+			socket->stack->dhcp->gateway = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 3)};
+			socket->stack->dhcp->dns = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 6)};
+			socket->stack->dhcp->completed = true;
+			socket->stack->dhcp->subnet = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 1)};
+			break;
+	}
 }
 
 void dhcp_init(network_stack_t* stack) {

@@ -45,7 +45,7 @@ run_dbg: iso
 EXECUTABLE = mckrnl/mckrnl.elf
 
 debug:
-	gdb -ex "target remote localhost:1234" -ex "b main" -ex "continue" $(EXECUTABLE)
+	gdb -ex "target remote localhost:1234" -ex "b _main" -ex "continue" $(EXECUTABLE)
 
 clean: iso
 	make -C mckrnl clean
