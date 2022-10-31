@@ -80,14 +80,14 @@ extern "C" fn rtl8139_interrupt(registers: *mut CpuRegisters, data: CPtr) -> *mu
 	let status = io_in_u16(driver.io_base + 0x3e);
 	io_out_u16(driver.io_base + 0x3e, 0x5);
 
-	debugln!("rtl8139: interrupt status {}", status);
+	// debugln!("rtl8139: interrupt status {}", status);
 
 	if (status & (1 << 2)) != 0 {
 		debugln!("rtl8139: Packet sent");
 	}
 
 	if (status & (1 << 0)) != 0 {
-		debugln!("rtl8139: Received packet");
+		// debugln!("rtl8139: Received packet");
 		rtl8139_recieve(driver);
     }
 
@@ -143,12 +143,12 @@ static TSD_ARRAY: [u16; 4] = [ 0x10, 0x14, 0x18, 0x1C ];
 
 
 extern "C" fn rtl8139_send(driver: *mut NicDriver, data: *mut u8, len: u32) {
-	debugln!("rtl8139_send()");
+	// debugln!("rtl8139_send()");
 	let driver = unsafe {
 		&mut *(driver as *mut Rtl8139Driver)
 	};
 	
-	debugln!("tx_cur: {}", driver.tx_cur);
+	// debugln!("tx_cur: {}", driver.tx_cur);
 
 	unsafe { asm!("cli"); }
 	io_out_u32(driver.io_base + TSAD_ARRAY.get(driver.tx_cur as usize).unwrap(), data as u32);
