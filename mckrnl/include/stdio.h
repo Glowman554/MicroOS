@@ -11,6 +11,8 @@ int debugf_intrnl(const char *format, ...);
 extern char_output_driver_t* debugf_driver;
 extern char_output_driver_t* printf_driver;
 
+int sprintf(char *buf, const char *fmt, ...);
+
 #ifdef DEBUG
 #define debugf(fmt, ...) debugf_intrnl("[%s:%d in %s] ", __FILE__, __LINE__, __FUNCTION__); debugf_intrnl(fmt, ##__VA_ARGS__); debugf_intrnl("\n")
 #else

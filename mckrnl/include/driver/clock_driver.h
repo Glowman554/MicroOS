@@ -2,15 +2,7 @@
 
 #include <driver/driver.h>
 #include <stdint.h>
-
-typedef struct clock_result {
-	int seconds;
-	int minutes;
-	int hours;
-	int day;
-	int month;
-	int year;
-} clock_result_t;
+#include <utils/time.h>
 
 typedef struct clock_driver {
 	driver_t driver;
