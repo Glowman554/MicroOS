@@ -89,7 +89,7 @@ extern "C" fn rtl8139_interrupt(registers: *mut CpuRegisters, data: CPtr) -> *mu
 	if (status & (1 << 0)) != 0 {
 		// debugln!("rtl8139: Received packet");
 		rtl8139_recieve(driver);
-    }
+	}
 
 	registers
 }

@@ -4,8 +4,8 @@
 
 #define PTE_PRESENT 0x1
 #define PTE_WRITE   0x2
-#define PTE_USER    0x4
-#define PTE_PWT     0x8
+#define PTE_USER	0x4
+#define PTE_PWT	 0x8
 
 #define USER_SPACE_OFFSET 0xC0000000
 
@@ -14,7 +14,7 @@
 #define MB (1024 * 1024)
 
 typedef struct vmm_context {
-    uint32_t* pagedir;
+	uint32_t* pagedir;
 } vmm_context_t;
 
 extern vmm_context_t* kernel_context;

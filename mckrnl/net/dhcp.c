@@ -11,15 +11,15 @@ void dhcp_request(network_stack_t* stack) {
 	dhcp_make_packet(stack, &packet, 1, 0x00000000);
 	udp_socket_send(stack->dhcp->socket, (uint8_t*) &packet, sizeof(dhcp_packet_t));
 
-    NET_TIMEOUT(
-        if (stack->dhcp->completed) {
-            return;
-        }
-    );
+	NET_TIMEOUT(
+		if (stack->dhcp->completed) {
+			return;
+		}
+	);
 }
 
 void dhcp_request_ip(network_stack_t* stack, ip_u ip) {
-    dhcp_packet_t packet;
+	dhcp_packet_t packet;
 	memset(&packet, 0, sizeof(dhcp_packet_t));
 
 	dhcp_make_packet(stack, &packet, 3, ip.ip);
@@ -105,7 +105,7 @@ void* dhcp_get_options(dhcp_packet_t* packet, uint8_t type) {
 }
 
 void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
-    dhcp_packet_t* packet = (dhcp_packet_t*) data;
+	dhcp_packet_t* packet = (dhcp_packet_t*) data;
 
 	uint8_t* type = (uint8_t*) dhcp_get_options(packet, 53);
 
@@ -124,10 +124,10 @@ void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 }
 
 void dhcp_init(network_stack_t* stack) {
-    stack->dhcp = vmm_alloc(PAGES_OF(dhpc_provider_t));
-    memset(stack->dhcp, 0, sizeof(dhpc_provider_t));
+	stack->dhcp = vmm_alloc(PAGES_OF(dhpc_provider_t));
+	memset(stack->dhcp, 0, sizeof(dhpc_provider_t));
 
-    stack->dhcp->socket = udp_connect(stack, (ip_u) {.ip = 0xffffffff}, 67);
-    stack->dhcp->socket->local_port = BSWAP16(68);
-    stack->dhcp->socket->recv = dhcp_udp_recv;
+	stack->dhcp->socket = udp_connect(stack, (ip_u) {.ip = 0xffffffff}, 67);
+	stack->dhcp->socket->local_port = BSWAP16(68);
+	stack->dhcp->socket->recv = dhcp_udp_recv;
 }

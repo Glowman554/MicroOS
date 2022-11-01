@@ -23,9 +23,9 @@ typedef struct ntp_packet {
 } __attribute__((packed)) ntp_packet_t;
 
 typedef struct ntp_provider {
-    udp_socket_t* socket;
-    ntp_packet_t last_packet;
-    bool received_packet;
+	udp_socket_t* socket;
+	ntp_packet_t last_packet;
+	bool received_packet;
 } ntp_provider_t;
 
 void ntp_udp_recv(struct udp_socket* socket, uint8_t* data, int size);

@@ -5,33 +5,33 @@
 #include <stdbool.h>
 
 typedef struct udp_header {
-    uint16_t src_port;
-    uint16_t dst_port;
-    uint16_t length;
-    uint16_t checksum;
+	uint16_t src_port;
+	uint16_t dst_port;
+	uint16_t length;
+	uint16_t checksum;
 } __attribute__((packed)) udp_header_t;
 
 typedef struct udp_socket {
-    uint16_t remote_port;
-    uint16_t local_port;
-    ip_u remote_ip;
-    ip_u local_ip;
+	uint16_t remote_port;
+	uint16_t local_port;
+	ip_u remote_ip;
+	ip_u local_ip;
 	bool listening;
-    network_stack_t* stack;
+	network_stack_t* stack;
 
-    void (*recv)(struct udp_socket* socket, uint8_t* data, int size);
+	void (*recv)(struct udp_socket* socket, uint8_t* data, int size);
 } udp_socket_t;
 
 typedef struct udp_bind {
-    uint16_t port;
-    udp_socket_t* socket;
+	uint16_t port;
+	udp_socket_t* socket;
 } udp_bind_t;
 
 typedef struct udp_provider {
-    udp_bind_t* binds;
+	udp_bind_t* binds;
 	int num_binds;
-    int free_port;
-    ipv4_handler_t handler;
+	int free_port;
+	ipv4_handler_t handler;
 } udp_provider_t;
 
 void udp_socket_disconnect(udp_socket_t* socket);

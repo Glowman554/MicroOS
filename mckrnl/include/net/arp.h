@@ -20,9 +20,9 @@ typedef struct arp_message {
 #define CACHE_SIZE 128
 
 typedef struct arp_provider {
-    ip_u ip_cache[CACHE_SIZE];
-    mac_u mac_cache[CACHE_SIZE];
-    int num_cache_entry;
+	ip_u ip_cache[CACHE_SIZE];
+	mac_u mac_cache[CACHE_SIZE];
+	int num_cache_entry;
 
 	ether_frame_handler_t handler;
 } arp_provider_t;

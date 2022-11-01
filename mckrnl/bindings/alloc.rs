@@ -13,18 +13,18 @@ extern {
 pub struct Allocator;
 
 unsafe impl GlobalAlloc for Allocator {
-     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+	 unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
 		vmm_alloc((layout.size() as u32) / 4096 + 1) as *mut u8
-     }
-     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+	 }
+	 unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
 		vmm_free(ptr as *mut c_void, (layout.size() as u32) / 4096 + 1);
-     }
+	 }
 }
 
 /// If there is an out of memory error, just panic.
 #[alloc_error_handler]
 fn allocator_error(_layout: Layout) -> ! {
-    panic!("out of memory");
+	panic!("out of memory");
 }
 
 /// The static global allocator.

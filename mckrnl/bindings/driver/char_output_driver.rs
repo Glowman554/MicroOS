@@ -19,7 +19,7 @@ pub struct CharOutputDriver {
 }
 
 extern "C" {
-    pub static mut global_char_output_driver: *mut CharOutputDriver;
-    pub static mut debugf_driver: *mut CharOutputDriver;
-    pub static mut printf_driver: *mut CharOutputDriver;
+	pub static mut global_char_output_driver: *mut CharOutputDriver;
+	pub static mut debugf_driver: *mut CharOutputDriver;
+	pub static mut printf_driver: *mut CharOutputDriver;
 }

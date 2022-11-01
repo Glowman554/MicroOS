@@ -11,18 +11,18 @@ void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) 
 }
 
 void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uint64_t dest_mac_be, uint8_t* payload, uint32_t size) {
-    uint8_t* buffer = vmm_alloc((sizeof(ether_frame_header_t) + size) / 4096 + 1);
+	uint8_t* buffer = vmm_alloc((sizeof(ether_frame_header_t) + size) / 4096 + 1);
 
-    ether_frame_header_t* frame = (ether_frame_header_t*) buffer;
+	ether_frame_header_t* frame = (ether_frame_header_t*) buffer;
 
-    frame->dest_mac_be = dest_mac_be;
-    frame->src_mac_be = stack->driver->mac.mac;
-    frame->ether_type_be = handler->ether_type_be;
+	frame->dest_mac_be = dest_mac_be;
+	frame->src_mac_be = stack->driver->mac.mac;
+	frame->ether_type_be = handler->ether_type_be;
 
-    memcpy(buffer + sizeof(ether_frame_header_t), payload, size);
-    stack->driver->send(stack->driver, buffer, size + sizeof(ether_frame_header_t));
+	memcpy(buffer + sizeof(ether_frame_header_t), payload, size);
+	stack->driver->send(stack->driver, buffer, size + sizeof(ether_frame_header_t));
 
-    vmm_free(buffer, (sizeof(ether_frame_header_t) + size) / 4096 + 1);
+	vmm_free(buffer, (sizeof(ether_frame_header_t) + size) / 4096 + 1);
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {

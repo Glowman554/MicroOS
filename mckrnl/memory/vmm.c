@@ -74,7 +74,7 @@ vmm_context_t* vmm_create_context(void) {
 		context->pagedir[i] = 0;
 	}
 
-    return context;
+	return context;
 }
 
 int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags) {

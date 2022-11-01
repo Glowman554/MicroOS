@@ -9,10 +9,10 @@ typedef struct network_stack {
 	struct arp_provider* arp;
 	struct ipv4_provider* ipv4;
 	struct icmp_provider* icmp;
-    struct udp_provider* udp;
-    struct dhcp_provider* dhcp;
-    struct ntp_provider* ntp;
-    nic_driver_t* driver;
+	struct udp_provider* udp;
+	struct dhcp_provider* dhcp;
+	struct ntp_provider* ntp;
+	nic_driver_t* driver;
 } network_stack_t;
 
 void load_network_stack(nic_driver_t* nic);

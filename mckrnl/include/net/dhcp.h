@@ -13,7 +13,7 @@ typedef struct dhcp_packet {
 	uint16_t seconds;
 	uint16_t flags;
 	uint32_t client_ip;
-    uint32_t your_ip;
+	uint32_t your_ip;
 	uint32_t server_ip;
 	uint32_t gateway_ip;
 	uint8_t client_hardware_addr[16];
@@ -28,12 +28,12 @@ typedef struct dhcp_packet {
 #define DHCP_TRANSACTION_IDENTIFIER 0x55555555
 
 typedef struct dhcp_provider {
-    udp_socket_t* socket;
+	udp_socket_t* socket;
 	ip_u ip;
-    ip_u gateway;
+	ip_u gateway;
 	ip_u subnet;
 	ip_u dns;
-    bool completed;
+	bool completed;
 } dhpc_provider_t;
 
 void dhcp_request(network_stack_t* stack);

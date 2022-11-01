@@ -21,5 +21,5 @@ pub struct ClockDriver {
 }
 
 extern "C" {
-    pub static mut global_clock_driver: *mut ClockDriver;
+	pub static mut global_clock_driver: *mut ClockDriver;
 }

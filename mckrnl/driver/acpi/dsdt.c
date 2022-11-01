@@ -14,10 +14,10 @@ void dsdt_init() {
 	debugf("ACPI dsdt init...");
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP");
 
-    if (fadt == NULL) {
-        debugf("Failed to init dsdt!");
+	if (fadt == NULL) {
+		debugf("Failed to init dsdt!");
 		return;
-    }
+	}
 
 	uint32_t dsdt_addr = fadt->dsdt;
 	vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) dsdt_addr), ALIGN_PAGE_DOWN((uintptr_t) dsdt_addr), PTE_PRESENT | PTE_WRITE);

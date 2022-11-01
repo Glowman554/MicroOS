@@ -23,13 +23,13 @@ extern {
 }
 
 extern "C" fn serial_init(driver: *mut Driver) {
-	io_out_u8(PORT + 1, 0x00);    // Disable all interrupts
-	io_out_u8(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
-	io_out_u8(PORT + 0, 0x03);    // Set divisor to 3 (lo byte) 38400 baud
-	io_out_u8(PORT + 1, 0x00);    //                  (hi byte)
-	io_out_u8(PORT + 3, 0x03);    // 8 bits, no parity, one stop bit
-	io_out_u8(PORT + 2, 0xC7);    // Enable FIFO, clear them, with 14-byte threshold
-	io_out_u8(PORT + 4, 0x0B);    // IRQs enabled, RTS/DSR set
+	io_out_u8(PORT + 1, 0x00);	// Disable all interrupts
+	io_out_u8(PORT + 3, 0x80);	// Enable DLAB (set baud rate divisor)
+	io_out_u8(PORT + 0, 0x03);	// Set divisor to 3 (lo byte) 38400 baud
+	io_out_u8(PORT + 1, 0x00);	//				  (hi byte)
+	io_out_u8(PORT + 3, 0x03);	// 8 bits, no parity, one stop bit
+	io_out_u8(PORT + 2, 0xC7);	// Enable FIFO, clear them, with 14-byte threshold
+	io_out_u8(PORT + 4, 0x0B);	// IRQs enabled, RTS/DSR set
 
 	unsafe {
 		debugf_driver = driver as *mut CharOutputDriver;

@@ -16,12 +16,12 @@ typedef struct sdt_header {
 
 typedef struct rsdt {
 	sdt_header_t header;
-    uint32_t acpiptr[];
+	uint32_t acpiptr[];
 } __attribute((packed)) rsdt_t;
 
 typedef struct xsdt {
 	sdt_header_t header;
-    uint64_t acpiptr[];
+	uint64_t acpiptr[];
 } __attribute__((packed)) xsdt_t;
 
 typedef struct hpet_table {

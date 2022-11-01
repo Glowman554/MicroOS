@@ -10,7 +10,7 @@ int num_drivers = 0;
 void register_driver(driver_t* driver) {
 	drivers = vmm_resize(sizeof(driver_t*), num_drivers, num_drivers + 1, drivers);
 	drivers[num_drivers] = driver;
-    num_drivers++;
+	num_drivers++;
 }
 
 void activate_drivers() {
