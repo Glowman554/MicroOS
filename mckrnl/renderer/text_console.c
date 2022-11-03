@@ -16,7 +16,7 @@ void text_console_setcursor(uint16_t pos) {
 	outb(0x3d5, pos);
 }
 
-void text_console_putc(char c){
+void text_console_putc(char c) {
 	if ((c == '\n') || (text_console_x > SCREEN_WIDTH - 1)) {
 		text_console_x = 0;
 		text_console_y++;
@@ -78,13 +78,13 @@ void text_console_putc(char c){
 	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
 }
 
-void text_console_puts(const char *s){
-	while(*s){
+void text_console_puts(const char *s) {
+	while(*s) {
 		text_console_putc(*s++);
 	}
 }
 
-void text_console_clrscr(){
+void text_console_clrscr() {
 	int i;
 	for (i = 0; i < 25 * 80; i++) {
 		text_console_video[2*i] = ' ';
@@ -103,7 +103,7 @@ char* text_console_driver_get_device_name(driver_t* driver) {
 }
 
 void text_console_driver_init(driver_t* driver) {
-	text_console_clrscr();
+	// text_console_clrscr();
 
 	printf_driver = (char_output_driver_t*) driver;
 	global_char_output_driver = (char_output_driver_t*) driver;
@@ -121,6 +121,12 @@ void text_console_driver_vpoke(char_output_driver_t* driver, uint32_t offset, ui
 	text_console_video[offset] = value;
 }
 
+void text_console_vcursor(struct char_output_driver*, int x, int y) {
+	text_console_x = x;
+	text_console_y = y;
+	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
+}
+
 char_output_driver_t text_console_driver = {
 	.driver = {
 		.is_device_present = text_console_driver_is_present,
@@ -129,5 +135,6 @@ char_output_driver_t text_console_driver = {
 	},
 	.putc = text_console_driver_putc,
 	.vmode = text_console_driver_vmode,
-	.vpoke = text_console_driver_vpoke
+	.vpoke = text_console_driver_vpoke,
+	.vcursor = text_console_vcursor
 };

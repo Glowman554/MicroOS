@@ -85,12 +85,12 @@ void* pmm_alloc() {
 	return NULL;
 }
 
-static void pmm_mark_used(void* page){
+static void pmm_mark_used(void* page) {
 	uintptr_t index = (uintptr_t) page / 4096;
 	bitmap_set(index);
 }
 
-void pmm_free(void* page){
+void pmm_free(void* page) {
 	uintptr_t index = (uintptr_t) page / 4096;
 	bitmap_clear(index);
 }

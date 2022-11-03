@@ -8,3 +8,4 @@ enum video_mode_e {
 
 int vmode();
 void vpoke(uint32_t offset, uint8_t* val, uint32_t range);
+void vcursor(int x, int y);

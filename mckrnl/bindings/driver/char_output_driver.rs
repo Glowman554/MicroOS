@@ -9,13 +9,15 @@ pub enum VideoMode {
 type CharOutputDriverPutc = extern fn(driver: *mut CharOutputDriver, c: c_char);
 type CharOutputDriverVmode = extern fn(driver: *mut CharOutputDriver) -> c_int;
 type CharOutputDriverVpoke = extern fn(driver: *mut CharOutputDriver, offset: u32, value: u8);
+type CharOutputDriverVcursor = extern fn(driver: *mut CharOutputDriver, x: c_int, y: c_int);
 
 #[repr(C)]
 pub struct CharOutputDriver {
 	pub driver: Driver,
 	pub putc: CharOutputDriverPutc,
 	pub vmode: CharOutputDriverVmode,
-	pub vpoke: CharOutputDriverVpoke
+	pub vpoke: CharOutputDriverVpoke,
+	pub vcursor: CharOutputDriverVcursor
 }
 
 extern "C" {

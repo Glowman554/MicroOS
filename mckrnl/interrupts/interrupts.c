@@ -101,7 +101,7 @@ void register_interrupt_handler(uint8_t interrupt_number, interrupt_handler_t ha
 }
 
 char* get_exception_name(int interrupt_number) {
-	switch(interrupt_number){
+	switch(interrupt_number) {
 		case 0x0:
 			return((char*) "Divide by Zero");
 			break;
