@@ -5,7 +5,7 @@
 static uint64_t gdt[GDT_ENTRIES];
 static uint32_t tss[32] = { 0, 0, 0x10 };
 
-void set_tss(int index, uint32_t val){ 
+void set_tss(int index, uint32_t val) { 
 	tss[index] = val;
 }
 

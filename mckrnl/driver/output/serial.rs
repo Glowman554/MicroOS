@@ -18,10 +18,6 @@ extern "C" fn serial_get_device_name(_driver: *mut Driver) -> *const c_char {
 
 static PORT: u16 = 0x3f8;
 
-extern {
-	fn text_console_clrscr();
-}
-
 extern "C" fn serial_init(driver: *mut Driver) {
 	io_out_u8(PORT + 1, 0x00);    // Disable all interrupts
 	io_out_u8(PORT + 3, 0x80);    // Enable DLAB (set baud rate divisor)
@@ -33,7 +29,6 @@ extern "C" fn serial_init(driver: *mut Driver) {
 
 	unsafe {
 		debugf_driver = driver as *mut CharOutputDriver;
-		text_console_clrscr();
 	}
 }
 
@@ -54,6 +49,10 @@ extern "C" fn serial_vpoke(_driver: *mut CharOutputDriver, _offset: u32, _value:
 	panic!("not implemented");
 }
 
+extern "C" fn serial_vcursor(_driver: *mut CharOutputDriver, _x: c_int, _y: c_int) {
+	panic!("not implemented");
+}
+
 pub static SERIAL_DRIVER: CharOutputDriver = CharOutputDriver {
 	driver: Driver {
 		is_device_present: serial_is_device_present,
@@ -63,5 +62,6 @@ pub static SERIAL_DRIVER: CharOutputDriver = CharOutputDriver {
 	},
 	putc: serial_putc,
 	vmode: serial_vmode,
-	vpoke: serial_vpoke
+	vpoke: serial_vpoke,
+	vcursor: serial_vcursor
 };

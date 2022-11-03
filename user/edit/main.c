@@ -67,5 +67,6 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	free(state.input_buffer);
 	fclose(state.file);
+	system("clear");
 	return 0;
 }

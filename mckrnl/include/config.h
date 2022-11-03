@@ -35,3 +35,4 @@
 
 #define SYS_VMODE_ID 0x14
 #define SYS_VPOKE_ID 0x15
+#define SYS_VCURSOR_ID 0x16

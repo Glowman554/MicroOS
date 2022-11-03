@@ -31,7 +31,7 @@ void dsdt_init() {
 		s5_addr++;
 	}
 
-	if (dsdt_length <= 0){
+	if (dsdt_length <= 0) {
 		debugf("_S5 not present in ACPI");
 		return;
 	}

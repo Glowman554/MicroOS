@@ -49,7 +49,7 @@ file_t* vfs_open(char* path, int flags) {
 	}
 
 	if (mount == NULL) {
-		debugf("No device found for path: %s\n", path);
+		debugf("No device found for path: %s", path);
 		return NULL;
 	}
 
