@@ -9,11 +9,11 @@
 #include <net/udp.h>
 #include <net/dhcp.h>
 #include <net/ntp.h>
+#include <net/dns.h>
 
 #include <stdio.h>
 
 void load_network_stack(nic_driver_t* nic) {
-	ip_u timeserver_ip = {.ip_p = {129, 6, 15, 28}};
 	network_stack_t* stack = vmm_alloc(sizeof(network_stack_t) / 0x1000 + 1);
 	memset(stack, 0, sizeof(network_stack_t));
 
@@ -35,15 +35,8 @@ void load_network_stack(nic_driver_t* nic) {
 
 	arp_broadcast_mac(stack, stack->dhcp->gateway);
 
-	ntp_init(stack, timeserver_ip);
-
-	bool res = icmp_send_echo_reqest_and_wait(stack, (ip_u) {.ip_p = {10, 0, 2, 2}});
-	debugf("icmp: %s", res ? "true" : "false");
-
-	char buf[] = "hello world";
-	udp_socket_t* sock = udp_connect(stack, stack->dhcp->gateway, 9999);
-	udp_socket_send(sock, buf, sizeof(buf));
-	udp_socket_disconnect(sock);
+	dns_init(stack, stack->dhcp->dns);
+	ntp_init(stack, dns_resolve_A(stack, "time-a-g.nist.gov"));
 
 	time_t t = ntp_time(stack);
 	char out[0xff] = { 0 };

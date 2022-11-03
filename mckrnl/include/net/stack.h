@@ -12,6 +12,7 @@ typedef struct network_stack {
 	struct udp_provider* udp;
 	struct dhcp_provider* dhcp;
 	struct ntp_provider* ntp;
+	struct dns_provider* dns;
 	nic_driver_t* driver;
 } network_stack_t;
 
