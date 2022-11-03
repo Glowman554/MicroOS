@@ -27,6 +27,8 @@ void* malloc(size_t size);
 void* realloc(void* ptr, size_t size);
 void free(void* address);
 
+void print_allocations(const char* msg);
+
 __attribute__((noreturn))
 void exit(int status);
 

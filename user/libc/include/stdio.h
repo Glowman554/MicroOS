@@ -40,6 +40,7 @@ bool resolve_check(char* path, char* output, bool check_childs);
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 
 void init_stdio();
+void uninit_stdio();
 
 int vsprintf(char *buf, const char *str, va_list args);
 int printf(const char *format, ...);
