@@ -8,8 +8,8 @@
 
 #define FD_OFFSET 5
 
-#define USER_STACK_SIZE_PAGES 4
-#define KERNEL_STACK_SIZE_PAGES 4
+#define USER_STACK_SIZE_PAGES 64
+#define KERNEL_STACK_SIZE_PAGES 64
 
 #define SYS_OPEN_ID 0x1
 #define SYS_CLOSE_ID 0x2
@@ -36,5 +36,7 @@
 #define SYS_VMODE_ID 0x14
 #define SYS_VPOKE_ID 0x15
 #define SYS_VCURSOR_ID 0x16
+
+#define SYS_ICMP_ID 0x17
 
 #define HOSTNAME "MicroOS"

@@ -23,7 +23,8 @@
 | SYS_ENV | 0x12 | mode | void* data (return?) | - | - | - | - | - |
 | SYS_MMMAP | 0x13 | ptr | pid | - | - | - |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_VMODE | 0x14 | mode (return?) | - | - | - | - | - |
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - |  - | - | - |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_ICMP | 0x17 | nic | ip | result | -- | -- |

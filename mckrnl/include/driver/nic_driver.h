@@ -25,6 +25,7 @@ typedef struct nic_driver {
 } nic_driver_t;
 
 extern nic_driver_t** nic_drivers;
+extern int num_nic_drivers;
 
 void register_nic_driver(nic_driver_t* driver);
 

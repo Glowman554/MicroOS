@@ -26,4 +26,6 @@
 #define SYS_VPOKE_ID 0x15
 #define SYS_VCURSOR_ID 0x16
 
+#define SYS_ICMP_ID 0x17
+
 // #define ALLOC_DEBUG

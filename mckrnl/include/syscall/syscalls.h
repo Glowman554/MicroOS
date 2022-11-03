@@ -34,3 +34,5 @@ cpu_registers_t* sys_mmmap(cpu_registers_t* regs);
 cpu_registers_t* sys_vmode(cpu_registers_t* regs);
 cpu_registers_t* sys_vpoke(cpu_registers_t* regs);
 cpu_registers_t* sys_vcursor(cpu_registers_t* regs);
+
+cpu_registers_t* sys_icmp(cpu_registers_t* regs);

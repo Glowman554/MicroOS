@@ -50,6 +50,7 @@ void init_syscalls() {
 	register_syscall(SYS_VMODE_ID, sys_vmode);
 	register_syscall(SYS_VPOKE_ID, sys_vpoke);
 	register_syscall(SYS_VCURSOR_ID, sys_vcursor);
+	register_syscall(SYS_ICMP_ID, sys_icmp);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

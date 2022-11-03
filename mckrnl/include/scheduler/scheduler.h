@@ -25,6 +25,7 @@ typedef struct {
 
 extern task_t tasks[MAX_TASKS];
 extern int current_task;
+extern bool is_scheduler_running;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
@@ -35,3 +36,7 @@ void exit_task(task_t* task);
 task_t* get_task_by_pid(int pid);
 
 void init_scheduler();
+
+
+
+#define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }
