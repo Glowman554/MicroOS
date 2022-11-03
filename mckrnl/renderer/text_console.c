@@ -121,7 +121,7 @@ void text_console_driver_vpoke(char_output_driver_t* driver, uint32_t offset, ui
 	text_console_video[offset] = value;
 }
 
-void text_console_vcursor(struct char_output_driver*, int x, int y) {
+void text_console_vcursor(char_output_driver_t* driver, int x, int y) {
 	text_console_x = x;
 	text_console_y = y;
 	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
