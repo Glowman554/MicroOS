@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <sys/mmap.h>
+#include <stdio.h>
 
 void* heap_start;
 void* heap_end;
@@ -171,4 +172,19 @@ void free(void* address) {
 	segment->free = true;
 	hsh_combine_forward(segment);
 	hsh_combine_backward(segment);
+}
+
+void print_allocations(const char* msg) {
+	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
+	while(true) {
+		if (!current_seg->free) {
+			printf("%s: 0x%x (%d bytes)\n", msg, ((uint32_t) current_seg + sizeof(heap_segment_header_t)), current_seg->length);
+		}
+
+		if (current_seg->next == NULL) {
+			break;
+		}
+
+		current_seg = current_seg->next;
+	}
 }

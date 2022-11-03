@@ -143,3 +143,9 @@ void init_stdio() {
 	memset(stderr, 0, sizeof(FILE));
 	stderr->inner_fd = STDERR;
 }
+
+void uninit_stdio() {
+	free(stdout);
+	free(stdin);
+	free(stderr);
+}
