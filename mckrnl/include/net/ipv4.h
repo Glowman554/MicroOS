@@ -20,7 +20,7 @@ typedef struct ipv4_message {
 
 	uint32_t source_address;
 	uint32_t destination_address;
-} __attribute__((packed)) ipv4_message_t;
+} __attribute__((packed)) __attribute__((aligned(16))) ipv4_message_t;
 
 typedef struct ipv4_handler {
 	uint8_t protocol;
