@@ -38,5 +38,6 @@
 #define SYS_VCURSOR_ID 0x16
 
 #define SYS_ICMP_ID 0x17
+#define SYS_DNS_A_ID 0x18
 
 #define HOSTNAME "MicroOS"

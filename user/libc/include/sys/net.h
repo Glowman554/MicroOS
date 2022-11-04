@@ -13,4 +13,7 @@ typedef union mac {
 	uint64_t mac;
 } mac_u;
 
+void format_ip(ip_u ip, char* out);
+
 bool icmp_ping(int nic, ip_u ip);
+ip_u dns_resolve_A(int nic, const char* domain);

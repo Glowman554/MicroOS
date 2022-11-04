@@ -15,7 +15,7 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 
 void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size) {
 	uint8_t* buffer = vmm_alloc((size + sizeof(ipv4_message_t)) / 0x1000 + 1);
-
+	memset(buffer, 0, size + sizeof(ipv4_message_t));
 	ipv4_message_t* ipv4 = (ipv4_message_t*) buffer;
 
 	ipv4->version = 4;

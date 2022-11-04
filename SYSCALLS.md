@@ -27,4 +27,5 @@
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - |  - | - | - |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| SYS_ICMP | 0x17 | nic | ip | result | -- | -- |
+| SYS_ICMP | 0x17 | nic | ip | result(return) | -- | -- |
+| SYS_DNS_A | 0x18 | nic | domain | result(return) | -- | -- |
