@@ -10,7 +10,7 @@ typedef struct icmp_message {
 
 	uint16_t checksum;
 	uint32_t data;
-} __attribute__((packed)) __attribute__((aligned(16))) icmp_message_t;
+} __attribute__((packed)) icmp_message_t;
 
 typedef struct icmp_provider {
 	uint32_t last_echo_reply_ip;
