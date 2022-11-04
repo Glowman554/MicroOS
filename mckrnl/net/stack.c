@@ -36,7 +36,7 @@ void load_network_stack(nic_driver_t* nic) {
 	arp_broadcast_mac(stack, stack->dhcp->gateway);
 
 	dns_init(stack, stack->dhcp->dns);
-	ntp_init(stack, dns_resolve_A(stack, "time-a-g.nist.gov"));
+	ntp_init(stack, dns_resolve_A(stack, TIMESERVER));
 
 	time_t t = ntp_time(stack);
 	char out[0xff] = { 0 };

@@ -41,3 +41,4 @@
 #define SYS_DNS_A_ID 0x18
 
 #define HOSTNAME "MicroOS"
+#define TIMESERVER "time-a-g.nist.gov"
