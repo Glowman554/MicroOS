@@ -7,6 +7,7 @@
 #define MAX_TASKS 32
 
 #define FD_OFFSET 5
+#define SOCK_OFFSET 5
 
 #define USER_STACK_SIZE_PAGES 64
 #define KERNEL_STACK_SIZE_PAGES 64
@@ -40,6 +41,11 @@
 #define SYS_ICMP_ID 0x17
 #define SYS_DNS_A_ID 0x18
 #define SYS_NTP_ID 0x19
+
+#define SYS_SOCK_CONNECT_ID 0x1a
+#define SYS_SOCK_DISCONNECT_ID 0x1b
+#define SYS_SOCK_SEND_ID 0x1c
+#define SYS_SOCK_RECV_ID 0x1d
 
 #define HOSTNAME "MicroOS"
 #define TIMESERVER "time-a-g.nist.gov"

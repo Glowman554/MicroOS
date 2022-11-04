@@ -30,3 +30,8 @@
 | SYS_ICMP | 0x17 | nic | ip | result(return) | -- | -- |
 | SYS_DNS_A | 0x18 | nic | domain | result(return) | -- | -- |
 | SYS_NTP | 0x19 | nic | result* | -- | -- | -- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_SOCK_CONNECT | 0x1a | nic | ip | port | socket_type/socket_id(return) | -- |
+| SYS_SOCK_DISCONNECT | 0x1b | socket_id | -- | -- | -- | -- |
+| SYS_SOCK_SEND | 0x1c | socket_id | data* | size | -- | -- |
+| SYS_SOCK_RECV | 0x1d | socket_id | data* | size | bytes(return) | -- |

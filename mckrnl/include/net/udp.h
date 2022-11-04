@@ -19,6 +19,8 @@ typedef struct udp_socket {
 	bool listening;
 	network_stack_t* stack;
 
+	void* data;
+
 	void (*recv)(struct udp_socket* socket, uint8_t* data, int size);
 } udp_socket_t;
 

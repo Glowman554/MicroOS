@@ -26,6 +26,8 @@
 
 #include <utils/argparser.h>
 
+#include <net/socket_manager.h>
+
 void rust_register_pci_drivers();
 void rust_register_drivers();
 void rust_register_fs_scanners();
@@ -81,7 +83,7 @@ void _main(multiboot_info_t* mb_info) {
 	init_syscalls();
 
 	load_network_stacks();
-
+	init_socket_manager();
 
 	rust_main();
 	

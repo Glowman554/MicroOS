@@ -30,4 +30,9 @@
 #define SYS_DNS_A_ID 0x18
 #define SYS_NTP_ID 0x19
 
+#define SYS_SOCK_CONNECT_ID 0x1a
+#define SYS_SOCK_DISCONNECT_ID 0x1b
+#define SYS_SOCK_SEND_ID 0x1c
+#define SYS_SOCK_RECV_ID 0x1d
+
 // #define ALLOC_DEBUG

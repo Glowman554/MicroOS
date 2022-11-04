@@ -18,3 +18,23 @@ __libc_time_t ntp_time(int nic) {
 	asm volatile("int $0x30" :: "a"(SYS_NTP_ID), "b"(nic), "c"(&time));
 	return time;
 }
+
+int connect(int nic, int type, ip_u ip, uint16_t port) {
+	int ret;
+	asm volatile("int $0x30" : "=S"(ret) : "a"(SYS_SOCK_CONNECT_ID), "b"(nic), "c"(ip), "d"(port), "S"(type));
+	return ret;
+}
+
+void disconnect(int sock) {
+	asm volatile("int $0x30" :: "a"(SYS_SOCK_DISCONNECT_ID), "b"(sock));
+}
+
+void send(int sock, uint8_t* data, int size) {
+	asm volatile("int $0x30" :: "a"(SYS_SOCK_SEND_ID), "b"(sock), "c"(data), "d"(size));
+}
+
+int recv(int sock, uint8_t* data, int size) {
+	int ret;
+	asm volatile("int $0x30" : "=S"(ret) : "a"(SYS_SOCK_SEND_ID), "b"(sock), "c"(data), "d"(size));
+	return ret;
+}
