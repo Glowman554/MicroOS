@@ -38,3 +38,5 @@ void system(char* in);
 
 __attribute__((noreturn))
 void abort(void);
+
+int atoi(const char *str);
