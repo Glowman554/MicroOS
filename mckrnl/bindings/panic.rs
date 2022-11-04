@@ -1,14 +1,14 @@
 use core::panic::PanicInfo;
+extern crate alloc;
+use alloc::format;
 use cstr_core::CString;
-use crate::{debugln, bindings::stdio::abortf};
-
+use crate::bindings::stdio::abortf;
 
 
 #[panic_handler]
 fn panic(info: &PanicInfo<'_>) -> ! {
-	debugln!("Rust panic: {}", info);
 	unsafe {
-		abortf(CString::new("Rust panic! More information is in the serial log.").unwrap().as_ptr());
+		abortf(CString::new(format!("Rust panic: {}", info)).unwrap().as_ptr());
 	}
 	loop {}
 }

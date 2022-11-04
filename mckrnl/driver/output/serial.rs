@@ -1,6 +1,5 @@
 use core::ffi::{c_char, c_int, c_void};
-use cstr_core::CString;
-use lazy_static::lazy_static;
+use cstr_core::cstr;
 use crate::{bindings::driver::{Driver, char_output_driver::{debugf_driver, CharOutputDriver}}, utils::{io::{io_out_u8, io_in_u8}, ptr::CPtr}};
 
 
@@ -8,12 +7,8 @@ extern "C" fn serial_is_device_present(_driver: *mut Driver) -> bool {
 	true
 }
 
-lazy_static! {
-	static ref SERIAL_NAME: CString = CString::new("serial").unwrap();
-}
-
 extern "C" fn serial_get_device_name(_driver: *mut Driver) -> *const c_char {
-	SERIAL_NAME.as_ptr()	
+	cstr!("serial").as_ptr()
 }
 
 static PORT: u16 = 0x3f8;

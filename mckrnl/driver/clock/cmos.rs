@@ -1,9 +1,7 @@
 use core::ffi::{c_char, c_void};
 
 use crate::{bindings::driver::{Driver, clock_driver::{ClockResult, ClockDriver, global_clock_driver}}, utils::{io::{io_out_u8, io_in_u8}, ptr::CPtr}, debugln};
-use cstr_core::CString;
-use lazy_static::lazy_static;
-
+use cstr_core::cstr;
 
 static CMOS_READ_SEC: u8 =		0x00;
 static CMOS_READ_MIN: u8 =		0x02;
@@ -19,12 +17,8 @@ extern "C" fn cmos_is_device_present(_driver: *mut Driver) -> bool {
 	true
 }
 
-lazy_static! {
-	static ref CMOS_NAME: CString = CString::new("cmos").unwrap();
-}
-
 extern "C" fn cmos_get_device_name(_driver: *mut Driver) -> *const c_char {
-	CMOS_NAME.as_ptr()	
+	cstr!("cmos").as_ptr()
 }
 
 fn cmos_read(addr: u8) -> u8 {

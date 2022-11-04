@@ -2,8 +2,7 @@ extern crate alloc;
 use alloc::vec::Vec;
 
 use core::{arch::asm, ffi::{c_char, c_void}};
-use cstr_core::CString;
-use lazy_static::lazy_static;
+use cstr_core::cstr;
 use crate::{bindings::{driver::{pci::{PciDeviceHeader, become_bus_master}, Driver, nic_driver::{NicDriver, Ip, Mac, default_nic_recv, register_nic_driver}, register_driver}, interrupts::{CpuRegisters, register_interrupt_handler}}, debugln, utils::{ptr::{CPtr, CPtrArray}, io::{io_out_u8, io_in_u8, io_out_u32, io_out_u16, io_in_u32, io_in_u16}}};
 
 pub extern "C" fn rtl8139_found(header: PciDeviceHeader, bus: u16, device: u16, function: u16) {
@@ -24,14 +23,10 @@ extern "C" fn rtl8139_is_device_present(_driver: *mut Driver) -> bool {
 	true
 }
 
-lazy_static! {
-	static ref RTL8139_NAME: CString = CString::new("rtl8139").unwrap();
-}
-
 static mut RTL8139_INSTANCES: Vec<Rtl8139Driver> = Vec::new();
 
 extern "C" fn rtl8139_get_device_name(_driver: *mut Driver) -> *const c_char {
-	RTL8139_NAME.as_ptr()	
+	cstr!("rtl8139").as_ptr()
 }
 
 fn rtl8139_get_mac(driver: &Rtl8139Driver) -> Mac {
