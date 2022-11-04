@@ -1,10 +1,5 @@
 #include <sys/net.h>
 #include <config.h>
-#include <stdio.h>
-
-void format_ip(ip_u ip, char* out) {
-	sprintf(out, "%d.%d.%d.%d", ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[3]);
-}
 
 bool icmp_ping(int nic, ip_u ip) {
 	bool ret;

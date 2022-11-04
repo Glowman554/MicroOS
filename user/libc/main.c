@@ -7,7 +7,13 @@
 
 int main(int argc, char* argv[], char* envp[]);
 
+void _main() {
+	// make auto debug script happy
+}
+
 void _start() {
+	_main();
+
 	char** argv = (char**) env(SYS_GET_ARGV_ID);
 	char** envp = (char**) env(SYS_GET_ENVP_ID);
 
