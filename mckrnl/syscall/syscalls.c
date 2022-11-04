@@ -52,6 +52,7 @@ void init_syscalls() {
 	register_syscall(SYS_VCURSOR_ID, sys_vcursor);
 	register_syscall(SYS_ICMP_ID, sys_icmp);
 	register_syscall(SYS_DNS_A_ID, sys_dns_a);
+	register_syscall(SYS_NTP_ID, sys_ntp);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

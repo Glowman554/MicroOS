@@ -39,6 +39,7 @@
 
 #define SYS_ICMP_ID 0x17
 #define SYS_DNS_A_ID 0x18
+#define SYS_NTP_ID 0x19
 
 #define HOSTNAME "MicroOS"
 #define TIMESERVER "time-a-g.nist.gov"

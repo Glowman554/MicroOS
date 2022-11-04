@@ -37,3 +37,4 @@ cpu_registers_t* sys_vcursor(cpu_registers_t* regs);
 
 cpu_registers_t* sys_icmp(cpu_registers_t* regs);
 cpu_registers_t* sys_dns_a(cpu_registers_t* regs);
+cpu_registers_t* sys_ntp(cpu_registers_t* regs);
