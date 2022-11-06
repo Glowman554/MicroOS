@@ -4,6 +4,7 @@
 
 #define log(...) debugf("[ubsan --- WARNING ---] " __VA_ARGS__)
 
+#ifdef SANITIZE
 
 void __ubsan_handle_load_invalid_value(const invalid_value_data_t* data, void* _) {
 	log("load_invalid_value: %s:%d", data->location.file, data->location.line);
@@ -88,3 +89,5 @@ void __ubsan_handle_invalid_builtin(const invalid_builtin_data_t* data) {
 void __ubsan_handle_pointer_overflow(const pointer_overflow_data_t* data, void* _, void* __) {
 	log("pointer_overflow: %s:%d", data->location.file, data->location.line);
 }
+
+#endif

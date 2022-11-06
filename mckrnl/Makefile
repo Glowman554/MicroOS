@@ -8,8 +8,12 @@ LD = ld
 OPT_LVL = 3
 
 ASFLAGS = -m32
-CFLAGS = -O$(OPT_LVL) -fsanitize=undefined -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -Wno-nonnull-compare -Wno-main
+CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -Wno-nonnull-compare -Wno-main
 LDFLAGS = -melf_i386 -Tlink.ld
+
+ifeq ($(SANITIZE), true)
+	CFLAGS += -fsanitize=undefined -DSANITIZE
+endif
 
 mckrnl.elf: $(OBJS)
 	@echo LD $^
