@@ -26,7 +26,7 @@ void dsdt_init() {
 	uint32_t dsdt_length = ((sdt_header_t*) dsdt_addr)->length;
 
 	uint32_t aligned_dsdt_addr = ALIGN_PAGE_DOWN((uintptr_t) dsdt_addr);
-	for (int i = 0; i < dsdt_length / 0x1000; i++) {
+	for (int i = 0; i < dsdt_length / 0x1000 + 1; i++) {
 		debugf("mapping dsdt at %x", aligned_dsdt_addr + i * 0x1000);
 		vmm_map_page(kernel_context, aligned_dsdt_addr + i * 0x1000, aligned_dsdt_addr + i * 0x1000, PTE_PRESENT | PTE_WRITE);
 	}
