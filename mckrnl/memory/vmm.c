@@ -213,6 +213,12 @@ void* vmm_alloc(uint32_t num_pages) {
 	return ptr;
 }
 
+void* vmm_calloc(uint32_t num_pages) {
+	void* ptr = vmm_alloc(num_pages);
+	memset(ptr, 0, num_pages * 0x1000);
+	return ptr;
+}
+
 void vmm_free(void* ptr, uint32_t num_pages) {
 	pmm_free_range(ptr, num_pages);
 }

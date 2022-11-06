@@ -20,6 +20,7 @@
 #include <driver/clock_driver.h>
 #include <driver/nic_driver.h>
 #include <driver/network/rtl8139.h>
+#include <driver/network/am79C973.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -45,6 +46,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);
+	register_pci_driver_vd(0x1022, 0x2000, am79C973_pci_found);
 
 	rsdp_init();
 	dsdt_init();

@@ -3,9 +3,10 @@ all:
 	make -C user
 
 KEYMAP = de
+NETDEV = rtl8139
 
 QEMU_FLAGS = -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
-QEMU_FLAGS += -netdev user,id=u1 -device rtl8139,netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat
+QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat
 
 initrd.saf:
 	mkdir -p ./res/initrd/bin
