@@ -206,7 +206,7 @@ void am79C973_recieve(am79C973_driver_t* driver) {
 			driver->recv_buffer_descr[driver->current_recv_buffer].flags = 0x8000F7FF;
 
 		} else {
-			debugf("am79C973_driver: packet not ready");
+			debugf("am79C973: packet not ready");
 		}
 	}
 }
