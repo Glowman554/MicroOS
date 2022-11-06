@@ -1,7 +1,6 @@
 SRCS = $(shell find -name '*.[cS]')
 CPPSRC = $(shell find -name '*.cpp')
 OBJS = $(addsuffix .o,$(basename $(SRCS) $(CPPSRC)))
-RUSTSRC = $(shell find -name '*.rs')
 
 CC = gcc
 LD = ld
@@ -12,12 +11,9 @@ ASFLAGS = -m32
 CFLAGS = -O$(OPT_LVL) -fsanitize=undefined -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -Wno-nonnull-compare -Wno-main
 LDFLAGS = -melf_i386 -Tlink.ld
 
-mckrnl.elf: $(OBJS) target/i686-unknown-microos/debug/libkernel.a
+mckrnl.elf: $(OBJS)
 	@echo LD $^
 	@$(LD) $(LDFLAGS) -o $@ $^
-
-target/i686-unknown-microos/debug/libkernel.a: $(RUSTSRC)
-	cargo rustc -- -C opt-level=$(OPT_LVL)
 
 %.o: %.c
 	@echo CC $^
@@ -29,6 +25,5 @@ target/i686-unknown-microos/debug/libkernel.a: $(RUSTSRC)
 
 clean:
 	rm $(OBJS)
-	rm -rf target
 
 .PHONY: clean
