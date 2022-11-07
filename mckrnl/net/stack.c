@@ -8,7 +8,6 @@
 #include <net/icmp.h>
 #include <net/udp.h>
 #include <net/dhcp.h>
-#include <net/ntp.h>
 #include <net/dns.h>
 
 #include <stdio.h>
@@ -36,10 +35,4 @@ void load_network_stack(nic_driver_t* nic) {
 	arp_broadcast_mac(stack, stack->dhcp->gateway);
 
 	dns_init(stack, stack->dhcp->dns);
-	ntp_init(stack, dns_resolve_A(stack, TIMESERVER));
-
-	time_t t = ntp_time(stack);
-	char out[0xff] = { 0 };
-	time_format(out, &t);
-	debugf("time: %s", out);
 }

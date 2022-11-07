@@ -52,7 +52,6 @@ void init_syscalls() {
 	register_syscall(SYS_VCURSOR_ID, sys_vcursor);
 	register_syscall(SYS_ICMP_ID, sys_icmp);
 	register_syscall(SYS_DNS_A_ID, sys_dns_a);
-	register_syscall(SYS_NTP_ID, sys_ntp);
 	register_syscall(SYS_SOCK_CONNECT_ID, sys_sock_connect);
 	register_syscall(SYS_SOCK_DISCONNECT_ID, sys_sock_disconnect);
 	register_syscall(SYS_SOCK_SEND_ID, sys_sock_send);

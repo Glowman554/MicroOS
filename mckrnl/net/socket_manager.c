@@ -59,6 +59,7 @@ void socket_disconnect(socket_t* socket) {
 	}
 
 	socket_manager_free(socket->socket_id);
+	vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
 	vmm_free(socket, PAGES_OF(socket_t));
 }
 
@@ -73,22 +74,25 @@ void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
 }
 
 int socket_recv(socket_t* socket, uint8_t* data, uint32_t size) {
-	while (socket->num_bytes_received == 0) {
-		asm volatile("pause" ::: "memory");
-	}
+	NET_TIMEOUT(
+		if (socket->num_bytes_received != 0) {
 
-	int num_bytes_to_copy = socket->num_bytes_received;
+		int num_bytes_to_copy = socket->num_bytes_received;
 
-	if (num_bytes_to_copy > size) {
-		num_bytes_to_copy = size;
-	}
+		if (num_bytes_to_copy > size) {
+			num_bytes_to_copy = size;
+		}
 
-	memcpy(data, socket->received_data, num_bytes_to_copy);
+		memcpy(data, socket->received_data, num_bytes_to_copy);
 
-	socket->num_bytes_received -= num_bytes_to_copy;
-	memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
+		socket->num_bytes_received -= num_bytes_to_copy;
+		memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
 
-	return num_bytes_to_copy;
+		return num_bytes_to_copy;
+		}
+	);
+	
+	return 0;
 }
 
 int socket_manager_alloc() {
