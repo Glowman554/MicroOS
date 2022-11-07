@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <memory/vmm.h>
 
+typedef struct resource {
+	void (*dealloc)(void* resource);
+	void* resource;
+} resource_t;
 
 typedef struct {
 	cpu_registers_t* registers;
@@ -21,6 +25,9 @@ typedef struct {
 	char** envp;
 
 	char pwd[128];
+
+	resource_t* resources;
+	int num_resources;
 } task_t;
 
 extern task_t tasks[MAX_TASKS];
@@ -37,6 +44,9 @@ task_t* get_task_by_pid(int pid);
 
 void init_scheduler();
 
+void resource_register_self(resource_t resource);
+void resource_unregister_self(void* resource);
+void resource_dealloc_self();
 
 
 #define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }

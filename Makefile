@@ -24,7 +24,7 @@ iso: all initrd.saf
 	grub-mkrescue -o cdrom.iso cdrom/
 
 run: iso
-	qemu-system-i386 $(QEMU_FLAGS)
+	qemu-system-i386 $(QEMU_FLAGS) -s
 
 test: iso
 	make -C test

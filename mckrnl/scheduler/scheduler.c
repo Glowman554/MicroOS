@@ -163,6 +163,7 @@ void exit_task(task_t* task) {
 
 	vmm_activate_context(kernel_context);
 	vmm_destroy_context(task->context);
+	resource_dealloc_self();
 
 	task->active = false;
 

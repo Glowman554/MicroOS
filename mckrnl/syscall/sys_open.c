@@ -2,6 +2,13 @@
 
 #include <fs/vfs.h>
 #include <fs/fd.h>
+#include <scheduler/scheduler.h>
+#include <stdio.h>
+
+void sys_open_dealloc(void* resource) {
+	debugf("Freeing resource %x", resource);
+	vfs_close((file_t*) resource);
+}
 
 cpu_registers_t* sys_open(cpu_registers_t* regs) {
 	char* path = (char*) regs->ebx;
@@ -19,6 +26,11 @@ cpu_registers_t* sys_open(cpu_registers_t* regs) {
 		regs->edx = -1;
 		return regs;
 	}
+
+	resource_register_self((resource_t) {
+		.dealloc = sys_open_dealloc,
+		.resource = file
+	});
 
 	regs->edx = fd;
 
