@@ -14,6 +14,7 @@ all:
 	make -C edit prog
 	make -C clear prog
 	make -C ping prog
+	make -C nslookup prog
 
 clean:
 	make -C libc clean
@@ -29,3 +30,4 @@ clean:
 	make -C edit clean
 	make -C clear clean
 	make -C ping clean
+	make -C nslookup clean
