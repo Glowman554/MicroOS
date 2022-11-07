@@ -34,7 +34,7 @@ void rsdp_init() {
 		vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) xsdt), ALIGN_PAGE_DOWN((uintptr_t) xsdt), PTE_PRESENT | PTE_WRITE);
 		for (int i = 0; i < xsdt->header.length / 0x1000 + 1; i++) {
 			vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, PTE_PRESENT | PTE_WRITE);
-			debugf("Mapped %x", ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000);
+			debugf("Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, xsdt->header.length / 0x1000 + 1);
 		}
 		debugf("xsdt found at %x", xsdt);
 	} else if(rsdp->rsdt_address) {
@@ -42,7 +42,7 @@ void rsdp_init() {
 		vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) rsdt), ALIGN_PAGE_DOWN((uintptr_t) rsdt), PTE_PRESENT | PTE_WRITE);
 		for (int i = 0; i < rsdt->header.length / 0x1000 + 1; i++) {
 			vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, PTE_PRESENT | PTE_WRITE);
-			debugf("Mapped %x", ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000);
+			debugf("Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, rsdt->header.length / 0x1000 + 1);
 		}
 		debugf("rsdt found at %x", rsdt);
 	}
