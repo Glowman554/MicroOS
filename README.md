@@ -8,7 +8,8 @@ MicroOS is a small operating system. It's mainly made for fun, and supports ring
 - Memory protection
 - Terminal with simple on tab completion
 - Full vfs and a fat32 filesystem driver
-- Network stack with dns/ntp/udp/dhcp
+- Network stack with dns/udp/dhcp
+- 3 network drivers (rtl8139, am79C973 and e1000)
 
 ## Special thanks to
 
