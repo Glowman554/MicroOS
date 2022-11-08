@@ -16,6 +16,9 @@ int current_pid = 0;
 task_t tasks[MAX_TASKS] = { 0 };
 
 task_t* init_task(void* entry) {
+	bool old_shed = is_scheduler_running;
+	is_scheduler_running = false;
+
 	task_t* task = NULL;
 	for (int i = 0; i < MAX_TASKS; i++) {
 		if (!tasks[i].active) {
@@ -70,6 +73,7 @@ task_t* init_task(void* entry) {
 		vmm_map_page(task->context, (uintptr_t) user_stack + i * 4096 + USER_SPACE_OFFSET, (uintptr_t) user_stack + i * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
 	}
 
+	is_scheduler_running = old_shed;
 
 	return task;
 }
@@ -161,11 +165,11 @@ int init_elf(void* image, char** argv, char** envp) {
 void exit_task(task_t* task) {
 	asm volatile("cli");
 
+	task->active = false;
+
+	resource_dealloc(task);
 	vmm_activate_context(kernel_context);
 	vmm_destroy_context(task->context);
-	resource_dealloc_self();
-
-	task->active = false;
 
 	debugf("Task %p exited", task);
 	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);

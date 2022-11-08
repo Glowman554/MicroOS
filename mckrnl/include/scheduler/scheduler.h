@@ -47,6 +47,7 @@ void init_scheduler();
 void resource_register_self(resource_t resource);
 void resource_unregister_self(void* resource);
 void resource_dealloc_self();
+void resource_dealloc(task_t* self);
 
 
 #define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }
