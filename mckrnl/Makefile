@@ -5,7 +5,7 @@ OBJS = $(addsuffix .o,$(basename $(SRCS) $(CPPSRC)))
 CC = gcc
 LD = ld
 
-OPT_LVL = 3
+OPT_LVL = 2
 
 ASFLAGS = -m32
 CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -Wno-nonnull-compare -Wno-main
