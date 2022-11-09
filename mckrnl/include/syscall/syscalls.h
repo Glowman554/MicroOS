@@ -42,3 +42,5 @@ cpu_registers_t* sys_sock_connect(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_send(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_recv(cpu_registers_t* regs);
+
+cpu_registers_t* sys_sound_run(cpu_registers_t* regs);

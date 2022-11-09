@@ -1,5 +1,5 @@
 #include <sys/file.h>
-
+#include <sys/getc.h>
 #include <config.h>
 
 int open(char* path, int flags) {
@@ -17,9 +17,7 @@ void read(int fd, void* buf, int count, int offset) {
 		char* buffer = (char*) buf;
 		for (int i = 0; i < count; i++) {
 			while (buffer[i] == 0) {
-				char c;
-				asm volatile("int $0x30" : "=b"(c) : "a"(SYS_ASYNC_GETC_ID));
-				buffer[i] = c;
+				buffer[i] = async_getc();
 			}
 		}
 	} else {

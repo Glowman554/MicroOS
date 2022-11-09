@@ -1,12 +1,16 @@
-#include <sys/net.h>
+// #include <sys/net.h>
 #include <stdio.h>
-#include <nettools.h>
-#include <net/ntp.h>
+// #include <nettools.h>
+// #include <net/ntp.h>
+#include <sys/sound.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/getc.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
 
 int main(int argc, char* argv[], char* envp[]) {
-	int nic_id = 0;
+	// int nic_id = 0;
 	// ip_u ip = dns_resolve_A(nic_id, argv[1]);
 	// ip_u ip = parse_ip("10.0.2.2");
 	
@@ -27,8 +31,32 @@ int main(int argc, char* argv[], char* envp[]) {
 	// send(sock, (uint8_t*) "Hello wordl!", 13);
 	// disconnect(sock);
 
-	__libc_time_t time = ntp_time(nic_id, dns_resolve_A(nic_id, TIMESERVER));
-	char out[0xff] = { 0 };
-	time_format(out, &time);
-	printf("It is %s\n", out);
+	// __libc_time_t time = ntp_time(nic_id, dns_resolve_A(nic_id, TIMESERVER));
+	// char out[0xff] = { 0 };
+	// time_format(out, &time);
+	// printf("It is %s\n", out);
+
+	sound_context_t* context = malloc(sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
+	memset(context, 0, sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
+
+	int idx = 0;
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 12; j++) {
+			context->notes[idx++] = (queued_note_t) {
+				.note = ENCODE_NOTE(i, j),
+				.duration_ms = 100
+			};
+		}
+	}
+	context->num_notes = idx;
+	printf("%d notes!\n", idx);
+
+	coro_t coro = { 0 };
+	while (async_getc() != 27) {
+		sound_run(&coro, context);
+	}
+
+	free(context);
+
+	sound_clear(0);
 }

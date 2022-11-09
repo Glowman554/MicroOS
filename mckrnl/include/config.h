@@ -46,4 +46,6 @@
 #define SYS_SOCK_SEND_ID 0x1c
 #define SYS_SOCK_RECV_ID 0x1d
 
+#define SYS_SOUND_RUN_ID 0x1e
+
 #define HOSTNAME "MicroOS"

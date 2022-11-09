@@ -34,3 +34,5 @@
 | SYS_SOCK_DISCONNECT | 0x1b | socket_id | -- | -- | -- | -- |
 | SYS_SOCK_SEND | 0x1c | socket_id | data* | size | -- | -- |
 | SYS_SOCK_RECV | 0x1d | socket_id | data* | size | bytes(return) | -- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_SOUND_RUN | 0x1e | coro* | context* | -- | -- | -- |

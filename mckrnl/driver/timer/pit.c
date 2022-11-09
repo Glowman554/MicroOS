@@ -44,6 +44,10 @@ void pit_sleep(timer_driver_t* driver, uint32_t ms) {
 	}
 }
 
+long long pit_time_ms(timer_driver_t* driver) {
+	return (long long) (uint32_t) driver->driver.driver_specific_data;
+}
+
 timer_driver_t pit_driver = {
 	.driver = {
 		.is_device_present = pit_is_device_present,
@@ -51,5 +55,6 @@ timer_driver_t pit_driver = {
 		.init = pit_init,
 		.driver_specific_data = (void*) 0
 	},
-	.sleep = pit_sleep
+	.sleep = pit_sleep,
+	.time_ms = pit_time_ms
 };

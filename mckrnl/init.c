@@ -1,3 +1,4 @@
+#include "driver/driver.h"
 #include <renderer/text_console.h>
 #include <stdio.h>
 
@@ -22,6 +23,7 @@
 #include <driver/network/rtl8139.h>
 #include <driver/network/am79C973.h>
 #include <driver/network/e1000.h>
+#include <driver/sound/pc_speaker.h>
 
 #include <fs/initrd.h>
 #include <fs/fatfs/fatdrv.h>
@@ -60,6 +62,7 @@ void _main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) get_ps2_driver());
 	register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &cmos_driver);
+	register_driver((driver_t*) &pc_speaker_driver);
 
 	activate_drivers();
 
