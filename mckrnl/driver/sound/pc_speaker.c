@@ -71,7 +71,7 @@ void pc_speaker_run(sound_driver_t* driver, coro_t* coro, sound_context_t* conte
 	}
 
 	queued_note_t note = context->notes[context->current_note];
-	debugf("Playing note %d for %d ms", note.note, note.duration_ms);
+	// debugf("Playing note %d for %d ms", note.note, note.duration_ms);
 	if (note.note == 0) {
 		pc_speaker_turn_off();
 		pc_speaker_set_frequency(0);
