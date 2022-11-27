@@ -71,7 +71,7 @@ void fatfs_close(vfs_mount_t* mount, file_t* f) {
 
 void fatfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
 	FIL* fil = (FIL*) f->driver_specific_data;
-	debugf("Reading %d bytes from %d\n", size, offset);
+	debugf("Reading %d bytes from %d", size, offset);
 
 	f_lseek((FIL*) fil, offset);
 
@@ -84,7 +84,7 @@ void fatfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t
 
 void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
 	FIL* fil = (FIL*) f->driver_specific_data;
-	debugf("Writing %d bytes to %d\n", size, offset);
+	debugf("Writing %d bytes to %d", size, offset);
 
 	f_lseek((FIL*) fil, offset);
 
@@ -195,7 +195,7 @@ void fatfs_delete_dir(vfs_mount_t* mount, char* path) {
 
 	FRESULT result = f_rmdir(new_path);
 	if (result != FR_OK) {
-		debugf("Failed to delete directory %s\n", new_path);
+		debugf("Failed to delete directory %s", new_path);
 	}
 }
 

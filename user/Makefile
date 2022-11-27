@@ -17,6 +17,7 @@ all:
 	make -C nslookup prog
 	make -C play prog
 	make -C wc prog
+	make -C cp prog
 
 clean:
 	make -C libc clean
@@ -35,6 +36,7 @@ clean:
 	make -C nslookup clean
 	make -C play clean
 	make -C wc clean
+	make -C cp clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -53,3 +55,4 @@ compile_flags.txt:
 	make -C nslookup compile_flags.txt
 	make -C play compile_flags.txt
 	make -C wc compile_flags.txt
+	make -C cp compile_flags.txt

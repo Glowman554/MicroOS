@@ -13,14 +13,14 @@ FILE* fopen(const char* filename, const char* mode) {
 	memset(filename_full, 0, 256);
 	bool exists = resolve((char*) filename, filename_full);
 
-	if (!exists && (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "w+") == 0)) {
+	if (!exists && (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "wb") == 0 || strcmp((char*) mode, "w+") == 0)) {
 		touch(filename_full);
 	}
 
 	int file_mode = 0;
-	if (strcmp((char*) mode, "r") == 0) {
+	if (strcmp((char*) mode, "r") == 0 || strcmp((char*) mode, "rb") == 0) {
 		file_mode = FILE_OPEN_MODE_READ;
-	} else if (strcmp((char*) mode, "w") == 0) {
+	} else if (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "wb") == 0) {
 		file_mode = FILE_OPEN_MODE_WRITE;
 	} else if (strcmp((char*) mode, "w+") == 0 || strcmp((char*) mode, "r+") == 0) {
 		file_mode = FILE_OPEN_MODE_READ_WRITE;
