@@ -20,6 +20,7 @@ all:
 	make -C cp prog
 	make -C env prog
 	make -C file prog
+	make -C mkdir prog
 
 clean:
 	make -C libc clean
@@ -41,6 +42,7 @@ clean:
 	make -C cp clean
 	make -C env clean
 	make -C file clean
+	make -C mkdir clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -62,3 +64,4 @@ compile_flags.txt:
 	make -C cp compile_flags.txt
 	make -C env compile_flags.txt
 	make -C file compile_flags.txt
+	make -C mkdir compile_flags.txt
