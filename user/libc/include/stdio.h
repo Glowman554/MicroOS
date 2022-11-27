@@ -47,3 +47,6 @@ int printf(const char *format, ...);
 int sprintf(char *buf, const char *fmt, ...);
 char getchar();
 void putchar(char c);
+
+__attribute__((weak))
+void print_help(char* argv0);
