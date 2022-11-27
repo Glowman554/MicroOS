@@ -22,6 +22,7 @@ all:
 	make -C file prog
 	make -C mkdir prog
 	make -C rm prog
+	make -C rmdir prog
 
 clean:
 	make -C libc clean
@@ -45,6 +46,7 @@ clean:
 	make -C file clean
 	make -C mkdir clean
 	make -C rm clean
+	make -C rmdir clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -68,3 +70,4 @@ compile_flags.txt:
 	make -C file compile_flags.txt
 	make -C mkdir compile_flags.txt
 	make -C rm compile_flags.txt
+	make -C rmdir compile_flags.txt
