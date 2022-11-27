@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	printf("%d %d %d %s\n", lines, words, chars, argv[1]);
-	// fclose(f);
+	fclose(f);
+	free(buffer);
 	return 0;
 }
