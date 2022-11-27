@@ -22,8 +22,12 @@ char** initrd_process_path(char* path) {
 		}
 	}
 
-	path_parts[num_slashes] = last_slash;
-	path_parts[num_slashes + 1] = NULL;
+	if (*last_slash != '\0') {
+		path_parts[num_slashes] = last_slash;
+		path_parts[num_slashes + 1] = NULL;
+	} else {
+		path_parts[num_slashes] = NULL;
+	}
 
 	return path_parts;
 }
@@ -31,7 +35,7 @@ char** initrd_process_path(char* path) {
 saf_node_hdr_t* initrd_resolve(saf_node_hdr_t* curr, void* saf_image, int level, char** path) {
 	assert(curr->magic == MAGIC_NUMBER);
 
-	// debugf("level %d (%s), curr->name %s\n", level,  level < 0 ? "-1" : path[level], curr->name);
+	// debugf("level %d (%s), curr->name %s", level,  level < 0 ? "-1" : path[level], curr->name);
 
 	if (path[level + 1] == NULL) {
 		for (int i = 0; i < strlen(path[level]); i++) {
