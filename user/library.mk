@@ -14,4 +14,7 @@ $(LIBRARY): $(OBJS)
 	@gcc $(CFLAGS) -c -o $@ $^
 
 clean:
-	rm -f $(OBJS) $(LIBRARY)
+	rm -f $(OBJS) $(LIBRARY) compile_flags.txt
+
+compile_flags.txt:
+	deno run -A ../../compile_flags.ts $(CFLAGS) > compile_flags.txt

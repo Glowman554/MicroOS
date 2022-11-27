@@ -33,3 +33,20 @@ clean:
 	make -C ping clean
 	make -C nslookup clean
 	make -C play clean
+
+compile_flags.txt:
+	make -C libc compile_flags.txt
+
+	make -C init compile_flags.txt
+	make -C terminal compile_flags.txt
+	make -C ls compile_flags.txt
+	make -C cat compile_flags.txt
+	make -C test compile_flags.txt
+	make -C echo compile_flags.txt
+	make -C calc compile_flags.txt
+	make -C pwr compile_flags.txt
+	make -C edit compile_flags.txt
+	make -C clear compile_flags.txt
+	make -C ping compile_flags.txt
+	make -C nslookup compile_flags.txt
+	make -C play compile_flags.txt

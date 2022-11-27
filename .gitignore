@@ -6,3 +6,4 @@ res
 mckrnl/target
 dump.dat
 Cargo.lock
+compile_flags.txt

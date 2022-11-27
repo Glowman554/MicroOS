@@ -52,3 +52,7 @@ debug:
 clean: iso
 	make -C mckrnl clean
 	make -C user clean
+
+compile_flags.txt:
+	make -C mckrnl compile_flags.txt 
+	make -C user compile_flags.txt
