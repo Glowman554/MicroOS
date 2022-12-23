@@ -89,6 +89,31 @@ void _main(multiboot_info_t* mb_info) {
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
 
+	char init_exec[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--init", init_exec)) {
+		char* argv[] = {
+			init_exec,
+			NULL
+		};
+
+		char* envp[] = {
+			NULL
+		};
+
+		debugf("loading %s as init process...", init_exec);
+		file_t* file = vfs_open(init_exec, FILE_OPEN_MODE_READ);
+		if (file == NULL) {
+			abortf("Could not open %s", init_exec);
+		}
+		void* buffer = vmm_alloc(file->size / 4096 + 1);
+		vfs_read(file, buffer, file->size, 0);
+		init_elf(buffer, argv, envp);
+		vmm_free(buffer, file->size / 4096 + 1);
+		vfs_close(file);
+	} else {
+		abortf("Please use --init to set a init process");
+	}
+
 	init_killer();
 	init_scheduler();
 }

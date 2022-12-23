@@ -216,25 +216,6 @@ void init_scheduler() {
 
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
-	char* argv[] = {
-		"initrd:/bin/terminal",
-		NULL
-	};
-
-	char* envp[] = {
-		"ROOT=initrd:",
-		"PATH=initrd:/bin",
-		NULL
-	};
-
-	file_t* file = vfs_open("initrd:/bin/init.elf", 0);
-	assert(file != NULL);
-	void* buffer = vmm_alloc(file->size / 4096 + 1);
-	vfs_read(file, buffer, file->size, 0);
-	init_elf(buffer, argv, envp);
-	vmm_free(buffer, file->size / 4096 + 1);
-	vfs_close(file);
-
 	// file = vfs_open("initrd:/bin/test.elf", 0);
 	// buffer = vmm_alloc(file->size / 4096 + 1);
 	// vfs_read(file, buffer, file->size, 0);

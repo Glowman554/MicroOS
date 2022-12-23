@@ -7,7 +7,13 @@
 #define ROOT_FS "initrd:/"
 #define TERMINAL "initrd:/bin/terminal.elf"
 
-int main(int argc, char* argv[], char* envp[]) {
+char* envp[] = {
+	"ROOT=initrd:",
+	"PATH=initrd:/bin",
+	NULL
+};
+
+int main(int argc, char* argv[]) {
 	char* cwd = "initrd:/";
 	set_env(SYS_SET_PWD_ID, cwd);
 
