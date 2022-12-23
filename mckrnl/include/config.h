@@ -48,4 +48,6 @@
 
 #define SYS_SOUND_RUN_ID 0x1e
 
+#define SYS_TIME_ID 0x1f
+
 #define HOSTNAME "MicroOS"

@@ -36,3 +36,4 @@
 | SYS_SOCK_RECV | 0x1d | socket_id | data* | size | bytes(return) | -- |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_SOUND_RUN | 0x1e | coro* | context* | -- | -- | -- |
+| SYS_TIME | 0x1f | time(return) | -- | -- | -- | -- |

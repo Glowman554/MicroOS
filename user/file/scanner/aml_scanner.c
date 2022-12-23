@@ -31,6 +31,8 @@ bool is_aml(void* buffer, size_t size) {
 	if (header->length != size) {
 		return false;
 	}
+
+	return true;
 }
 
 void get_aml_information(void* buffer, size_t size, char* out, size_t out_size) {

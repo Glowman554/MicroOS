@@ -23,6 +23,7 @@ all:
 	make -C mkdir prog
 	make -C rm prog
 	make -C rmdir prog
+	make -C date prog
 
 clean:
 	make -C libc clean
@@ -47,6 +48,7 @@ clean:
 	make -C mkdir clean
 	make -C rm clean
 	make -C rmdir clean
+	make -C date clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -71,3 +73,4 @@ compile_flags.txt:
 	make -C mkdir compile_flags.txt
 	make -C rm compile_flags.txt
 	make -C rmdir compile_flags.txt
+	make -C date compile_flags.txt

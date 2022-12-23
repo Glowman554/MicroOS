@@ -1,4 +1,5 @@
 #include <buildin/unix_time.h>
+#include <stdio.h>
 
 long long to_unix_time(int year, int month, int day, int hour, int minute, int second) {
 	const short days_since_newyear[12] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
@@ -46,4 +47,26 @@ void from_unix_time(unsigned long int unixtime, int* year, int* month, int* day,
 	*hour = seconds_since_0 / 3600;
 	*minute = seconds_since_0 % 3600 / 60;
 	*second = seconds_since_0 % 60;
+}
+
+void unix_time_to_string(unsigned long int unixtime, char* buffer) {
+	char* month_names[] = {
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	};
+	
+	int year, month, day, hour, minute, second;
+	from_unix_time(unixtime, &year, &month, &day, &hour, &minute, &second);
+
+	sprintf(buffer, "%d %s %d %d:%d:%d", day, month_names[month - 1], year, hour, minute, second);
 }

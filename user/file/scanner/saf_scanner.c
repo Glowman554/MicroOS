@@ -18,7 +18,7 @@ void get_saf_files_and_dirs(void* base, saf_node_hdr_t* header, int* file_out, i
 			get_saf_files_and_dirs(base, (saf_node_hdr_t*) (base + folder->children[i]), file_out, dir_out);
 		}
 	} else {
-		saf_node_file_t* file = (saf_node_file_t*) header;
+		// saf_node_file_t* file = (saf_node_file_t*) header;
 		*file_out += 1;
 	}
 }

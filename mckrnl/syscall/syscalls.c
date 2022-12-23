@@ -57,6 +57,7 @@ void init_syscalls() {
 	register_syscall(SYS_SOCK_SEND_ID, sys_sock_send);
 	register_syscall(SYS_SOCK_RECV_ID, sys_sock_recv);
 	register_syscall(SYS_SOUND_RUN_ID, sys_sound_run);
+	register_syscall(SYS_TIME_ID, sys_time);
 
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
