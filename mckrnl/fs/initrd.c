@@ -37,6 +37,10 @@ saf_node_hdr_t* initrd_resolve(saf_node_hdr_t* curr, void* saf_image, int level,
 
 	// debugf("level %d (%s), curr->name %s", level,  level < 0 ? "-1" : path[level], curr->name);
 
+	if (level == -1 && path[level + 1] == NULL) {
+		return curr;
+	}
+
 	if (path[level + 1] == NULL) {
 		for (int i = 0; i < strlen(path[level]); i++) {
 			if (path[level][i] >= 'A' && path[level][i] <= 'Z') {
