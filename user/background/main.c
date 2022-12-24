@@ -2,6 +2,8 @@
 #include <sys/file.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char* search_executable(char* command) {
 	char* path = getenv("PATH");
