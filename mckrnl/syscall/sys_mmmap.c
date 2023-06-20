@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 cpu_registers_t* sys_mmmap(cpu_registers_t* regs) {
-	debugf("sys_mmmap(%x, %d)", regs->ebx, regs->ebx);
+	debugf("sys_mmmap(%x, %d)", regs->ebx, regs->ecx);
 
 	uintptr_t ptr = regs->ebx;
 	int pid = regs->ecx;

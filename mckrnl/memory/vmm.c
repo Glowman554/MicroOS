@@ -151,15 +151,22 @@ void vmm_destroy_context(vmm_context_t* context) {
 
 	for (int i = 0; i < 1024; i++) {
 		if (context->pagedir[i] & PTE_PRESENT) {
-			if (context->pagedir[i] == kernel_context->pagedir[i]) {
-				continue;
-			} else if (kernel_context->pagedir[i] & PTE_PRESENT) {
-				abortf("Possible unstable state!");
-			}
+			// if (context->pagedir[i] == kernel_context->pagedir[i]) {
+			// 	continue;
+			// } else if (kernel_context->pagedir[i] & PTE_PRESENT) {
+			// 	abortf("Possible unstable state!");
+			// }
 
 			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
 			for (int j = 0; j < 1024; j++) {
 				if (page_table[j] & PTE_PRESENT) {
+					if (kernel_context->pagedir[i] & PTE_PRESENT) {
+						uint32_t* kernel_page_table = (uint32_t*) (kernel_context->pagedir[i] & ~0xFFF);
+						if (kernel_page_table[j] & PTE_PRESENT) {
+							continue;
+						}
+					}
+
 					void* virt = (void*) ((i << 22) | (j << 12));
 					void* phys = (void*) (page_table[j] & ~0xFFF);
 
@@ -168,7 +175,9 @@ void vmm_destroy_context(vmm_context_t* context) {
 				}
 			}
 
-			pmm_free(page_table);
+			if (!(kernel_context->pagedir[i] & PTE_PRESENT)) {
+				pmm_free(page_table);
+			}
 		}
 	}
 
