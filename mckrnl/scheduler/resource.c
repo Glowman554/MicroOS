@@ -2,7 +2,7 @@
 #include <stddef.h>
 
 void resource_register_self(resource_t resource) {
-	task_t* self = &tasks[current_task];
+	task_t* self = get_self();
 
 	for (int i = 0; i < self->num_resources; i++) {
 		if(self->resources[i].resource == NULL) {
@@ -17,7 +17,7 @@ void resource_register_self(resource_t resource) {
 }
 
 void resource_unregister_self(void* resource) {
-	task_t* self = &tasks[current_task];
+	task_t* self = get_self();
 
 	for (int i = 0; i < self->num_resources; i++) {
 		if(self->resources[i].resource == resource) {
@@ -27,7 +27,7 @@ void resource_unregister_self(void* resource) {
 }
 
 void resource_dealloc_self() {
-	task_t* self = &tasks[current_task];
+	task_t* self = get_self();
 
 	for (int i = 0; i < self->num_resources; i++) {
 		if(self->resources[i].resource != NULL) {

@@ -23,8 +23,8 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 
-	debugf("copying pwd: %s", tasks[current_task].pwd);
-	strcpy(get_task_by_pid(regs->esi)->pwd, tasks[current_task].pwd);
+	debugf("copying pwd: %s", get_self()->pwd);
+	strcpy(get_task_by_pid(regs->esi)->pwd, get_self()->pwd);
 
 	return regs;
 }

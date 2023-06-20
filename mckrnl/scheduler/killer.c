@@ -11,7 +11,7 @@ char* page_fault_get_error(uint32_t error);
 cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
 	printf("#DE (Division by zero) \n");
 
-	exit_task(&tasks[current_task]);
+	exit_task(get_self());
 
 	return registers;
 }
@@ -19,7 +19,7 @@ cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
 cpu_registers_t* invalid_opcode_killer(cpu_registers_t* registers, void* _) {
 	printf("#UD (Invalid opcode) \n");
 
-	exit_task(&tasks[current_task]);
+	exit_task(get_self());
 
 	return registers;
 }
@@ -30,7 +30,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 
 	printf("#PF (Page fault) %s @ 0x%x\n", page_fault_get_error(registers->error), cr2);
 
-	exit_task(&tasks[current_task]);
+	exit_task(get_self());
 
 	return registers;
 }
@@ -38,7 +38,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 cpu_registers_t* general_protection_fault_killer(cpu_registers_t* registers, void* _) {
 	printf("#GP\n");
 
-	exit_task(&tasks[current_task]);
+	exit_task(get_self());
 
 	return registers;
 }

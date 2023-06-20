@@ -30,8 +30,8 @@ typedef struct {
 	int num_resources;
 } task_t;
 
-extern task_t tasks[MAX_TASKS];
-extern int current_task;
+// extern task_t tasks[MAX_TASKS];
+// extern int current_task;
 extern bool is_scheduler_running;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
@@ -49,5 +49,6 @@ void resource_unregister_self(void* resource);
 void resource_dealloc_self();
 void resource_dealloc(task_t* self);
 
+task_t* get_self();
 
 #define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }

@@ -236,3 +236,7 @@ task_t* get_task_by_pid(int pid) {
 
 	return NULL;
 }
+
+task_t* get_self() {
+	return &tasks[current_task];
+}

@@ -21,26 +21,26 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	switch (id) {
 		case SYS_GET_ARGV_ID:
 			{
-				regs->ecx = (uint32_t) tasks[current_task].argv;
+				regs->ecx = (uint32_t) get_self()->argv;
 			}
 			break;
 		
 		case SYS_GET_ENVP_ID:
 			{
-				regs->ecx = (uint32_t) tasks[current_task].envp;
+				regs->ecx = (uint32_t) get_self()->envp;
 			}
 			break;
 
 		case SYS_GET_PWD_ID:
 			{
-				strcpy((char*) regs->ecx, tasks[current_task].pwd);
+				strcpy((char*) regs->ecx, get_self()->pwd);
 			}
 			break;
 
 		case SYS_SET_PWD_ID:
 			{
-				memset(tasks[current_task].pwd, 0, sizeof(tasks[current_task].pwd));
-				strcpy(tasks[current_task].pwd, (char*) regs->ecx);
+				memset(get_self()->pwd, 0, sizeof(get_self()->pwd));
+				strcpy(get_self()->pwd, (char*) regs->ecx);
 			}
 			break;
 
