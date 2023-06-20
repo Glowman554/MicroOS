@@ -153,6 +153,8 @@ void vmm_destroy_context(vmm_context_t* context) {
 		if (context->pagedir[i] & PTE_PRESENT) {
 			if (context->pagedir[i] == kernel_context->pagedir[i]) {
 				continue;
+			} else if (kernel_context->pagedir[i] & PTE_PRESENT) {
+				abortf("Possible unstable state!");
 			}
 
 			uint32_t* page_table = (uint32_t*) (context->pagedir[i] & ~0xFFF);
