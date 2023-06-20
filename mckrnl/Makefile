@@ -2,8 +2,8 @@ SRCS = $(shell find -name '*.[cS]')
 CPPSRC = $(shell find -name '*.cpp')
 OBJS = $(addsuffix .o,$(basename $(SRCS) $(CPPSRC)))
 
-CC = gcc
-LD = ld
+CC = i686-linux-gnu-gcc
+LD = i686-linux-gnu-ld
 
 OPT_LVL = 2
 

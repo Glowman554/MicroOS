@@ -9,11 +9,11 @@ LOAD_ADDR = 0xA0000000
 prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
-	ld $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ ../lib/libc.o
+	i686-linux-gnu-ld $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ ../lib/libc.o
 
 %.o: %.c
 	@echo CC $^
-	@gcc $(CFLAGS) -c -o $@ $^
+	@i686-linux-gnu-gcc $(CFLAGS) -c -o $@ $^
 
 clean:
 	rm -f $(OBJS) $(PROGRAM) compile_flags.txt

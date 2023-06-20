@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install tools
-      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip -y
+      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu -y
     - name: get resources
       run: make res
     - name: make

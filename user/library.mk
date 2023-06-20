@@ -7,11 +7,11 @@ LDFLAGS = -melf_i386
 library: $(LIBRARY)
 
 $(LIBRARY): $(OBJS)
-	ld $(LDFLAGS) -r -o ../lib/$@ $^
+	i686-linux-gnu-ld $(LDFLAGS) -r -o ../lib/$@ $^
 
 %.o: %.c
 	@echo CC $^
-	@gcc $(CFLAGS) -c -o $@ $^
+	@i686-linux-gnu-gcc $(CFLAGS) -c -o $@ $^
 
 clean:
 	rm -f $(OBJS) $(LIBRARY) compile_flags.txt

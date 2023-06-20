@@ -69,7 +69,7 @@ setInterval(() => {
     process.exit(-1);
   }
 
-  if (bytearray_to_string(get_line(screen, 0)).startsWith("MicroOS Copyright (C) 2022 Glowman554") && bytearray_to_string(get_line(screen, 2)).startsWith("shell")) {
+  if (bytearray_to_string(get_line(screen, 0)).startsWith("MicroOS Copyright (C) 2022, 2023 Glowman554") && bytearray_to_string(get_line(screen, 2)).startsWith("shell")) {
     console.log(screen_to_text(screen));
     console.log("Test passed!");
     process.exit(0);
