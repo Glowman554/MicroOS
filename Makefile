@@ -53,6 +53,13 @@ clean: iso
 	make -C mckrnl clean
 	make -C user clean
 
+libs.zip: all
+	mkdir -p res/libs/include
+	cp user/lib/* res/libs/. -rf
+	cp user/libc/include/* res/libs/include/. -rf
+
+	zip -r libs.zip res/libs/
+
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt

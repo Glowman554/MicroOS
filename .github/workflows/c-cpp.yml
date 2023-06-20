@@ -16,15 +16,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install tools
-      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin -y
+      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip -y
     - name: get resources
       run: make res
     - name: make
-      run: make iso
+      run: make iso libs.zip
     - uses: actions/upload-artifact@v2
       with:
-        name: "iso"
+        name: "build"
         path: | 
           cdrom.iso
+          libs.zip
     - name: test
       run: make test
