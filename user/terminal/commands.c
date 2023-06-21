@@ -253,6 +253,9 @@ char* search_executable(char* command) {
 	strcpy(path_copy, path);
 	char* path_token = strtok(path_copy, ";");
 
+	char cwd[64] = { 0 };
+	set_env(SYS_GET_PWD_ID, cwd);
+
 	while (path_token != NULL) {
 		char* executable = malloc(strlen(path_token) + strlen(command) + 2);
 		memset(executable, 0, strlen(path_token) + strlen(command) + 2);
@@ -283,6 +286,22 @@ char* search_executable(char* command) {
 		}
 
 		free(executable2);
+
+
+		char* executable3 = malloc(strlen(cwd) + strlen(command) + 1);
+		memset(executable3, 0, strlen(cwd) + strlen(command) + 1);
+		strcpy(executable3, cwd);
+		strcat(executable3, "/");
+		strcat(executable3, command);
+
+		if ((fd = open(executable3, FILE_OPEN_MODE_READ)) != -1) {
+			close(fd);
+			free(path_copy);
+			return executable3;
+		}
+
+		free(executable3);
+
 		path_token = strtok(NULL, ";");
 	}
 

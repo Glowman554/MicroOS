@@ -63,7 +63,7 @@ size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream) {
 	read(stream->inner_fd, ptr, total, stream->pos);
 
 	stream->pos += total;
-	return 1;
+	return total;
 }
 
 size_t fseek(FILE* stream, long offset, int whence) {
@@ -98,7 +98,7 @@ size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream) {
 	write(stream->inner_fd, (void*) ptr, total, stream->pos);
 
 	stream->pos += total;
-	return 1;
+	return total;
 }
 
 size_t fprintf(FILE* stream, const char* format, ...) {

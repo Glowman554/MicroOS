@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 		__libc_time_t time = ntp_time(nic_id, ip);
 		unix_time = to_unix_time(time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
 	} else {
-		unix_time = time();
+		unix_time = time(NULL);
 	}
 
 	char date[128] = { 0 };

@@ -8,3 +8,5 @@ dump.dat
 Cargo.lock
 compile_flags.txt
 libs.zip
+
+user/fasm/fasm

@@ -9,7 +9,7 @@ LOAD_ADDR = 0xA0000000
 prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
-	i686-linux-gnu-ld $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ ../lib/libc.o
+	i686-linux-gnu-ld $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ $(EXTRA_OBJS) ../lib/libc.o
 
 %.o: %.c
 	@echo CC $^

@@ -25,6 +25,7 @@ all:
 	make -C rmdir prog
 	make -C date prog
 	make -C background prog
+	make -C fasm prog
 
 clean:
 	make -C libc clean
@@ -51,6 +52,7 @@ clean:
 	make -C rmdir clean
 	make -C date clean
 	make -C background clean
+	make -C fasm clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -77,3 +79,4 @@ compile_flags.txt:
 	make -C rmdir compile_flags.txt
 	make -C date compile_flags.txt
 	make -C background compile_flags.txt
+	make -C fasm compile_flags.txt

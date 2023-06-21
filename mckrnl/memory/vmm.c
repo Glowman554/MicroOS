@@ -167,10 +167,10 @@ void vmm_destroy_context(vmm_context_t* context) {
 						}
 					}
 
-					void* virt = (void*) ((i << 22) | (j << 12));
+					// void* virt = (void*) ((i << 22) | (j << 12));
 					void* phys = (void*) (page_table[j] & ~0xFFF);
 
-					debugf("Unmapping %p / %p", virt, phys);
+					// debugf("Unmapping %p / %p", virt, phys);
 					pmm_free(phys);
 				}
 			}

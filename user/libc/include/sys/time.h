@@ -1,3 +1,3 @@
 #pragma once
 
-long time();
+long time(long* seconds);

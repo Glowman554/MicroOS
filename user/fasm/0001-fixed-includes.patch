@@ -1,0 +1,65 @@
+From 8624893ecd00d526485f2bfb41668924ac79a084 Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Wed, 21 Jun 2023 21:22:29 +0200
+Subject: [PATCH] fixed includes
+
+---
+ SOURCE/LIBC/FASM.ASM | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/SOURCE/LIBC/FASM.ASM b/SOURCE/LIBC/FASM.ASM
+index e5bc329..f6d0be0 100644
+--- a/SOURCE/LIBC/FASM.ASM
++++ b/SOURCE/LIBC/FASM.ASM
+@@ -306,9 +306,9 @@ get_params:
+ 	clc
+ 	ret
+ 
+-include 'system.inc'
++include 'SYSTEM.INC'
+ 
+-include '..\version.inc'
++include '..\VERSION.INC'
+ 
+ _copyright db 'Copyright (c) 1999-2022, Tomasz Grysztar',0xA,0
+ 
+@@ -327,23 +327,23 @@ _passes_suffix db ' passes, ',0
+ _seconds_suffix db ' seconds, ',0
+ _bytes_suffix db ' bytes.',0xA,0
+ 
+-include '..\errors.inc'
+-include '..\symbdump.inc'
+-include '..\preproce.inc'
+-include '..\parser.inc'
+-include '..\exprpars.inc'
+-include '..\assemble.inc'
+-include '..\exprcalc.inc'
+-include '..\formats.inc'
+-include '..\x86_64.inc'
+-include '..\avx.inc'
++include '..\ERRORS.INC'
++include '..\SYMBDUMP.INC'
++include '..\PREPROCE.INC'
++include '..\PARSER.INC'
++include '..\EXPRPARS.INC'
++include '..\ASSEMBLE.INC'
++include '..\EXPRCALC.INC'
++include '..\FORMATS.INC'
++include '..\X86_64.INC'
++include '..\AVX.INC'
+ 
+-include '..\tables.inc'
+-include '..\messages.inc'
++include '..\TABLES.INC'
++include '..\MESSAGES.INC'
+ 
+ section '.bss' writeable align 4
+ 
+-include '..\variable.inc'
++include '..\VARIABLE.INC'
+ 
+ argc dd ?
+ argv dd ?
+-- 
+2.34.1
+
