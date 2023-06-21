@@ -242,7 +242,7 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 
 
 	int new_size_p = (data_size * new_size) / 0x1000 + 1;
-	int old_size_p = (data_size * new_size) / 0x1000 + 1;
+	int old_size_p = (data_size * old_size) / 0x1000 + 1;
 
 	if (new_size == 0) {
 		debugf("Deallocating...");

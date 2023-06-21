@@ -26,6 +26,7 @@
 #include <driver/sound/pc_speaker.h>
 
 #include <fs/initrd.h>
+#include <fs/devfs.h>
 #include <fs/fatfs/fatdrv.h>
 
 #include <utils/multiboot.h>
@@ -34,6 +35,25 @@
 #include <utils/argparser.h>
 
 #include <net/socket_manager.h>
+
+// char test_str[] = "Hello world!";
+// void test_read(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
+// 	memcpy(buf, test_str + offset, size);
+// }
+
+// void test_prepare(struct devfs_file* dfile, file_t* file) {
+// 	file->size = strlen(test_str);
+// }
+
+// char* test_name(devfs_file_t* file) {
+// 	return "test";
+// }
+
+// devfs_file_t test_file = {
+// 	.read = test_read,
+// 	.prepare = test_prepare,
+// 	.name = test_name
+// };
 
 void _main(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
@@ -77,6 +97,9 @@ void _main(multiboot_info_t* mb_info) {
 			}
 		}
 	}
+
+	vfs_mount((vfs_mount_t*) &global_devfs);
+	// devfs_register_file(&global_devfs, &test_file);
 
 	vfs_register_fs_scanner(fatfs_scanner);
 
