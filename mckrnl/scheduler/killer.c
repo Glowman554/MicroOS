@@ -36,7 +36,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 }
 
 cpu_registers_t* general_protection_fault_killer(cpu_registers_t* registers, void* _) {
-	printf("#GP\n");
+	printf("#GP (General Protection)\n");
 
 	exit_task(get_self());
 
