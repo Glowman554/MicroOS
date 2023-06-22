@@ -6,6 +6,7 @@
 #include <sys/spawn.h>
 #include <sys/env.h>
 #include <sys/file.h>
+#include <sys/graphics.h>
 
 #include <argv_tools.h>
 #include <commands.h>
@@ -18,6 +19,14 @@
 #define GET_CWD(cwd) char cwd[64] = { 0 }; set_env(SYS_GET_PWD_ID, cwd);
 
 char** terminal_envp;
+
+void print_prompt() {
+	GET_CWD(cwd_buf);
+	set_color("cyan", false);
+	set_color("black", true);
+	printf("\n" SHELL_PREFIX , cwd_buf);
+	set_color("white", false);
+}
 
 int main(int argc, char* argv[], char* envp[]) {
 	terminal_envp = envp;
@@ -44,12 +53,13 @@ int main(int argc, char* argv[], char* envp[]) {
 		}
 	}
 
-	GET_CWD(cwd_buf);
-	printf("\n" SHELL_PREFIX , cwd_buf);
+
 
 	char buffer[MAX_BUFFER_SIZE + 1];
 	memset(buffer, 0, MAX_BUFFER_SIZE + 1);
 	int buffer_len = 0;
+
+	print_prompt();
 
 	while (true) {
 		char input = getchar();
@@ -113,8 +123,7 @@ int main(int argc, char* argv[], char* envp[]) {
 
 				memset(buffer, 0, MAX_BUFFER_SIZE + 1);
 				buffer_len = 0;
-				GET_CWD(cwd);
-				printf("\n" SHELL_PREFIX, cwd);
+				print_prompt();
 			}
 		} else if (buffer_len >= MAX_BUFFER_SIZE) {
 			printf("\b");
@@ -123,8 +132,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		} else if (input == 27 /* esc */) {
 			memset(buffer, 0, MAX_BUFFER_SIZE + 1);
 			buffer_len = 0;
-			GET_CWD(cwd);
-			printf("\n" SHELL_PREFIX, cwd);
+			print_prompt();
 		} else {
 			buffer[buffer_len] = input;
 			buffer_len++;
