@@ -16,7 +16,11 @@ uint8_t madt_ioapic_count = 0;
 
 void parse_madt() {
 	madt_header_t* madt = (madt_header_t*) find_SDT((char*) "APIC");
-
+	if (madt == NULL) {
+		debugf("Failed to parse madt!");
+		return;
+	}
+	
 	madt_lapic_base_addr = madt->local_apic_address;
 
 	int curr_count = 0;
