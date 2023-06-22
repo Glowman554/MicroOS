@@ -37,3 +37,5 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_SOUND_RUN | 0x1e | coro* | context* | -- | -- | -- |
 | SYS_TIME | 0x1f | time(return) | -- | -- | -- | -- |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SYS_SET_COLOR | 0x20 | color | background | -- | -- | -- | -- |

@@ -2,6 +2,7 @@
 
 #include <utils/io.h>
 #include <stdio.h>
+#include <string.h>
 
 int text_console_x = 0;
 int text_console_y = 0;
@@ -88,7 +89,7 @@ void text_console_clrscr() {
 	int i;
 	for (i = 0; i < 25 * 80; i++) {
 		text_console_video[2*i] = ' ';
-		text_console_video[2*i+1] = BACKGROUND_BLACK | FOREGROUND_WHITE;
+		text_console_video[2*i+1] = text_console_color;
 	}
 
 	text_console_x = text_console_y = 0;
@@ -127,6 +128,40 @@ void text_console_vcursor(char_output_driver_t* driver, int x, int y) {
 	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
 }
 
+char* color_table[] = {
+	"black",
+	"blue",
+	"green",
+	"cyan",
+	"red",
+	"magenta",
+	"brown",
+	"light_grey",
+	"grey",
+	"light_blue",
+	"light_green",
+	"light_cyan",
+	"light_red",
+	"light_magenta",
+	"yellow",
+	"white"
+};
+
+void text_console_set_color(char_output_driver_t*, char* color, bool background) {
+	int i;
+	for (i = 0; i < sizeof(color_table) / sizeof(color_table[0]); i++) {
+		if (strcmp(color_table[i], color) == 0) {
+			break;
+		}
+	}
+
+	if (background) {
+		text_console_color = i << 4 | (text_console_color & 0xf);
+	} else {
+		text_console_color = i | (text_console_color & 0xf0);
+	}
+}
+
 char_output_driver_t text_console_driver = {
 	.driver = {
 		.is_device_present = text_console_driver_is_present,
@@ -136,5 +171,6 @@ char_output_driver_t text_console_driver = {
 	.putc = text_console_driver_putc,
 	.vmode = text_console_driver_vmode,
 	.vpoke = text_console_driver_vpoke,
-	.vcursor = text_console_vcursor
+	.vcursor = text_console_vcursor,
+	.set_color = text_console_set_color
 };

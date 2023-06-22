@@ -50,4 +50,6 @@
 
 #define SYS_TIME_ID 0x1f
 
+#define SYS_SET_COLOR_ID 0x20
+
 #define HOSTNAME "MicroOS"

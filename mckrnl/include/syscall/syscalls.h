@@ -46,3 +46,5 @@ cpu_registers_t* sys_sock_recv(cpu_registers_t* regs);
 cpu_registers_t* sys_sound_run(cpu_registers_t* regs);
 
 cpu_registers_t* sys_time(cpu_registers_t* regs);
+
+cpu_registers_t* sys_set_color(cpu_registers_t* regs);

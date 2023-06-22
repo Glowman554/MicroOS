@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/getc.h>
+#include <sys/graphics.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
 
@@ -36,27 +37,30 @@ int main(int argc, char* argv[], char* envp[]) {
 	// time_format(out, &time);
 	// printf("It is %s\n", out);
 
-	sound_context_t* context = malloc(sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
-	memset(context, 0, sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
+	// sound_context_t* context = malloc(sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
+	// memset(context, 0, sizeof(sound_context_t) + (sizeof(queued_note_t) * 85));
 
-	int idx = 0;
-	for (int i = 0; i < 7; i++) {
-		for (int j = 0; j < 12; j++) {
-			context->notes[idx++] = (queued_note_t) {
-				.note = ENCODE_NOTE(i, j),
-				.duration_ms = 100
-			};
-		}
-	}
-	context->num_notes = idx;
-	printf("%d notes!\n", idx);
+	// int idx = 0;
+	// for (int i = 0; i < 7; i++) {
+	// 	for (int j = 0; j < 12; j++) {
+	// 		context->notes[idx++] = (queued_note_t) {
+	// 			.note = ENCODE_NOTE(i, j),
+	// 			.duration_ms = 100
+	// 		};
+	// 	}
+	// }
+	// context->num_notes = idx;
+	// printf("%d notes!\n", idx);
 
-	coro_t coro = { 0 };
-	while (async_getc() != 27) {
-		sound_run(&coro, context);
-	}
+	// coro_t coro = { 0 };
+	// while (async_getc() != 27) {
+	// 	sound_run(&coro, context);
+	// }
 
-	free(context);
+	// free(context);
 
-	sound_clear(0);
+	// sound_clear(0);
+
+	set_color("green", false);
+	set_color("white", true);
 }
