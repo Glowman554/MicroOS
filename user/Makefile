@@ -27,6 +27,7 @@ all:
 	make -C background prog
 	make -C fasm prog
 	make -C figl prog
+	make -C du prog
 
 clean:
 	make -C libc clean
@@ -55,6 +56,7 @@ clean:
 	make -C background clean
 	make -C fasm clean
 	make -C figl clean
+	make -C du clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -83,3 +85,4 @@ compile_flags.txt:
 	make -C background compile_flags.txt
 	make -C fasm compile_flags.txt
 	make -C figl compile_flags.txt
+	make -C du compile_flags.txt

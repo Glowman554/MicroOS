@@ -9,6 +9,9 @@ async function read_directory(dir) {
 			if (dirEntry.name.endsWith(".c") || dirEntry.name.endsWith(".h")) {
 				const file = Deno.readTextFileSync(dir + dirEntry.name);
 				const lines = file.split("\n");
+
+				console.log(dir + dirEntry.name + ": " + lines.length);
+
 				num_lines += lines.length;
 			}
 		}

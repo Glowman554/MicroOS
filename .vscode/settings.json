@@ -32,6 +32,8 @@
 		"disk_driver.h": "c",
 		"net.h": "c",
 		"time.h": "c",
-		"driver.h": "c"
+		"driver.h": "c",
+		"string_view": "c",
+		"initializer_list": "c"
 	}
 }
