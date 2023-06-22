@@ -109,3 +109,49 @@ typedef struct fadt_table {
 	generic_address_structure_t X_GPE0_block;
 	generic_address_structure_t X_GPE1_block;
 } __attribute__((packed)) fadt_table_t;
+
+typedef struct madt_header {
+	sdt_header_t header;
+	uint32_t local_apic_address;
+	uint32_t flags;
+} __attribute__((packed)) madt_header_t;
+
+typedef struct madt_record {
+	uint8_t type;
+	uint8_t length;
+} __attribute__((packed)) madt_record_t;
+
+typedef struct madt_local_processor {
+	madt_record_t header;
+	uint8_t processor_id;
+	uint8_t apic_id;
+	uint32_t flags;
+} __attribute__((packed)) madt_local_processor_t;
+
+typedef struct madt_io_apic {
+	madt_record_t header;
+	uint8_t io_apic_id;
+	uint8_t reserved;
+	uint32_t io_apic_address;
+	uint32_t global_system_interrupt_base;
+} __attribute__((packed)) madt_io_apic_t;
+
+typedef struct madt_interrupt_override {
+	madt_record_t header;
+	uint8_t bus;
+	uint8_t source;
+	uint32_t global_system_interrupt;
+	uint16_t flags;
+} __attribute__((packed)) madt_interrupt_override_t;
+
+typedef struct madt_nmi {
+	madt_record_t header;
+	uint16_t flags;
+	uint8_t lint;
+} __attribute__((packed)) madt_nmi_t;
+
+typedef struct madt_local_apic_address_override {
+	madt_record_t header;
+	uint8_t reserved[2];
+	uint64_t address;
+} __attribute__((packed)) madt_local_apic_address_override_t;

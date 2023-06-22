@@ -1,4 +1,4 @@
-#include "driver/driver.h"
+#include <driver/driver.h>
 #include <renderer/text_console.h>
 #include <stdio.h>
 
@@ -18,6 +18,7 @@
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
+#include <driver/acpi/madt.h>
 #include <driver/clock_driver.h>
 #include <driver/nic_driver.h>
 #include <driver/network/rtl8139.h>
@@ -74,6 +75,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	rsdp_init();
 	dsdt_init();
+	parse_madt();
 
 	enumerate_pci();
 
