@@ -1,5 +1,7 @@
 var V86 = require("./libv86.js").V86;
 
+console.log("Test starting...");
+
 var SCREEN_WIDTH = 80;
 
 function get_line(screen, y) {
@@ -11,7 +13,7 @@ function line_to_text(screen, y) {
 }
 
 function bytearray_to_string(arr) {
-	return String.fromCharCode.apply(String, arr);
+	return String.fromCharCode.apply(String, arr.map(v => v != 0 ? v : " ".charCodeAt(0)));
 }
 
 function screen_to_text(s) {
@@ -39,7 +41,8 @@ var settings = {
 	memory_size: 128 * 1024 * 1024,
 	cdrom: {
 		url: "../cdrom.iso"
-	}
+	},
+	acpi: true
 };
 
 var screen = new Uint8Array(SCREEN_WIDTH * 25)

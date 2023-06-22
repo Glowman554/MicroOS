@@ -48,10 +48,22 @@ void rsdp_init() {
 	}
 }
 
+void map_sdt(sdt_header_t* header) {
+	uintptr_t start = ALIGN_PAGE_DOWN((uintptr_t) header);
+	vmm_map_page(kernel_context, start, start, PTE_PRESENT | PTE_WRITE);
+
+	uint32_t len = header->length + 0x1000;
+	for (uintptr_t curr = start; curr < start + len; curr += 0x1000) {
+		// debugf("Mapping page %x for table %s", curr, header->signature);
+		vmm_map_page(kernel_context, curr, curr, PTE_PRESENT | PTE_WRITE);
+	}
+}
+
 void* find_SDT(const char *signature) {
 	if(xsdt != NULL) {
 		for(uint64_t i = 0; i < (xsdt->header.length - sizeof(sdt_header_t)); i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (uint32_t) xsdt->acpiptr[i];
+			map_sdt(acpihdr);
 			if(memcmp(acpihdr->signature, signature, 4) == 0) {
 				debugf("%s found", signature);
 				return acpihdr;
@@ -62,6 +74,7 @@ void* find_SDT(const char *signature) {
 	if(rsdt != NULL) {
 		for(uint64_t i = 0; i < (rsdt->header.length - sizeof(sdt_header_t)); i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (rsdt->acpiptr[i]);
+			map_sdt(acpihdr);
 			if(memcmp(acpihdr->signature, signature, 4) == 0) {
 				debugf("%s found", signature);
 				return acpihdr;
