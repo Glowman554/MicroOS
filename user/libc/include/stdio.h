@@ -37,6 +37,8 @@ size_t fputc(char c, FILE* stream);
 bool resolve(char* path, char* output);
 bool resolve_check(char* path, char* output, bool check_childs);
 
+int gets(char* buffer);
+
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 
 void init_stdio();
