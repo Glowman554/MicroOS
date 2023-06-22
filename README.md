@@ -11,6 +11,8 @@ MicroOS is a small operating system. It's mainly made for fun, and supports ring
 - Network stack with dns/udp/dhcp
 - 3 network drivers (rtl8139, am79C973 and e1000)
 - pc speaker sound
+- Working fasm port
+- Colored text support
 
 ## Special thanks to
 
