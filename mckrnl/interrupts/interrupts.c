@@ -5,7 +5,9 @@
 #include <utils/io.h>
 #include <scheduler/scheduler.h>
 
-static long long unsigned int idt[IDT_ENTRIES];
+#include <driver/apic/lapic.h>
+
+long long unsigned int idt[IDT_ENTRIES];
 
 static void idt_set_entry(int i, void (*fn)(), unsigned int selector, int flags) {
 	debugf("Setting idt entry at %d with handler 0x%x and selector 0x%x and the flags 0x%x", i, (uint32_t) fn, selector, flags);
@@ -34,10 +36,7 @@ void init_pic() {
 }
 
 void init_interrupts() {
-	struct {
-		unsigned short int limit;
-		void* pointer;
-	} __attribute__((packed)) idtp = {
+	idt_ptr idtp = {
 		.limit = IDT_ENTRIES * 8 - 1,
 		.pointer = idt,
 	};
@@ -191,10 +190,23 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 				set_tss(1, (uint32_t) (new_cpu + 1));
 			}
 
+		#ifdef SMP
+			LAPIC_ID(core);
+			if (core != 0) { // TODO do not hard code
+				lapic_eoi();
+			} else {
+				if (cpu->intr >= 0x28) {
+					outb(0xa0, 0x20);
+				}
+				outb(0x20, 0x20);
+			}
+		
+		#else
 			if (cpu->intr >= 0x28) {
 				outb(0xa0, 0x20);
 			}
 			outb(0x20, 0x20);
+		#endif
 		} else {
 			if (interrupt_handlers[cpu->intr] != 0) {
 				new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);

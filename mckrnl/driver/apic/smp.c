@@ -2,6 +2,7 @@
 #include <driver/apic/lapic.h>
 #include <driver/acpi/madt.h>
 #include <interrupts/interrupts.h>
+#include <interrupts/gdt.h>
 #include <memory/vmm.h>
 #include <string.h>
 #include <stdio.h>
@@ -14,12 +15,27 @@ bool cpu_started[256] = { false };
 int bsp_id = 0;
 
 void smp_ap_main() {
-	// vmm_activate_context(kernel_context);
-	// debugf("Activating paging NOW!");
-	// uint32_t cr0;
-	// asm volatile("mov %%cr0, %0" : "=r" (cr0));
-	// cr0 |= 0x80000000;
-	// asm volatile("mov %0, %%cr0" : : "r" (cr0));
+// init gdt
+	set_gdt(new_gdt());
+
+	// init interrupts
+	idt_ptr idtp = {
+		.limit = IDT_ENTRIES * 8 - 1,
+		.pointer = idt,
+	};
+	asm volatile("lidt %0" : : "m" (idtp));
+	debugf("Enabling interrupts!");
+	asm volatile("sti");
+
+	// init paging
+	vmm_activate_context(kernel_context);
+	debugf("Activating paging NOW!");
+	uint32_t cr0;
+	asm volatile("mov %%cr0, %0" : "=r" (cr0));
+	cr0 |= 0x80000000;
+	asm volatile("mov %0, %%cr0" : : "r" (cr0));
+
+	// *(uint8_t*) 0x0 = 1;
 	while (1) {
 		// printf("uwu");
 	}

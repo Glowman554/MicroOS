@@ -47,6 +47,8 @@ extern void intr_stub_48(void);
 #define IDT_FLAG_RING3 0x60
 #define IDT_ENTRIES 256
 
+extern long long unsigned int idt[];
+
 typedef struct {
 	uint32_t eax;
 	uint32_t ebx;
@@ -66,7 +68,12 @@ typedef struct {
 	uint32_t ss;
 } cpu_registers_t;
 
-#define halt() printf("Halting system!\n"); while(1) { asm volatile("cli; hlt"); }
+typedef struct {
+	unsigned short int limit;
+	void* pointer;
+} __attribute__((packed)) idt_ptr; 
+
+#define halt() printf("Halting core!\n"); while(1) { asm volatile("cli; hlt"); }
 
 void init_interrupts();
 

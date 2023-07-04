@@ -63,11 +63,13 @@ void _main(multiboot_info_t* mb_info) {
 	debugf("Setting global multiboot info to %p", mb_info);
 	global_multiboot_info = mb_info;
 
-	init_gdt();
+	init_initial_gdt();
 	init_interrupts();
 
 	pmm_init();
 	vmm_init();
+
+	set_gdt(new_gdt());
 
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);

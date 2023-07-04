@@ -6,8 +6,20 @@
 #include <interrupts/interrupts.h>
 #include <renderer/text_console.h>
 
+#include <driver/apic/lapic.h>
+#include <driver/acpi/madt.h>
+
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
+
+int read_core_id() {
+#ifdef SMP
+	LAPIC_ID(id);
+	return id;
+#else
+	return 0;
+#endif
+}
 
 int printf(const char *format, ...) {
 	va_list args;
@@ -60,6 +72,8 @@ int _debugf(const char* str) {
 }
 
 int abortf(const char *format, ...) {
+	__asm__ volatile("cli");
+	
 	va_list args;
 	char buf[1024] = {0};
 

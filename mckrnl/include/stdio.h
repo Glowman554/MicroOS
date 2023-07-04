@@ -13,8 +13,10 @@ extern char_output_driver_t* printf_driver;
 
 int sprintf(char *buf, const char *fmt, ...);
 
+int read_core_id();
+
 #ifdef DEBUG
-#define debugf(fmt, ...) debugf_intrnl("[%s:%d in %s] ", __FILE__, __LINE__, __FUNCTION__); debugf_intrnl(fmt, ##__VA_ARGS__); debugf_intrnl("\n")
+#define debugf(fmt, ...) debugf_intrnl("[%d] [%s:%d in %s] ", read_core_id(), __FILE__, __LINE__, __FUNCTION__); debugf_intrnl(fmt, ##__VA_ARGS__); debugf_intrnl("\n")
 #else
 #define debugf(fmt, ...)
 #endif
