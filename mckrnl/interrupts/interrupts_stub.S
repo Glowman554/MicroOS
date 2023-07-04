@@ -55,6 +55,8 @@ intr_stub 47
 // Syscall
 intr_stub 48
 
+intr_stub 255
+
 .extern handle_interrupt
 intr_common_handler:
 	push %ebp

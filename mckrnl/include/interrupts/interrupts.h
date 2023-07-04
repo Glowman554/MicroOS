@@ -41,6 +41,8 @@ extern void intr_stub_47(void);
 
 extern void intr_stub_48(void);
 
+extern void intr_stub_255(void);
+
 #define IDT_FLAG_INTERRUPT_GATE 0xe
 #define IDT_FLAG_PRESENT 0x80
 #define IDT_FLAG_RING0 0x00
@@ -73,7 +75,8 @@ typedef struct {
 	void* pointer;
 } __attribute__((packed)) idt_ptr; 
 
-#define halt() printf("Halting core!\n"); while(1) { asm volatile("cli; hlt"); }
+// #define halt() printf("Halting core!\n"); while(1) { asm volatile("cli; hlt"); }
+void halt();
 
 void init_interrupts();
 

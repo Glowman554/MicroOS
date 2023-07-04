@@ -9,3 +9,5 @@ typedef struct {
 extern bool cpu_started[256];
 
 void smp_startup_all();
+
+extern int bsp_id;

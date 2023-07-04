@@ -7,6 +7,9 @@
 
 #include <driver/apic/lapic.h>
 
+#include <driver/apic/smp.h>
+#include <driver/acpi/madt.h>
+
 long long unsigned int idt[IDT_ENTRIES];
 
 static void idt_set_entry(int i, void (*fn)(), unsigned int selector, int flags) {
@@ -83,10 +86,21 @@ void init_interrupts() {
 
 	// Syscall
 	idt_set_entry(48, intr_stub_48, 0x8, IDT_FLAG_INTERRUPT_GATE | IDT_FLAG_RING3 | IDT_FLAG_PRESENT);
+
+	idt_set_entry(255, intr_stub_255, 0x8, IDT_FLAG_INTERRUPT_GATE | IDT_FLAG_RING0 | IDT_FLAG_PRESENT);
 	
 	asm volatile("lidt %0" : : "m" (idtp));
 	debugf("Enabling interrupts!");
 	asm volatile("sti");
+}
+
+
+void halt_internal() {
+	LAPIC_ID(id);
+	printf("Halting core %d!\n", id);
+	while(1) {
+		asm volatile("cli; hlt");
+	}
 }
 
 interrupt_handler_t interrupt_handlers[256] = { 0 };
@@ -175,6 +189,10 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 	
 	cpu_registers_t* new_cpu = cpu;
 
+	if (cpu->intr == 0xff) {
+		halt_internal();
+	}
+
 	if (cpu->intr <= 0x1f) {
 		if (interrupt_handlers[cpu->intr] != 0) {
 			new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
@@ -217,3 +235,14 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 
 	return new_cpu;
 }
+
+void halt() {
+	LAPIC_ID(id);
+	for (int i = 0; i < madt_lapic_count; i++) {
+		if (i != id) {
+			lapic_ipi(i, 0xff);
+		}
+	}
+
+	halt_internal();
+}	}
