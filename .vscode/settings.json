@@ -35,6 +35,7 @@
 		"driver.h": "c",
 		"string_view": "c",
 		"initializer_list": "c",
-		"number_parser.h": "c"
+		"number_parser.h": "c",
+		"lapic.h": "c"
 	}
 }

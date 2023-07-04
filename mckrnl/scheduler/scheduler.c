@@ -11,6 +11,7 @@
 #include <fs/vfs.h>
 #include <assert.h>
 #include <driver/apic/lapic.h>
+#include <driver/apic/smp.h>
 
 
 int current_pid = 0;
