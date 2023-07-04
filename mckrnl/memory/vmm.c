@@ -41,6 +41,7 @@ cpu_registers_t* page_fault_handler(cpu_registers_t* registers, void* _) {
 	printf("Faulting address: %x\n", cr2);
 
 	halt();
+	return registers;
 }
 
 void vmm_init(void) {

@@ -8,6 +8,7 @@
 
 #include <driver/apic/lapic.h>
 #include <driver/acpi/madt.h>
+#include <utils/lock.h>
 
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
@@ -21,6 +22,7 @@ int read_core_id() {
 #endif
 }
 
+define_spinlock(printf_lock);
 int printf(const char *format, ...) {
 	va_list args;
 	char buf[1024] = {0};
@@ -29,6 +31,7 @@ int printf(const char *format, ...) {
 	int tmp = vsprintf(buf, format, args);
 	va_end(args);
 
+	atomic_acquire_spinlock(printf_lock);
 	if (printf_driver != NULL) {
 		int i = 0;
 		while (buf[i] != '\0') {
@@ -38,10 +41,12 @@ int printf(const char *format, ...) {
 	} else {
 		text_console_puts(buf);
 	}
+	atomic_release_spinlock(printf_lock);
 
 	return tmp;
 }
 
+define_spinlock(debugf_lock);
 int debugf_intrnl(const char *format, ...) {
 	va_list args;
 	char buf[1024] = {0};
@@ -50,6 +55,7 @@ int debugf_intrnl(const char *format, ...) {
 	int tmp = vsprintf(buf, format, args);
 	va_end(args);
 
+	atomic_acquire_spinlock(debugf_lock);
 	if (debugf_driver != NULL) {
 		int i = 0;
 		while (buf[i] != '\0') {
@@ -59,6 +65,7 @@ int debugf_intrnl(const char *format, ...) {
 	} else {
 		text_console_puts(buf);
 	}
+	atomic_release_spinlock(debugf_lock);
 
 	return tmp;
 }
