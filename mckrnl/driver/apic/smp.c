@@ -35,6 +35,8 @@ void smp_ap_main() {
 	cr0 |= 0x80000000;
 	asm volatile("mov %0, %%cr0" : : "r" (cr0));
 
+	lapic_enable();
+
 	// *(uint8_t*) 0x0 = 1;
 	while (1) {
 		// printf("uwu");

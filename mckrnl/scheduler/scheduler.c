@@ -10,6 +10,7 @@
 #include <scheduler/elf.h>
 #include <fs/vfs.h>
 #include <assert.h>
+#include <driver/apic/lapic.h>
 
 
 int current_pid = 0;
@@ -184,6 +185,11 @@ bool is_scheduler_running = false;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	if (!is_scheduler_running) {
+		return registers;
+	}
+
+	LAPIC_ID(core_id);
+	if (core_id != 0) {
 		return registers;
 	}
 
