@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-int print_num(unsigned long x, int base, char* str) {
+int print_num(long x, int base, char* str) {
 	const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 
 	char buf[65];
@@ -14,6 +14,14 @@ int print_num(unsigned long x, int base, char* str) {
 		return 0;
 	}
 
+
+	bool sign = false;
+
+	if (x < 0) {
+		sign = true;
+		x *= -1;
+	}
+
 	p = buf + 64;
 	*p = '\0';
 
@@ -21,6 +29,10 @@ int print_num(unsigned long x, int base, char* str) {
 		*--p = digits[x % base];
 		x /= base;
 	} while(x);
+
+	if (sign) {
+		*--p = '-';
+	}
 
 	memcpy(str, p, strlen(p));
 
@@ -48,7 +60,7 @@ int vsprintf(char *buf, const char *str, va_list args) {
 					break;
 				case 'd':
 				case 'u':
-					n = va_arg(args, unsigned long int);
+					n = va_arg(args, long int);
 					buf += print_num(n, 10, buf);
 					break;
 				case 'x':
