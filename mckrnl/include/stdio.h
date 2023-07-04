@@ -22,3 +22,14 @@ int sprintf(char *buf, const char *fmt, ...);
 #define todo() abortf("%s not implemented! (yet i hope)", __FUNCTION__)
 #define note(n) debugf("note in %s (%s:%d): %s", __FUNCTION__, __FILE__, __LINE__, n)
 #define here() debugf("here");
+
+#ifdef DEBUG
+#ifdef WAIT
+char read_serial();
+#define wait() { debugf("press any key continue executions..."); while(!read_serial()); }
+#else
+#define wait()
+#endif
+#else
+#define wait()
+#endif

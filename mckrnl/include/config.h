@@ -12,6 +12,12 @@
 #define USER_STACK_SIZE_PAGES 4
 #define KERNEL_STACK_SIZE_PAGES 4
 
+#define SMP
+#define SMP_TRAMPOLINE_PAGE 8
+#define SMP_TRAMPOLINE_ADDR (SMP_TRAMPOLINE_PAGE * 0x1000)
+
+#define WAIT // enable the wait macro
+
 #define SYS_OPEN_ID 0x1
 #define SYS_CLOSE_ID 0x2
 #define SYS_READ_ID 0x3

@@ -19,6 +19,7 @@
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
 #include <driver/acpi/madt.h>
+#include <driver/apic/smp.h>
 #include <driver/clock_driver.h>
 #include <driver/nic_driver.h>
 #include <driver/network/rtl8139.h>
@@ -111,6 +112,12 @@ void _main(multiboot_info_t* mb_info) {
 
 	load_network_stacks();
 	init_socket_manager();
+
+#ifdef SMP
+	debugf("--- WARNING --- SMP is very experimantel!");
+	// wait();
+	smp_startup_all();
+#endif	
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
 

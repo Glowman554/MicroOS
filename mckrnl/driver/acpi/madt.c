@@ -57,4 +57,6 @@ void parse_madt() {
 
 	debugf("Found %d local APICs", madt_lapic_count);
 	debugf("Found %d I/O APICs", madt_ioapic_count);
+
+	debugf("madt_lapic_base_addr: %x", madt_lapic_base_addr);
 }
