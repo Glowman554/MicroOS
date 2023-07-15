@@ -28,6 +28,8 @@ typedef struct {
 
 	resource_t* resources;
 	int num_resources;
+
+	bool pin;
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];

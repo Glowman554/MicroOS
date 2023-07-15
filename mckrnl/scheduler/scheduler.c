@@ -168,6 +168,7 @@ void exit_task(task_t* task) {
 	asm volatile("cli");
 
 	task->active = false;
+	task->pin = false;
 
 	resource_dealloc(task);
 	vmm_activate_context(kernel_context);
@@ -192,6 +193,10 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	LAPIC_ID(core_id);
 	if (core_id != bsp_id) {
 		return registers;
+	}
+
+	if (tasks[current_task].pin) {
+		return tasks[current_task].registers;
 	}
 
 	for (int i = current_task + 1; i < MAX_TASKS; i++) {

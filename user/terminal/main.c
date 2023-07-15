@@ -110,8 +110,7 @@ int main(int argc, char* argv[], char* envp[]) {
 			}
 		} else if (input == '\n') {
 			if (buffer_len == 0) {
-				GET_CWD(cwd);
-				printf(SHELL_PREFIX, cwd);
+				print_prompt();
 			} else if (is_quote_open(buffer)) {
 				printf(" quote> ");
 			} else {

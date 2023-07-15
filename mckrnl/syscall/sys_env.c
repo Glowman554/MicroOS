@@ -13,6 +13,9 @@
 #define SYS_PWR_RESET_ID 0x04
 #define SYS_PWR_SHUTDOWN_ID 0x05
 
+#define SYS_ENV_PIN 0x06
+
+
 cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	int id = regs->ebx;
 
@@ -53,6 +56,12 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 		case SYS_PWR_SHUTDOWN_ID:
 			{
 				acpi_power_off();
+			}
+			break;
+
+		case SYS_ENV_PIN:
+			{
+				get_self()->pin = regs->ecx;
 			}
 			break;
 
