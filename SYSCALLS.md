@@ -39,3 +39,4 @@
 | SYS_TIME | 0x1f | time(return) | -- | -- | -- | -- |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_SET_COLOR | 0x20 | color | background | -- | -- | -- | -- |
+| SYS_ASYNC_GETARRW | 0x21 | c (return) | - | - | - | - | - |

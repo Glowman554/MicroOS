@@ -58,4 +58,9 @@
 
 #define SYS_SET_COLOR_ID 0x20
 
+#define SYS_ASYNC_GETARRW_ID 0x21
+
+#define SYS_VCURSOR_GET_ID 0x22
+
+
 #define HOSTNAME "MicroOS"

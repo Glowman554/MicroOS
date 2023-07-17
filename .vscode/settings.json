@@ -36,6 +36,8 @@
 		"string_view": "c",
 		"initializer_list": "c",
 		"number_parser.h": "c",
-		"lapic.h": "c"
+		"lapic.h": "c",
+		"getc.h": "c",
+		"stdbool.h": "c"
 	}
 }

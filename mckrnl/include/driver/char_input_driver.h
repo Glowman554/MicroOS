@@ -7,6 +7,7 @@
 typedef struct char_input_driver {
 	driver_t driver;
 	char (*async_getc)(struct char_input_driver*);
+	char (*async_getarrw)(struct char_input_driver*);
 } char_input_driver_t;
 
 typedef struct special_keys_down_t {
@@ -29,6 +30,14 @@ typedef struct special_keys_down_t {
 	bool left_arrow;
 	bool right_arrow;
 } special_keys_down_t;
+
+enum keyboard_arrow {
+	none, 
+	up,
+	down,
+	left,
+	right
+};
 
 typedef struct keymap_t {
 	char layout_normal[0xff];

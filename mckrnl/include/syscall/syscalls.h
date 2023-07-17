@@ -48,3 +48,8 @@ cpu_registers_t* sys_sound_run(cpu_registers_t* regs);
 cpu_registers_t* sys_time(cpu_registers_t* regs);
 
 cpu_registers_t* sys_set_color(cpu_registers_t* regs);
+
+cpu_registers_t* sys_async_getarrw(cpu_registers_t* regs);
+
+cpu_registers_t* sys_vcursor_get(cpu_registers_t* regs);
+

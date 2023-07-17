@@ -20,6 +20,39 @@ char* color_pallet[] = {
 	"white"
 };
 
+char zerro_buf[80 * 25 * 2] = { 0 };
+
+void ansi_clear_from_cursor() {
+	int x, y;
+	vcursor_get(&x, &y);
+
+	assert(vmode() == TEXT_80x25);
+
+	int offset = (y * 80 + x) * 2;
+
+	vpoke(offset, (uint8_t*) zerro_buf, sizeof(zerro_buf) - offset);
+}
+
+void ansi_clear_from_cursor_eol() {
+	int x, y;
+	vcursor_get(&x, &y);
+
+	assert(vmode() == TEXT_80x25);
+
+	int offset = (y * 80 + x) * 2;
+
+	vpoke(offset, (uint8_t*) zerro_buf, (25 - x) * 2);
+}
+
+
+void ansi_debug(char f, int* argv, int argc) {
+	printf("%c(", f);
+	for (int i = 0; i < argc; i++) {
+		printf("%d;", argv[i]);
+	}
+	printf(")\n");
+}
+
 #warning TODO: complete
 void ansi_run(char f, int* argv, int argc) {
 	switch (f) {
@@ -28,29 +61,56 @@ void ansi_run(char f, int* argv, int argc) {
 				if (argc == 0) {
 					set_color("black", true);
 					set_color("white", false);
-				}
-				for (int i = 0; i < argc; i++) {
-					switch (argv[i]) {
-						case 0:
-							{
-								set_color("black", true);
-								set_color("white", false);
-							}
-							break;
-						case 30:
-						case 31:
-						case 32:
-						case 33:
-						case 34:
-						case 35:
-						case 36:
-						case 37:
-							{
-								set_color(color_pallet[argv[i] - 30], false);
-							}
+				} else {
+					for (int i = 0; i < argc; i++) {
+						switch (argv[i]) {
+							case 0:
+								{
+									set_color("black", true);
+									set_color("white", false);
+								}
+								break;
+							case 30:
+							case 31:
+							case 32:
+							case 33:
+							case 34:
+							case 35:
+							case 36:
+							case 37:
+								{
+									set_color(color_pallet[argv[i] - 30], false);
+								}
+						}
 					}
 				}
 			}
+			break;
+		case 'H':
+			if (argc == 0) {
+				vcursor(0, 0);
+			} else if (argc == 2) {
+				vcursor(MIN(25, argv[1] - 1), MIN(80, argv[0] - 1));
+			} else {
+				ansi_debug(f, argv, argc);
+			}
+			break;
+		case 'J':
+			if (argc == 0) {
+				ansi_clear_from_cursor();
+			} else {
+				ansi_debug(f, argv, argc);
+			}
+			break;
+		case 'K':
+			if (argc == 0) {
+				ansi_clear_from_cursor_eol();
+			} else {
+				ansi_debug(f, argv, argc);
+			}
+			break;
+		default:
+			ansi_debug(f, argv, argc);
 			break;
 	}
 }
@@ -71,6 +131,9 @@ void ansi_process(char* ansi) {
 			ansi_run(*ansi, args, argc);
 			return;
 		} else if (*ansi == 0) {
+			return;
+		} else if (!isdigit(*ansi)) {
+			printf("Malformed ansi: %c\n", *ansi);
 			return;
 		}
 		ansi = __libc_parse_number(ansi, &args[argc++]);

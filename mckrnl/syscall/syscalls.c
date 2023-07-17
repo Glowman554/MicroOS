@@ -59,6 +59,8 @@ void init_syscalls() {
 	register_syscall(SYS_SOUND_RUN_ID, sys_sound_run);
 	register_syscall(SYS_TIME_ID, sys_time);
 	register_syscall(SYS_SET_COLOR_ID, sys_set_color);
+	register_syscall(SYS_ASYNC_GETARRW_ID, sys_async_getarrw);
+	register_syscall(SYS_VCURSOR_GET_ID, sys_vcursor_get);
 
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);

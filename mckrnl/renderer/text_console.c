@@ -128,6 +128,11 @@ void text_console_vcursor(char_output_driver_t* driver, int x, int y) {
 	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
 }
 
+void text_console_vcursor_get(char_output_driver_t* driver, int* x, int* y) {
+	*x = text_console_x;
+	*y = text_console_y;
+}
+
 char* color_table[] = {
 	"black",
 	"blue",
@@ -172,5 +177,6 @@ char_output_driver_t text_console_driver = {
 	.vmode = text_console_driver_vmode,
 	.vpoke = text_console_driver_vpoke,
 	.vcursor = text_console_vcursor,
+	.vcursor_get = text_console_vcursor_get,
 	.set_color = text_console_set_color
 };

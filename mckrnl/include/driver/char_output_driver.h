@@ -15,6 +15,7 @@ typedef struct char_output_driver {
 	int (*vmode)(struct char_output_driver*);
 	void (*vpoke)(struct char_output_driver*, uint32_t offset, uint8_t value);
 	void (*vcursor)(struct char_output_driver*, int x, int y);
+	void (*vcursor_get)(struct char_output_driver*, int* x, int* y);
 
 	void (*set_color)(struct char_output_driver*, char* color, bool background);
 } char_output_driver_t;

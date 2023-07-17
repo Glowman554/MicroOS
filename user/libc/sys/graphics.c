@@ -16,6 +16,10 @@ void vcursor(int x, int y) {
 	asm volatile("int $0x30" : : "a"(SYS_VCURSOR_ID), "b"(x), "c"(y));
 }
 
+void vcursor_get(int* x, int* y) {
+	asm volatile("int $0x30" : : "a"(SYS_VCURSOR_GET_ID), "b"(x), "c"(y));
+}
+
 void set_color(char* color, bool background) {
 	asm volatile("int $0x30" : : "a"(SYS_SET_COLOR_ID), "b"(color), "c"(background));
 }

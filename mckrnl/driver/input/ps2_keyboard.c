@@ -9,12 +9,12 @@
 #include <memory/vmm.h>
 #include <assert.h>
 
-// special_driver_data: byte 0 == char, byte 1 == bool special_key_next, byte 2 == bool special_code, byte 3 - 1023 == keymap path
 
 #define KBD_CHAR 0
-#define KBD_SPECIAL_KEY_NEXT 1
-#define KBD_SPECIAL_CODE 2
-#define KBD_KEYMAP_PATH 3
+#define KBD_ARRW 1
+#define KBD_SPECIAL_KEY_NEXT 2
+#define KBD_SPECIAL_CODE 3
+#define KBD_KEYMAP_PATH 4
 #define KBD_SPECIAL_KEYS 1024
 
 bool ps2_keyboard_is_device_present(driver_t* driver) {
@@ -52,24 +52,28 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 						special_keys_down->right_ctrl = false;
 						break;
 					case 0x48: //Up arrow down
+						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = up;
 						special_keys_down->up_arrow = true;
 						break;
 					case 0xC8: //Up arrow up
 						special_keys_down->up_arrow = false;
 						break;
 					case 0x50: //Down arrow down
+						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = down;
 						special_keys_down->down_arrow = true;
 						break;
 					case 0xD0: //Down arrow up
 						special_keys_down->down_arrow = false;
 						break;
 					case 0x4B: //Left arrow down
+						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = left;
 						special_keys_down->left_arrow = true;
 						break;
 					case 0xCB: //Left arrow down
 						special_keys_down->left_arrow = false;
 						break;
 					case 0x4D: //Right arrow down
+						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = right;
 						special_keys_down->right_arrow = true;
 						break;
 					case 0xCD: //Right arrow up
@@ -157,6 +161,13 @@ char ps2_keyboard_async_getc(char_input_driver_t* driver) {
 	return c;
 }
 
+char ps2_keyboard_async_getarrw(char_input_driver_t* driver) {
+	char c = ((char*) driver->driver.driver_specific_data)[KBD_ARRW];
+	((char*) driver->driver.driver_specific_data)[KBD_ARRW] = 0;
+
+	return c;
+}
+
 char_input_driver_t* get_ps2_driver() {
 	char_input_driver_t* driver = (char_input_driver_t*) vmm_alloc(1);
 	memset(driver, 0, 4096);
@@ -166,6 +177,7 @@ char_input_driver_t* get_ps2_driver() {
 	driver->driver.init = ps2_keyboard_init;
 	
 	driver->async_getc = ps2_keyboard_async_getc;
+	driver->async_getarrw = ps2_keyboard_async_getarrw;
 
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
 	

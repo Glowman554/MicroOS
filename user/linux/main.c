@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 
 restart:
 	{
-		set_env(SYS_ENV_PIN, 1);
+		set_env(SYS_ENV_PIN, (void*) 1);
 		printf("Loading \"%s\"...\n", image_file_name);
 		FILE* f = fopen(image_file_name, "rb");
 		if (!f) {
@@ -104,7 +104,7 @@ restart:
             case 0x7777:
                 goto restart;  // syscon code for restart
             case 0x5555:
-                printf("POWEROFF@0x%08x%08x\n", core->cycleh, core->cyclel);
+                // printf("POWEROFF@0x%08x%08x\n", core->cycleh, core->cyclel);
                 return 0;
             default:
                 printf("Unknown failure\n");
@@ -114,13 +114,50 @@ restart:
 }
 
 char buf;
+char arrow;
+int send_state = 0;
 int ReadKBByte() {
+	if (arrow) {
+		switch (send_state) {
+			case 0:
+				send_state++;
+				return 27;
+			case 1:
+				send_state++;
+				return '[';
+			case 2:
+				{
+					send_state = 0;
+					char ret;
+					switch (arrow) {
+						case 1:
+							ret = 'A';
+							break;
+						case 2:
+							ret = 'B';
+							break;
+						case 3:
+							ret = 'D';
+							break;
+						case 4:
+							ret = 'C';
+							break;
+					}
+					arrow = 0;
+					return ret;
+				}
+		}
+	}
 	return buf;
 }
 
 int IsKBHit() {
+	if (arrow) {
+		return 1;
+	}
+	arrow = async_getarrw();
     buf = async_getc();
-    return buf != 0;
+    return buf != 0 || arrow != 0;
 }
 
 uint32_t HandleException(uint32_t ir, uint32_t code) { return code; }

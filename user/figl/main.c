@@ -10,7 +10,7 @@ char* get_char(char c, char* figl) {
 	assert(magic == 0xf181babe);
 
 	uint32_t* offsets = (uint32_t*) (figl + sizeof(uint32_t));
-	uint32_t offset = offsets[c];
+	uint32_t offset = offsets[(int) c];
 	assert(offset != 0);
 	return &figl[offset + 0xff * sizeof(uint32_t) + sizeof(uint32_t)];
 }
