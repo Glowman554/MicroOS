@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <input.h>
+#include <buildin/ansi.h>
 
 void print_usage(char* prog) {
 	printf("Usage: %s <file-name>\n\n", prog);
@@ -56,8 +57,6 @@ int main(int argc, char* argv[], char* envp[]) {
 		}
 	}
 
-	printf("buffer_ln_idx: %d\n", state.buffer_ln_idx);
-
 	while (true) {
 		render_tui(&state);
 		if (listen_input(&state)) {
@@ -67,6 +66,6 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	free(state.input_buffer);
 	fclose(state.file);
-	system("clear");
+	ansi_printf("\033[H\033[J");
 	return 0;
 }

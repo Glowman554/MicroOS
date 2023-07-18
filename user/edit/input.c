@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <sys/getc.h>
+
 void move_up(edit_state_t* state) {
 	if (state->buffer_ln_idx <= 0 || state->buffer_idx <= 0) {
 	} else {
@@ -64,7 +66,25 @@ void move_right(edit_state_t* state) {
 
 
 bool listen_input(edit_state_t* state) {
-	char input = getchar();
+	char input = 0;
+	while ((input = async_getc()) == 0) {
+		switch (async_getarrw()) {
+			case 1:
+				move_up(state);
+				return false;
+			case 2:
+				move_down(state);
+				return false;
+			case 3:
+				move_left(state);
+				return false;
+			case 4:
+				move_right(state);
+				return false;
+		}
+	}
+
+
 
 	if (!state->is_in_insert_mode) {
 		switch (input) {
