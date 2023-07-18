@@ -1,0 +1,27 @@
+From 369fa917e12d0c9034b4b8f9195a15a648120f8f Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Tue, 18 Jul 2023 23:09:07 +0200
+Subject: [PATCH 2/2] fixed free(NULL) call
+
+---
+ SOURCE/LIBC/SYSTEM.INC | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/SOURCE/LIBC/SYSTEM.INC b/SOURCE/LIBC/SYSTEM.INC
+index 5cf595d..2afb267 100644
+--- a/SOURCE/LIBC/SYSTEM.INC
++++ b/SOURCE/LIBC/SYSTEM.INC
+@@ -44,7 +44,10 @@ init_memory:
+ exit_program:
+ 	movzx	eax,al
+ 	push	eax
++	mov eax, [additional_memory]
++	jz .no_free
+ 	ccall	free,[additional_memory]
++.no_free:
+ 	pop	eax
+ 	ccall	exit,eax
+ 	mov	esp,[stack_frame]
+-- 
+2.34.1
+
