@@ -72,7 +72,7 @@ void render_tui(edit_state_t* state) {
 	if (!cursor_drawn) {
 		if (!initial_line_drawn) {
 			sprintf(buff, "%d.", current_line);
-			draw_string(0, cur_y, buff, BACKGROUND_BLACK | FOREGROUND_WHITE);
+			draw_string(0, cur_y, buff, BACKGROUND_BLACK | FOREGROUND_LIGHTGRAY);
 		}
 		draw_char(cur_x, cur_y, '|', BACKGROUND_BLACK | FOREGROUND_CYAN);
 	}

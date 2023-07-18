@@ -84,6 +84,7 @@ int vsprintf(char *buf, const char *str, va_list args) {
 		}
 		str++;
 	}
+	*buf = 0;
 
 out:
 	return strlen(orig_buf);
