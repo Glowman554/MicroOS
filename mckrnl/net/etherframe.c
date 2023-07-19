@@ -23,7 +23,6 @@ void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uin
 	stack->driver->send(stack->driver, buffer, size + sizeof(ether_frame_header_t));
 
 	vmm_free(buffer, (sizeof(ether_frame_header_t) + size) / 4096 + 1);
-	abortf("idk");
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {
