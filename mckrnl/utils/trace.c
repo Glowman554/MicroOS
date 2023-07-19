@@ -18,7 +18,10 @@ symbol_t* symbols = NULL;
 int symbols_count = 0;
 
 void register_symbol(symbol_t sym) {
-	// debugf("new symbol: %s @ %x", sym.name, sym.address);
+	if (sym.name[0] == '.' && sym.name[1] == 'L') {
+		// debugf("dropping local symbol: %s @ %x", sym.name, sym.address);
+		return;
+	}
 	symbols = vmm_resize(sizeof(symbol_t), symbols_count, symbols_count + 1, symbols);
 	symbols[symbols_count] = sym;
 	symbols_count++;
