@@ -33,6 +33,7 @@
 
 #include <utils/multiboot.h>
 #include <utils/string.h>
+#include <utils/trace.h>
 
 #include <utils/argparser.h>
 
@@ -57,6 +58,19 @@
 // 	.name = test_name
 // };
 
+void* find_multiboot_module(char* name) {
+	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
+	for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
+		if (strcmp(modules[i].cmdline, name) == 0) {
+			return modules[i].mod_start;
+		}
+	}
+	abortf("Could not find multiboot module %s", name);
+	return NULL;
+}
+
+
+
 void _main(multiboot_info_t* mb_info) {	
 	text_console_clrscr();
 
@@ -70,6 +84,11 @@ void _main(multiboot_info_t* mb_info) {
 	vmm_init();
 
 	set_gdt(new_gdt());
+
+	char symbols_module[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--syms", symbols_module)) {
+		init_global_symbols(find_multiboot_module(symbols_module));
+	}
 
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);
@@ -93,14 +112,9 @@ void _main(multiboot_info_t* mb_info) {
 
 	vfs_init();
 
-	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
 	char initrd_module[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--initrd", initrd_module)) {
-		for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
-			if (strcmp(modules[i].cmdline, initrd_module) == 0) {
-				vfs_mount(initrd_mount((void*) modules[i].mod_start));
-			}
-		}
+		vfs_mount(initrd_mount((void*) find_multiboot_module(initrd_module)));
 	}
 
 	vfs_mount((vfs_mount_t*) &global_devfs);

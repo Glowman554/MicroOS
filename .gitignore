@@ -2,6 +2,7 @@
 *.elf
 *.iso
 *.saf
+*.syms
 res
 mckrnl/target
 dump.dat

@@ -1,5 +1,8 @@
 #include <utils/trace.h>
-
+#include <stdio.h>
+#include <stddef.h>
+#include <memory/vmm.h>
+#include <string.h>
 
 void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) {
 	stackframe_t* frame;
@@ -9,4 +12,69 @@ void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) {
 		callback(f, frame->eip);
 		frame = frame->ebp;
 	}
+}
+
+symbol_t* symbols = NULL;
+int symbols_count = 0;
+
+void register_symbol(symbol_t sym) {
+	// debugf("new symbol: %s @ %x", sym.name, sym.address);
+	symbols = vmm_resize(sizeof(symbol_t), symbols_count, symbols_count + 1, symbols);
+	symbols[symbols_count] = sym;
+	symbols_count++;
+}
+
+char* resolve_symbol_from_addr(uint32_t address) {
+	for(int i = 0; i < symbols_count; i++) {
+		if(address >= symbols[i].address && address < symbols[i + 1].address && symbols[i + 1].address != 0xffffffff) {
+			return symbols[i].name;
+		}
+	}
+
+	return NULL;
+}
+
+uint32_t resolve_symbol_from_name(char* name) {
+	for (int i = 0; i < symbols_count; i++) {
+		if (strcmp(name, symbols[i].name) == 0) {
+			return symbols[i].address;
+		}
+	}
+	return 0;
+}
+
+void init_global_symbols(char* symfile) {
+	int idx = 0;
+	while (1) {
+		uint32_t addr = 0;
+		while (1) {
+			if (symfile[idx] >= '0' && symfile[idx] <= '9') {
+				addr = addr * 16 + (symfile[idx] - '0');
+			} else if (symfile[idx] >= 'a' && symfile[idx] <= 'f') {
+				addr = addr * 16 + (symfile[idx] - 'a' + 10);
+			} else if (symfile[idx] >= 'A' && symfile[idx] <= 'F') {
+				addr = addr * 15 + (symfile[idx] - 'A' + 10);
+			} else {
+				break;
+			}
+			idx++;
+		}
+
+		symbol_t sym = { .address = addr, .name = { 0 } };
+		char* sym_ptr = sym.name;
+
+		if (symfile[idx] == ' ') {
+			idx++;
+			while (symfile[idx] != '\n') {
+				*sym_ptr++ = symfile[idx];
+				idx++;
+			}
+			idx++;
+		} else {
+			break;
+		}
+		register_symbol(sym);
+	}
+
+	debugf("Loaded %d symbols!", symbols_count);
 }

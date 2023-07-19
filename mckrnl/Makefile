@@ -15,6 +15,9 @@ ifeq ($(SANITIZE), true)
 	CFLAGS += -fsanitize=undefined -DSANITIZE
 endif
 
+mckrnl.syms: mckrnl.elf
+	bash gen_syms.sh $^ $@
+
 mckrnl.elf: $(OBJS)
 	@echo LD $^
 	@$(LD) $(LDFLAGS) -o $@ $^

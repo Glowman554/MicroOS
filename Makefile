@@ -21,6 +21,7 @@ initrd.saf:
 
 iso: all initrd.saf
 	cp mckrnl/mckrnl.elf cdrom/.
+	cp mckrnl/mckrnl.syms cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
 	grub-mkrescue -o cdrom.iso cdrom/

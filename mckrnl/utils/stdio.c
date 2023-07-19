@@ -80,8 +80,13 @@ int _debugf(const char* str) {
 }
 
 void stacktrace_print(int frame_num, uint32_t eip) {
-	printf("[ %d 0x%x ]\n", frame_num, eip);
-	debugf("[ %d 0x%x ]", frame_num, eip);
+	char* symbol = resolve_symbol_from_addr(eip);
+	if (symbol) {
+		uint32_t symbol_start = resolve_symbol_from_name(symbol);
+		printf("[ 0x%x ] <%s + %d>\n", eip, symbol, eip - symbol_start);
+	} else {
+		printf("[ 0x%x ] <unknown>\n", eip);
+	}
 }
 
 int abortf(const char *format, ...) {
