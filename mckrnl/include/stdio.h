@@ -13,6 +13,8 @@ extern char_output_driver_t* printf_driver;
 
 int sprintf(char *buf, const char *fmt, ...);
 
+void stacktrace_print(int frame_num, uint32_t eip);
+
 int read_core_id();
 
 #ifdef DEBUG

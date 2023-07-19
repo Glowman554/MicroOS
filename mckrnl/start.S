@@ -23,6 +23,7 @@ _start:
 
 	// Stack initialisieren
 	mov $kernel_stack, %esp
+	xor %ebp, %ebp
 
 	// CPP-Code aufrufen und Multiboot-Infostruktur als Parameter uebergeben
 	push %ebx

@@ -9,6 +9,7 @@
 #include <driver/apic/lapic.h>
 #include <driver/acpi/madt.h>
 #include <utils/lock.h>
+#include <utils/trace.h>
 
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
@@ -78,6 +79,11 @@ int _debugf(const char* str) {
 #endif
 }
 
+void stacktrace_print(int frame_num, uint32_t eip) {
+	printf("[ %d 0x%x ]\n", frame_num, eip);
+	debugf("[ %d 0x%x ]", frame_num, eip);
+}
+
 int abortf(const char *format, ...) {
 	__asm__ volatile("cli");
 	
@@ -90,6 +96,9 @@ int abortf(const char *format, ...) {
 
 	printf("(/ o_o)/ Oh no! Something terrible has happened...\n");
 	printf("Kernel PANIC -> %s\n", buf);
+
+	printf("Call Trace:\n");
+	stack_unwind(100, stacktrace_print);
 
 	while (true) {
 		halt();

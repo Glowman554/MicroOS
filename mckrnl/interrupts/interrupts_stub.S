@@ -74,6 +74,7 @@ intr_common_handler:
 
 
 	push %esp
+	xor %ebp, %ebp
 	call handle_interrupt
 	mov %eax, %esp
 
