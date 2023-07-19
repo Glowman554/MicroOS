@@ -62,7 +62,7 @@ void* find_multiboot_module(char* name) {
 	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
 	for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
 		if (strcmp(modules[i].cmdline, name) == 0) {
-			return modules[i].mod_start;
+			return (void*) modules[i].mod_start;
 		}
 	}
 	abortf("Could not find multiboot module %s", name);
