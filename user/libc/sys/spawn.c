@@ -17,3 +17,9 @@ bool get_proc_info(int pid) {
 void yield() {
 	asm volatile("int $0x30" : : "a"(SYS_YIELD_ID));
 }
+
+int get_task_list(task_list_t* out, int max) {
+	int read;
+	asm volatile("int $0x30" : "=d"(read) : "a"(SYS_TASK_LIST_GET_ID), "b"(out), "c"(max));
+	return read;
+}

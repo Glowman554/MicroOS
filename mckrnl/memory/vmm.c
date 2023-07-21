@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include <assert.h>
 
 vmm_context_t* kernel_context;
 
@@ -264,4 +265,17 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 	}
 
 	return ptr;
+}
+
+void vmm_read_context(void* ptr, void* out, int sz, vmm_context_t* context) {
+	static uint8_t buffer[0x1000] = { 0 };
+	assert(sz <= sizeof(buffer));
+
+	vmm_context_t current = vmm_get_current_context();
+
+	vmm_activate_context(context);
+	memcpy(buffer, ptr, sz);
+
+	vmm_activate_context(&current);
+	memcpy(out, buffer, sz);
 }

@@ -1,6 +1,6 @@
 #include <render.h>
 
-#include <graphics.h>
+#include <buildin/graphics.h>
 #include <string.h>
 
 void render_tui(edit_state_t* state) {

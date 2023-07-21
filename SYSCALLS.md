@@ -40,3 +40,5 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_SET_COLOR | 0x20 | color | background | -- | -- | -- | -- |
 | SYS_ASYNC_GETARRW | 0x21 | c (return) | - | - | - | - | - |
+| SYS_VCURSOR_GET_ID | 0x22 | &x | &y | - | - | - |
+| SYS_TASK_LIST_GET | 0x23 | &out | max | actual | - | - |

@@ -5,7 +5,7 @@
 #include <sys/sound.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/getc.h>
+#include <sys/spawn.h>
 #include <sys/graphics.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
@@ -61,6 +61,12 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	// sound_clear(0);
 
-	set_color("green", false);
-	set_color("white", true);
+	// set_color("green", false);
+	// set_color("white", true);
+	// task_list_t* list = malloc(sizeof(task_list_t) * 10);
+	// int m = get_task_list(list, 10);
+	// for (int i = 0; i < m; i++) {
+	// 	printf("%d: %s\n", list[i].pid, list[i].name);
+	// }
+	while (1);
 }

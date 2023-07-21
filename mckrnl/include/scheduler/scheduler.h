@@ -53,4 +53,12 @@ void resource_dealloc(task_t* self);
 
 task_t* get_self();
 
+
+typedef struct task_list {
+	char name[128];
+	int pid;
+} task_list_t;
+
+int read_task_list(task_list_t* out, int max);
+
 #define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }

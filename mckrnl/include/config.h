@@ -62,5 +62,6 @@
 
 #define SYS_VCURSOR_GET_ID 0x22
 
+#define SYS_TASK_LIST_GET_ID 0x23
 
 #define HOSTNAME "MicroOS"

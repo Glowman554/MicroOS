@@ -252,3 +252,20 @@ task_t* get_task_by_pid(int pid) {
 task_t* get_self() {
 	return &tasks[current_task];
 }
+
+int read_task_list(task_list_t* out, int max) {
+	int j = 0;
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (tasks[i].active) {
+			char* argv;
+			vmm_read_context(tasks[i].argv, &argv, sizeof(char*), tasks[i].context);
+			vmm_read_context(argv, out[j].name, sizeof(out[j].name), tasks[i].context);
+			out[j++].pid = tasks[i].pid;
+
+			if (j >= max) {
+				return j;
+			}
+		}
+	}
+	return j;
+}

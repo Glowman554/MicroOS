@@ -1,4 +1,4 @@
-#include <graphics.h>
+#include <buildin/graphics.h>
 #include <sys/graphics.h>
 #include <assert.h>
 
@@ -40,4 +40,9 @@ void draw_string(int x, int y, char* str, int color) {
 		draw_char(x + i, y, str[i], color);
 		i++;
 	}
+}
+
+void set_pixel(int x, int y, int color) {
+	fb[(y * get_width() + x) * 2] = ' ';
+	fb[(y * get_width() + x) * 2 + 1] = color;
 }
