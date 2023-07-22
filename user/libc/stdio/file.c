@@ -130,6 +130,16 @@ size_t fputc(char c, FILE* stream) {
 	return 0;
 }
 
+int getc(FILE* stream) {
+	if (stream->pos >= filesize(stream->inner_fd)) {
+		return EOF;
+	} else {
+		char c;
+		fread(&c, 1, 1, stream);
+		return c;
+	}
+}
+
 void init_stdio() {
 	stdout = malloc(sizeof(FILE));
 	memset(stdout, 0, sizeof(FILE));

@@ -23,6 +23,8 @@ extern struct FILE* stdout;
 extern struct FILE* stdin;
 extern struct FILE* stderr;
 
+#define EOF 0xffff
+
 FILE* fopen(const char* filename, const char* mode);
 FILE* freopen(const char* filename, const char* mode, FILE* stream);
 int fclose(FILE* stream);
@@ -38,6 +40,7 @@ bool resolve(char* path, char* output);
 bool resolve_check(char* path, char* output, bool check_childs);
 
 int gets(char* buffer);
+int getc(FILE* stream);
 
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 
