@@ -161,9 +161,6 @@ int init_elf(void* image, char** argv, char** envp) {
 	return task->pid;
 }
 
-
-// IMPORTANT: This function must be called in ring 0
-// IMPORTANT: This function should free every pmm allocation made in the pagemap witch isnt in the kernel context too
 void exit_task(task_t* task) {
 	asm volatile("cli");
 
@@ -178,7 +175,7 @@ void exit_task(task_t* task) {
 	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
 	asm volatile("sti");
-	while(1);
+	asm volatile("hlt");
 }
 
 int current_task = 0;

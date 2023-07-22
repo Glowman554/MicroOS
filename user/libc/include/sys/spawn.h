@@ -12,3 +12,5 @@ typedef struct task_list {
 } task_list_t;
 
 int get_task_list(task_list_t* out, int max);
+
+void kill(int pid);

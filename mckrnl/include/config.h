@@ -64,4 +64,6 @@
 
 #define SYS_TASK_LIST_GET_ID 0x23
 
+#define SYS_KILL_ID 0x24
+
 #define HOSTNAME "MicroOS"

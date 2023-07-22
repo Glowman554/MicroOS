@@ -68,5 +68,6 @@ int main(int argc, char* argv[], char* envp[]) {
 	// for (int i = 0; i < m; i++) {
 	// 	printf("%d: %s\n", list[i].pid, list[i].name);
 	// }
-	while (1);
+	kill(0); // init task
+	kill(6); // init task
 }
