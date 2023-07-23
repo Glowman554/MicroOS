@@ -1,4 +1,4 @@
-all:
+all: res
 	make -C mckrnl
 	make -C user
 
