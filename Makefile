@@ -55,6 +55,10 @@ clean: iso
 	make -C mckrnl clean
 	make -C user clean
 
+deepclean:
+	rm -rfv res
+	git clean -dxf
+
 libs.zip: all
 	mkdir -p res/libs/include
 	cp user/lib/* res/libs/. -rf
