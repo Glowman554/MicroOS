@@ -461,19 +461,23 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
 
+	set_env(SYS_ENV_PIN, (void*) 1); // we dont want that the program executes until init_ipc is done. so just pin ourself until it is done
 	int pid = spawn(executable, (const char**) argv, envp);
 
 	if (pid == -1) {
+		set_env(SYS_ENV_PIN, (void*) 0);
 		return -1;
 	}
 
 	if (already_in_ipc) {
+		set_env(SYS_ENV_PIN, (void*) 0);
 		goto normal_wait;
 	}
 
 	already_in_ipc = true;
 
 	ipc_init_mapping(IPC_CONNECTION_TERMINAL, pid);
+	set_env(SYS_ENV_PIN, (void*) 0);
 	while (get_proc_info(pid)) {
 		if (ipc_init_host(IPC_CONNECTION_TERMINAL)) {
 			goto ipc_tunnel_ok;

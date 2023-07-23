@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 char* strcpy(char* dest, const char* src) {
 	do {
@@ -171,4 +172,39 @@ int strncmp(char* str1, char* str2, int n) {
 	} else {
 		return *str1 - *str2;
 	}
+}
+
+char* strndup(char* str, int n) {
+    int len = strlen(str);
+    int copy_len = len < n ? len : n;
+    char* new_str = malloc(copy_len + 1);
+    if (new_str) {
+        memcpy(new_str, str, copy_len);
+        new_str[copy_len] = '\0';
+    }
+    return new_str;
+}
+
+char *strstr(char* haystack, char* needle) {
+	if (*needle == '\0') {
+        return haystack;
+    }
+
+    while (*haystack) {
+        const char* h = haystack;
+        const char* n = needle;
+        
+        while (*n && *h == *n) {
+            h++;
+            n++;
+        }
+
+        if (*n == '\0') {
+            return haystack;
+        }
+
+        haystack++;
+    }
+
+    return NULL;
 }

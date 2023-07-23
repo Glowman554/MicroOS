@@ -26,6 +26,7 @@ void expand_heap(size_t length);
 void* malloc(size_t size);
 void* realloc(void* ptr, size_t size);
 void free(void* address);
+void* calloc(size_t count, size_t size);
 
 void print_allocations(const char* msg);
 
@@ -40,3 +41,5 @@ __attribute__((noreturn))
 void abort(void);
 
 int atoi(const char *str);
+
+long strtol(const char *nptr, char **endptr, int base);

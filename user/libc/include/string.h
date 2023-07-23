@@ -19,3 +19,7 @@ void* memmove(void* dest, const void* src, uint32_t len);
 char* strtok(char* src_string, char* delim);
 
 int strncmp(char* str1, char* str2, int n);
+
+char* strndup(char* str, int n);
+
+char *strstr(char* haystack, char* needle);

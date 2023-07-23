@@ -188,3 +188,9 @@ void print_allocations(const char* msg) {
 		current_seg = current_seg->next;
 	}
 }
+
+void* calloc(size_t count, size_t size) {
+	void* addr = malloc(count * size);
+	memset(addr, 0, count * size);
+	return addr;
+}
