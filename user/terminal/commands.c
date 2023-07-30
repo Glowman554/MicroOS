@@ -462,6 +462,7 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	const char** envp = (const char**) terminal_envp;
 
 	set_env(SYS_ENV_PIN, (void*) 1); // we dont want that the program executes until init_ipc is done. so just pin ourself until it is done
+	yield();
 	int pid = spawn(executable, (const char**) argv, envp);
 
 	if (pid == -1) {
@@ -470,6 +471,7 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	}
 
 	if (already_in_ipc) {
+		// printf("WARNING: already_in_ipc == true\n");
 		set_env(SYS_ENV_PIN, (void*) 0);
 		goto normal_wait;
 	}
@@ -485,6 +487,7 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 		yield();
 	}
 
+	already_in_ipc = false;
 	goto done;
 
 ipc_tunnel_ok:
