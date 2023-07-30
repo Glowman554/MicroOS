@@ -18,6 +18,8 @@
 
 #define WAIT // enable the wait macro
 
+#define ALLOW_PANIC_CONTINUE
+
 #define SYS_OPEN_ID 0x1
 #define SYS_CLOSE_ID 0x2
 #define SYS_READ_ID 0x3

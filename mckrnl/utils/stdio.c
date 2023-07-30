@@ -8,6 +8,7 @@
 
 #include <driver/apic/lapic.h>
 #include <driver/acpi/madt.h>
+#include <driver/char_input_driver.h>
 #include <utils/lock.h>
 #include <utils/trace.h>
 
@@ -105,6 +106,24 @@ int abortf(const char *format, ...) {
 	printf("Call Trace:\n");
 	stack_unwind(100, stacktrace_print);
 
+#ifdef ALLOW_PANIC_CONTINUE
+	debugf("KERNEL PANIC: Press <x> to continue execution or <h> to halt");
+
+	while (true) {
+		char c = read_serial();
+
+		switch (c) {
+			case 'x':
+			debugf("Continuing...");
+				return 0;
+			case 'h':
+				goto do_halt;
+		}
+	}
+
+do_halt:
+#endif
+	debugf("Halting...");
 	while (true) {
 		halt();
 	}
