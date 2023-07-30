@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/spawn.h>
 #include <sys/graphics.h>
+#include <sys/file.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
 
@@ -68,6 +69,13 @@ int main(int argc, char* argv[], char* envp[]) {
 	// for (int i = 0; i < m; i++) {
 	// 	printf("%d: %s\n", list[i].pid, list[i].name);
 	// }
-	kill(0); // init task
-	kill(6); // init task
+	mkdir("tmp:/aaa");
+	touch("tmp:/aaa/hello.txt");
+	touch("tmp:/hello.txt");
+
+	FILE* f = fopen("tmp:/test.txt", "w");
+	fwrite("hello from a file", 17, 1, f);
+	fclose(f);
+	// kill(0); // init task
+	// kill(6); // init task
 }

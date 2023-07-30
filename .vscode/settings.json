@@ -38,6 +38,8 @@
 		"number_parser.h": "c",
 		"lapic.h": "c",
 		"getc.h": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"stdint.h": "c",
+		"sound.h": "c"
 	}
 }

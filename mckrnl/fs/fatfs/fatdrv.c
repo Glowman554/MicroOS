@@ -132,13 +132,11 @@ dir_t fatfs_dir_at(vfs_mount_t* mount, int idx, char* path) {
 
 		return dir;
 	}
-	
-	FRESULT fr = f_readdir(&dir_, &file_info);
-	assert(fr == FR_OK);
+
 
 	int orig_idx = idx;
 
-	while (idx--) {
+	do {
 		FRESULT res = f_readdir(&dir_, &file_info);
 		if (res != FR_OK || file_info.fname[0] == 0) {
 			dir_t dir = {
@@ -147,7 +145,7 @@ dir_t fatfs_dir_at(vfs_mount_t* mount, int idx, char* path) {
 
 			return dir;
 		}
-	}
+	} while (idx--);
 
 	dir_t dir;
 	memset(&dir, 0, sizeof(dir_t));

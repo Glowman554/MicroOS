@@ -30,6 +30,7 @@
 #include <fs/initrd.h>
 #include <fs/devfs.h>
 #include <fs/fatfs/fatdrv.h>
+#include <fs/ramfs.h>
 
 #include <utils/multiboot.h>
 #include <utils/string.h>
@@ -117,6 +118,7 @@ void _main(multiboot_info_t* mb_info) {
 		vfs_mount(initrd_mount((void*) find_multiboot_module(initrd_module)));
 	}
 
+	vfs_mount(get_ramfs("tmp"));
 	vfs_mount((vfs_mount_t*) &global_devfs);
 	// devfs_register_file(&global_devfs, &test_file);
 

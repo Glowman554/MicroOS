@@ -100,3 +100,25 @@ int strcmp(char* str1, char* str2) {
 	}
 	return *str1 - *str2;
 }
+
+char* copy_until(char until, char* src, char* dest) {
+	int i = 0;
+	while (src[i] != '\0' && src[i] != until) {
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = 0;
+
+	return &src[i + (src[i] == '\0' ? 0 : 1)];
+}
+
+#define isupper(c) (c >= 'A' && c <= 'Z')
+#define tolower(c) (isupper(c) ? c - ('A' - 'a') : c)
+
+int strcasecmp(char* str1, char* str2) {
+	while (*str1 && (tolower(*str1) == tolower(*str2))) {
+		++str1;
+		++str2;
+	}
+	return tolower(*str1) - tolower(*str2);
+}

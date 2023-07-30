@@ -123,7 +123,7 @@ file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 }
 
 void initrd_close(vfs_mount_t* mount, file_t* f) {
-	vmm_free(f, 0);
+	vmm_free(f, 1);
 }
 
 void initrd_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -151,7 +151,7 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 
 	if (folder == NULL) {
 		dir_t dir = {
-			.is_none = false,
+			.is_none = true,
 		};
 		return dir;
 	}
