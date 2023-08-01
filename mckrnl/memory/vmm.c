@@ -55,9 +55,12 @@ void vmm_init(void) {
 		vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
 	}
 
+#ifdef TEXT_MODE_EMULATION
+    debugf("Mapping framebuffer...");
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
 		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
     }
+#endif
 
 	vmm_map_page(kernel_context, (uintptr_t) NULL, (uintptr_t) NULL, 0);
 

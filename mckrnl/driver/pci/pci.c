@@ -35,7 +35,7 @@ void enumerate_pci() {
 					}
 				}
 
-				debugf("Vendor name: %s, Device name: %s, Device class: %s, Sub class name: %s, Prog interface name: %s", get_vendor_name(pci_header.vendor_id), get_device_name(pci_header.vendor_id, pci_header.device_id), device_classes[pci_header.class_], get_subclass_name(pci_header.class_, pci_header.subclass), get_prog_IF_name(pci_header.class_, pci_header.subclass, pci_header.prog_if));
+				debugf("Vendor name: %s, Device name: %s, Device class: %s, Sub class name: %s, Prog interface name: %s", get_vendor_name(pci_header.vendor_id), get_device_name(pci_header.vendor_id, pci_header.device_id), get_device_class(pci_header.class_), get_subclass_name(pci_header.class_, pci_header.subclass), get_prog_IF_name(pci_header.class_, pci_header.subclass, pci_header.prog_if));
 			}
 		}
 	}

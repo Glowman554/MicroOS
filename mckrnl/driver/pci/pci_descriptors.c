@@ -23,6 +23,14 @@ const char* device_classes[] = {
 	"Non Essential Instrumentation"
 };
 
+const char* get_device_class(uint8_t _class) {
+    if (_class > sizeof(device_classes) / sizeof(device_classes[0])) {
+        return "unknown";
+    } else {
+        return device_classes[_class];
+    }
+}
+
 const char* get_vendor_name(uint16_t vendor_ID) {
 	switch (vendor_ID) {
 		case 0x8086:
