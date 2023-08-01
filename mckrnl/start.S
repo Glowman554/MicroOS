@@ -1,13 +1,31 @@
+#include "include/config.h"
+
 .section multiboot
 #define MB_MAGIC 0x1badb002
-#define MB_FLAGS 0x0
+
+#ifdef TEXT_MODE_EMULATION
+#define MB_FLAGS (1 << 2)
+#else
+#define MB_FLAGS 0
+#endif
+
 #define MB_CHECKSUM -(MB_MAGIC + MB_FLAGS)
 
 // Der Multiboot-Header
 .align 4
-.int	MB_MAGIC
-.int	MB_FLAGS
-.int	MB_CHECKSUM
+.int	MB_MAGIC     // 0
+.int	MB_FLAGS     // 4
+.int	MB_CHECKSUM  // 8
+.int    0 // unused  // 12
+.int    0 // unused  // 16
+.int    0 // unused  // 20
+.int    0 // unused  // 24
+.int    0 // unused  // 28
+.int    0 // mode    // 32
+.int    0 // width   // 36
+.int    0 // height  // 40
+.int    32 // depth  // 44
+
 
 .section .text
 

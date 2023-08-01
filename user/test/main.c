@@ -11,6 +11,26 @@
 
 #define TIMESERVER "time-a-g.nist.gov"
 
+char* color_table[] = {
+	"black",
+	"blue",
+	"green",
+	"cyan",
+	"red",
+	"magenta",
+	"brown",
+	"light_grey",
+	"grey",
+	"light_blue",
+	"light_green",
+	"light_cyan",
+	"light_red",
+	"light_magenta",
+	"yellow",
+	"white"
+};
+
+
 int main(int argc, char* argv[], char* envp[]) {
 	// int nic_id = 0;
 	// ip_u ip = dns_resolve_A(nic_id, argv[1]);
@@ -69,13 +89,18 @@ int main(int argc, char* argv[], char* envp[]) {
 	// for (int i = 0; i < m; i++) {
 	// 	printf("%d: %s\n", list[i].pid, list[i].name);
 	// }
-	mkdir("tmp:/aaa");
-	touch("tmp:/aaa/hello.txt");
-	touch("tmp:/hello.txt");
+	// mkdir("tmp:/aaa");
+	// touch("tmp:/aaa/hello.txt");
+	// touch("tmp:/hello.txt");
 
-	FILE* f = fopen("tmp:/test.txt", "w");
-	fwrite("hello from a file", 17, 1, f);
-	fclose(f);
+	// FILE* f = fopen("tmp:/test.txt", "w");
+	// fwrite("hello from a file", 17, 1, f);
+	// fclose(f);
 	// kill(0); // init task
 	// kill(6); // init task
+
+    for (int i = 0; i < 16; i++) {
+        set_color(color_table[i], false);
+        printf("Hello World!\n");
+    }
 }

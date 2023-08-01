@@ -13,7 +13,9 @@ typedef struct char_output_driver {
 
 	// optional
 	int (*vmode)(struct char_output_driver*);
-	void (*vpoke)(struct char_output_driver*, uint32_t offset, uint8_t value);
+	void (*vpoke)(struct char_output_driver*, uint32_t offset, uint8_t* val, uint32_t range);
+	void (*vpeek)(struct char_output_driver*, uint32_t offset, uint8_t* val, uint32_t range);
+
 	void (*vcursor)(struct char_output_driver*, int x, int y);
 	void (*vcursor_get)(struct char_output_driver*, int* x, int* y);
 

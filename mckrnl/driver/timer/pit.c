@@ -23,6 +23,7 @@ cpu_registers_t* pit_interrupt_handler(cpu_registers_t* registers, void* data) {
 }
 
 void pit_set_divisor(uint16_t divisor) {
+    outb(0x43, 0x34);
 	outb(0x40, (uint8_t)(divisor & 0x00ff));
 	outb(0x40, (uint8_t)(divisor & 0xff00) >> 8);
 }

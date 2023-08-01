@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 	fsize(fp, file_size);
 	if (file_size == 0) {
 		fclose(fp);
-		return;
+		return 0;
 	}
 	
 	void* buffer = malloc(file_size);

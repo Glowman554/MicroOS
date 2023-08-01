@@ -48,4 +48,6 @@
 
 #define SYS_KILL_ID 0x24
 
+#define SYS_VPEEK_ID 0x25
+
 // #define ALLOC_DEBUG

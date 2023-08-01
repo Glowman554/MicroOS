@@ -1,5 +1,7 @@
 #include <driver/driver.h>
 #include <renderer/text_console.h>
+#include <renderer/psf1_font.h>
+#include <renderer/text_mode_emulation.h>
 #include <stdio.h>
 
 #include <interrupts/gdt.h>
@@ -73,10 +75,15 @@ void* find_multiboot_module(char* name) {
 
 
 void _main(multiboot_info_t* mb_info) {	
-	text_console_clrscr();
+   	global_multiboot_info = mb_info;
 
-	debugf("Setting global multiboot info to %p", mb_info);
-	global_multiboot_info = mb_info;
+#ifdef TEXT_MODE_EMULATION
+    char font_module[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--font", font_module)) {
+		init_text_mode_emulation(psf1_buffer_to_font(find_multiboot_module(font_module)));
+	}
+#endif
+	text_console_clrscr();
 
 	init_initial_gdt();
 	init_interrupts();
@@ -104,8 +111,8 @@ void _main(multiboot_info_t* mb_info) {
 
 	register_driver((driver_t*) &serial_output_driver);
 	register_driver((driver_t*) &text_console_driver);
-	register_driver((driver_t*) get_ps2_driver());
-	register_driver((driver_t*) &pit_driver);
+    register_driver((driver_t*) get_ps2_driver());
+    register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &cmos_driver);
 	register_driver((driver_t*) &pc_speaker_driver);
 

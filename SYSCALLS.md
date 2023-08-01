@@ -46,3 +46,4 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SYS_TASK_LIST_GET | 0x23 | &out | max | actual | - | - |
 | SYS_KILL | 0x24 | pid | - | -| - | - |
+| SYS_VPEEK | 0x15 | offset | &data | range | - | - | - |

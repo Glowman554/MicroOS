@@ -31,6 +31,7 @@ all:
 	make -C keymap_tool prog
 	make -C linux prog
 	make -C tasks prog
+	make -C stream prog
 
 clean:
 	make -C libc clean
@@ -63,6 +64,7 @@ clean:
 	make -C keymap_tool clean
 	make -C linux clean
 	make -C tasks clean
+	make -C stream clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -95,3 +97,4 @@ compile_flags.txt:
 	make -C keymap_tool compile_flags.txt
 	make -C linux compile_flags.txt
 	make -C tasks compile_flags.txt
+	make -C stream compile_flags.txt

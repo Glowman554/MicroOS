@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <string.h>
 #include <assert.h>
+#include <config.h>
+#include <utils/multiboot.h>
 
 vmm_context_t* kernel_context;
 
@@ -52,6 +54,10 @@ void vmm_init(void) {
 	for (int i = 0; i < 32 * MB; i += 0x1000) {
 		vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
 	}
+
+    for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
+		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
+    }
 
 	vmm_map_page(kernel_context, (uintptr_t) NULL, (uintptr_t) NULL, 0);
 
@@ -251,7 +257,7 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 	}
 
 	if (new_size_p != old_size_p) {
-		debugf("resizing %d pages to %d pages!", old_size_p, new_size_p);
+		// debugf("resizing %d pages to %d pages!", old_size_p, new_size_p);
 		void* new_ptr = vmm_alloc(new_size_p);
 		if (new_size_p < old_size_p) {
 			memcpy(new_ptr, ptr, data_size * old_size);

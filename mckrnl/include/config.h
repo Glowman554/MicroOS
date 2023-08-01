@@ -18,6 +18,8 @@
 
 #define WAIT // enable the wait macro
 
+// #define TEXT_MODE_EMULATION
+
 #define ALLOW_PANIC_CONTINUE
 
 #define SYS_OPEN_ID 0x1
@@ -67,5 +69,7 @@
 #define SYS_TASK_LIST_GET_ID 0x23
 
 #define SYS_KILL_ID 0x24
+
+#define SYS_VPEEK_ID 0x25
 
 #define HOSTNAME "MicroOS"

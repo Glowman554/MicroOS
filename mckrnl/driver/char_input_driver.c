@@ -4,7 +4,38 @@
 #include <stdio.h>
 #include <utils/string.h>
 
-char_input_driver_t* global_char_input_driver;
+
+bool default_keyboard_is_device_present(driver_t* driver) {
+	return true;
+}
+
+char* default_keyboard_get_device_name(driver_t* driver) {
+	return "default_keyboard";
+}
+
+void default_keyboard_init(driver_t* driver) {}
+
+
+
+char default_keyboard_async_getc(char_input_driver_t* driver) {
+	return 0;
+}
+
+char default_keyboard_async_getarrw(char_input_driver_t* driver) {
+	return 0;
+}
+
+char_input_driver_t default_char_input = {
+    .driver = {
+        .is_device_present = default_keyboard_is_device_present,
+        .get_device_name = default_keyboard_get_device_name,
+        .init = default_keyboard_init
+    },
+    .async_getc = default_keyboard_async_getc,
+    .async_getarrw = default_keyboard_async_getarrw
+};
+
+char_input_driver_t* global_char_input_driver = &default_char_input;
 
 keymap_t cached_keymap;
 char cached_keymap_path[128] = { 0 };

@@ -56,3 +56,5 @@ cpu_registers_t* sys_vcursor_get(cpu_registers_t* regs);
 cpu_registers_t* sys_task_list_get(cpu_registers_t* regs);
 
 cpu_registers_t* sys_kill(cpu_registers_t* regs);
+
+cpu_registers_t* sys_vpeek(cpu_registers_t* regs);

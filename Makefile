@@ -2,7 +2,7 @@ all: res
 	make -C mckrnl
 	make -C user
 
-KEYMAP = de
+KEYMAP = us
 NETDEV = rtl8139
 
 QEMU_FLAGS = -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img

@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <memory/vmm.h>
 #include <assert.h>
+#include <config.h>
 
 syscall_handler_t* syscall_table = { 0 };
 int num_syscall_handlers = 0;
@@ -63,6 +64,7 @@ void init_syscalls() {
 	register_syscall(SYS_VCURSOR_GET_ID, sys_vcursor_get);
 	register_syscall(SYS_TASK_LIST_GET_ID, sys_task_list_get);
 	register_syscall(SYS_KILL_ID, sys_kill);
+	register_syscall(SYS_VPEEK_ID, sys_vpeek);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

@@ -1,20 +1,30 @@
 #include <renderer/text_console.h>
+#include <renderer/text_mode_emulation.h>
 
+#include <stdint.h>
 #include <utils/io.h>
 #include <stdio.h>
 #include <string.h>
+#include <config.h>
 
 int text_console_x = 0;
 int text_console_y = 0;
 
+#ifdef TEXT_MODE_EMULATION
+char text_console_video[SCREEN_WIDTH * SCREEN_HEIGHT * 2] = { 0 };
+#else
 char* text_console_video = (char*) VIDEO_MEM;
+#endif
+
 uint32_t text_console_color = BACKGROUND_BLACK | FOREGROUND_WHITE;
 
 void text_console_setcursor(uint16_t pos) {
+#ifndef TEXT_MODE_EMULATION
 	outb(0x3d4, 14);
 	outb(0x3d5, pos >> 8);
 	outb(0x3d4, 15);
 	outb(0x3d5, pos);
+#endif
 }
 
 void text_console_putc(char c) {
@@ -52,6 +62,7 @@ void text_console_putc(char c) {
 		text_console_video[2 * (text_console_y * SCREEN_WIDTH + text_console_x)] = ' ';
 		text_console_video[2 * (text_console_y * SCREEN_WIDTH + text_console_x) + 1] = text_console_color;
 		text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
+        EMU_UPDATE();
 		return;
 	}
 
@@ -68,6 +79,7 @@ void text_console_putc(char c) {
 	}
 
 	if (c == '\n') {
+        EMU_UPDATE();
 		return;
 	}
 
@@ -77,6 +89,7 @@ void text_console_putc(char c) {
 	text_console_x++;
 
 	text_console_setcursor(text_console_y * SCREEN_WIDTH + text_console_x);
+    EMU_UPDATE();
 }
 
 void text_console_puts(const char *s) {
@@ -93,6 +106,7 @@ void text_console_clrscr() {
 	}
 
 	text_console_x = text_console_y = 0;
+    EMU_UPDATE();
 }
 
 bool text_console_driver_is_present(driver_t* driver) {
@@ -118,8 +132,13 @@ int text_console_driver_vmode(char_output_driver_t* driver) {
 	return TEXT_80x25;
 }
 
-void text_console_driver_vpoke(char_output_driver_t* driver, uint32_t offset, uint8_t value) {
-	text_console_video[offset] = value;
+void text_console_driver_vpoke(char_output_driver_t* driver, uint32_t offset, uint8_t* val, uint32_t range) {
+    memcpy(&text_console_video[offset], val, range);
+    EMU_UPDATE();
+}
+
+void text_console_driver_vpeek(char_output_driver_t* driver, uint32_t offset, uint8_t* val, uint32_t range) {
+    memcpy(val, &text_console_video[offset], range);
 }
 
 void text_console_vcursor(char_output_driver_t* driver, int x, int y) {
@@ -176,6 +195,7 @@ char_output_driver_t text_console_driver = {
 	.putc = text_console_driver_putc,
 	.vmode = text_console_driver_vmode,
 	.vpoke = text_console_driver_vpoke,
+    .vpeek = text_console_driver_vpeek,
 	.vcursor = text_console_vcursor,
 	.vcursor_get = text_console_vcursor_get,
 	.set_color = text_console_set_color
