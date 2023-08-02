@@ -66,7 +66,7 @@ void ramfs_close(vfs_mount_t* mount, file_t* file) {
 void ramfs_read(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_t offset) {
 	ramfs_node_t* node = (ramfs_node_t*) file->driver_specific_data;
 
-	assert(node->fsize <= offset + size);
+	assert(node->fsize >= offset + size);
 
 	memcpy(buf, node->fdata + offset, size);
 }
