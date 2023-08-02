@@ -102,7 +102,9 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
 
 	if (context != kernel_context) {
 		if (kernel_context->pagedir[pd_index] & PTE_PRESENT) {
-			abortf("%x is overlapping with the kernel!", virt);
+            if (((uint32_t*) kernel_context->pagedir[pd_index])[pt_index] & PTE_PRESENT) {
+                abortf("%x is overlapping with the kernel!", virt);
+            }
 		}
 	}
 

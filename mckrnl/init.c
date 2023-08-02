@@ -105,7 +105,9 @@ void _main(multiboot_info_t* mb_info) {
 
 	rsdp_init();
 	dsdt_init();
+#ifdef PARSE_MADT
 	parse_madt();
+#endif
 
 	enumerate_pci();
 
@@ -139,6 +141,9 @@ void _main(multiboot_info_t* mb_info) {
 	init_socket_manager();
 
 #ifdef SMP
+#ifndef PARSE_MADT
+#error PARSE_MADT required!
+#endif
 	debugf("--- WARNING --- SMP is very experimantel!");
 	// wait();
 	smp_startup_all();
