@@ -76,7 +76,7 @@ void ramfs_write(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_
 
 	int new_file_size = offset + size;
 	if (new_file_size > node->fsize) {
-		node->fdata = vmm_resize(new_file_size, node->fsize, new_file_size, node->fdata);
+		node->fdata = vmm_resize(1, node->fsize, new_file_size, node->fdata);
 		node->fsize = new_file_size;
 	}
 
