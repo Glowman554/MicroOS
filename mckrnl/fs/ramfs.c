@@ -191,7 +191,7 @@ void ramfs_delete_dir(vfs_mount_t* mount, char* path) { todo(); }
 vfs_mount_t* get_ramfs(char* name) {
 	assert(sizeof(ramfs_node_t) == 0x1000);
 	vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
-	memset(mount, 0, sizeof(vfs_mount_t));
+	memset(mount, 0, 0x1000);
 
 	mount->open = ramfs_open;
 	mount->close = ramfs_close;

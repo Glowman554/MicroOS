@@ -34,21 +34,21 @@ void draw_char(uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor)
 }
 
 uint32_t color_translation_table[] = {
-    0x00000000, // black
-    0xFF0000FF, // blue
-    0xFF00FF00, // green
-    0xFF00FFFF, // cyan
-    0xFFFF0000, // red
-    0xFFFF00FF, // magenta
-    0xFFA52A2A, // brown
-    0xFF808080, // grey
-    0xFF404040, // dark grey
-    0xFF0000FF, // bright blue
-    0xFF00FF00, // bright green
+    0xFF000000, // black
+    0xFF0000AA, // blue
+    0xFF00AA00, // green
+    0xFF00AAAA, // cyan
+    0xFFAA0000, // red
+    0xFFAA00AA, // magenta
+    0xFFAA5500, // brown
+    0xFFAAAAAA, // grey
+    0xFF555555, // dark grey
+    0xFF5555FF, // bright blue
+    0xFF55FF55, // bright green
     0xFF00FFFF, // bright cyan
-    0xFFFF0000, // bright red
-    0xFFFF00FF, // bright magenta
-    0xFFFFD700, // yellow
+    0xFFFF5555, // bright red
+    0xFFFF55FF, // bright magenta
+    0xFFFFFF00, // yellow
     0xFFFFFFFF, // white
 };
 
