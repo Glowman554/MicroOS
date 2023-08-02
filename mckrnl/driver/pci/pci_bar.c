@@ -1,5 +1,7 @@
 #include <driver/pci/pci_bar.h>
 
+#include <stdio.h>
+
 void pci_read_bar(uint32_t* mask, uint16_t bus, uint16_t device, uint16_t function, uint32_t offset) {
 	uint32_t data = pci_readd(bus, device, function, offset);
 	pci_writed(bus, device, function, offset, 0xffffffff);
@@ -9,21 +11,15 @@ void pci_read_bar(uint32_t* mask, uint16_t bus, uint16_t device, uint16_t functi
 
 pci_bar_t pci_get_bar(uint32_t* bar0, int bar_num, uint16_t bus, uint16_t device, uint16_t function) {
 	pci_bar_t bar;
-	uint32_t* bar_ptr = (uint32_t*) (bar0 + bar_num * sizeof(uint32_t));
+	uint32_t* bar_ptr = &bar0[bar_num];
 
 	if (*bar_ptr) {
 		uint32_t mask;
 		pci_read_bar(&mask, bus, device, function, bar_num * sizeof(uint32_t));
 
 		if (*bar_ptr & 0x04) { //64-bit mmio
-			bar.type = MMIO64;
-
-			uint32_t* bar_ptr_high = (uint32_t*) (bar0 + bar_num * sizeof(uint32_t));
-			uint32_t mask_high;
-			pci_read_bar(&mask_high, bus, device, function, (bar_num * sizeof(uint32_t)) + 0x4);
-
-			bar.mem_address = ((uint64_t) (*bar_ptr_high & ~0xf) << 32) | (*bar_ptr & ~0xf);
-			bar.size = (((uint64_t) mask_high << 32) | (mask & ~0xf)) + 1;
+            abortf("What MMIO64 on 32 bit only?");
+            bar.type = NONE;
 		} else if (*bar_ptr & 0x01) { //IO
 			bar.type = IO;
 
