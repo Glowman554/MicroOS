@@ -39,6 +39,8 @@ size_t fputc(char c, FILE* stream);
 bool resolve(char* path, char* output);
 bool resolve_check(char* path, char* output, bool check_childs);
 
+int feof(FILE* stream);
+
 int gets(char* buffer);
 int getc(FILE* stream);
 

@@ -140,6 +140,10 @@ int getc(FILE* stream) {
 	}
 }
 
+int feof(FILE* stream) {
+    return stream->pos >= filesize(stream->inner_fd);
+}
+
 void init_stdio() {
 	stdout = malloc(sizeof(FILE));
 	memset(stdout, 0, sizeof(FILE));
