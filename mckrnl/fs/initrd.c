@@ -5,84 +5,32 @@
 #include <utils/string.h>
 #include <assert.h>
 
-char** initrd_process_path(char* path) {
-	path++;
-	char** path_parts = (char**) vmm_alloc(1);
-	int num_slashes = 0;
-	int len = strlen(path);
+saf_node_hdr_t* initrd_find(char* path, void* base, saf_node_hdr_t* current) {
+	debugf("initrd_find(%s, %x, %x, %s)", path, base, current, current->name);
 
-	char* last_slash = path;
-	for (int i = 0; i < len; i++) {
-		if (path[i] == '/') {
-			path[i] = '\0';
-			path_parts[num_slashes] = last_slash;
-			num_slashes++;
+	while (*path == '/') {
+		path++;
+	}
+	if (*path == 0) {
+		return current;
+	}
 
-			last_slash = &path[i + 1];
+	char buffer[128] = { 0 };
+	char* next = copy_until('/', path, buffer);
+
+    assert(current->flags == FLAG_ISFOLDER);
+	saf_node_folder_t* folder_node = (saf_node_folder_t*) current;
+
+	for (int i = 0; i < folder_node->num_children; i++) {
+        saf_node_hdr_t* child = (saf_node_hdr_t*) ((uint32_t) base + (uint32_t) folder_node->children[i]);
+		if (strcasecmp(buffer, child->name) == 0) {
+			return initrd_find(next, base, child);
 		}
 	}
 
-	if (*last_slash != '\0') {
-		path_parts[num_slashes] = last_slash;
-		path_parts[num_slashes + 1] = NULL;
-	} else {
-		path_parts[num_slashes] = NULL;
-	}
-
-	return path_parts;
+	return NULL;
 }
 
-saf_node_hdr_t* initrd_resolve(saf_node_hdr_t* curr, void* saf_image, int level, char** path) {
-	assert(curr->magic == MAGIC_NUMBER);
-
-	// debugf("level %d (%s), curr->name %s", level,  level < 0 ? "-1" : path[level], curr->name);
-
-	if (level == -1 && path[level + 1] == NULL) {
-		return curr;
-	}
-
-	if (path[level + 1] == NULL) {
-		for (int i = 0; i < strlen(path[level]); i++) {
-			if (path[level][i] >= 'A' && path[level][i] <= 'Z') {
-				path[level][i] = path[level][i] + 32;
-			}
-		}
-
-		char curr_name_cpy[512] = {0};
-		strcpy(curr_name_cpy, curr->name);
-
-		for (int i = 0; i < strlen(curr_name_cpy); i++) {
-			if (curr_name_cpy[i] >= 'A' && curr_name_cpy[i] <= 'Z') {
-				curr_name_cpy[i] = curr_name_cpy[i] + 32;
-			}
-		}
-
-		
-		if (strcmp(curr_name_cpy, path[level]) == 0) {
-			return curr;
-		} else {
-			return NULL;
-		}
-	} else {
-		if (curr->flags != FLAG_ISFOLDER) {
-			return NULL;
-		} else {
-
-			saf_node_folder_t* folder = (saf_node_folder_t*) curr;
-			for (int i = 0; i < folder->num_children; i++) {
-				saf_node_hdr_t* child = (saf_node_hdr_t*) ((uint32_t) saf_image + (uint32_t) folder->children[i]);
-				if (child->magic == MAGIC_NUMBER) {
-					saf_node_hdr_t* result = initrd_resolve(child, saf_image, level + 1, path);
-					if (result != NULL) {
-						return result;
-					}
-				}
-			}
-
-			return NULL;
-		}
-	}
-}
 
 char* initrd_name(vfs_mount_t* mount) {
 	return "initrd";
@@ -90,23 +38,15 @@ char* initrd_name(vfs_mount_t* mount) {
 
 file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 	debugf("open: %s", path);
-	char path_cpy[strlen(path) + 1];
-	strcpy(path_cpy, path);
-	path_cpy[strlen(path)] = 0;
 
-	char** path_parts = initrd_process_path(path_cpy);
-
-	saf_node_hdr_t* current_node = (saf_node_hdr_t*) mount->driver_specific_data;
-	saf_node_hdr_t* file = initrd_resolve(current_node, mount->driver_specific_data, -1, path_parts);
+	saf_node_hdr_t* file = initrd_find(path, mount->driver_specific_data, (saf_node_hdr_t*) mount->driver_specific_data);
 	if (file == NULL) {
 		debugf("file %s not found", path);
-		vmm_free(path_parts, 1);
 		return NULL;
 	}
 
 	if (file->flags == FLAG_ISFOLDER) {
 		debugf("file %s is a folder", path);
-		vmm_free(path_parts, 1);
 		return NULL;
 	}
 
@@ -116,8 +56,6 @@ file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 	f->mount = mount;
 	f->size = file_node->size;
 	f->driver_specific_data = (void*) ((uint32_t) mount->driver_specific_data + (uint32_t) file_node->addr);
-
-	vmm_free(path_parts, 1);
 
 	return f;
 }
@@ -138,16 +76,7 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 	strcpy(path_cpy, path);
 	path_cpy[strlen(path)] = 0;;
 
-	char** path_parts = initrd_process_path(path_cpy);
-
-	saf_node_hdr_t* current_node = (saf_node_hdr_t*) mount->driver_specific_data;
-	saf_node_hdr_t* folder;
-
-	if (strcmp(path, (char*) "/") == 0 || strcmp(path, (char*) "") == 0) {
-		folder = current_node;
-	} else {
-		folder = initrd_resolve(current_node, mount->driver_specific_data, -1, path_parts);
-	}
+	saf_node_hdr_t* folder = initrd_find(path, mount->driver_specific_data, (saf_node_hdr_t*) mount->driver_specific_data);
 
 	if (folder == NULL) {
 		dir_t dir = {
