@@ -10,7 +10,7 @@ char* ramfs_name(vfs_mount_t* mount) {
 }
 
 ramfs_node_t* ramfs_find(char* path, ramfs_node_t* current) {
-	debugf("ramfs_find(%s, %x, %s)", path, current, current->name);
+	// debugf("ramfs_find(%s, %x, %s)", path, current, current->name);
 
 	while (*path == '/') {
 		path++;
