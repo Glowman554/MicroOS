@@ -1,0 +1,4 @@
+export HOME=tmp:
+export DOOMWADDIR=initrd:/doom
+
+doom
