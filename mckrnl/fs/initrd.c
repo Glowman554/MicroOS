@@ -6,7 +6,7 @@
 #include <assert.h>
 
 saf_node_hdr_t* initrd_find(char* path, void* base, saf_node_hdr_t* current) {
-	debugf("initrd_find(%s, %x, %x, %s)", path, base, current, current->name);
+	// debugf("initrd_find(%s, %x, %x, %s)", path, base, current, current->name);
 
 	while (*path == '/') {
 		path++;
