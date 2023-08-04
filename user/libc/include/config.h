@@ -50,4 +50,6 @@
 
 #define SYS_VPEEK_ID 0x25
 
+#define SYS_RAMINFO_ID 0x26
+
 // #define ALLOC_DEBUG

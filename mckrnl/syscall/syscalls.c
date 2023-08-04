@@ -65,6 +65,7 @@ void init_syscalls() {
 	register_syscall(SYS_TASK_LIST_GET_ID, sys_task_list_get);
 	register_syscall(SYS_KILL_ID, sys_kill);
 	register_syscall(SYS_VPEEK_ID, sys_vpeek);
+	register_syscall(SYS_RAMINFO_ID, sys_raminfo);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }
