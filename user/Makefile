@@ -33,6 +33,7 @@ all:
 	make -C tasks prog
 	make -C stream prog
 	make -C doom prog
+	make -C free prog
 
 clean:
 	make -C libc clean
@@ -67,6 +68,7 @@ clean:
 	make -C tasks clean
 	make -C stream clean
 	make -C doom clean
+	make -C free clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -101,3 +103,4 @@ compile_flags.txt:
 	make -C tasks compile_flags.txt
 	make -C stream compile_flags.txt
 	make -C doom compile_flags.txt
+	make -C free compile_flags.txt

@@ -26,6 +26,28 @@ int bitmap_test(uint32_t bit) {
 	return !(bitmap[bit / 32] & (0b10000000000000000000000000000000 >> (bit % 32)));
 }
 
+uint32_t free_memory;
+uint32_t used_memory;
+
+void pmm_debug_print() {
+    debugf("--- PMM DEBUG ---");
+    debugf("Used: %d kb (%d mb)", used_memory / 1024, used_memory / 1024 / 1024);
+    debugf("Free: %d kb (%d mb)", free_memory / 1024, free_memory / 1024 / 1024);
+    debugf("Total: %d kb (%d mb)", (free_memory + used_memory) / 1024, (free_memory + used_memory) / 1024 / 1024);
+    debugf("-----------------");
+}
+
+void pmm_usage_use(uint32_t ammount) {
+    free_memory -= ammount * 0x1000;
+    used_memory += ammount * 0x1000;
+}
+
+
+void pmm_usage_unuse(uint32_t ammount) {
+    free_memory += ammount * 0x1000;
+    used_memory -= ammount * 0x1000;
+}
+
 void pmm_init() {
 	debugf("Initializing physical memory manager");
 
@@ -46,6 +68,8 @@ void pmm_init() {
 		}
 		mmap++;
 	}
+
+    used_memory= 0;
 
 	uintptr_t addr = (uintptr_t) &kernel_start;
 	while (addr < (uintptr_t) &kernel_end) {
@@ -70,6 +94,8 @@ void pmm_init() {
 	}
 
 	pmm_mark_used(NULL);
+
+    pmm_debug_print();
 }
 
 void* pmm_alloc() {
@@ -78,6 +104,8 @@ void* pmm_alloc() {
 	for (i = 0; i < BITMAP_SIZE * 32; i++) {
 		if (!bitmap_test(i)) {
 			bitmap_set(i);
+            
+            pmm_usage_use(1);
 			return (void*) (i * 0x1000);
 		}
 	}
@@ -88,11 +116,15 @@ void* pmm_alloc() {
 static void pmm_mark_used(void* page) {
 	uintptr_t index = (uintptr_t) page / 4096;
 	bitmap_set(index);
+
+    pmm_usage_use(1);
 }
 
 void pmm_free(void* page) {
 	uintptr_t index = (uintptr_t) page / 4096;
 	bitmap_clear(index);
+
+    pmm_usage_unuse(1);
 }
 
 void* pmm_alloc_range(int count) {
@@ -110,6 +142,7 @@ void* pmm_alloc_range(int count) {
 				bitmap_set(i + j);
 			}
 
+            pmm_usage_use(count);
 			return (void*) (i * 0x1000);
 		}
 	}
@@ -122,4 +155,7 @@ void pmm_free_range(void* page, int count) {
 	for (int i = 0; i < count; i++) {
 		bitmap_clear(index + i);
 	}
+
+
+    pmm_usage_unuse(count);
 }
