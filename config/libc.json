@@ -1,0 +1,20 @@
+{
+    "file": "user/libc/include/config.h",
+    "configuration": {
+        "title": "LibC configuration",
+        "items": [
+            {
+                "name": "Debug",
+                "value": {
+                    "title": "Debug",
+                    "items": [
+                        {
+                            "name": "ALLOC_DEBUG",
+                            "value": false
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

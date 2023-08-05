@@ -69,3 +69,14 @@ libs.zip: all
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt
+
+pre_commit:
+	deno run -A config/write_syscalls_md.ts
+	deno run -A config/config.ts --clean --auto config/libc.json
+	deno run -A config/config.ts --clean --auto config/kernel.json
+
+config_libc:
+	deno run -A config/config.ts config/libc.json
+
+config_kernel:
+	deno run -A config/config.ts config/kernel.json

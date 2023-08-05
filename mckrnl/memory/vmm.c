@@ -2,6 +2,7 @@
 
 #include <memory/pmm.h>
 #include <scheduler/scheduler.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
@@ -59,6 +60,7 @@ void vmm_init(void) {
     debugf("Mapping framebuffer...");
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
 		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
+        pmm_mark_used((void*) global_multiboot_info->fb_addr + i);
     }
 #endif
 
@@ -106,7 +108,7 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
                 abortf("%x is overlapping with the kernel!", virt);
             }
 		}
-	}
+    }
 
 	if (context->pagedir[pd_index] & PTE_PRESENT) {
 		page_table = (uint32_t*) (context->pagedir[pd_index] & ~0xFFF);

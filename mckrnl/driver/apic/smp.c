@@ -11,6 +11,9 @@
 #include <fs/vfs.h>
 #include <assert.h>
 
+#define SMP_TRAMPOLINE_PAGE 8
+#define SMP_TRAMPOLINE_ADDR (SMP_TRAMPOLINE_PAGE * 0x1000)
+
 bool cpu_started[256] = { false };
 int bsp_id = 0;
 
