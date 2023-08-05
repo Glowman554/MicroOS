@@ -12,8 +12,6 @@ extern const void kernel_end;
 
 static uint32_t bitmap[BITMAP_SIZE];
 
-static void pmm_mark_used(void* page);
-
 void bitmap_set(uint32_t bit) {
 	bitmap[bit / 32] &= ~(0b10000000000000000000000000000000 >> (bit % 32));
 }
@@ -60,6 +58,11 @@ void pmm_init() {
 		if (mmap->type == 1) {
 			uintptr_t addr = mmap->base;
 			uintptr_t end_addr = addr + mmap->length;
+
+            if ((mmap->base + mmap->length) > 0xffffffff) {
+                debugf("WARNING: MMAP section too big");
+                end_addr = 0xfffff000;
+            }
 
 			while (addr < end_addr) {
 				pmm_free((void*) addr);
@@ -110,10 +113,12 @@ void* pmm_alloc() {
 		}
 	}
 
+    pmm_debug_print();
+    abortf("Allocation failed!");
 	return NULL;
 }
 
-static void pmm_mark_used(void* page) {
+void pmm_mark_used(void* page) {
 	uintptr_t index = (uintptr_t) page / 4096;
 	bitmap_set(index);
 
