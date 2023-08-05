@@ -13,3 +13,5 @@ libs.zip
 user/fasm/fasm
 
 a.out
+
+config/*.user

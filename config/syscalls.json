@@ -1,0 +1,304 @@
+{
+	"syscalls": [
+		{
+			"name": "SYS_OPEN",
+			"arguments": [
+				"0x1",
+				"path",
+				"flags",
+				"fd (return) "
+			]
+		},
+		{
+			"name": "SYS_CLOSE",
+			"arguments": [
+				"0x2",
+				"fd"
+			]
+		},
+		{
+			"name": "SYS_READ",
+			"arguments": [
+				"0x3",
+				"fd",
+				"buf",
+				"count",
+				"offset"
+			]
+		},
+		{
+			"name": "SYS_WRITE",
+			"arguments": [
+				"0x4",
+				"fd",
+				"buf",
+				"count",
+				"offset"
+			]
+		},
+		{
+			"name": "SYS_FILESIZE",
+			"arguments": [
+				"0x5",
+				"fd",
+				"size (return)"
+			]
+		},
+		{
+			"name": "SYS_DELETE",
+			"arguments": [
+				"0x6",
+				"fd"
+			]
+		},
+		{
+			"name": "SYS_MKDIR",
+			"arguments": [
+				"0x7",
+				"path"
+			]
+		},
+		{
+			"name": "SYS_DIR_AT",
+			"arguments": [
+				"0x8",
+				"path",
+				"idx",
+				"&dir_t"
+			]
+		},
+		{
+			"name": "SYS_TOUCH",
+			"arguments": [
+				"0x9",
+				"path"
+			]
+		},
+		{
+			"name": "SYS_DELETE_DIR",
+			"arguments": [
+				"0xa",
+				"path"
+			]
+		},
+		{
+			"name": "SYS_FS_AT",
+			"arguments": [
+				"0xb",
+				"path",
+				"idx",
+				"&fs_t"
+			]
+		},
+		{
+			"name": "SYS_ASYNC_GETC",
+			"arguments": [
+				"0xc",
+				"c (return)"
+			]
+		},
+		{
+			"name": "SYS_EXIT",
+			"arguments": [
+				"0xd",
+				"status"
+			]
+		},
+		{
+			"name": "SYS_MMAP",
+			"arguments": [
+				"0xe",
+				"addr"
+			]
+		},
+		{
+			"name": "SYS_SPAWN",
+			"arguments": [
+				"0xf",
+				"path",
+				"argv",
+				"envp",
+				"pid (return)"
+			]
+		},
+		{
+			"name": "SYS_GET_PROC_INFO",
+			"arguments": [
+				"0x10",
+				"pid",
+				"runningn (return)"
+			]
+		},
+		{
+			"name": "SYS_YIELD",
+			"arguments": [
+				"0x11"
+			]
+		},
+		{
+			"name": "SYS_ENV",
+			"arguments": [
+				"0x12",
+				"mode",
+				"&data (return?)"
+			]
+		},
+		{
+			"name": "SYS_MMMAP",
+			"arguments": [
+				"0x13",
+				"ptr",
+				"pid"
+			]
+		},
+		{
+			"name": "SYS_VMODE",
+			"arguments": [
+				"0x14",
+				"mode (return)"
+			]
+		},
+		{
+			"name": "SYS_VPOKE",
+			"arguments": [
+				"0x15",
+				"offset",
+				"&data",
+				"range"
+			]
+		},
+		{
+			"name": "SYS_VCURSOR",
+			"arguments": [
+				"0x16",
+				"x",
+				"y"
+			]
+		},
+		{
+			"name": "SYS_ICMP",
+			"arguments": [
+				"0x17",
+				"nic",
+				"ip",
+				"result (return)"
+			]
+		},
+		{
+			"name": "SYS_DNS_A",
+			"arguments": [
+				"0x18",
+				"nic",
+				"domain",
+				"result (return)"
+			]
+		},
+		{
+			"name": "SYS_SOCK_CONNECT",
+			"arguments": [
+				"0x1a",
+				"nic",
+				"ip",
+				"port",
+				"socket_type / socket_id (return)"
+			]
+		},
+		{
+			"name": "SYS_SOCK_DISCONNECT",
+			"arguments": [
+				"0x1b",
+				"socket_id"
+			]
+		},
+		{
+			"name": "SYS_SOCK_SEND",
+			"arguments": [
+				"0x1c",
+				"socket_id",
+				"&data",
+				"size"
+			]
+		},
+		{
+			"name": "SYS_SOCK_RECV",
+			"arguments": [
+				"0x1d",
+				"socket_id",
+				"&data",
+				"size",
+				"bytes (return)"
+			]
+		},
+		{
+			"name": "SYS_SOUND_RUN",
+			"arguments": [
+				"0x1e",
+				"&coro",
+				"&context"
+			]
+		},
+		{
+			"name": "SYS_TIME",
+			"arguments": [
+				"0x1f",
+				"time (return)"
+			]
+		},
+		{
+			"name": "SYS_SET_COLOR",
+			"arguments": [
+				"0x20",
+				"color",
+				"background"
+			]
+		},
+		{
+			"name": "SYS_ASYNC_GETARRW",
+			"arguments": [
+				"0x21",
+				"a (return)"
+			]
+		},
+		{
+			"name": "SYS_VCURSOR_GET",
+			"arguments": [
+				"0x22",
+				"&x",
+				"&y"
+			]
+		},
+		{
+			"name": "SYS_TASK_LIST_GET",
+			"arguments": [
+				"0x23",
+				"&out",
+				"max",
+				"actual (return)"
+			]
+		},
+		{
+			"name": "SYS_KILL",
+			"arguments": [
+				"0x24",
+				"pid"
+			]
+		},
+		{
+			"name": "SYS_VPEEK",
+			"arguments": [
+				"0x25",
+				"offset",
+				"&data",
+				"range"
+			]
+		},
+		{
+			"name": "SYS_RAMINFO",
+			"arguments": [
+				"0x26",
+				"free (return)",
+				"used (return)"
+			]
+		}
+	]
+}

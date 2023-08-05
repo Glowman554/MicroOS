@@ -1,0 +1,104 @@
+{
+    "file": "mckrnl/include/config.h",
+    "configuration": {
+        "title": "Kernel configuration",
+        "items": [
+            {
+                "name": "Debug",
+                "value": {
+                    "title": "Debug",
+                    "items": [
+                        {
+                            "name": "DEBUG",
+                            "value": true
+                        },
+                        {
+                            "name": "UBSAN_SUPRES_TYPE_MISSMATCH",
+                            "value": true
+                        },
+                        {
+                            "name": "UBSAN_IGNORE_SHIFT_OUT_OF_BOUNDS",
+                            "value": true
+                        },
+                        {
+                            "name": "WAIT",
+                            "value": true
+                        },
+                        {
+                            "name": "ALLOW_PANIC_CONTINUE",
+                            "value": true
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Network",
+                "value": {
+                    "title": "Network",
+                    "items": [
+                        {
+                            "name": "SOCK_OFFSET",
+                            "value": 5
+                        },
+                        {
+                            "name": "HOSTNAME",
+                            "value": "MicroOS"
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Scheduler",
+                "value": {
+                    "title": "Scheduler",
+                    "items": [
+                        {
+                            "name": "MAX_TASKS",
+                            "value": 32
+                        },
+                        {
+                            "name": "USER_STACK_SIZE_PAGES",
+                            "value": 4
+                        },
+                        {
+                            "name": "KERNEL_STACK_SIZE_PAGES",
+                            "value": 4
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Experimental",
+                "value": {
+                    "title": "Experimental",
+                    "items": [
+                        {
+                            "name": "SMP",
+                            "value": false
+                        },
+                        {
+                            "name": "PARSE_MADT",
+                            "value": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Other",
+                "value": {
+                    "title": "Other",
+                    "items": [
+                        {
+                            "name": "FD_OFFSET",
+                            "value": 5
+                        },
+                        {
+                            "name": "TEXT_MODE_EMULATION",
+                            "value": false
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
