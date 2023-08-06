@@ -10,7 +10,8 @@ file_scanner_t* scanner[] = {
 	&psf1_scanner,
 	&fm_scanner,
 	&figl_scanner,
-	&gz_scanner
+	&gz_scanner,
+    &wad_scanner
 };
 
 file_scanner_t* find_file_scanner(void* buffer, size_t size) {
