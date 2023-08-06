@@ -28,7 +28,6 @@ all:
 	make -C fasm prog
 	make -C figl prog
 	make -C du prog
-	make -C keymap_tool prog
 	make -C linux prog
 	make -C tasks prog
 	make -C stream prog
@@ -62,7 +61,6 @@ clean:
 	make -C fasm clean
 	make -C figl clean
 	make -C du clean
-	make -C keymap_tool clean
 	make -C linux clean
 	make -C tasks clean
 	make -C stream clean
@@ -96,7 +94,6 @@ compile_flags.txt:
 	make -C fasm compile_flags.txt
 	make -C figl compile_flags.txt
 	make -C du compile_flags.txt
-	make -C keymap_tool compile_flags.txt
 	make -C linux compile_flags.txt
 	make -C tasks compile_flags.txt
 	make -C stream compile_flags.txt
