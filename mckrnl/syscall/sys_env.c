@@ -4,6 +4,7 @@
 #include <driver/acpi/power.h>
 #include <stdio.h>
 #include <string.h>
+#include <driver/char_input_driver.h>
 
 #define SYS_GET_ARGV_ID 0x00
 #define SYS_GET_ENVP_ID 0x01
@@ -15,6 +16,7 @@
 
 #define SYS_ENV_PIN 0x06
 
+#define SYS_ENV_SET_LAYOUT 0x07
 
 cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	int id = regs->ebx;
@@ -64,6 +66,12 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 				get_self()->pin = regs->ecx;
 			}
 			break;
+
+        case SYS_ENV_SET_LAYOUT:
+            {
+                set_layout((char*) regs->ecx);
+            }
+            break;
 
 		default:
 			debugf("sys_env: Unknown id %d", id);

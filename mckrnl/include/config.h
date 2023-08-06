@@ -25,6 +25,10 @@
 // #define PARSE_MADT
 // End Experimental
 
+// Input
+#define DEFAULT_LAYOUT "us"
+// End Input
+
 // Other
 #define FD_OFFSET 5
 // #define TEXT_MODE_EMULATION

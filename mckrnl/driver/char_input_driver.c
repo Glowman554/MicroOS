@@ -51,9 +51,6 @@ void init_keymap(char* path) {
 
     assert(loaded_keymap->magic == 0xab1589fd);
     assert(loaded_keymap->num_keymaps > 0);
-
-    keymap_t* default_keymap = (keymap_t*) &loaded_keymap[1];
-    debugf("Default keymap is %s", default_keymap->name);
 }
 
 char keymap(uint8_t key, special_keys_down_t* special_keys_down) {
@@ -79,4 +76,17 @@ char keymap(uint8_t key, special_keys_down_t* special_keys_down) {
 	} else {
 		return current->layout_normal[key];
 	}
+}
+
+void set_layout(char* name) {
+    for (int i = 0; i < loaded_keymap->num_keymaps; i++) {
+        keymap_t* map = &((keymap_t*) &loaded_keymap[1])[i];
+        if (strcmp(map->name, name) == 0) {
+            debugf("Using new layout %s stored at index %d", name, i);
+            current_keymap_idx = i;
+            return;
+        }
+    }
+
+    debugf("Layout %s not found, not changing layout!", name);
 }

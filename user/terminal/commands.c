@@ -182,7 +182,10 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, char**
 		stdin_pos = 0;
 	}
 
-	if (strncmp(command, (char*)"cd ", 3) == 0) {
+    if (strncmp(command, (char*)"layout ", 7) == 0) {
+		set_layout(command);
+
+	} else if (strncmp(command, (char*)"cd ", 3) == 0) {
 		char** argv = argv_split(command);
 		argv = argv_env_process(argv);
 
@@ -311,6 +314,18 @@ char* search_executable(char* command) {
 	memset(command_copy, 0, strlen(command) + 1);
 	strcpy(command_copy, command);
 	return command_copy;
+}
+
+void set_layout(char* command) {
+    if (command[7] == 0) {
+		term_printf("No keyboard layout specified!\n");
+		return;
+	} else {
+		char* keymap_name = &command[7];
+		term_printf("Setting keyboard layout to %s\n", keymap_name);
+
+		set_env(SYS_ENV_SET_LAYOUT, keymap_name);
+	}
 }
 
 void cd(char** argv) {

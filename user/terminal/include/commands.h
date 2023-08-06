@@ -13,6 +13,7 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, char**
 
 char* search_executable(char* command);
 
+void set_layout(char* command);
 void cd(char** argv);
 void pwd();
 void export(char* command);

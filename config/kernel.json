@@ -84,6 +84,18 @@
                 }
             },
             {
+                "name": "Input",
+                "value": {
+                    "title": "Input",
+                    "items": [
+                        {
+                            "name": "DEFAULT_LAYOUT",
+                            "value": "us"
+                        }
+                    ]
+                }
+            },
+            {
                 "name": "Other",
                 "value": {
                     "title": "Other",
