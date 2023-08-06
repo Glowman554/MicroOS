@@ -62,6 +62,7 @@ int main() {
     int file_size = sizeof(keymap_file_header_t) + sizeof(keymap_t) * num_keymaps;
 
     char* buffer = malloc(file_size);
+    memset(buffer, 0, file_size);
 
     keymap_file_header_t* header = (keymap_file_header_t*) buffer;
     header->magic = 0xab1589fd;

@@ -134,6 +134,12 @@ void _main(multiboot_info_t* mb_info) {
 	vfs_register_fs_scanner(fatfs_scanner);
 
 	vfs_scan_fs();
+    
+
+    char keymap_path[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", keymap_path)) {
+        init_keymap(keymap_path);
+	}
 
 	init_syscalls();
 

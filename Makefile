@@ -2,7 +2,6 @@ all: res
 	make -C mckrnl
 	make -C user
 
-KEYMAP = us
 NETDEV = rtl8139
 
 QEMU_FLAGS = -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
@@ -13,7 +12,6 @@ QEMU_FLAGS += -smp 1
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
-	cp ./res/$(KEYMAP).fmp ./res/initrd/keymap.fmp -v
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	cp *.md ./res/initrd/. -v
@@ -37,9 +35,6 @@ res:
 	git clone https://github.com/chocabloc/saf.git --depth=1 ./res/saf
 	make -C res/saf
 
-	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/de.fmp -O res/de.fmp
-	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/us.fmp -O res/us.fmp
-	wget https://github.com/TheUltimateFoxOS/FoxOS/raw/main/disk_resources/resources/fr.fmp -O res/fr.fmp
 	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
 
 
