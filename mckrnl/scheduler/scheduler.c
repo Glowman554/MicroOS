@@ -100,9 +100,9 @@ int init_elf(void* image, char** argv, char** envp) {
 			continue;
 		}
 
-		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 1);
-		for (int j = 0; j < ph->mem_size / 4096 + 1; j++) {
-			vmm_map_page(task->context, (uintptr_t) dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
+		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 2);
+		for (int j = 0; j < ph->mem_size / 4096 + 2; j++) {
+			vmm_map_page(task->context, ALIGN_PAGE_DOWN((uintptr_t) dest + j * 4096), (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
 		}
 
 		vmm_context_t old = vmm_get_current_context();
