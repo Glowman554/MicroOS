@@ -5,6 +5,8 @@
 #include <utils/io.h>
 #include <stdio.h>
 
+#include <renderer/status_bar.h>
+
 #define PIT_DIVISOR 65535
 
 bool pit_is_device_present(driver_t* driver) {
@@ -18,6 +20,13 @@ char* pit_get_device_name(driver_t* driver) {
 cpu_registers_t* pit_interrupt_handler(cpu_registers_t* registers, void* data) {
 	driver_t* driver = (driver_t*) data;
 	driver->driver_specific_data = (void*) ((uint32_t) driver->driver_specific_data + 1);
+
+#ifdef STATUS_BAR
+#ifndef TEXT_MODE_EMULATION
+    #error TEXT_MODE_EMULATION needed
+#endif
+    draw_status_bar();
+#endif
 
 	return schedule(registers, data);
 }

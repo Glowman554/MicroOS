@@ -107,6 +107,10 @@
                         {
                             "name": "TEXT_MODE_EMULATION",
                             "value": false
+                        },
+                        {
+                            "name": "STATUS_BAR",
+                            "value": false
                         }
                     ]
                 }

@@ -32,6 +32,7 @@
 // Other
 #define FD_OFFSET 5
 // #define TEXT_MODE_EMULATION
+// #define STATUS_BAR
 // End Other
 
 // Syscalls
