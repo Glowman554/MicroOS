@@ -60,7 +60,7 @@ void vmm_init(void) {
     debugf("Mapping framebuffer...");
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
 		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
-        pmm_mark_used((void*) global_multiboot_info->fb_addr + i);
+        pmm_mark_used((void*) (uint32_t) global_multiboot_info->fb_addr + i);
     }
 #endif
 

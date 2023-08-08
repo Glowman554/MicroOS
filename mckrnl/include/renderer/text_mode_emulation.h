@@ -12,3 +12,5 @@ void text_mode_emulation_update();
 #else
 #define EMU_UPDATE()
 #endif
+
+void draw_char(uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor);

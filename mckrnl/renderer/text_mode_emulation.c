@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <utils/multiboot.h>
 #include <string.h>
+#include <renderer/status_bar.h>
+#include <driver/timer_driver.h>
 
 psf1_font_t text_mode_emulation_font = { 0 };
 
@@ -78,4 +80,10 @@ void text_mode_emulation_update() {
             }
         }
 	}
+
+#ifdef STATUS_BAR
+    if (!global_timer_driver) {
+        draw_status_bar();
+    }
+#endif
 }

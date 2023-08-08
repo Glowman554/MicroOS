@@ -12,7 +12,7 @@ void get_wad_information(void* buffer, size_t size, char* out, size_t out_size) 
     char type[5] = { 0 };
     memcpy(type, buffer, 4);
 
-    sprintf(out, "%s containing %d lumps", type, *(int*) &buffer[4]);
+    sprintf(out, "%s containing %d lumps", type, ((int*) buffer)[4]);
 }
 
 file_scanner_t wad_scanner = {
