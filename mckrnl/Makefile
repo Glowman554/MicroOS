@@ -3,13 +3,13 @@ CPPSRC = $(shell find -name '*.cpp')
 OBJS = $(addsuffix .o,$(basename $(SRCS) $(CPPSRC)))
 
 CC = i686-linux-gnu-gcc
-LD = i686-linux-gnu-ld
+LD = i686-linux-gnu-gcc
 
 OPT_LVL = 0
 
 ASFLAGS = -m32 -g
-CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -Wno-nonnull-compare -Wno-main
-LDFLAGS = -melf_i386 -Tlink.ld
+CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -ffreestanding
+LDFLAGS = -Tlink.ld -ffreestanding -nostdlib
 
 ifeq ($(SANITIZE), true)
 	CFLAGS += -fsanitize=undefined -DSANITIZE
@@ -20,7 +20,7 @@ mckrnl.syms: mckrnl.elf
 
 mckrnl.elf: $(OBJS)
 	@echo LD $^
-	@$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^ -lgcc
 
 %.o: %.c
 	@echo CC $^

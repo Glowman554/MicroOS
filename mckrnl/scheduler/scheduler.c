@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <driver/apic/lapic.h>
 #include <driver/apic/smp.h>
+#include <driver/timer_driver.h>
 
 
 int current_pid = 0;
@@ -23,7 +24,7 @@ task_t* init_task(void* entry) {
 
 	task_t* task = NULL;
 	for (int i = 0; i < MAX_TASKS; i++) {
-		if (!tasks[i].active) {
+		if (!tasks[i].active) {   
 			task = &tasks[i];
 			break;
 		}
@@ -63,6 +64,7 @@ task_t* init_task(void* entry) {
 	task->stack = stack;
 	task->user_stack = user_stack;
 	task->pid = current_pid++;
+	task->wait_time = 0;
 
 	task->context = vmm_create_context();
 	vmm_clone_kernel_context(task->context);
@@ -98,7 +100,7 @@ int init_elf(void* image, char** argv, char** envp) {
 
 		if (ph->type != 1) {
 			continue;
-		}
+		}    
 
 		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 2);
 		for (int j = 0; j < ph->mem_size / 4096 + 2; j++) {
@@ -179,8 +181,26 @@ void exit_task(task_t* task) {
 }
 
 int current_task = 0;
-
+int last_time_ms = 0;
 bool is_scheduler_running = false;
+
+cpu_registers_t* switch_to_next_task(int starting_from, int diff_ms, bool ignore_wait_time) {
+    for (int i = starting_from; i < MAX_TASKS; i++) {
+		if (!ignore_wait_time && tasks[i].active && tasks[i].wait_time > 0) {
+			tasks[i].wait_time -= diff_ms;
+			if (tasks[i].wait_time > 0) {
+				continue;
+            }
+		}
+		
+		if(tasks[i].active) {
+			current_task = i;
+			vmm_activate_context(tasks[current_task].context);
+			return tasks[current_task].registers;
+		}
+	}
+    return NULL;
+}
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	if (!is_scheduler_running) {
@@ -196,24 +216,25 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 		return tasks[current_task].registers;
 	}
 
-	for (int i = current_task + 1; i < MAX_TASKS; i++) {
-		if(tasks[i].active) {
-			current_task = i;
-			vmm_activate_context(tasks[current_task].context);
-			return tasks[current_task].registers;
-		}
-	}
+	int curr_time_ms = global_timer_driver->time_ms(global_timer_driver);
+	int diff_ms = curr_time_ms - last_time_ms;
+	last_time_ms = curr_time_ms;
 
-	// we have no tasks left or we are at the end of the task list
+    cpu_registers_t* new_state;
+    if ((new_state = switch_to_next_task(current_task + 1, diff_ms, false))) {
+        return new_state;
+    }
+
+    // we have no tasks left or we are at the end of the task list
 	// so we start searching from 0 again
+    if ((new_state = switch_to_next_task(0, diff_ms, false))) {
+        return new_state;
+    }
 
-	for (int i = 0; i < MAX_TASKS; i++) {
-		if(tasks[i].active) {
-			current_task = i;
-			vmm_activate_context(tasks[current_task].context);
-			return tasks[current_task].registers;
-		}
-	}
+	// no task is really busy rn, so we just pick the first active one even if its in timeout lol
+    if ((new_state = switch_to_next_task(0, diff_ms, true))) {
+        return new_state;
+    }
 
 	abortf("All tasks are dead lol\n");
 
@@ -222,7 +243,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 
 void init_scheduler() {
 	debugf("Initializing scheduler");
-
+ 
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
 	// file = vfs_open("initrd:/bin/test.elf", 0);

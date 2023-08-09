@@ -24,7 +24,13 @@ iso: all initrd.saf
 	cp LICENSE cdrom/.
 	grub-mkrescue -o cdrom.iso cdrom/
 
-run: iso
+set_kvm:
+ifneq ("$(wildcard ./kvm)","")
+	@echo "enabeling kvm"
+	$(eval QEMU_FLAGS += --enable-kvm)
+endif
+
+run: iso set_kvm
 	qemu-system-i386 $(QEMU_FLAGS) -s
 
 test: iso

@@ -1,5 +1,6 @@
 #include <renderer/status_bar.h>
 #include <renderer/text_mode_emulation.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <memory/pmm.h>
 #include <scheduler/scheduler.h>
@@ -38,11 +39,12 @@ void draw_status_bar() {
     ptr += format_memory_usage(ptr, free_memory);
     ptr += sprintf(ptr, ", Used: ");
     ptr += format_memory_usage(ptr, used_memory);
-    ptr += sprintf(ptr, ", Tasks: %d, Time: ", get_ammount_running_tasks());
+    ptr += sprintf(ptr, ", Tasks: %d", get_ammount_running_tasks());
 
     if (global_clock_driver) {
+        ptr += sprintf(ptr, ", Time: ");
         time_t time = global_clock_driver->get_time(global_clock_driver);
-        time_format(ptr, &time);
+        ptr += time_format(ptr, &time);
     }
 
     for (int i = 0; i < 80; i++) {

@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
 		int pid = spawn(new_argv[0], (const char**) new_argv, (const char**) child_envp);
 
 		while (get_proc_info(pid)) {
+            set_env(SYS_ENV_TASK_SET_WAIT_TIME, (void*)1000);
 			yield();
 		}
 	} else {
@@ -93,6 +94,7 @@ int main(int argc, char* argv[]) {
 		int pid = spawn(new_argv[0], (const char**) new_argv, (const char**) child_envp);
 
 		while (get_proc_info(pid)) {
+            set_env(SYS_ENV_TASK_SET_WAIT_TIME, (void*)1000);
 			yield();
 		}
 
