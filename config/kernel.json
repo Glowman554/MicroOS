@@ -114,6 +114,18 @@
                         }
                     ]
                 }
+            },
+            {
+                "name": "Paging",
+                "value": {
+                    "title": "Paging",
+                    "items": [
+                        {
+                            "name": "PAGING_DATA_PAGES",
+                            "value": 512
+                        }
+                    ]
+                }
             }
         ]
     }

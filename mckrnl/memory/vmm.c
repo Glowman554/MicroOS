@@ -44,6 +44,8 @@ cpu_registers_t* page_fault_handler(cpu_registers_t* registers, void* _) {
 
 	printf("Faulting address: %x\n", cr2);
 
+    printf("eip: %x\n", registers->eip);
+
 	halt();
 	return registers;
 }
@@ -64,7 +66,21 @@ void vmm_init(void) {
     }
 #endif
 
-	vmm_map_page(kernel_context, (uintptr_t) NULL, (uintptr_t) NULL, 0);
+    debugf("Mapping multiboot structure...");
+	struct multiboot_module* modules = global_multiboot_info->mbs_mods_addr;
+    vmm_map_page(kernel_context, (uintptr_t) global_multiboot_info, (uintptr_t) global_multiboot_info, PTE_PRESENT);
+    vmm_map_page(kernel_context, (uintptr_t) modules, (uintptr_t) modules, PTE_PRESENT);
+
+	int i;
+	for (i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
+		uint32_t addr = modules[i].mod_start;
+		while (addr < modules[i].mod_end) {
+            vmm_map_page(kernel_context, addr, addr, PTE_PRESENT);
+			addr += 0x1000;
+		}
+	}
+
+    vmm_map_page(kernel_context, (uintptr_t) NULL, (uintptr_t) NULL, 0);
 
 	vmm_activate_context(kernel_context);
 
@@ -79,9 +95,9 @@ void vmm_init(void) {
 }
 
 vmm_context_t* vmm_create_context(void) {
-	struct vmm_context* context = pmm_alloc();
+	struct vmm_context* context = pmm_alloc_pagetable();
 
-	context->pagedir = pmm_alloc();
+	context->pagedir = pmm_alloc_pagetable();
 
 	for (int i = 0; i < 1024; i++) {
 		context->pagedir[i] = 0;
@@ -89,6 +105,9 @@ vmm_context_t* vmm_create_context(void) {
 
 	return context;
 }
+
+extern task_t tasks[MAX_TASKS];
+
 
 int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags) {
 	// debugf("Mapping page %x to %x (flags: %x)", virt, phys, flags);
@@ -104,20 +123,28 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
 
 	if (context != kernel_context) {
 		if (kernel_context->pagedir[pd_index] & PTE_PRESENT) {
-            if (((uint32_t*) kernel_context->pagedir[pd_index])[pt_index] & PTE_PRESENT) {
+            // if (((uint32_t*) kernel_context->pagedir[pd_index])[pt_index] & PTE_PRESENT) {
                 abortf("%x is overlapping with the kernel!", virt);
-            }
+            // }
 		}
     }
 
 	if (context->pagedir[pd_index] & PTE_PRESENT) {
 		page_table = (uint32_t*) (context->pagedir[pd_index] & ~0xFFF);
 	} else {
-		page_table = pmm_alloc();
+		page_table = pmm_alloc_pagetable();
 		for (int i = 0; i < 1024; i++) {
 			page_table[i] = 0;
 		}
 		context->pagedir[pd_index] = (uint32_t) page_table | PTE_PRESENT | flags;
+
+        if (context == kernel_context) {
+            for (int i = 0; i < MAX_TASKS; i++) {
+            	if (tasks[i].active) {
+                    tasks[i].context->pagedir[pd_index] = context->pagedir[pd_index];
+                }
+            }
+        }
 	}
 
 	page_table[pt_index] = phys | flags;
@@ -250,12 +277,12 @@ void vmm_free(void* ptr, uint32_t num_pages) {
 }
 
 void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
-	if (ptr == NULL) {
-		return vmm_alloc((data_size * new_size) / 0x1000 + 1);
-	}
-
 	int new_size_p = (data_size * new_size) / 0x1000 + 1;
 	int old_size_p = (data_size * old_size) / 0x1000 + 1;
+
+	if (ptr == NULL) {
+		return vmm_alloc(new_size_p);
+	}
 
 	if (new_size == 0) {
 		debugf("Deallocating...");

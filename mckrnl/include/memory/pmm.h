@@ -7,6 +7,7 @@
 void pmm_init();
 
 void* pmm_alloc();
+void* pmm_alloc_pagetable();
 void pmm_free(void* page);
 
 void* pmm_alloc_range(int count);

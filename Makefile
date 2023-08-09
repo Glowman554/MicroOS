@@ -4,7 +4,7 @@ all: res
 
 NETDEV = rtl8139
 
-QEMU_FLAGS = -m 1G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
+QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
 QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat
 QEMU_FLAGS += -soundhw pcspk
 QEMU_FLAGS += -smp 1

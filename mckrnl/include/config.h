@@ -35,6 +35,10 @@
 // #define STATUS_BAR
 // End Other
 
+// Paging
+#define PAGING_DATA_PAGES 512
+// End Paging
+
 // Syscalls
 #define SYS_OPEN_ID 1
 #define SYS_CLOSE_ID 2
