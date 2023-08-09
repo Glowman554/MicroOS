@@ -76,11 +76,19 @@ void vmm_init(void) {
     vmm_identity_map((uintptr_t) &kernel_start, (uintptr_t) &kernel_end);
     vmm_identity_map((uintptr_t) &paging_start, (uintptr_t) &paging_end);
 
-#ifdef TEXT_MODE_EMULATION
     debugf("Mapping framebuffer...");
+#ifdef TEXT_MODE_EMULATION
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
 		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
         pmm_mark_used((void*) (uint32_t) global_multiboot_info->fb_addr + i);
+    }
+#else
+    uintptr_t fb_start = 0xb8000;
+    uintptr_t fb_end = fb_start + 80 * 25 * 2;
+    while (fb_start < fb_end) {
+        vmm_map_page(kernel_context, fb_start, fb_start, PTE_PRESENT | PTE_WRITE);
+        pmm_mark_used((void*) fb_start);
+        fb_start += 0x1000;
     }
 #endif
 
