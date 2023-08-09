@@ -14,7 +14,6 @@
 #define KBD_ARRW 1
 #define KBD_SPECIAL_KEY_NEXT 2
 #define KBD_SPECIAL_CODE 3
-#define KBD_KEYMAP_PATH 4
 #define KBD_SPECIAL_KEYS 1024
 
 bool ps2_keyboard_is_device_present(driver_t* driver) {
@@ -126,7 +125,7 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 				break;
 			default:
 				{
-					char c = keymap(&((char*) ps2_keyboard->driver_specific_data)[KBD_KEYMAP_PATH], key, special_keys_down);
+					char c = keymap(key, special_keys_down);
 					((char*) ps2_keyboard->driver_specific_data)[KBD_CHAR] = c;
 				}
 				break;
@@ -180,8 +179,5 @@ char_input_driver_t* get_ps2_driver() {
 	driver->async_getarrw = ps2_keyboard_async_getarrw;
 
 	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
-	
-	assert(is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", &((char*) driver->driver.driver_specific_data)[KBD_KEYMAP_PATH]));
-
 	return driver;
 }

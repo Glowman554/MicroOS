@@ -1,5 +1,6 @@
 #include <scheduler/scheduler.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -12,6 +13,7 @@
 #include <assert.h>
 #include <driver/apic/lapic.h>
 #include <driver/apic/smp.h>
+#include <driver/timer_driver.h>
 
 
 int current_pid = 0;
@@ -23,7 +25,7 @@ task_t* init_task(void* entry) {
 
 	task_t* task = NULL;
 	for (int i = 0; i < MAX_TASKS; i++) {
-		if (!tasks[i].active) {
+		if (!tasks[i].active) {   
 			task = &tasks[i];
 			break;
 		}
@@ -35,8 +37,8 @@ task_t* init_task(void* entry) {
 
 	debugf("Creating task with entry point %p in task slot located at %p", entry, task);
 
-	uint8_t* stack = pmm_alloc_range(KERNEL_STACK_SIZE_PAGES);
-	uint8_t* user_stack = pmm_alloc_range(USER_STACK_SIZE_PAGES);
+	uint8_t* stack = vmm_alloc(KERNEL_STACK_SIZE_PAGES);
+	uint8_t* user_stack = vmm_alloc(USER_STACK_SIZE_PAGES);
 
 	cpu_registers_t new_state = {
 		.eax = 0,
@@ -63,6 +65,7 @@ task_t* init_task(void* entry) {
 	task->stack = stack;
 	task->user_stack = user_stack;
 	task->pid = current_pid++;
+	task->wait_time = 0;
 
 	task->context = vmm_create_context();
 	vmm_clone_kernel_context(task->context);
@@ -94,11 +97,12 @@ int init_elf(void* image, char** argv, char** envp) {
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {
 		void* dest = (void*) ph->virt_addr;
+        assert(((uintptr_t) dest % 0x1000) == 0);
 		void* src = ((char*) image) + ph->offset;
 
 		if (ph->type != 1) {
 			continue;
-		}
+		}    
 
 		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 1);
 		for (int j = 0; j < ph->mem_size / 4096 + 1; j++) {
@@ -122,11 +126,11 @@ int init_elf(void* image, char** argv, char** envp) {
 
 	debugf("copying %d arguments and %d environment variables", num_argv, num_envp);
 
-	task->argv = (char**) pmm_alloc();
+	task->argv = (char**) vmm_alloc(1);
 	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
 
 	for (int i = 0; i < num_argv; i++) {
-		task->argv[i] = (char*) pmm_alloc();
+		task->argv[i] = (char*) vmm_alloc(1);
 		vmm_map_page(task->context, (uintptr_t) task->argv[i] + USER_SPACE_OFFSET, (uintptr_t) task->argv[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
 		memset(task->argv[i], 0, 0x1000);
 		strcpy(task->argv[i], argv[i]);
@@ -134,11 +138,11 @@ int init_elf(void* image, char** argv, char** envp) {
 
 	task->argv[num_argv] = NULL;
 
-	task->envp = (char**) pmm_alloc();
+	task->envp = (char**) vmm_alloc(1);
 	vmm_map_page(task->context, (uintptr_t) task->envp + USER_SPACE_OFFSET, (uintptr_t) task->envp, PTE_PRESENT | PTE_WRITE | PTE_USER);
 
 	for (int i = 0; i < num_envp; i++) {
-		task->envp[i] = (char*) pmm_alloc();
+		task->envp[i] = (char*) vmm_alloc(1);
 		vmm_map_page(task->context, (uintptr_t) task->envp[i] + USER_SPACE_OFFSET, (uintptr_t) task->envp[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
 		memset(task->envp[i], 0, 0x1000);
 		strcpy(task->envp[i], envp[i]);
@@ -172,15 +176,33 @@ void exit_task(task_t* task) {
 	vmm_destroy_context(task->context);
 
 	debugf("Task %p exited", task);
-	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
+	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
 	asm volatile("sti");
 	asm volatile("hlt");
 }
 
 int current_task = 0;
-
+int last_time_ms = 0;
 bool is_scheduler_running = false;
+
+cpu_registers_t* switch_to_next_task(int starting_from, int diff_ms, bool ignore_wait_time) {
+    for (int i = starting_from; i < MAX_TASKS; i++) {
+		if (!ignore_wait_time && tasks[i].active && tasks[i].wait_time > 0) {
+			tasks[i].wait_time -= diff_ms;
+			if (tasks[i].wait_time > 0) {
+				continue;
+            }
+		}
+		
+		if(tasks[i].active) {
+			current_task = i;
+			vmm_activate_context(tasks[current_task].context);
+			return tasks[current_task].registers;
+		}
+	}
+    return NULL;
+}
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	if (!is_scheduler_running) {
@@ -196,24 +218,25 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 		return tasks[current_task].registers;
 	}
 
-	for (int i = current_task + 1; i < MAX_TASKS; i++) {
-		if(tasks[i].active) {
-			current_task = i;
-			vmm_activate_context(tasks[current_task].context);
-			return tasks[current_task].registers;
-		}
-	}
+	int curr_time_ms = global_timer_driver->time_ms(global_timer_driver);
+	int diff_ms = curr_time_ms - last_time_ms;
+	last_time_ms = curr_time_ms;
 
-	// we have no tasks left or we are at the end of the task list
+    cpu_registers_t* new_state;
+    if ((new_state = switch_to_next_task(current_task + 1, diff_ms, false))) {
+        return new_state;
+    }
+
+    // we have no tasks left or we are at the end of the task list
 	// so we start searching from 0 again
+    if ((new_state = switch_to_next_task(0, diff_ms, false))) {
+        return new_state;
+    }
 
-	for (int i = 0; i < MAX_TASKS; i++) {
-		if(tasks[i].active) {
-			current_task = i;
-			vmm_activate_context(tasks[current_task].context);
-			return tasks[current_task].registers;
-		}
-	}
+	// no task is really busy rn, so we just pick the first active one even if its in timeout lol
+    if ((new_state = switch_to_next_task(0, diff_ms, true))) {
+        return new_state;
+    }
 
 	abortf("All tasks are dead lol\n");
 
@@ -222,7 +245,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 
 void init_scheduler() {
 	debugf("Initializing scheduler");
-
+ 
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
 	// file = vfs_open("initrd:/bin/test.elf", 0);
@@ -265,4 +288,14 @@ int read_task_list(task_list_t* out, int max) {
 		}
 	}
 	return j;
+}
+
+int get_ammount_running_tasks() {
+    int j = 0;
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (tasks[i].active) {
+            j++;
+        }
+    }
+    return j;
 }

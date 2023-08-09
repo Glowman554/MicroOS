@@ -29,6 +29,8 @@ typedef struct {
 	resource_t* resources;
 	int num_resources;
 
+	int wait_time;
+
 	bool pin;
 } task_t;
 
@@ -60,5 +62,6 @@ typedef struct task_list {
 } task_list_t;
 
 int read_task_list(task_list_t* out, int max);
+int get_ammount_running_tasks();
 
 #define NOSHED(expr) { is_scheduler_running = false; asm volatile("sti"); expr; asm volatile("cli"); is_scheduler_running = true; }

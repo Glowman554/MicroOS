@@ -25,10 +25,19 @@
 // #define PARSE_MADT
 // End Experimental
 
+// Input
+#define DEFAULT_LAYOUT "us"
+// End Input
+
 // Other
 #define FD_OFFSET 5
 // #define TEXT_MODE_EMULATION
+// #define STATUS_BAR
 // End Other
+
+// Paging
+#define PAGING_DATA_PAGES 512
+// End Paging
 
 // Syscalls
 #define SYS_OPEN_ID 1

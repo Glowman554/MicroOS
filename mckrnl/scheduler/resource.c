@@ -30,7 +30,7 @@ void resource_dealloc_self() {
 	task_t* self = get_self();
 
 	for (int i = 0; i < self->num_resources; i++) {
-		if(self->resources[i].resource != NULL) {
+		if (self->resources[i].resource != NULL) {
 			self->resources[i].dealloc(self->resources[i].resource);
 		}
 	}

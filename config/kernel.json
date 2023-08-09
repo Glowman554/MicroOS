@@ -84,6 +84,18 @@
                 }
             },
             {
+                "name": "Input",
+                "value": {
+                    "title": "Input",
+                    "items": [
+                        {
+                            "name": "DEFAULT_LAYOUT",
+                            "value": "us"
+                        }
+                    ]
+                }
+            },
+            {
                 "name": "Other",
                 "value": {
                     "title": "Other",
@@ -95,6 +107,22 @@
                         {
                             "name": "TEXT_MODE_EMULATION",
                             "value": false
+                        },
+                        {
+                            "name": "STATUS_BAR",
+                            "value": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Paging",
+                "value": {
+                    "title": "Paging",
+                    "items": [
+                        {
+                            "name": "PAGING_DATA_PAGES",
+                            "value": 512
                         }
                     ]
                 }
