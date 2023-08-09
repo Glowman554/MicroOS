@@ -10,7 +10,13 @@ xsdt_t* xsdt;
 
 rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
 	debugf("Scanning for RSDP in %x to %x", start, start + length);
+    uintptr_t start2 = (uintptr_t) start;
 	char* end = start + length;
+
+    while (start2 < (uintptr_t) end) {
+        vmm_map_page(kernel_context, start2, start2, PTE_PRESENT);
+        start2 += 0x1000;
+    }
 
 	for (; start < end; start += 16) {
 		if (!memcmp(start, "RSD PTR ", sizeof("RSD PTR ") -1)) {

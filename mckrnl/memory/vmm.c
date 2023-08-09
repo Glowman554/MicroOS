@@ -50,13 +50,31 @@ cpu_registers_t* page_fault_handler(cpu_registers_t* registers, void* _) {
 	return registers;
 }
 
+void vmm_identity_map(uintptr_t start, uintptr_t end) {
+    while (start < end) {
+		vmm_map_page(kernel_context, start, start, PTE_PRESENT | PTE_WRITE);
+        start += 0x1000;
+    }
+}
+
+extern const void kernel_start;
+extern const void kernel_end;
+
+extern const void paging_start;
+extern const void paging_end;
+
+
 void vmm_init(void) {
 	debugf("Initializing virtual memory manager");
 
 	kernel_context = vmm_create_context();
-	for (int i = 0; i < 32 * MB; i += 0x1000) {
-		vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
-	}
+
+    // for (int i = 0; i < 32 * MB; i += 0x1000) {
+	// 	vmm_map_page(kernel_context, i, i, PTE_PRESENT | PTE_WRITE);
+	// }
+
+    vmm_identity_map((uintptr_t) &kernel_start, (uintptr_t) &kernel_end);
+    vmm_identity_map((uintptr_t) &paging_start, (uintptr_t) &paging_end);
 
 #ifdef TEXT_MODE_EMULATION
     debugf("Mapping framebuffer...");
@@ -294,9 +312,9 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 		// debugf("resizing %d pages to %d pages!", old_size_p, new_size_p);
 		void* new_ptr = vmm_alloc(new_size_p);
 		if (new_size_p < old_size_p) {
-			memcpy(new_ptr, ptr, data_size * old_size);
-		} else {
 			memcpy(new_ptr, ptr, data_size * new_size);
+		} else {
+			memcpy(new_ptr, ptr, data_size * old_size);
 		}
 		
 		vmm_free(ptr, old_size_p);

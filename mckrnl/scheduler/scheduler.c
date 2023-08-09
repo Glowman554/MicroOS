@@ -1,5 +1,6 @@
 #include <scheduler/scheduler.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -36,8 +37,8 @@ task_t* init_task(void* entry) {
 
 	debugf("Creating task with entry point %p in task slot located at %p", entry, task);
 
-	uint8_t* stack = pmm_alloc_range(KERNEL_STACK_SIZE_PAGES);
-	uint8_t* user_stack = pmm_alloc_range(USER_STACK_SIZE_PAGES);
+	uint8_t* stack = vmm_alloc(KERNEL_STACK_SIZE_PAGES);
+	uint8_t* user_stack = vmm_alloc(USER_STACK_SIZE_PAGES);
 
 	cpu_registers_t new_state = {
 		.eax = 0,
@@ -96,15 +97,16 @@ int init_elf(void* image, char** argv, char** envp) {
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {
 		void* dest = (void*) ph->virt_addr;
+        assert(((uintptr_t) dest % 0x1000) == 0);
 		void* src = ((char*) image) + ph->offset;
 
 		if (ph->type != 1) {
 			continue;
 		}    
 
-		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 2);
-		for (int j = 0; j < ph->mem_size / 4096 + 2; j++) {
-			vmm_map_page(task->context, ALIGN_PAGE_DOWN((uintptr_t) dest + j * 4096), (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
+		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 1);
+		for (int j = 0; j < ph->mem_size / 4096 + 1; j++) {
+			vmm_map_page(task->context, (uintptr_t) dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
 		}
 
 		vmm_context_t old = vmm_get_current_context();
@@ -124,11 +126,11 @@ int init_elf(void* image, char** argv, char** envp) {
 
 	debugf("copying %d arguments and %d environment variables", num_argv, num_envp);
 
-	task->argv = (char**) pmm_alloc();
+	task->argv = (char**) vmm_alloc(1);
 	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
 
 	for (int i = 0; i < num_argv; i++) {
-		task->argv[i] = (char*) pmm_alloc();
+		task->argv[i] = (char*) vmm_alloc(1);
 		vmm_map_page(task->context, (uintptr_t) task->argv[i] + USER_SPACE_OFFSET, (uintptr_t) task->argv[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
 		memset(task->argv[i], 0, 0x1000);
 		strcpy(task->argv[i], argv[i]);
@@ -136,11 +138,11 @@ int init_elf(void* image, char** argv, char** envp) {
 
 	task->argv[num_argv] = NULL;
 
-	task->envp = (char**) pmm_alloc();
+	task->envp = (char**) vmm_alloc(1);
 	vmm_map_page(task->context, (uintptr_t) task->envp + USER_SPACE_OFFSET, (uintptr_t) task->envp, PTE_PRESENT | PTE_WRITE | PTE_USER);
 
 	for (int i = 0; i < num_envp; i++) {
-		task->envp[i] = (char*) pmm_alloc();
+		task->envp[i] = (char*) vmm_alloc(1);
 		vmm_map_page(task->context, (uintptr_t) task->envp[i] + USER_SPACE_OFFSET, (uintptr_t) task->envp[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
 		memset(task->envp[i], 0, 0x1000);
 		strcpy(task->envp[i], envp[i]);
@@ -174,7 +176,7 @@ void exit_task(task_t* task) {
 	vmm_destroy_context(task->context);
 
 	debugf("Task %p exited", task);
-	pmm_free_range((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
+	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
 	asm volatile("sti");
 	asm volatile("hlt");
