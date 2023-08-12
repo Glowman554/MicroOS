@@ -97,16 +97,36 @@ int init_elf(void* image, char** argv, char** envp) {
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {
 		void* dest = (void*) ph->virt_addr;
-        assert(((uintptr_t) dest % 0x1000) == 0);
+		void* real_dest = (void*) ALIGN_PAGE_DOWN((uintptr_t) dest);
+
 		void* src = ((char*) image) + ph->offset;
 
 		if (ph->type != 1) {
 			continue;
 		}    
 
-		void* phys_loc = pmm_alloc_range(ph->mem_size / 4096 + 1);
-		for (int j = 0; j < ph->mem_size / 4096 + 1; j++) {
-			vmm_map_page(task->context, (uintptr_t) dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		// this is to fix alignment issues. THIS MIGHT LEAK MEMORY, it doesn't look like it does currently though
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		// TODO
+		int real_size = ph->mem_size / 4096 + 1;
+		if (dest != real_dest) {
+			real_size++;
+		}
+
+		void* phys_loc = pmm_alloc_range(real_size);
+		for (int j = 0; j < real_size; j++) {
+			// maybe check if page is already mapped at virt loc?
+			vmm_map_page(task->context, (uintptr_t) real_dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
 		}
 
 		vmm_context_t old = vmm_get_current_context();
