@@ -2,9 +2,40 @@
 
 #include <buildin/graphics.h>
 #include <string.h>
+#include <stdlib.h>
+
+syntax_header_t* syntax = NULL;
+
+
+uint8_t color_translation[] = {
+	FOREGROUND_BLACK,
+	FOREGROUND_RED,
+	FOREGROUND_GREEN,
+	FOREGROUND_YELLOW,
+	FOREGROUND_BLUE,
+	FOREGROUND_MAGENTA,
+	FOREGROUND_CYAN,
+	FOREGROUND_WHITE
+};
+
+uint8_t* color = NULL;
+
+void rerender_color(edit_state_t* state) {
+	if (syntax) {	
+		if (color) {
+			free(color);
+		}
+		color = highlight(state->input_buffer, state->current_size, syntax);
+	}
+}
 
 void render_tui(edit_state_t* state) {
 	start_frame();
+
+	if (!color) {
+		rerender_color(state);
+	}
+
 
 	int width = get_width();
 	int height = get_height();
@@ -43,7 +74,7 @@ void render_tui(edit_state_t* state) {
 			}
 
 			if (state->input_buffer[i] >= 0x20 && state->input_buffer[i] <= 0x7E) {
-				draw_char(cur_x, cur_y, state->input_buffer[i], BACKGROUND_BLACK | FOREGROUND_WHITE);
+				draw_char(cur_x, cur_y, state->input_buffer[i], BACKGROUND_BLACK | (color ? color_translation[color[i]] : FOREGROUND_WHITE));
 			}
 			
 			cur_x++;
