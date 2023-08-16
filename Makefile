@@ -44,6 +44,10 @@ res:
 	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
 
 
+format_disk:
+	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
+	mkfs.vfat -F 32 res/foxos.img
+
 run_dbg: iso
 	qemu-system-i386 $(QEMU_FLAGS) --no-reboot --no-shutdown -s -S
 

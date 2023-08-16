@@ -50,7 +50,7 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 	FRESULT fr = f_open(&fil, new_path, mode);
 	if (fr != FR_OK) {
 		debugf("Error opening file %s: %d", path, fr);
-		vmm_free(file, 0);
+		vmm_free(file, 1);
 		return NULL;
 	}
 
@@ -67,7 +67,7 @@ void fatfs_close(vfs_mount_t* mount, file_t* f) {
 	FIL* fil = (FIL*) f->driver_specific_data;
 	f_close(fil);
 	vmm_free(f->driver_specific_data, sizeof(FIL) / 0x1000 + 1);
-	vmm_free(f, 0);
+	vmm_free(f, 1);
 }
 
 void fatfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -97,7 +97,7 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 
 void fatfs_delete(vfs_mount_t* mount, file_t* file) {
 	f_unlink((char*) file->buffer);
-	vmm_free(file, 0);
+	vmm_free(file, 1);
 }
 
 void fatfs_mkdir(vfs_mount_t* mount, char* path) {

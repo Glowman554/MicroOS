@@ -143,6 +143,7 @@ void ata_driver_init(driver_t* driver) {
 
 	if (!read_gpt((disk_driver_t*) driver)) {
 		debugf("ATA: Failed to read GPT");
+		register_disk((disk_driver_t*) driver);
 	}
 }
 

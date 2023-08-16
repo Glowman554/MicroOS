@@ -26,7 +26,7 @@
 // End Experimental
 
 // Input
-#define DEFAULT_LAYOUT "us"
+#define DEFAULT_LAYOUT "de"
 // End Input
 
 // Other
