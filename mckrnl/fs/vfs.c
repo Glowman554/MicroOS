@@ -17,6 +17,22 @@ void vfs_init() {
 	debugf("VFS: Initializing VFS");
 }
 
+bool try_read_disk_label(char* out, vfs_mount_t* mount) {
+	file_t* label = mount->open(mount, "/LABEL", FILE_OPEN_MODE_READ);
+	if (!label) {
+		label = mount->open(mount, "/FOXCFG/dn.fox", FILE_OPEN_MODE_READ);
+	}
+	if (label) {
+		mount->read(mount, label, out, label->size, 0);
+		out[label->size] = 0;
+		mount->close(mount, label);
+		return true;
+	} else {
+		debugf("Could not read disk label for disk %s", mount->name(mount));
+	}
+	return false;
+}
+
 void vfs_mount(vfs_mount_t* mount) {
 	debugf("VFS: Mounting %s", mount->name(mount));
 

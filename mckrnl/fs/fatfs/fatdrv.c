@@ -1,3 +1,4 @@
+#include "fs/vfs.h"
 #include <fs/fatfs/fatdrv.h>
 
 #include <memory/vmm.h>
@@ -230,6 +231,14 @@ vfs_mount_t* fatfs_mount(int disk_id, char* name) {
 	return mount;
 }
 
+void fatfs_rename(vfs_mount_t* fat_mount, char* name) {
+	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) fat_mount + sizeof(vfs_mount_t);
+	memset(mount_data->name, 0, sizeof(mount_data->name));
+	strcpy(mount_data->name, name);
+
+	debugf("New label: %s", name);
+}
+
 bool is_fat32_bpb(BPB_t* bpb) {
 	if (bpb == 0) {
 		return false;
@@ -335,5 +344,12 @@ vfs_mount_t* fatfs_scanner(int disk_id) {
 	char name[64] = {0};
 	sprintf(name, "fat32_%d", disk_id);
 
-	return fatfs_mount(disk_id, name);
+	vfs_mount_t* mount =  fatfs_mount(disk_id, name);
+
+	char label[64] = { 0 };
+	if (try_read_disk_label(label, mount)) {
+		fatfs_rename(mount, label);
+	}
+
+	return mount;
 }
