@@ -299,6 +299,13 @@
 				"free (return)",
 				"used (return)"
 			]
+		},
+		{
+			"name": "SYS_MOUSE_INFO",
+			"arguments": [
+				"0x27",
+				"&mouse_info"
+			]
 		}
 	]
 }

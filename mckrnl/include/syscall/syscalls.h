@@ -60,3 +60,5 @@ cpu_registers_t* sys_kill(cpu_registers_t* regs);
 cpu_registers_t* sys_vpeek(cpu_registers_t* regs);
 
 cpu_registers_t* sys_raminfo(cpu_registers_t* regs);
+
+cpu_registers_t* sys_mouse_info(cpu_registers_t* regs);

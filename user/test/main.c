@@ -8,6 +8,8 @@
 #include <sys/spawn.h>
 #include <sys/graphics.h>
 #include <sys/file.h>
+#include <sys/getc.h>
+#include <sys/mouse.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
 
@@ -29,6 +31,32 @@ char* color_table[] = {
 	"yellow",
 	"white"
 };
+
+int last_x = 0;
+int last_y = 0;
+void process_cursor(int x, int y) {
+	if (x > 79) {
+		x = 79;
+	}
+	if (y > 24) {
+		y = 24;
+	}
+
+	uint8_t buffer[80 * 25 * 2];
+	vpeek(0, buffer, sizeof(buffer));
+
+	if (x != last_x || y != last_y) {
+		buffer[2 * (last_y * 80 + last_x) + 1] = (buffer[2 * (last_y * 80 + last_x) + 1] & 0x0f) << 4 | (buffer[2 * (last_y * 80 + last_x) + 1] & 0xf0) >> 4;
+		buffer[2 * (y * 80 + x) + 1] = (buffer[2 * (y * 80 + x) + 1] & 0x0f) << 4 | (buffer[2 * (y * 80 + x) + 1] & 0xf0) >> 4;
+		if (!buffer[2 * (y * 80 + x) + 1]) {
+			buffer[2 * (y * 80 + x) + 1] = 0xf0;
+		}
+		last_x = x;
+		last_y = y;
+	}
+
+	vpoke(0, buffer, sizeof(buffer));
+}
 
 
 int main(int argc, char* argv[], char* envp[]) {
@@ -103,4 +131,10 @@ int main(int argc, char* argv[], char* envp[]) {
         set_color(color_table[i], false);
         printf("Hello World!\n");
     }
+
+	while (async_getc() != 27) {
+		mouse_info_t info = { 0 };
+		mouse_info(&info);
+		process_cursor(info.x / 16, info.y / 16);
+	}
 }

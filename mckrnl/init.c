@@ -13,6 +13,7 @@
 #include <memory/vmm.h>
 
 #include <driver/input/ps2_keyboard.h>
+#include <driver/input/ps2_mouse.h>
 #include <driver/disk/ata.h>
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
@@ -114,6 +115,7 @@ void _main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &serial_output_driver);
 	register_driver((driver_t*) &text_console_driver);
     register_driver((driver_t*) get_ps2_driver());
+    register_driver((driver_t*) get_ps2_mouse_driver());
     register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &cmos_driver);
 	register_driver((driver_t*) &pc_speaker_driver);
