@@ -1,4 +1,4 @@
-all: res
+all: compile_flags.txt res
 	make -C mckrnl
 	make -C user
 
@@ -47,6 +47,13 @@ res:
 format_disk:
 	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
 	mkfs.vfat -F 32 res/foxos.img
+
+format_disk_gpt:
+	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
+	echo 'echo "o\ny\nn\n1\n\n\n0700\nw\ny\n" | gdisk res/foxos.img' | sh
+	sudo losetup /dev/loop28 res/foxos.img -P
+	sudo mkfs.vfat -F 32 /dev/loop28p1
+	sudo losetup -d /dev/loop28
 
 run_dbg: iso
 	qemu-system-i386 $(QEMU_FLAGS) --no-reboot --no-shutdown -s -S
