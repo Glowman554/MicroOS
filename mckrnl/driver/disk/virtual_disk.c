@@ -41,6 +41,8 @@ disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset)
 	driver->read = virtual_disk_read;
 	driver->write = virtual_disk_write;
 
+	driver->physical = false;
+
 	driver->driver.driver_specific_data = driver + sizeof(disk_driver_t);
 
 	virtual_disk_driver_data_t* data = (virtual_disk_driver_data_t*) driver->driver.driver_specific_data;

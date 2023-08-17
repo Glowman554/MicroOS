@@ -143,8 +143,9 @@ void ata_driver_init(driver_t* driver) {
 
 	if (!read_gpt((disk_driver_t*) driver)) {
 		debugf("ATA: Failed to read GPT");
-		register_disk((disk_driver_t*) driver);
 	}
+
+	register_disk((disk_driver_t*) driver);
 }
 
 void ata_driver_read(disk_driver_t* driver, uint64_t sector, uint32_t count, void* buffer) {
@@ -175,6 +176,8 @@ disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name) {
 	driver->flush = ata_driver_flush;
 	driver->read = ata_driver_read;
 	driver->write = ata_driver_write;
+
+	driver->physical = true;
 
 	driver->driver.driver_specific_data = driver + sizeof(disk_driver_t);
 

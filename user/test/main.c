@@ -9,6 +9,7 @@
 #include <sys/graphics.h>
 #include <sys/file.h>
 #include <sys/getc.h>
+#include <buildin/disk_raw.h>
 #include <sys/mouse.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
@@ -132,9 +133,27 @@ int main(int argc, char* argv[], char* envp[]) {
         printf("Hello World!\n");
     }
 
-	while (async_getc() != 27) {
-		mouse_info_t info = { 0 };
-		mouse_info(&info);
-		process_cursor(info.x / 16, info.y / 16);
+	// while (async_getc() != 27) {
+	// 	mouse_info_t info = { 0 };
+	// 	mouse_info(&info);
+	// 	process_cursor(info.x / 16, info.y / 16);
+	// }
+
+	int num_disks = disk_count(NULL);
+
+	bool physical[num_disks];
+	printf("Num disks: %d\n", disk_count(physical));
+
+	for (int i = 0; i < num_disks; i++) {
+		printf("%d: %s\n", i, physical[i] ? "true" : "false");
 	}
+
+	char sect[512] = { 0 };
+	read_sector_raw(1, 0, 1, sect);
+
+	for (int i = 0; i < 512; i++) {
+		printf("%c", sect[i]);
+	}
+
+	return 0;
 }

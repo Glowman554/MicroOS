@@ -43,6 +43,8 @@
 
 #include <net/socket_manager.h>
 
+#include <devices/disk.h>
+
 // char test_str[] = "Hello world!";
 // void test_read(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
 // 	memcpy(buf, test_str + offset, size);
@@ -131,7 +133,8 @@ void _main(multiboot_info_t* mb_info) {
 
 	vfs_mount(get_ramfs("tmp"));
 	vfs_mount((vfs_mount_t*) &global_devfs);
-	// devfs_register_file(&global_devfs, &test_file);
+
+	devfs_register_file(&global_devfs, &disk_file);
 
 	vfs_register_fs_scanner(fatfs_scanner);
 
