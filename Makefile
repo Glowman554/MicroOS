@@ -1,4 +1,4 @@
-all: compile_flags.txt res
+all: res
 	make -C mckrnl
 	make -C user
 
