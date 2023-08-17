@@ -15,6 +15,9 @@ initrd.saf:
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	cp *.md ./res/initrd/. -v
+	mkdir -p ./res/initrd/EFI/BOOT
+	cp mckrnl/mckrnl.* ./res/initrd/EFI/BOOT/. -v
+	cp ./cdrom/zap-light16.psf ./res/initrd/EFI/BOOT/. -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
 iso: all initrd.saf

@@ -33,6 +33,7 @@ all:
 	make -C stream prog
 	make -C free prog
 	make -C install prog
+	make -C lminst prog
 
 clean:
 	make -C libc clean
@@ -67,6 +68,7 @@ clean:
 	make -C stream clean
 	make -C free clean
 	make -C install clean
+	make -C lminst clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -101,3 +103,4 @@ compile_flags.txt:
 	make -C stream compile_flags.txt
 	make -C free compile_flags.txt
 	make -C install compile_flags.txt
+	make -C lminst compile_flags.txt

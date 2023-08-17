@@ -5,16 +5,21 @@
 #include <sys/file.h>
 #include <sys/env.h>
 
+#include <buildin/disk_raw.h>
+
 int main(int argc, char *argv[]) {
 	char ls_path[256] = {0};
 	set_env(SYS_GET_PWD_ID, ls_path);
 
 	bool lsfs_mode = false;
+	bool lsdisk_mode = false;
 	bool help_mode = false;
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--lsfs") == 0) {
 			lsfs_mode = true;
+		} else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--lsdisk") == 0) {
+			lsdisk_mode = true;
 		} else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
 			help_mode = true;
 		} else {
@@ -41,11 +46,20 @@ int main(int argc, char *argv[]) {
 			printf("%s:\n", out);
 			memset(out, 0, 512);
 		}
+	} else if (lsdisk_mode) {
+		int num_disks = disk_count(NULL);
+		bool physical[num_disks];
+		disk_count(physical);
+
+		for (int i = 0; i < num_disks; i++) {
+			printf("disk %d (%s)\n", i, physical[i] ? "physical" : "virtual");
+		}
 	} else if (help_mode) {
 		printf("Usage: ls [OPTION]... [FILE]...\n");
 		printf("List information about the FILEs (the current directory by default).\n");
 		printf("\n");
 		printf("\t-f, --lsfs\t\t\tlist mounted filesystems\n");
+		printf("\t-d, --lsdisk\t\t\tlist disks\n");
 		printf("\t-h, --help\t\t\tdisplay this help and exit\n");
 	} else {
 		int fd = open(ls_path, FILE_OPEN_MODE_READ);

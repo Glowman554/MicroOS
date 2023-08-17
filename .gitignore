@@ -15,3 +15,5 @@ user/fasm/fasm
 a.out
 
 config/*.user
+
+limine-hdd.h
