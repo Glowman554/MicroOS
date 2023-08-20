@@ -80,6 +80,8 @@ void ramfs_write(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_
 		node->fsize = new_file_size;
 	}
 
+	file->size = node->fsize;
+
 	memcpy(node->fdata + offset, buf, size);
 }
 

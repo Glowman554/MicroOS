@@ -92,6 +92,8 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 	unsigned int has_written;
 	f_write((FIL*) fil, buffer, size, &has_written);
 
+	f->size = f_size(fil);
+
 	assert(has_written == size);
 }
 
