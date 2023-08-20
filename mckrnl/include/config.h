@@ -78,6 +78,7 @@
 #define SYS_VPEEK_ID 37
 #define SYS_RAMINFO_ID 38
 #define SYS_MOUSE_INFO_ID 39
+#define SYS_TRUNCATE_ID 40
 // End Syscalls
 
 // End Kernel configuration

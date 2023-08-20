@@ -85,6 +85,12 @@ void ramfs_write(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_
 	memcpy(node->fdata + offset, buf, size);
 }
 
+void ramfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
+	ramfs_node_t* node = (ramfs_node_t*) file->driver_specific_data;
+	node->fdata = vmm_resize(1, node->fsize, new_size, node->fdata);
+	node->fsize = new_size;
+	file->size = node->fsize;
+}
 
 void ramfs_delete(vfs_mount_t* mount, file_t* file) { todo(); }
 
@@ -205,6 +211,8 @@ vfs_mount_t* get_ramfs(char* name) {
 
 	mount->dir_at = ramfs_dir_at;
 	mount->delete_dir = ramfs_delete_dir;
+
+	mount->truncate = ramfs_truncate;
 
 	mount->name = ramfs_name;
 

@@ -1,8 +1,10 @@
+#include "fs/fatfs/ff.h"
 #include "fs/vfs.h"
 #include <fs/fatfs/fatdrv.h>
 
 #include <memory/vmm.h>
 #include <assert.h>
+#include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <driver/disk_driver.h>
@@ -95,6 +97,15 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 	f->size = f_size(fil);
 
 	assert(has_written == size);
+}
+
+void fatfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
+	FIL* fil = (FIL*) file->driver_specific_data;
+
+	f_lseek(fil, new_size);
+	f_truncate(fil);
+
+	file->size = f_size(fil);
 }
 
 void fatfs_delete(vfs_mount_t* mount, file_t* file) {
@@ -229,6 +240,7 @@ vfs_mount_t* fatfs_mount(int disk_id, char* name) {
 	mount->dir_at = fatfs_dir_at;
 	mount->touch = fatfs_touch;
 	mount->delete_dir = fatfs_delete_dir;
+	mount->truncate = fatfs_truncate;
 
 	return mount;
 }

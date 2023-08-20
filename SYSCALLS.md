@@ -40,3 +40,4 @@
 | SYS_VPEEK | 0x25 | offset | &data | range | - | - |
 | SYS_RAMINFO | 0x26 | free (return) | used (return) | - | - | - |
 | SYS_MOUSE_INFO | 0x27 | &mouse_info | - | - | - | - |
+| SYS_TRUNCATE | 0x28 | fd | new_size | - | - | - |

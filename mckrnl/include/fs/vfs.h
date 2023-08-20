@@ -24,6 +24,8 @@ typedef struct vfs_mount {
 	struct dir_t (*dir_at)(struct vfs_mount* mount, int idx, char* path);
 	void (*delete_dir)(struct vfs_mount* mount, char* path);
 
+	void (*truncate)(struct vfs_mount* mount, struct file* file, size_t new_size);
+
 	char* (*name)(struct vfs_mount* mount);
 
 	void* driver_specific_data;
@@ -61,6 +63,8 @@ void vfs_write(file_t* file, void* buf, size_t size, size_t offset);
 void vfs_delete(file_t* file);
 void vfs_mkdir(char* path);
 void vfs_touch(char* path);
+
+void vfs_truncate(file_t* file, size_t new_size);
 
 dir_t vfs_dir_at(int idx, char* path);
 void vfs_delete_dir(char* path);

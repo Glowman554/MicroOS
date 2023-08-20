@@ -139,21 +139,34 @@ int main(int argc, char* argv[], char* envp[]) {
 	// 	process_cursor(info.x / 16, info.y / 16);
 	// }
 
-	int num_disks = disk_count(NULL);
+	// int num_disks = disk_count(NULL);
 
-	bool physical[num_disks];
-	printf("Num disks: %d\n", disk_count(physical));
+	// bool physical[num_disks];
+	// printf("Num disks: %d\n", disk_count(physical));
 
-	for (int i = 0; i < num_disks; i++) {
-		printf("%d: %s\n", i, physical[i] ? "true" : "false");
-	}
+	// for (int i = 0; i < num_disks; i++) {
+	// 	printf("%d: %s\n", i, physical[i] ? "true" : "false");
+	// }
 
-	char sect[512] = { 0 };
-	read_sector_raw(1, 0, 1, sect);
+	// char sect[512] = { 0 };
+	// read_sector_raw(1, 0, 1, sect);
 
-	for (int i = 0; i < 512; i++) {
-		printf("%c", sect[i]);
-	}
+	// for (int i = 0; i < 512; i++) {
+	// 	printf("%c", sect[i]);
+	// }
+
+	FILE* test = fopen("tmp:/test.txt", "w");
+	fwrite("hello world 123 456", 19, 1, test);
+	fclose(test);
+
+	system("cat tmp:/test.txt");
+
+	test = fopen("tmp:/test.txt", "w");
+	fseek(test, 11, SEEK_SET);
+	ftruncate(test);
+	fclose(test);
+
+	system("cat tmp:/test.txt");
 
 	return 0;
 }

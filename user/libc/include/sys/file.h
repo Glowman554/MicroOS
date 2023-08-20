@@ -31,3 +31,4 @@ void dir_at(char* path, int idx, dir_t* dir);
 void touch(char* path);
 void delete_dir(char* path);
 bool fs_at(char* path, int idx);
+void truncate(int fd, int new_size);

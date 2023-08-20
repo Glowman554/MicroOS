@@ -306,6 +306,14 @@
 				"0x27",
 				"&mouse_info"
 			]
+		},
+		{
+			"name": "SYS_TRUNCATE",
+			"arguments": [
+				"0x28",
+				"fd",
+				"new_size"
+			]
 		}
 	]
 }

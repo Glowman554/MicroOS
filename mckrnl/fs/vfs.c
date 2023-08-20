@@ -89,6 +89,10 @@ void vfs_write(file_t* file, void* buf, size_t size, size_t offset) {
 	file->mount->write(file->mount, file, buf, size, offset);
 }
 
+void vfs_truncate(file_t* file, size_t new_size) {
+	file->mount->truncate(file->mount, file, new_size);
+}
+
 void vfs_delete(file_t* file) {
 	file->mount->_delete(file->mount, file);
 }
