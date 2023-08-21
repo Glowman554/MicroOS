@@ -1,0 +1,16 @@
+{
+	"directories": [
+		"brainasm"
+	],
+	"mappings": {
+		"src/src/brainasm.elf": "bin/brainasm.elf",
+		"src/scripts/compile.msh": "brainasm/compile.msh",
+		"src/test/cellsize.bf": "brainasm/cellsize.bf",
+		"src/test/echo.bf": "brainasm/echo.bf",
+		"src/test/hello.bf": "brainasm/hello.bf",
+		"src/test/triangle.bf": "brainasm/triangle.bf",
+		"src/test/yapi.bf": "brainasm/yapi.bf"
+	},
+	"name": "BrainASM",
+	"license": "src/LICENSE"
+}

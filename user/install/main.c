@@ -12,12 +12,16 @@ int main(int argc, char* argv[]) {
 	printf("Welcome to the MicroOS installer!\n");
 	char partition_path[256] = { 0 };
 	
-	printf("On witch partition do you want to install MicroOS? > ");
-	int len = gets(partition_path);
-    
-    if (partition_path[len - 1] != ':') {
-		printf("Error: Only mountpoints are supported.\n");
-		abort();
+	if (getenv("partition")) {
+		strcpy(partition_path, getenv("partition"));
+	} else {
+		printf("On witch partition do you want to install MicroOS? > ");
+		int len = gets(partition_path);
+		
+		if (partition_path[len - 1] != ':') {
+			printf("Error: Only mountpoints are supported.\n");
+			abort();
+		}
 	}
 
 	char keyboard_layout[256] = { 0 };
