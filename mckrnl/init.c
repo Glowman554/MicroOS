@@ -18,6 +18,7 @@
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
 #include <driver/timer/pit.h>
+#include <driver/timer/hpet.h>
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
@@ -119,6 +120,7 @@ void _main(multiboot_info_t* mb_info) {
     register_driver((driver_t*) get_ps2_driver());
     register_driver((driver_t*) get_ps2_mouse_driver());
     register_driver((driver_t*) &pit_driver);
+	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
 	register_driver((driver_t*) &pc_speaker_driver);
 
@@ -162,6 +164,11 @@ void _main(multiboot_info_t* mb_info) {
 #endif	
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
+
+	// while (true) {
+	// 	debugf("Hello %d", global_timer_driver->time_ms(global_timer_driver));
+	// 	global_timer_driver->sleep(global_timer_driver, 1000);
+	// }
 
 	char init_exec[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--init", init_exec)) {
