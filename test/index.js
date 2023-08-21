@@ -42,7 +42,7 @@ var settings = {
 	cdrom: {
 		url: "../cdrom.iso"
 	},
-	acpi: true
+	acpi: false
 };
 
 var screen = new Uint8Array(SCREEN_WIDTH * 25)
