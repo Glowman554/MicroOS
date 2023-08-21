@@ -6,3 +6,5 @@ install
 terminal limine/install_env.msh
 
 cp -r -v pkgs $partition/pkgs
+
+echo Install complete!
