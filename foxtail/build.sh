@@ -17,6 +17,7 @@ fi
 mkdir -p pkgs
 
 build_dir brainasm
+build_dir phoenix_tools
 
 mkdir ../res/initrd/pkgs -p
 cp pkgs/* ../res/initrd/pkgs -v

@@ -11,3 +11,4 @@ if [ -d "pkgs" ]; then
 fi
 
 clean_dir brainasm
+clean_dir phoenix_tools
