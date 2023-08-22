@@ -3,7 +3,7 @@ import struct
 import json
 import gzip
 
-compress=False
+compress=True
 
 src_compress = """
 #include <stdio.h>
@@ -43,7 +43,7 @@ int main() {
 	printf("\\n");
 
 	if (license != NULL) {
-		printf("%s\\n", license);
+		fputs(license, stdout);
 		printf("do you accept the license? (y/n) ");
 		c = getchar();
 		if (c != 'y') {

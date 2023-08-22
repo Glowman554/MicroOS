@@ -2,6 +2,7 @@ all:
 	mkdir -p bin
 	mkdir -p lib
 	make -C libc library
+	make -C libtinf library
 
 	make -C init prog
 	make -C terminal prog
@@ -38,6 +39,7 @@ all:
 
 clean:
 	make -C libc clean
+	make -C libtinf clean
 	
 	make -C init clean
 	make -C terminal clean
@@ -74,6 +76,7 @@ clean:
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
+	make -C libtinf compile_flags.txt
 
 	make -C init compile_flags.txt
 	make -C terminal compile_flags.txt
