@@ -19,6 +19,7 @@ mkdir -p pkgs
 build_dir brainasm
 build_dir phoenix_tools
 build_dir phoenixv2_tools
+build_dir nyanmbr
 
 mkdir ../res/initrd/pkgs -p
 cp pkgs/* ../res/initrd/pkgs -v

@@ -239,7 +239,7 @@ for file in mapping:
 mappings_struct += "};"
 
 directories = []
-if json_data["directories"]:
+if "directories" in json_data:
 	for i in json_data["directories"]:
 		directories.append('"' + i + '"')
 

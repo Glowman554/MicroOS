@@ -1,0 +1,8 @@
+{
+	"mappings": {
+        "src/nyanmbr.elf": "bin/nyanmbr.elf",
+
+        "nyan.bin": "nyan.bin"
+	},
+	"name": "NyanMBR"
+}
