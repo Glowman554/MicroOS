@@ -116,7 +116,7 @@ void rtl8139_recieve(rtl8139_driver_t* driver) {
 
 	t = t + 2;
 
-	driver->driver.recv((nic_driver_t*) driver, (uint8_t*) t, packet_length);
+	driver->driver.recv((nic_driver_t*) driver, (uint8_t*) t, packet_length - 4);
 
 	driver->current_packet_ptr = (driver->current_packet_ptr + packet_length + 4 + 3) & RX_READ_POINTER_MASK;
 

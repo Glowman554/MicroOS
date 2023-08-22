@@ -1,6 +1,6 @@
-// #include <sys/net.h>
+#include <sys/net.h>
 #include <stdio.h>
-// #include <nettools.h>
+#include <nettools.h>
 // #include <net/ntp.h>
 #include <sys/sound.h>
 #include <stdlib.h>
@@ -62,7 +62,29 @@ void process_cursor(int x, int y) {
 
 
 int main(int argc, char* argv[], char* envp[]) {
-	// int nic_id = 0;
+	int nic_id = 0;
+	ip_u ip = dns_resolve_A(nic_id, "www.gsz-zak.de");
+	char out[0xff] = { 0 };
+	format_ip(ip, out);
+	printf("ip: %s\n", out);
+
+	char* http_request = "GET /robots.txt HTTP/1.1\r\nHost: www.gsz-zak.de\r\n\r\n";
+
+	int socket = connect(nic_id, SOCKET_TCP, ip, 80);
+	send(socket, http_request, strlen(http_request));
+
+	char* buffer = malloc(1024);
+	int bytes_read = recv(socket, buffer, 1024);
+	buffer[bytes_read] = 0;
+	printf("%s\n", buffer);
+	free(buffer);
+
+	disconnect(socket);
+
+	ip_u hip = parse_ip("10.0.2.2");
+	socket = connect(nic_id, SOCKET_TCP, hip, 1234);
+	send(socket, "Hello world!\n", 13);
+	disconnect(socket);
 	// ip_u ip = dns_resolve_A(nic_id, argv[1]);
 	// ip_u ip = parse_ip("10.0.2.2");
 	

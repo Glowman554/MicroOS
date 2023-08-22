@@ -2,7 +2,7 @@ all: res
 	make -C mckrnl
 	make -C user
 
-NETDEV = rtl8139
+NETDEV = e1000
 
 QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -serial stdio -hda res/foxos.img
 QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.dat

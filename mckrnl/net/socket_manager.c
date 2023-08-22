@@ -27,6 +27,24 @@ void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	_socket->num_bytes_received += size;
 }
 
+void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
+	socket_t* _socket = socket->data;
+	debugf("socket_tcp_recv(): %d bytes", size);
+
+	if (_socket->received_data == NULL) {
+		_socket->received_data = vmm_alloc(TO_PAGES(size));
+	} else {
+		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
+		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
+		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
+		_socket->received_data = new_data;
+	}
+
+	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
+	_socket->num_bytes_received += size;
+}
+
+
 
 socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint16_t port) {
 	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
@@ -39,6 +57,11 @@ socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint1
 			socket->udp_socket = udp_connect(stack, ip, port);
 			socket->udp_socket->data = socket;
 			socket->udp_socket->recv = socket_udp_recv;
+			break;
+		case SOCKET_TCP:
+			socket->tcp_socket = tcp_connect(stack, ip, port);
+			socket->tcp_socket->data = socket;
+			socket->tcp_socket->recv = socket_tcp_recv;
 			break;
 		default:
 			invalid();
@@ -54,6 +77,9 @@ void socket_disconnect(socket_t* socket) {
 		case SOCKET_UDP:
 			udp_socket_disconnect(socket->udp_socket);
 			break;
+		case SOCKET_TCP:
+			tcp_socket_disconnect(socket->tcp_socket);
+			break;
 		default:
 			invalid();
 	}
@@ -67,6 +93,9 @@ void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
 	switch (socket->socket_type) {
 		case SOCKET_UDP:
 			udp_socket_send(socket->udp_socket, data, size);
+			break;
+		case SOCKET_TCP:
+			tcp_socket_send(socket->tcp_socket, data, size);
 			break;
 		default:
 			invalid();

@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void udp_socket_disconnect(udp_socket_t* socket) {
-		for (int i = 0; i < socket->stack->udp->num_binds; i++) {
+	for (int i = 0; i < socket->stack->udp->num_binds; i++) {
 		if (socket->stack->udp->binds[i].socket == socket) {
 			socket->stack->udp->binds[i].socket = NULL;
 			vmm_free(socket, PAGES_OF(udp_socket_t));

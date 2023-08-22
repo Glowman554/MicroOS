@@ -7,6 +7,7 @@
 #include <net/ipv4.h>
 #include <net/icmp.h>
 #include <net/udp.h>
+#include <net/tcp.h>
 #include <net/dhcp.h>
 #include <net/dns.h>
 
@@ -24,6 +25,7 @@ void load_network_stack(nic_driver_t* nic) {
 	ipv4_init(stack, (ip_u) {.ip = 0xffffffff}, (ip_u) {.ip = 0xffffffff});
 	icmp_init(stack);
 	udp_init(stack);
+	tcp_init(stack);
 	dhcp_init(stack);
 
 	dhcp_request(stack);
