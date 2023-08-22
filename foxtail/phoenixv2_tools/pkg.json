@@ -1,0 +1,15 @@
+{
+	"directories": [
+		"phoenixv2"
+	],
+	"mappings": {
+        "src/tools/assemblerv2/phoenixv2-as.elf": "bin/phoenixv2-as.elf",
+        "src/tools/disassembler/phoenixv2-disasm.elf": "bin/phoenixv2-disasm.elf",
+        "src/tools/emulator/phoenixv2-emu.elf": "bin/phoenixv2-emu.elf",
+
+		"src/examples/stack.asm": "phoenixv2/stack.asm",
+		"src/examples/clean.asm": "phoenixv2/clean.asm"
+	},
+	"name": "phoenix v2 tools",
+	"license": "src/LICENSE"
+}
