@@ -314,6 +314,13 @@
 				"fd",
 				"new_size"
 			]
+		},
+		{
+			"name": "SYS_TIME_MS",
+			"arguments": [
+				"0x29",
+				"ms (return) "
+			]
 		}
 	]
 }

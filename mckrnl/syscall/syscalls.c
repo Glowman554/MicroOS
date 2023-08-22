@@ -68,6 +68,7 @@ void init_syscalls() {
 	register_syscall(SYS_RAMINFO_ID, sys_raminfo);
 	register_syscall(SYS_MOUSE_INFO_ID, sys_mouse_info);
 	register_syscall(SYS_TRUNCATE_ID, sys_truncate);
+	register_syscall(SYS_TIME_MS_ID, sys_time_ms);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

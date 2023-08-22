@@ -10,6 +10,7 @@
 #include <sys/file.h>
 #include <sys/getc.h>
 #include <buildin/disk_raw.h>
+#include <buildin/time.h>
 #include <sys/mouse.h>
 
 #define TIMESERVER "time-a-g.nist.gov"
@@ -155,18 +156,23 @@ int main(int argc, char* argv[], char* envp[]) {
 	// 	printf("%c", sect[i]);
 	// }
 
-	FILE* test = fopen("tmp:/test.txt", "w");
-	fwrite("hello world 123 456", 19, 1, test);
-	fclose(test);
+	// FILE* test = fopen("tmp:/test.txt", "w");
+	// fwrite("hello world 123 456", 19, 1, test);
+	// fclose(test);
 
-	system("cat tmp:/test.txt");
+	// system("cat tmp:/test.txt");
 
-	test = fopen("tmp:/test.txt", "w");
-	fseek(test, 11, SEEK_SET);
-	ftruncate(test);
-	fclose(test);
+	// test = fopen("tmp:/test.txt", "w");
+	// fseek(test, 11, SEEK_SET);
+	// ftruncate(test);
+	// fclose(test);
 
-	system("cat tmp:/test.txt");
+	// system("cat tmp:/test.txt");
+
+	for (int i = 0; i < 60; i++) {
+		printf("Hello %d\n", i);
+		sleep_s(1);
+	}
 
 	return 0;
 }
