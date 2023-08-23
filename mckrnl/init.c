@@ -34,6 +34,7 @@
 #include <fs/initrd.h>
 #include <fs/devfs.h>
 #include <fs/fatfs/fatdrv.h>
+#include <fs/nextfs.h>
 #include <fs/ramfs.h>
 
 #include <utils/multiboot.h>
@@ -139,6 +140,7 @@ void _main(multiboot_info_t* mb_info) {
 	devfs_register_file(&global_devfs, &disk_file);
 
 	vfs_register_fs_scanner(fatfs_scanner);
+	vfs_register_fs_scanner(nextfs_scanner);
 
 	vfs_scan_fs();
     
