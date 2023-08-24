@@ -9,6 +9,7 @@ src_compress = """
 #include <stdio.h>
 #include <stdlib.h>
 #include <tinf.h>
+#include <stdbool.h>
 
 {{data}}
 
@@ -32,23 +33,28 @@ static unsigned int read_le32(const unsigned char *p) {
 }
 
 int main() {
+	bool auto_accept = getenv("ACCEPT_ALL") != NULL;
 	printf("going to install {{name}} (%d files)\\n", sizeof(files) / sizeof(struct file_mapping));
-	printf("do you want to continue? (y/n) ");
-	char c = getchar();
-	if (c != 'y') {
-		printf("\\naborting\\n");
-		return 0;
+	if (!auto_accept) {
+		printf("do you want to continue? (y/n) ");
+		char c = getchar();
+		if (c != 'y') {
+			printf("\\naborting\\n");
+			return 0;
+		}
 	}
 
 	printf("\\n");
 
 	if (license != NULL) {
 		fputs(license, stdout);
-		printf("do you accept the license? (y/n) ");
-		c = getchar();
-		if (c != 'y') {
-			printf("\\naborting\\n");
-			return 0;
+		if (!auto_accept) {
+			printf("do you accept the license? (y/n) ");
+			char c = getchar();
+			if (c != 'y') {
+				printf("\\naborting\\n");
+				return 0;
+			}
 		}
 	}
 
@@ -106,6 +112,7 @@ src_normal = """
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/file.h>
+#include <stdbool.h>
 
 {{data}}
 
@@ -125,23 +132,28 @@ char* license = {{license}};
 char* directories[] = { {{directories}} };
 
 int main() {
+	bool auto_accept = getenv("ACCEPT_ALL") != NULL;
 	printf("going to install {{name}} (%d files)\\n", sizeof(files) / sizeof(struct file_mapping));
-	printf("do you want to continue? (y/n) ");
-	char c = getchar();
-	if (c != 'y') {
-		printf("\\naborting\\n");
-		return 0;
+	if (!auto_accept) {
+		printf("do you want to continue? (y/n) ");
+		char c = getchar();
+		if (c != 'y') {
+			printf("\\naborting\\n");
+			return 0;
+		}
 	}
 
 	printf("\\n");
 
 	if (license != NULL) {
 		fputs(license, stdout);
-		printf("do you accept the license? (y/n) ");
-		c = getchar();
-		if (c != 'y') {
-			printf("\\naborting\\n");
-			return 0;
+		if (!auto_accept) {
+			printf("do you accept the license? (y/n) ");
+			char c = getchar();
+			if (c != 'y') {
+				printf("\\naborting\\n");
+				return 0;
+			}
 		}
 	}
 

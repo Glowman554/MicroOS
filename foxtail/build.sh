@@ -21,5 +21,11 @@ build_dir phoenix_tools
 build_dir phoenixv2_tools
 build_dir nyanmbr
 
+(
+	cd pkgs
+	echo export ACCEPT_ALL=1 > all.msh
+	ls *.elf >> all.msh
+)
+
 mkdir ../res/initrd/pkgs -p
 cp pkgs/* ../res/initrd/pkgs -v
