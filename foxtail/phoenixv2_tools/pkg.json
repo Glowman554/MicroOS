@@ -6,6 +6,7 @@
         "src/tools/assemblerv2/phoenixv2-as.elf": "bin/phoenixv2-as.elf",
         "src/tools/disassembler/phoenixv2-disasm.elf": "bin/phoenixv2-disasm.elf",
         "src/tools/emulator/phoenixv2-emu.elf": "bin/phoenixv2-emu.elf",
+		"src/tools/visual_eumlator/phoenixv2-emu-visual.elf": "bin/phoenixv2-emu2-visual.elf",
 
 		"src/examples/stack.asm": "phoenixv2/stack.asm",
 		"src/examples/clean.asm": "phoenixv2/clean.asm"

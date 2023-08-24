@@ -1,7 +1,7 @@
-From 01d1b5b8c2bf6112db2ce15b2bc443e32845f5b3 Mon Sep 17 00:00:00 2001
+From c4aa8d7fc22302844590ea09a327cafc0fdd3ecc Mon Sep 17 00:00:00 2001
 From: Glowman554 <glowman434@gmail.com>
 Date: Tue, 22 Aug 2023 20:57:15 +0200
-Subject: [PATCH] fix disasm
+Subject: [PATCH 1/2] fix disasm
 
 ---
  tools/disassembler/main.c | 2 +-

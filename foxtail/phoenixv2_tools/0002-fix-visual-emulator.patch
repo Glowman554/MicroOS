@@ -1,0 +1,79 @@
+From b1813e0e187633d5d98b10f93ad3a71a8ca4f9bc Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Thu, 24 Aug 2023 23:37:07 +0200
+Subject: [PATCH 2/2] fix visual emulator
+
+---
+ tools/visual_eumlator/main.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/tools/visual_eumlator/main.c b/tools/visual_eumlator/main.c
+index 0110cc5..091a7ac 100644
+--- a/tools/visual_eumlator/main.c
++++ b/tools/visual_eumlator/main.c
+@@ -4,6 +4,7 @@
+ #include <stdio.h>
+ #include <cpu_disasm.h>
+ #include <stdlib.h>
++#include <buildin/ansi.h>
+ 
+ uint8_t memory_[0xffff] = { 0 };
+ 
+@@ -30,7 +31,7 @@ void cpu_tout(bool val) {
+ 	debugf("tout: %s", val ? "true" : "false");
+ }
+ 
+-#define DISASEMBLY_SIZE 6
++#define DISASEMBLY_SIZE 0
+ 
+ void do_disasm(cpu_state_t state) {
+     uint16_t start_disassembly = state.pc - sizeof(instruction_t) * DISASEMBLY_SIZE;
+@@ -39,7 +40,7 @@ void do_disasm(cpu_state_t state) {
+         cpu_disasm(cpu_fetch_instruction(start_disassembly + sizeof(instruction_t) * i), disasm);
+ 
+         char buf[0xff * 2] = { 0 };
+-        sprintf(buf, "%4x: %s", (uint16_t) (start_disassembly + sizeof(instruction_t) * i), disasm);
++        sprintf(buf, "%x:\t %s", (uint16_t) (start_disassembly + sizeof(instruction_t) * i), disasm);
+         printf("%s %s\n", i == DISASEMBLY_SIZE ? "->" : "  ", buf);
+     }
+ }
+@@ -77,15 +78,15 @@ int main(int argc, char* argv[]) {
+ 
+     cpu_state_t state = { 0 };
+ 
+-    system("clear");
++	ansi_printf("\033[H\033[J");
+     printf("Welcome to the %s emulator!\nPress 'h' for help.\n", argv[0]);
+ 
+     bool running = true;
+     while (running) {
+         printf(">");
+ 
+-        char command = getch();
+-        system("clear");
++        char command = getchar();
++	    ansi_printf("\033[H\033[J");
+ 
+         switch (command) {
+             case 'h':
+@@ -110,7 +111,7 @@ int main(int argc, char* argv[]) {
+                     char dbg[0xfff] = { 0 };
+                     cpu_dbg(&state, dbg);
+ 
+-                    printf("%s\n\n", dbg);
++                    printf("%s\n", dbg);
+                     do_disasm(state);
+                 }
+                 break;
+@@ -120,7 +121,7 @@ int main(int argc, char* argv[]) {
+                     char dbg[0xfff] = { 0 };
+                     cpu_dbg(&state, dbg);
+ 
+-                    printf("%s\n\n", dbg);
++                    printf("%s\n", dbg);
+                     do_disasm(state);
+                 }
+                 break;
+-- 
+2.39.2
+
