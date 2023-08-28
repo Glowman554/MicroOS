@@ -20,6 +20,17 @@ char* color_pallet[] = {
 	"white"
 };
 
+char* color_pallet_bright[] = {
+    "grey",
+    "light_red",
+    "light_green",
+    "yellow",
+    "light_blue",
+    "light_magenta",
+    "light_cyan",
+    "white"
+};
+
 char zerro_buf[80 * 25 * 2] = { 0 };
 
 void ansi_clear_from_cursor() {
@@ -55,12 +66,14 @@ void ansi_debug(char f, int* argv, int argc) {
 
 #warning TODO: complete
 void ansi_run(char f, int* argv, int argc) {
+    static bool bright = false;
 	switch (f) {
 		case 'm':
 			{
 				if (argc == 0) {
 					set_color("black", true);
 					set_color("white", false);
+                    bright = false;
 				} else {
 					for (int i = 0; i < argc; i++) {
 						switch (argv[i]) {
@@ -68,8 +81,12 @@ void ansi_run(char f, int* argv, int argc) {
 								{
 									set_color("black", true);
 									set_color("white", false);
+                                    bright = false;
 								}
 								break;
+                            case 1: 
+                                bright = true;
+                                break;
 							case 30:
 							case 31:
 							case 32:
@@ -79,8 +96,24 @@ void ansi_run(char f, int* argv, int argc) {
 							case 36:
 							case 37:
 								{
-									set_color(color_pallet[argv[i] - 30], false);
+									set_color((bright ? color_pallet_bright : color_pallet)[argv[i] - 30], false);
 								}
+                                break;
+                            case 40:
+                            case 41:
+                            case 42:
+                            case 43:
+                            case 44:
+                            case 45:
+                            case 46:
+                            case 47:
+                                {
+                                    set_color(color_pallet[argv[i] - 40], true);
+									// set_color((bright ? color_pallet_bright : color_pallet)[argv[i] - 40], true);
+								}
+                                break;
+                            default:
+                                ansi_debug(f, argv, argc);
 						}
 					}
 				}
