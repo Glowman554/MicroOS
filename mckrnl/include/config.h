@@ -29,10 +29,14 @@
 #define DEFAULT_LAYOUT "de"
 // End Input
 
-// Other
-#define FD_OFFSET 5
+// Output
 // #define TEXT_MODE_EMULATION
 // #define STATUS_BAR
+// #define RAW_FRAMEBUFFER_ACCESS
+// End Output
+
+// Other
+#define FD_OFFSET 5
 // End Other
 
 // Paging

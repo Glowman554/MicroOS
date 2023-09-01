@@ -148,6 +148,7 @@
 			"arguments": [
 				"0x13",
 				"ptr",
+				"ptr_remote",
 				"pid"
 			]
 		},

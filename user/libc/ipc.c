@@ -11,7 +11,7 @@
 
 void ipc_init_mapping(void* ipc_loc, int pid) {
 	dbg("Starting mapping...\n");
-	mmmap(ipc_loc, pid);
+	mmmap(ipc_loc, ipc_loc, pid);
 }
 
 bool ipc_init_host(void* ipc_loc) {

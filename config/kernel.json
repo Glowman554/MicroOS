@@ -96,14 +96,10 @@
                 }
             },
             {
-                "name": "Other",
+                "name": "Output",
                 "value": {
-                    "title": "Other",
+                    "title": "Output",
                     "items": [
-                        {
-                            "name": "FD_OFFSET",
-                            "value": 5
-                        },
                         {
                             "name": "TEXT_MODE_EMULATION",
                             "value": false
@@ -111,6 +107,22 @@
                         {
                             "name": "STATUS_BAR",
                             "value": false
+                        },
+                        {
+                            "name": "RAW_FRAMEBUFFER_ACCESS",
+                            "value": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Other",
+                "value": {
+                    "title": "Other",
+                    "items": [
+                        {
+                            "name": "FD_OFFSET",
+                            "value": 5
                         }
                     ]
                 }

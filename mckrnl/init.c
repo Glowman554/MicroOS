@@ -46,6 +46,8 @@
 #include <net/socket_manager.h>
 
 #include <devices/disk.h>
+#include <devices/framebuffer.h>
+
 
 // char test_str[] = "Hello world!";
 // void test_read(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
@@ -138,6 +140,12 @@ void _main(multiboot_info_t* mb_info) {
 	vfs_mount((vfs_mount_t*) &global_devfs);
 
 	devfs_register_file(&global_devfs, &disk_file);
+#ifdef RAW_FRAMEBUFFER_ACCESS
+#ifndef TEXT_MODE_EMULATION
+#error TEXT_MODE_EMULATION required!
+#endif
+	devfs_register_file(&global_devfs, &framebuffer_file);
+#endif
 
 	vfs_register_fs_scanner(fatfs_scanner);
 	vfs_register_fs_scanner(nextfs_scanner);

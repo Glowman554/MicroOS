@@ -20,7 +20,7 @@
 | SYS_GET_PROC_INFO | 0x10 | pid | runningn (return) | - | - | - |
 | SYS_YIELD | 0x11 | - | - | - | - | - |
 | SYS_ENV | 0x12 | mode | &data (return?) | - | - | - |
-| SYS_MMMAP | 0x13 | ptr | pid | - | - | - |
+| SYS_MMMAP | 0x13 | ptr | ptr_remote | pid | - | - |
 | SYS_VMODE | 0x14 | mode (return) | - | - | - | - |
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - | - | - |
