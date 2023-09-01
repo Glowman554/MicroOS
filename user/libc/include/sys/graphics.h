@@ -7,6 +7,14 @@ enum video_mode_e {
 	TEXT_80x25,
 };
 
+typedef struct fb_info {
+    uint32_t fb_pitch;
+    uint32_t fb_width;
+    uint32_t fb_height;
+    uint8_t fb_bpp;
+    uint32_t fb_addr;
+} fb_info_t;
+
 int vmode();
 void vpoke(uint32_t offset, uint8_t* val, uint32_t range);
 void vpeek(uint32_t offset, uint8_t* val, uint32_t range);
