@@ -25,14 +25,22 @@ int main(int argc, char* argv[]) {
 	}
 
 	char keyboard_layout[256] = { 0 };
-	printf("Which keyboard layout do you want to use? > ");
-	gets(keyboard_layout);
+	if (getenv("keyboard")) {
+		strcpy(keyboard_layout, getenv("keyboard"));
+	} else {
+		printf("Which keyboard layout do you want to use? > ");
+		gets(keyboard_layout);
+	}
 
     bool banner = false;
-	printf("Do you want to print the MicroOS banner on startup? (y/n)> ");
-	char banner_in[16] = { 0 };
-	gets(banner_in);
-	banner = banner_in[0] == 'y';
+	if (getenv("banner")) {
+		banner = getenv("banner")[0] == 'y';
+	} else {
+		printf("Do you want to print the MicroOS banner on startup? (y/n)> ");
+		char banner_in[16] = { 0 };
+		gets(banner_in);
+		banner = banner_in[0] == 'y';
+	}
 
 	create_directory(partition_path, "/bin");
 	create_directory(partition_path, "/fonts");
