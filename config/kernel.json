@@ -111,6 +111,10 @@
                         {
                             "name": "RAW_FRAMEBUFFER_ACCESS",
                             "value": false
+                        },
+                        {
+                            "name": "FULL_SCREEN_TERMINAL",
+                            "value": false
                         }
                     ]
                 }

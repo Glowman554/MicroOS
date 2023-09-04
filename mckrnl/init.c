@@ -2,6 +2,7 @@
 #include <renderer/text_console.h>
 #include <renderer/psf1_font.h>
 #include <renderer/text_mode_emulation.h>
+#include <renderer/full_screen_terminal.h>
 #include <stdio.h>
 
 #include <interrupts/gdt.h>
@@ -47,6 +48,7 @@
 
 #include <devices/disk.h>
 #include <devices/framebuffer.h>
+#include <devices/fst.h>
 
 
 // char test_str[] = "Hello world!";
@@ -119,7 +121,14 @@ void _main(multiboot_info_t* mb_info) {
 	enumerate_pci();
 
 	register_driver((driver_t*) &serial_output_driver);
+#ifdef FULL_SCREEN_TERMINAL
+#ifndef TEXT_MODE_EMULATION
+#error TEXT_MODE_EMULATION required!
+#endif
+	register_driver((driver_t*) &full_screen_terminal_driver);
+#else
 	register_driver((driver_t*) &text_console_driver);
+#endif
     register_driver((driver_t*) get_ps2_driver());
     register_driver((driver_t*) get_ps2_mouse_driver());
     register_driver((driver_t*) &pit_driver);
@@ -145,6 +154,9 @@ void _main(multiboot_info_t* mb_info) {
 #error TEXT_MODE_EMULATION required!
 #endif
 	devfs_register_file(&global_devfs, &framebuffer_file);
+#endif
+#ifdef FULL_SCREEN_TERMINAL
+	devfs_register_file(&global_devfs, &fst_file);
 #endif
 
 	vfs_register_fs_scanner(fatfs_scanner);

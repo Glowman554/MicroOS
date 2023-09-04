@@ -33,6 +33,7 @@
 // #define TEXT_MODE_EMULATION
 // #define STATUS_BAR
 // #define RAW_FRAMEBUFFER_ACCESS
+// #define FULL_SCREEN_TERMINAL
 // End Output
 
 // Other
