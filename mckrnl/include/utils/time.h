@@ -11,4 +11,4 @@ typedef struct clock_result {
 
 typedef struct clock_result time_t;
 
-void time_format(char* out, time_t* time);
+int time_format(char* out, time_t* time);

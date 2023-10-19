@@ -467,6 +467,11 @@ void pwd() {
 	term_printf("%s\n", cwd);
 }
 
+void set_wait_and_yield() {
+    set_env(SYS_ENV_TASK_SET_WAIT_TIME, (void*)100);
+	yield();
+}
+
 bool already_in_ipc = false;
 
 int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
@@ -499,7 +504,7 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 		if (ipc_init_host(IPC_CONNECTION_TERMINAL)) {
 			goto ipc_tunnel_ok;
 		}
-		yield();
+		set_wait_and_yield();
 	}
 
 	already_in_ipc = false;
@@ -513,14 +518,14 @@ ipc_tunnel_ok:
 			command_received(out, &should_break, NULL);
 			ipc_ok(IPC_CONNECTION_TERMINAL);
 		}
-		yield();
+		set_wait_and_yield();
 	}
 
 	already_in_ipc = false;
 
 normal_wait:
 	while (get_proc_info(pid)) {
-		yield();
+		set_wait_and_yield();
 	}
 
 done:

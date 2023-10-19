@@ -43,6 +43,9 @@
 #define SYS_KILL_ID 36
 #define SYS_VPEEK_ID 37
 #define SYS_RAMINFO_ID 38
+#define SYS_MOUSE_INFO_ID 39
+#define SYS_TRUNCATE_ID 40
+#define SYS_TIME_MS_ID 41
 // End Syscalls
 
 // End LibC configuration

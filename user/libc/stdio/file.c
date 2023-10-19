@@ -144,6 +144,10 @@ int feof(FILE* stream) {
     return stream->pos >= filesize(stream->inner_fd);
 }
 
+void ftruncate(FILE* f) {
+	truncate(f->inner_fd, f->pos);
+}
+
 void init_stdio() {
 	stdout = malloc(sizeof(FILE));
 	memset(stdout, 0, sizeof(FILE));

@@ -24,4 +24,10 @@ SECTIONS
 	}
 	. = ALIGN(4096);
 	kernel_end = .;
+
+    paging_start = .;
+    .paging ALIGN(4096) (NOLOAD) : {
+        *(.paging)
+    }
+    paging_end = .;
 }

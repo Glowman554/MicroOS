@@ -9,7 +9,7 @@
 char* page_fault_get_error(uint32_t error);
 
 cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
-	printf("#DE (Division by zero) \n");
+	printf("#DE (Division by zero) eip: %x\n", registers->eip);
 
 	exit_task(get_self());
 
@@ -17,7 +17,7 @@ cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
 }
 
 cpu_registers_t* invalid_opcode_killer(cpu_registers_t* registers, void* _) {
-	printf("#UD (Invalid opcode) \n");
+	printf("#UD (Invalid opcode) eip: %x\n", registers->eip);
 
 	exit_task(get_self());
 
@@ -28,7 +28,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 	uint32_t cr2;
 	asm volatile("mov %%cr2, %0" : "=r" (cr2));
 
-	printf("#PF (Page fault) %s @ 0x%x\n", page_fault_get_error(registers->error), cr2);
+	printf("#PF (Page fault) %s @ 0x%x, eip: %x\n", page_fault_get_error(registers->error), cr2, registers->eip);
 
 	exit_task(get_self());
 
@@ -36,7 +36,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 }
 
 cpu_registers_t* general_protection_fault_killer(cpu_registers_t* registers, void* _) {
-	printf("#GP (General Protection)\n");
+	printf("#GP (General Protection) eip: %x\n", registers->eip);
 
 	exit_task(get_self());
 

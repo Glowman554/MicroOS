@@ -19,11 +19,14 @@ jobs:
       run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu -y
     - name: make
       run: make iso libs.zip
+    - name: build foxtail
+      run: cp cdrom.iso cdrom.minimal.iso; cd foxtail; bash build.sh; cd ..; make iso
     - uses: actions/upload-artifact@v2
       with:
         name: "build"
         path: | 
           cdrom.iso
+          cdrom.minimal.iso
           libs.zip
     - name: test
       run: make test

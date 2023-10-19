@@ -10,6 +10,8 @@
 #include <driver/apic/smp.h>
 #include <driver/acpi/madt.h>
 
+#include <stddef.h>
+
 long long unsigned int idt[IDT_ENTRIES];
 
 static void idt_set_entry(int i, void (*fn)(), unsigned int selector, int flags) {
@@ -229,6 +231,10 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 			if (interrupt_handlers[cpu->intr] != 0) {
 				new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 				set_tss(1, (uint32_t) (new_cpu + 1));
+			}
+
+			if (!get_self()->active) {
+				return schedule(new_cpu, NULL);
 			}
 		}
 	}

@@ -6,6 +6,8 @@
 
 #include <sys/getc.h>
 
+#include <render.h>
+
 void move_up(edit_state_t* state) {
 	if (state->buffer_ln_idx <= 0 || state->buffer_idx <= 0) {
 	} else {
@@ -134,6 +136,8 @@ bool listen_input(edit_state_t* state) {
 					}
 					state->input_buffer = (char*) realloc((void*) state->input_buffer, --state->current_size);
 					state->buffer_idx--;
+
+					rerender_color(state);
 				}
 			}
 			break;
@@ -157,6 +161,8 @@ bool listen_input(edit_state_t* state) {
 				memmove((void*) &state->input_buffer[state->buffer_idx+1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
 				state->input_buffer[state->buffer_idx] = input;
 				state->buffer_idx++;
+
+				rerender_color(state);
 			}
 			break;
 		}

@@ -40,7 +40,7 @@ void devfs_read(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_t
 
 void devfs_write(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_t offset) {
 	devfs_file_t* dfile = (devfs_file_t*) file->driver_specific_data;
-	dfile->read(dfile, file, buf, size, offset);
+	dfile->write(dfile, file, buf, size, offset);
 }
 
 dir_t devfs_dir_at(vfs_mount_t* mount, int idx, char* path) {

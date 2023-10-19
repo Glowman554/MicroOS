@@ -1,0 +1,10 @@
+ls -f
+echo Please input the partition you want to install on:
+read partition
+
+install
+terminal limine/install_env.msh
+
+cp -r -v pkgs $partition/pkgs
+
+echo Install complete!

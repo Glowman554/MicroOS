@@ -18,10 +18,12 @@
 
 #define SYS_ENV_SET_LAYOUT 0x07
 
+#define SYS_ENV_TASK_SET_WAIT_TIME 0x08
+
 cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	int id = regs->ebx;
 
-	debugf("sys_env(%d)", id);
+	// debugf("sys_env(%d)", id);
 
 	switch (id) {
 		case SYS_GET_ARGV_ID:
@@ -70,6 +72,12 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
         case SYS_ENV_SET_LAYOUT:
             {
                 set_layout((char*) regs->ecx);
+            }
+            break;
+
+		case SYS_ENV_TASK_SET_WAIT_TIME:
+            {
+                get_self()->wait_time = regs->ecx;
             }
             break;
 

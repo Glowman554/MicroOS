@@ -1,0 +1,24 @@
+From 0d385e2eb10c7cce04b1b4e8d3389d8ecb7b6af8 Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Tue, 22 Aug 2023 20:42:41 +0200
+Subject: [PATCH] fix disasm
+
+---
+ tools/disassembler/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/disassembler/main.c b/tools/disassembler/main.c
+index f89d493..1110f40 100644
+--- a/tools/disassembler/main.c
++++ b/tools/disassembler/main.c
+@@ -25,6 +25,6 @@ int main(int argc, char* argv[]) {
+ 	for (int i = 0; i < size / sizeof(instruction_t); i++) {
+ 		char out[256];
+ 		cpu_disasm(instructions[i], out);
+-		printf("0x%lx:\t%s\n", i * sizeof(instruction_t), out);
++		printf("0x%x:\t%s\n", i * sizeof(instruction_t), out);
+ 	}
+ }
+-- 
+2.39.2
+

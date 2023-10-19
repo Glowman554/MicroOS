@@ -11,3 +11,9 @@ long time(long* seconds) {
 
 	return t;
 }
+
+long time_ms() {
+	long t;
+	asm volatile("int $0x30" : "=b"(t) : "a"(SYS_TIME_MS_ID));
+	return t;
+}

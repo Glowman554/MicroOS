@@ -21,6 +21,15 @@ void print_usage(char* prog) {
 	printf("\n");
 	printf("Those commands work in the EDIT mode witch can be activated by pressing 'esc'.\n");
 	printf("To exit EDIT mode press 'esc' again.\n");
+	printf("To disable syntax highlighting set the 'NOSYX' env variable to something.\n");
+}
+
+char* get_file_extension(const char* filename) {
+	char* chr_ptr = strchr(filename, '.');
+	if (chr_ptr == NULL) {
+		return "";
+	}
+	return ++chr_ptr;
 }
 
 int main(int argc, char* argv[], char* envp[]) {
@@ -28,6 +37,16 @@ int main(int argc, char* argv[], char* envp[]) {
 		print_usage(argv[0]);
 		return 1;
 	}
+
+	if (!getenv("NOSYX")) {
+		char syx[128] = { 0 };
+		strcat(syx, getenv("ROOT_FS"));
+		strcat(syx, "syntax/");
+		strcat(syx, get_file_extension(argv[1]));
+		strcat(syx, ".syx");
+		syntax = load_syntax(syx);
+	}
+
 	
 	edit_state_t state  = { 0 };
 

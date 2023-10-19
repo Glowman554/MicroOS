@@ -29,6 +29,8 @@ typedef struct {
 	resource_t* resources;
 	int num_resources;
 
+	int wait_time;
+
 	bool pin;
 } task_t;
 

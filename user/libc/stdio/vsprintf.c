@@ -39,6 +39,31 @@ int print_num(long x, int base, char* str) {
 	return strlen(p);
 }
 
+int print_num_unsigned(unsigned long x, int base, char* str) {
+	const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+	char buf[65];
+
+	char* p;
+
+	if(base > 36) {
+		return 0;
+	}
+
+
+	p = buf + 64;
+	*p = '\0';
+
+	do {
+		*--p = digits[x % base];
+		x /= base;
+	} while(x);
+
+	memcpy(str, p, strlen(p));
+
+	return strlen(p);
+}
+
 int vsprintf(char *buf, const char *str, va_list args) {
 	const char* s;
 	unsigned long n;
@@ -66,7 +91,7 @@ int vsprintf(char *buf, const char *str, va_list args) {
 				case 'x':
 				case 'p':
 					n = va_arg(args, unsigned long int);
-					buf += print_num(n, 16, buf);
+					buf += print_num_unsigned(n, 16, buf);
 					break;
 				case '%':
 					*buf++ = '%';
