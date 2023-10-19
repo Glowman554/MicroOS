@@ -2,14 +2,18 @@
 
 #include <net/stack.h>
 #include <net/udp.h>
+#include <net/tcp.h>
+
 
 enum socket_type_e {
-	SOCKET_UDP
+	SOCKET_UDP,
+	SOCKET_TCP
 };
 
 typedef struct socket {
 	union {
 		udp_socket_t* udp_socket;
+		tcp_socket_t* tcp_socket;
 	};
 	int socket_type;
 	int socket_id;

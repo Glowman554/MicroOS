@@ -12,8 +12,24 @@ void _main() {
 	// make auto debug script happy
 }
 
+#define MICROOS_WARNING	"\033[31mThis executable is for MicroOS and not for Linux!\033[m\n"
+
+void quit_if_linux() {
+	uint32_t cs;
+	asm volatile("mov %%cs, %0" : "=r" (cs));
+	uint32_t ss;
+	asm volatile("mov %%ss, %0" : "=r" (ss));
+
+	if (cs != (0x18 | 0x03) || ss != (0x20 | 0x03)) {
+		asm volatile("int $0x80" : : "a"(4), "b"(2), "c"(MICROOS_WARNING), "d"(sizeof(MICROOS_WARNING))); // write to stderr
+		asm volatile("int $0x80" : : "a"(1), "b"(1)); // exit
+	}
+}
+
 void _start() {
 	_main();
+
+	quit_if_linux();
 
 	char** argv = (char**) env(SYS_GET_ARGV_ID);
 	char** envp = (char**) env(SYS_GET_ENVP_ID);

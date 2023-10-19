@@ -1,7 +1,10 @@
+#include "fs/fatfs/ff.h"
+#include "fs/vfs.h"
 #include <fs/fatfs/fatdrv.h>
 
 #include <memory/vmm.h>
 #include <assert.h>
+#include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <driver/disk_driver.h>
@@ -49,7 +52,7 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 	FRESULT fr = f_open(&fil, new_path, mode);
 	if (fr != FR_OK) {
 		debugf("Error opening file %s: %d", path, fr);
-		vmm_free(file, 0);
+		vmm_free(file, 1);
 		return NULL;
 	}
 
@@ -66,7 +69,7 @@ void fatfs_close(vfs_mount_t* mount, file_t* f) {
 	FIL* fil = (FIL*) f->driver_specific_data;
 	f_close(fil);
 	vmm_free(f->driver_specific_data, sizeof(FIL) / 0x1000 + 1);
-	vmm_free(f, 0);
+	vmm_free(f, 1);
 }
 
 void fatfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -91,12 +94,23 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 	unsigned int has_written;
 	f_write((FIL*) fil, buffer, size, &has_written);
 
+	f->size = f_size(fil);
+
 	assert(has_written == size);
+}
+
+void fatfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
+	FIL* fil = (FIL*) file->driver_specific_data;
+
+	f_lseek(fil, new_size);
+	f_truncate(fil);
+
+	file->size = f_size(fil);
 }
 
 void fatfs_delete(vfs_mount_t* mount, file_t* file) {
 	f_unlink((char*) file->buffer);
-	vmm_free(file, 0);
+	vmm_free(file, 1);
 }
 
 void fatfs_mkdir(vfs_mount_t* mount, char* path) {
@@ -226,8 +240,17 @@ vfs_mount_t* fatfs_mount(int disk_id, char* name) {
 	mount->dir_at = fatfs_dir_at;
 	mount->touch = fatfs_touch;
 	mount->delete_dir = fatfs_delete_dir;
+	mount->truncate = fatfs_truncate;
 
 	return mount;
+}
+
+void fatfs_rename(vfs_mount_t* fat_mount, char* name) {
+	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) fat_mount + sizeof(vfs_mount_t);
+	memset(mount_data->name, 0, sizeof(mount_data->name));
+	strcpy(mount_data->name, name);
+
+	debugf("New label: %s", name);
 }
 
 bool is_fat32_bpb(BPB_t* bpb) {
@@ -335,5 +358,12 @@ vfs_mount_t* fatfs_scanner(int disk_id) {
 	char name[64] = {0};
 	sprintf(name, "fat32_%d", disk_id);
 
-	return fatfs_mount(disk_id, name);
+	vfs_mount_t* mount =  fatfs_mount(disk_id, name);
+
+	char label[64] = { 0 };
+	if (try_read_disk_label(label, mount)) {
+		fatfs_rename(mount, label);
+	}
+
+	return mount;
 }

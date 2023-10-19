@@ -2,6 +2,7 @@
 #include <renderer/text_console.h>
 #include <renderer/psf1_font.h>
 #include <renderer/text_mode_emulation.h>
+#include <renderer/full_screen_terminal.h>
 #include <stdio.h>
 
 #include <interrupts/gdt.h>
@@ -13,10 +14,12 @@
 #include <memory/vmm.h>
 
 #include <driver/input/ps2_keyboard.h>
+#include <driver/input/ps2_mouse.h>
 #include <driver/disk/ata.h>
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
 #include <driver/timer/pit.h>
+#include <driver/timer/hpet.h>
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
 #include <driver/acpi/dsdt.h>
@@ -32,6 +35,7 @@
 #include <fs/initrd.h>
 #include <fs/devfs.h>
 #include <fs/fatfs/fatdrv.h>
+#include <fs/nextfs.h>
 #include <fs/ramfs.h>
 
 #include <utils/multiboot.h>
@@ -41,6 +45,11 @@
 #include <utils/argparser.h>
 
 #include <net/socket_manager.h>
+
+#include <devices/disk.h>
+#include <devices/framebuffer.h>
+#include <devices/fst.h>
+
 
 // char test_str[] = "Hello world!";
 // void test_read(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
@@ -112,9 +121,18 @@ void _main(multiboot_info_t* mb_info) {
 	enumerate_pci();
 
 	register_driver((driver_t*) &serial_output_driver);
+#ifdef FULL_SCREEN_TERMINAL
+#ifndef TEXT_MODE_EMULATION
+#error TEXT_MODE_EMULATION required!
+#endif
+	register_driver((driver_t*) &full_screen_terminal_driver);
+#else
 	register_driver((driver_t*) &text_console_driver);
+#endif
     register_driver((driver_t*) get_ps2_driver());
+    register_driver((driver_t*) get_ps2_mouse_driver());
     register_driver((driver_t*) &pit_driver);
+	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
 	register_driver((driver_t*) &pc_speaker_driver);
 
@@ -129,9 +147,20 @@ void _main(multiboot_info_t* mb_info) {
 
 	vfs_mount(get_ramfs("tmp"));
 	vfs_mount((vfs_mount_t*) &global_devfs);
-	// devfs_register_file(&global_devfs, &test_file);
+
+	devfs_register_file(&global_devfs, &disk_file);
+#ifdef RAW_FRAMEBUFFER_ACCESS
+#ifndef TEXT_MODE_EMULATION
+#error TEXT_MODE_EMULATION required!
+#endif
+	devfs_register_file(&global_devfs, &framebuffer_file);
+#endif
+#ifdef FULL_SCREEN_TERMINAL
+	devfs_register_file(&global_devfs, &fst_file);
+#endif
 
 	vfs_register_fs_scanner(fatfs_scanner);
+	vfs_register_fs_scanner(nextfs_scanner);
 
 	vfs_scan_fs();
     
@@ -157,6 +186,11 @@ void _main(multiboot_info_t* mb_info) {
 #endif	
 	
 	debugf("Boot finished at %d", time(global_clock_driver));
+
+	// while (true) {
+	// 	debugf("Hello %d", global_timer_driver->time_ms(global_timer_driver));
+	// 	global_timer_driver->sleep(global_timer_driver, 1000);
+	// }
 
 	char init_exec[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--init", init_exec)) {

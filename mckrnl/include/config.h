@@ -26,13 +26,18 @@
 // End Experimental
 
 // Input
-#define DEFAULT_LAYOUT "us"
+#define DEFAULT_LAYOUT "de"
 // End Input
+
+// Output
+// #define TEXT_MODE_EMULATION
+// #define STATUS_BAR
+// #define RAW_FRAMEBUFFER_ACCESS
+// #define FULL_SCREEN_TERMINAL
+// End Output
 
 // Other
 #define FD_OFFSET 5
-// #define TEXT_MODE_EMULATION
-// #define STATUS_BAR
 // End Other
 
 // Paging
@@ -77,6 +82,9 @@
 #define SYS_KILL_ID 36
 #define SYS_VPEEK_ID 37
 #define SYS_RAMINFO_ID 38
+#define SYS_MOUSE_INFO_ID 39
+#define SYS_TRUNCATE_ID 40
+#define SYS_TIME_MS_ID 41
 // End Syscalls
 
 // End Kernel configuration

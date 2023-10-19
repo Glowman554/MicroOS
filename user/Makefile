@@ -2,6 +2,7 @@ all:
 	mkdir -p bin
 	mkdir -p lib
 	make -C libc library
+	make -C libtinf library
 
 	make -C init prog
 	make -C terminal prog
@@ -33,9 +34,13 @@ all:
 	make -C stream prog
 	make -C doom prog
 	make -C free prog
+	make -C install prog
+	make -C lminst prog
+	make -C touch prog
 
 clean:
 	make -C libc clean
+	make -C libtinf clean
 	
 	make -C init clean
 	make -C terminal clean
@@ -67,9 +72,13 @@ clean:
 	make -C stream clean
 	make -C doom clean
 	make -C free clean
+	make -C install clean
+	make -C lminst clean
+	make -C touch clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
+	make -C libtinf compile_flags.txt
 
 	make -C init compile_flags.txt
 	make -C terminal compile_flags.txt
@@ -101,3 +110,6 @@ compile_flags.txt:
 	make -C stream compile_flags.txt
 	make -C doom compile_flags.txt
 	make -C free compile_flags.txt
+	make -C install compile_flags.txt
+	make -C lminst compile_flags.txt
+	make -C touch compile_flags.txt

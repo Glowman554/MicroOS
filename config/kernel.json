@@ -90,7 +90,31 @@
                     "items": [
                         {
                             "name": "DEFAULT_LAYOUT",
-                            "value": "us"
+                            "value": "de"
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Output",
+                "value": {
+                    "title": "Output",
+                    "items": [
+                        {
+                            "name": "TEXT_MODE_EMULATION",
+                            "value": false
+                        },
+                        {
+                            "name": "STATUS_BAR",
+                            "value": false
+                        },
+                        {
+                            "name": "RAW_FRAMEBUFFER_ACCESS",
+                            "value": false
+                        },
+                        {
+                            "name": "FULL_SCREEN_TERMINAL",
+                            "value": false
                         }
                     ]
                 }
@@ -103,14 +127,6 @@
                         {
                             "name": "FD_OFFSET",
                             "value": 5
-                        },
-                        {
-                            "name": "TEXT_MODE_EMULATION",
-                            "value": false
-                        },
-                        {
-                            "name": "STATUS_BAR",
-                            "value": false
                         }
                     ]
                 }

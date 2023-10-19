@@ -12,3 +12,6 @@ typedef struct clock_result {
 typedef struct clock_result __libc_time_t;
 
 void time_format(char* out, __libc_time_t* time);
+
+void sleep_s(int s);
+void sleep_ms(int ms);

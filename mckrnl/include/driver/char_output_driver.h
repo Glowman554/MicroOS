@@ -5,6 +5,7 @@
 
 enum video_mode_e {
 	TEXT_80x25,
+	CUSTOM
 };
 
 typedef struct char_output_driver {

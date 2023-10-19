@@ -79,7 +79,11 @@ void vmm_init(void) {
     debugf("Mapping framebuffer...");
 #ifdef TEXT_MODE_EMULATION
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
+	#ifdef RAW_FRAMEBUFFER_ACCESS
+		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE | PTE_USER);
+	#else
 		vmm_map_page(kernel_context, global_multiboot_info->fb_addr + i, global_multiboot_info->fb_addr + i, PTE_PRESENT | PTE_WRITE);
+	#endif
         pmm_mark_used((void*) (uint32_t) global_multiboot_info->fb_addr + i);
     }
 #else

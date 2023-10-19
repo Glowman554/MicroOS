@@ -1,0 +1,15 @@
+echo Welcome to the limine installer help script.
+
+export disk_id=1
+
+lminst $disk_id
+
+echo Copying limine files!
+
+cp $ROOT_FS/limine/limine.sys $partition/limine.sys
+
+mkdir $partition/EFI
+mkdir $partition/EFI/BOOT
+
+cp $ROOT_FS/limine/BOOTX64.EFI $partition/EFI/BOOT/BOOTX64.EFI
+cp $ROOT_FS/limine/BOOTIA32.EFI $partition/EFI/BOOT/BOOTIA32.EFI

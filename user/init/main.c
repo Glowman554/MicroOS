@@ -65,6 +65,8 @@ int main(int argc, char* argv[]) {
 	strcat(path, "bin");
 	envp_append("PATH", path);
 
+	envp_append("ROOT_FS", cwd);
+
 	char* autostart = "startup.msh";
 	FILE* f = fopen(autostart, "r");
 	if (f) {

@@ -20,7 +20,7 @@
 | SYS_GET_PROC_INFO | 0x10 | pid | runningn (return) | - | - | - |
 | SYS_YIELD | 0x11 | - | - | - | - | - |
 | SYS_ENV | 0x12 | mode | &data (return?) | - | - | - |
-| SYS_MMMAP | 0x13 | ptr | pid | - | - | - |
+| SYS_MMMAP | 0x13 | ptr | ptr_remote | pid | - | - |
 | SYS_VMODE | 0x14 | mode (return) | - | - | - | - |
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - | - | - |
@@ -39,3 +39,6 @@
 | SYS_KILL | 0x24 | pid | - | - | - | - |
 | SYS_VPEEK | 0x25 | offset | &data | range | - | - |
 | SYS_RAMINFO | 0x26 | free (return) | used (return) | - | - | - |
+| SYS_MOUSE_INFO | 0x27 | &mouse_info | - | - | - | - |
+| SYS_TRUNCATE | 0x28 | fd | new_size | - | - | - |
+| SYS_TIME_MS | 0x29 | ms (return)  | - | - | - | - |

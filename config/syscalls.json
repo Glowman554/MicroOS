@@ -148,6 +148,7 @@
 			"arguments": [
 				"0x13",
 				"ptr",
+				"ptr_remote",
 				"pid"
 			]
 		},
@@ -298,6 +299,28 @@
 				"0x26",
 				"free (return)",
 				"used (return)"
+			]
+		},
+		{
+			"name": "SYS_MOUSE_INFO",
+			"arguments": [
+				"0x27",
+				"&mouse_info"
+			]
+		},
+		{
+			"name": "SYS_TRUNCATE",
+			"arguments": [
+				"0x28",
+				"fd",
+				"new_size"
+			]
+		},
+		{
+			"name": "SYS_TIME_MS",
+			"arguments": [
+				"0x29",
+				"ms (return) "
 			]
 		}
 	]

@@ -60,3 +60,7 @@ bool fs_at(char* path, int idx) {
 	asm volatile("int $0x30" : "=d"(is_none) : "a"(SYS_FS_AT_ID), "b"(idx), "c"(path));
 	return is_none;
 }
+
+void truncate(int fd, int new_size) {
+	asm volatile("int $0x30" : : "a"(SYS_TRUNCATE_ID), "b"(fd), "c"(new_size));
+}
