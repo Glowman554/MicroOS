@@ -37,8 +37,6 @@ void ansi_clear_from_cursor() {
 	int x, y;
 	vcursor_get(&x, &y);
 
-	assert(vmode() == TEXT_80x25);
-
 	int offset = (y * 80 + x) * 2;
 
 	vpoke(offset, (uint8_t*) zerro_buf, sizeof(zerro_buf) - offset);
@@ -47,8 +45,6 @@ void ansi_clear_from_cursor() {
 void ansi_clear_from_cursor_eol() {
 	int x, y;
 	vcursor_get(&x, &y);
-
-	assert(vmode() == TEXT_80x25);
 
 	int offset = (y * 80 + x) * 2;
 
@@ -174,6 +170,8 @@ void ansi_process(char* ansi) {
 }
 
 void ansi_putchar(char c) {
+	assert(vmode() == TEXT_80x25);
+
 	static bool esc = false;
 	static char esc_buf[32] = { 0 };
 	static int esc_buf_idx = 0;
@@ -195,6 +193,8 @@ void ansi_putchar(char c) {
 }
 
 int ansi_printf(const char *format, ...) {
+	assert(vmode() == TEXT_80x25);
+
 	va_list args;
 	char buf[1024] = {0};
 
