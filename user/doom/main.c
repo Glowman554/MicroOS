@@ -6,6 +6,9 @@
 #include <stdint.h>
 
 #include <sys/graphics.h>
+#define FB_SET_PX_IMPL
+#include <buildin/framebuffer.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -37,6 +40,11 @@ int main(int argc, char* argv[]) {
     fread(vgamap, fsize, 1, f);
     fclose(f);
 
+    int SCALE = 1;
+    if (getenv("SCALE")) {
+        SCALE = atoi(getenv("SCALE"));
+    }
+
     doom_set_gettime(emulate_doom_gettime);
 
     doom_set_default_int("key_up", DOOM_KEY_W);
@@ -48,6 +56,11 @@ int main(int argc, char* argv[]) {
     doom_set_default_int("mouse_move", 0);
     doom_set_default_int("screenblocks", 11);
     
+    fb_info_t info;
+    if (vmode() == CUSTOM) {
+        info = fb_load_info();
+    }
+
     doom_init(argc, argv, 0);
 
     int next_key_up = 0;
@@ -85,29 +98,43 @@ int main(int argc, char* argv[]) {
         }
 
         doom_update();
+
         const uint32_t* framebuffer = doom_get_framebuffer(4);
+        if (vmode() == TEXT_80x25) {
+            uint16_t buffer[25 * 80] = { 0xf0 << 8 | 'A' };
+            for (int y = 0; y < 25; y++) {
+                for (int x = 0; x < 80; x++) {
+                    int x1 = (x * 320) / 80;
+                    int y1 = (y * 200) / 25;
+                    
 
+                    int sa = 3;
+                    int sa2 = 256 >> sa;
 
-        uint16_t buffer[25 * 80] = { 0xf0 << 8 | 'A' };
-        for (int y = 0; y < 25; y++) {
-            for (int x = 0; x < 80; x++) {
-                int x1 = (x * 320) / 80;
-                int y1 = (y * 200) / 25;
-                
+                    uint32_t c = (framebuffer[x1 + y1 * 320]);
+                    int b = (c & 0x00FF0000) >> (16 + sa);
+                    int g = (c & 0x0000FF00) >> (8 + sa);
+                    int r = (c & 0x000000FF) >> (0 + sa);
 
-                int sa = 3;
-                int sa2 = 256 >> sa;
+                    buffer[x + y * 80] = vgamap[r + (g * sa2) + (b * sa2 * sa2)];
+                }
+            }
 
-                uint32_t c = (framebuffer[x1 + y1 * 320]);
-                int b = (c & 0x00FF0000) >> (16 + sa);
-                int g = (c & 0x0000FF00) >> (8 + sa);
-                int r = (c & 0x000000FF) >> (0 + sa);
+            vpoke(0, (uint8_t*) buffer, sizeof(buffer));
+        } else {
+            for (int y = 0; y < 200 * SCALE; y++) {
+                for (int x = 0; x < 320 * SCALE; x++) {
+                    int source = framebuffer[(x / SCALE) + (y / SCALE) * 320]; // RGBA
+                    int target = 0; // ARGB
+                    target |= (source & 0xFF000000); // A
+                    target |= (source & 0x00FF0000) >> 16; // R
+                    target |= (source & 0x0000FF00); // G
+                    target |= (source & 0x000000FF) << 16; // B
 
-                buffer[x + y * 80] = vgamap[r + (g * sa2) + (b * sa2 * sa2)];
+                    fb_set_pixel(&info, x, y, target);
+                }
             }
         }
-
-        vpoke(0, (uint8_t*) buffer, sizeof(buffer));
         currentTick++;
     }
 }
