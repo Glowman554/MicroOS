@@ -1,0 +1,91 @@
+$define raw_disk_command_t_offset_command 0
+$define raw_disk_command_t_offset_disk 4
+$define raw_disk_command_t_offset_sector 8
+$define raw_disk_command_t_offset_sector_count 16
+$define raw_disk_command_t_offset_buffer 20
+$define raw_disk_command_t_size 24
+$define clock_result_t_offset_seconds 0
+$define clock_result_t_offset_minutes 4
+$define clock_result_t_offset_hours 8
+$define clock_result_t_offset_day 12
+$define clock_result_t_offset_month 16
+$define clock_result_t_offset_year 20
+$define clock_result_t_size 24
+function(assembly) is_arg(str in, str arg, str out) -> int {
+    "25738794"
+}
+function(assembly) ipc_init_mapping(int ipc_loc, int pid) -> void {
+    "25738795"
+}
+function(assembly) ipc_init_host(int ipc_loc) -> int {
+    "25738796"
+}
+function(assembly) ipc_init(int ipc_loc) -> void {
+    "25738797"
+}
+function(assembly) ipc_ok(int ipc_loc) -> void {
+    "25738798"
+}
+function(assembly) ipc_message_ready(int ipc_loc, int out) -> int {
+    "25738799"
+}
+function(assembly) ipc_message_send(int ipc_loc, int data, int size) -> void {
+    "25738800"
+}
+function(assembly) gets(str buffer) -> int {
+    "25738801"
+}
+function(assembly) getchar() -> chr {
+    "25738802"
+}
+function(assembly) putchar(chr c) -> void {
+    "25738803"
+}
+function(assembly) print_allocations(str msg) -> void {
+    "25738804"
+}
+function(assembly) getenv(str name) -> str {
+    "25738805"
+}
+function(assembly) system(str in) -> void {
+    "25738806"
+}
+function(assembly) read_sector_raw(int disk, int sector, int sector_count, int buffer) -> void {
+    "25738807"
+}
+function(assembly) write_sector_raw(int disk, int sector, int sector_count, int buffer) -> void {
+    "25738808"
+}
+function(assembly) disk_count(chr[] physical) -> int {
+    "25738809"
+}
+function(assembly) get_width() -> int {
+    "25738810"
+}
+function(assembly) get_height() -> int {
+    "25738811"
+}
+function(assembly) draw_char(int x, int y, chr c, int color) -> void {
+    "25738812"
+}
+function(assembly) draw_string(int x, int y, str str, int color) -> void {
+    "25738813"
+}
+function(assembly) set_pixel(int x, int y, int color) -> void {
+    "25738814"
+}
+function(assembly) start_frame() -> void {
+    "25738815"
+}
+function(assembly) end_frame() -> void {
+    "25738816"
+}
+function(assembly) time_format(str out, int time) -> void {
+    "25738817"
+}
+function(assembly) sleep_s(int s) -> void {
+    "25738818"
+}
+function(assembly) sleep_ms(int ms) -> void {
+    "25738819"
+}

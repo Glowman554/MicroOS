@@ -3,11 +3,9 @@
 		"firestorm"
 	],
 	"mappings": {
-        "src/src/flvm.elf": "bin/flvm.elf",
-
-		"src/hello.flbb": "firestorm/hello.flbb",
-		"src/powers_of_two.flbb": "firestorm/powers_of_two.flbb",
-		"src/fib_itterative.flbb": "firestorm/fib_itterative.flbb"
+        "src/flvm.elf": "bin/flvm.elf",
+		"example/main.fl.bytecode.flbb": "firestorm/example.flbb",
+		"example/main.fl.bytecode.flb": "firestorm/example.flb"
 	},
 	"name": "FireStorm runtime"
 }

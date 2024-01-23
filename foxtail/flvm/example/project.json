@@ -1,0 +1,25 @@
+{
+    "name": "microos_example",
+    "version": "1.0.0",
+    "main": "main.fl",
+    "type": "executable",
+    "compiler": [
+        {
+            "target": "bytecode",
+            "mode": "flbb"
+        },
+        {
+            "target": "bytecode",
+            "mode": "flenc"
+        },
+        {
+            "target": "bytecode",
+            "mode": "flb"
+        }
+    ],
+    "dependencies": [
+        "microos@1.0.0",
+        "microos_sys@1.0.0",
+        "stringbuilder@1.0.0"
+    ]
+}

@@ -1,0 +1,360 @@
+@begin global
+global_reserve stringbuild_current chr true
+@end global
+@begin function spark
+spark:
+	variable argv str true
+	assign argv
+	variable argc int false
+	assign argc
+	invoke stringbuild_initial_init
+	delete
+	string "initial"
+	invoke_native 25738804 ; print_allocations
+	delete
+	variable max int false
+	number 20
+	assign max
+	variable list int false
+	number 132
+	load max
+	mul
+	invoke_native allocate
+	assign list
+	variable ammount int false
+	load list
+	load max
+	invoke_native 5328999 ; get_task_list
+	assign ammount
+	variable i int false
+	number 0
+	assign i
+0:
+	load i
+	load ammount
+	less
+	goto_false 1
+	variable entry int false
+	load list
+	number 132
+	load i
+	mul
+	add
+	assign entry
+	variable pid int false
+	load entry
+	number 128
+	add
+	invoke_native memory_read_32
+	assign pid
+	invoke stringbuild_init
+	delete
+	string "PID: "
+	invoke stringbuild_append_str
+	delete
+	load pid
+	number 10
+	invoke stringbuild_append_int
+	delete
+	string " ("
+	invoke stringbuild_append_str
+	delete
+	load entry
+	number 0
+	add
+	invoke stringbuild_append_str
+	delete
+	string ")"
+	invoke stringbuild_append_str
+	delete
+	invoke stringbuild_finish
+	invoke prints
+	delete
+	increase i
+	goto 0
+1:
+	load list
+	invoke_native deallocate
+	delete
+	number 0
+	return
+	number 0
+	return
+@end function
+@begin function unreachable
+unreachable:
+	noreturn
+	string "Reached unreachable code!"
+	invoke prints
+	delete
+	number 1
+	invoke_native do_exit
+	delete
+	number 0
+	return
+@end function
+@begin function prints
+prints:
+	variable in chr true
+	assign in
+2:
+	number 0
+	load_indexed in
+	goto_false 3
+	number 0
+	load_indexed in
+	invoke_native printc
+	delete
+	increase in
+	goto 2
+3:
+	number 10
+	invoke_native printc
+	delete
+	number 0
+	return
+@end function
+@begin function string_length
+string_length:
+	variable s chr true
+	assign s
+	variable ret int false
+	number 0
+	assign ret
+7:
+	load ret
+	load_indexed s
+	goto_false 8
+	increase ret
+	goto 7
+8:
+	load ret
+	return
+	number 0
+	return
+@end function
+@begin function string_delete
+string_delete:
+	variable s chr true
+	assign s
+	load s
+	invoke_native deallocate
+	delete
+	number 0
+	return
+@end function
+@begin function string_copy
+string_copy:
+	variable src chr true
+	assign src
+	variable dest chr true
+	assign dest
+	variable idx int false
+	number 0
+	assign idx
+9:
+	load idx
+	load idx
+	load_indexed src
+	assign_indexed dest
+	increase idx
+	load idx
+	load_indexed src
+	goto_true 9
+	load idx
+	number 0
+	assign_indexed dest
+	number 0
+	return
+@end function
+@begin function string_join
+string_join:
+	variable b chr true
+	assign b
+	variable a chr true
+	assign a
+	variable al int false
+	load a
+	invoke string_length
+	assign al
+	variable bl int false
+	load b
+	invoke string_length
+	assign bl
+	variable res chr true
+	load al
+	load bl
+	add
+	number 1
+	add
+	invoke_native allocate
+	assign res
+	load res
+	load a
+	invoke string_copy
+	delete
+	load res
+	load al
+	add
+	load b
+	invoke string_copy
+	delete
+	load res
+	return
+	number 0
+	return
+@end function
+@begin function string_from_int
+string_from_int:
+	variable base int false
+	assign base
+	variable num int false
+	assign num
+	variable sign int false
+	number 0
+	assign sign
+	load num
+	number 0
+	less
+	goto_false 10
+	number 1
+	assign sign
+	load num
+	number 0
+	number 1
+	sub
+	mul
+	assign num
+10:
+	variable digits chr true
+	string "0123456789abcdefghijklmnopqrstuvwxyz"
+	assign digits
+	variable buf chr true
+	number 65
+	invoke_native allocate
+	assign buf
+	variable p chr true
+	load buf
+	number 64
+	add
+	assign p
+	number 0
+	number 0
+	assign_indexed p
+11:
+	decrease p
+	number 0
+	load num
+	load base
+	mod
+	load_indexed digits
+	assign_indexed p
+	load num
+	load base
+	div
+	assign num
+	load num
+	goto_true 11
+	load sign
+	goto_false 12
+	decrease p
+	number 0
+	number 45
+	assign_indexed p
+12:
+	variable final_result chr true
+	load p
+	invoke string_length
+	number 1
+	add
+	invoke_native allocate
+	assign final_result
+	load final_result
+	load p
+	invoke string_copy
+	delete
+	load buf
+	invoke_native deallocate
+	delete
+	load final_result
+	return
+	number 0
+	return
+@end function
+@begin function stringbuild_init
+stringbuild_init:
+	load stringbuild_current
+	goto_false 26
+	load stringbuild_current
+	invoke string_delete
+	delete
+	number 0
+	assign stringbuild_current
+26:
+	number 1
+	invoke_native allocate
+	assign stringbuild_current
+	number 0
+	number 0
+	assign_indexed stringbuild_current
+	number 0
+	return
+@end function
+@begin function stringbuild_append_str
+stringbuild_append_str:
+	variable new str false
+	assign new
+	variable tmp str false
+	load stringbuild_current
+	assign tmp
+	load tmp
+	load new
+	invoke string_join
+	assign stringbuild_current
+	load tmp
+	invoke string_delete
+	delete
+	number 0
+	return
+@end function
+@begin function stringbuild_append_int
+stringbuild_append_int:
+	variable base int false
+	assign base
+	variable new int false
+	assign new
+	variable tmp str false
+	load stringbuild_current
+	assign tmp
+	variable news str false
+	load new
+	load base
+	invoke string_from_int
+	assign news
+	load tmp
+	load news
+	invoke string_join
+	assign stringbuild_current
+	load tmp
+	invoke string_delete
+	delete
+	load news
+	invoke string_delete
+	delete
+	number 0
+	return
+@end function
+@begin function stringbuild_finish
+stringbuild_finish:
+	load stringbuild_current
+	return
+	number 0
+	return
+@end function
+@begin function stringbuild_initial_init
+stringbuild_initial_init:
+	number 0
+	assign stringbuild_current
+	number 0
+	return
+@end function

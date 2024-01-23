@@ -1,0 +1,35 @@
+$include <std.fl>
+$include <microos.fl>
+$include <microos_sys.fl>
+$include <stringbuilder.fl>
+
+function spark(int argc, str[] argv) -> int {
+	stringbuild_initial_init();
+
+	print_allocations("initial");
+
+	int max = 20;
+	int list = allocate(task_list_t_size * max);
+
+	int ammount = get_task_list(list, max);
+
+	for int i = 0; i < ammount; i++ {
+		int entry = list + task_list_t_size * i;
+
+		int pid = memory_read_32(entry + task_list_t_offset_pid);
+
+		stringbuild_init();
+
+		stringbuild_append_str("PID: ");
+		stringbuild_append_int(pid, 10);
+		stringbuild_append_str(" (");
+		stringbuild_append_str(entry + task_list_t_offset_name);
+		stringbuild_append_str(")");
+
+		prints(stringbuild_finish());
+	}
+
+	deallocate(list);
+	
+	return 0;
+}
