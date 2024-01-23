@@ -243,7 +243,95 @@ void write_asm_syntax() {
     save_syx(&header, words, len, buf, "asm.syx");
 }
 
+void write_flb_syntax() {
+	char* buf = NULL;
+	int len = 0;
+
+    syntax_word_t words[] = {
+		NEW_WORD("int", blue),
+		NEW_WORD("chr", blue),
+		NEW_WORD("str", blue),
+
+		NEW_WORD("string", green),
+		NEW_WORD("number", green),
+
+
+		NEW_WORD("load", cyan),
+		NEW_WORD("load_indexed", cyan),
+		NEW_WORD("assign", cyan),
+		NEW_WORD("assign_indexed", cyan),
+		NEW_WORD("global_reserve", cyan),		
+		NEW_WORD("delete", cyan),
+		NEW_WORD("noreturn", cyan),
+		NEW_WORD("not", cyan),
+		NEW_WORD("xor", cyan),
+		NEW_WORD("and", cyan),
+		NEW_WORD("or", cyan),
+		NEW_WORD("shift_left", cyan),
+		NEW_WORD("shift_right", cyan),
+		NEW_WORD("invert", cyan),
+		NEW_WORD("not_equals", cyan),
+		NEW_WORD("equals", cyan),
+		NEW_WORD("more_equals", cyan),
+		NEW_WORD("more", cyan),
+		NEW_WORD("less_equals", cyan),
+		NEW_WORD("less", cyan),
+		NEW_WORD("mod", cyan),
+		NEW_WORD("div", cyan),
+		NEW_WORD("mul", cyan),
+		NEW_WORD("sub", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("increase", cyan),
+		NEW_WORD("decrease", cyan),
+		NEW_WORD("variable", cyan),
+		NEW_WORD("return", cyan),
+		NEW_WORD("invoke_native", cyan),
+		NEW_WORD("invoke", cyan),
+		NEW_WORD("goto_false", cyan),
+		NEW_WORD("goto_true", cyan),
+		NEW_WORD("goto", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+		NEW_WORD("add", cyan),
+
+	};
+
+	syntax_header_t header = {
+		.magic = 0xff << 24 | 'S' << 0 | 'Y' << 8 | 'X' << 16, // TODO,
+		.single_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, ";"),
+			.sect_end_offset = write_string(&len, &buf, "\n"),
+			.color = green
+		},
+		.multi_line_comment = {
+			.active = false,
+		},
+		.string = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "\""),
+			.sect_end_offset = write_string(&len, &buf, "\""),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.single_char = {
+			.active = false,
+		},
+		.match_brackets = false,
+		.num_words = sizeof(words) / sizeof(words[0])
+	};
+    save_syx(&header, words, len, buf, "flb.syx");
+}
+
 int main(int argc, char** argv) {
 	write_c_syntax();
     write_asm_syntax();
+	write_flb_syntax();
 }
