@@ -1,0 +1,20 @@
+{
+    "name": "tasks",
+    "version": "1.0.0",
+    "main": "tasks.fl",
+    "type": "executable",
+    "compiler": [
+        {
+            "target": "bytecode",
+            "mode": "flbb"
+        },
+        {
+            "target": "bytecode",
+            "mode": "flb"
+        }
+    ],
+    "dependencies": [
+        "microos@1.0.0",
+        "microos_sys@1.0.0"
+    ]
+}

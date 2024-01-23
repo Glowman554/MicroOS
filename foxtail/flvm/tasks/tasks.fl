@@ -1,0 +1,72 @@
+$include <std.fl>
+$include <microos.fl>
+$include <microos_sys.fl>
+
+int max_tasks = 32;
+
+function spark(int argc, str[] argv) -> int {
+	int list = allocate(task_list_t_size * max_tasks);
+
+    chr[] buffer = allocate(32);
+    memory_area_set_8(buffer, 0, 32);
+    int idx = 0;
+
+
+    chr c = ' ';
+    int redraw = 0;
+    do {
+        if c | redraw {
+            redraw = 0;
+
+            start_frame();
+
+    		draw_string(get_width() / 2 - 6, 0, "MicroOS Tasks", 0x03);
+
+        	int ammount = get_task_list(list, max_tasks);
+        	for int i = 0; i < ammount; i++ {
+                int entry = list + task_list_t_size * i;
+
+                str pid = string_from_int(memory_read_32(entry + task_list_t_offset_pid), 10);
+
+                draw_string(0, i + 2, pid, 0x0f);
+			    draw_string(5, i + 2, entry + task_list_t_offset_name, 0x0f);
+
+                deallocate(pid);
+            }
+
+    		draw_string(0, get_height() - 1, "kill > ", 0x08);
+
+            if c != ' ' {
+                if c == 8 {
+                    // backspace
+                    idx--;
+                    if idx < 0 {
+                        idx = 0;
+                    }
+                    buffer[idx] = 0;
+                } else if c == 10 {
+                    // newline
+                    kill(parse_int(buffer));
+                    memory_area_set_8(buffer, 0, 32);
+                    idx = 0;
+                    redraw = 1;
+                } else {
+                    buffer[idx] = c;
+                    idx++;
+                }
+            }
+
+    		draw_string(7, get_height() - 1, buffer, 0x08);
+
+            end_frame();
+        }
+        c = async_getc();
+    } while c != 27;
+
+	deallocate(list);
+    deallocate(buffer);
+
+    system("clear");
+
+	return 0;
+}

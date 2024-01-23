@@ -1,0 +1,426 @@
+@begin global
+global max_tasks int 32
+@end global
+@begin function spark
+spark:
+	variable argv str true
+	assign argv
+	variable argc int false
+	assign argc
+	variable list int false
+	number 132
+	load max_tasks
+	mul
+	invoke_native allocate
+	assign list
+	variable buffer chr true
+	number 32
+	invoke_native allocate
+	assign buffer
+	load buffer
+	number 0
+	number 32
+	invoke memory_area_set_8
+	delete
+	variable idx int false
+	number 0
+	assign idx
+	variable c chr false
+	number 32
+	assign c
+	variable redraw int false
+	number 0
+	assign redraw
+0:
+	load c
+	load redraw
+	or
+	goto_false 1
+	number 0
+	assign redraw
+	invoke_native 25738815 ; start_frame
+	delete
+	invoke_native 25738810 ; get_width
+	number 2
+	div
+	number 6
+	sub
+	number 0
+	string "MicroOS Tasks"
+	number 3
+	invoke_native 25738813 ; draw_string
+	delete
+	variable ammount int false
+	load list
+	load max_tasks
+	invoke_native 5328999 ; get_task_list
+	assign ammount
+	variable i int false
+	number 0
+	assign i
+2:
+	load i
+	load ammount
+	less
+	goto_false 3
+	variable entry int false
+	load list
+	number 132
+	load i
+	mul
+	add
+	assign entry
+	variable pid str false
+	load entry
+	number 128
+	add
+	invoke_native memory_read_32
+	number 10
+	invoke string_from_int
+	assign pid
+	number 0
+	load i
+	number 2
+	add
+	load pid
+	number 15
+	invoke_native 25738813 ; draw_string
+	delete
+	number 5
+	load i
+	number 2
+	add
+	load entry
+	number 0
+	add
+	number 15
+	invoke_native 25738813 ; draw_string
+	delete
+	load pid
+	invoke_native deallocate
+	delete
+	increase i
+	goto 2
+3:
+	number 0
+	invoke_native 25738811 ; get_height
+	number 1
+	sub
+	string "kill > "
+	number 8
+	invoke_native 25738813 ; draw_string
+	delete
+	load c
+	number 32
+	not_equals
+	goto_false 4
+	load c
+	number 8
+	equals
+	goto_false 5
+	decrease idx
+	load idx
+	number 0
+	less
+	goto_false 7
+	number 0
+	assign idx
+7:
+	load idx
+	number 0
+	assign_indexed buffer
+	goto 6
+5:
+	load c
+	number 10
+	equals
+	goto_false 8
+	load buffer
+	invoke parse_int
+	invoke_native 5329000 ; kill
+	delete
+	load buffer
+	number 0
+	number 32
+	invoke memory_area_set_8
+	delete
+	number 0
+	assign idx
+	number 1
+	assign redraw
+	goto 9
+8:
+	load idx
+	load c
+	assign_indexed buffer
+	increase idx
+9:
+6:
+4:
+	number 7
+	invoke_native 25738811 ; get_height
+	number 1
+	sub
+	load buffer
+	number 8
+	invoke_native 25738813 ; draw_string
+	delete
+	invoke_native 25738816 ; end_frame
+	delete
+1:
+	invoke_native 5328985 ; async_getc
+	assign c
+	load c
+	number 27
+	not_equals
+	goto_true 0
+	load list
+	invoke_native deallocate
+	delete
+	load buffer
+	invoke_native deallocate
+	delete
+	string "clear"
+	invoke_native 25738806 ; system
+	delete
+	number 0
+	return
+	number 0
+	return
+@end function
+@begin function unreachable
+unreachable:
+	noreturn
+	string "Reached unreachable code!"
+	invoke prints
+	delete
+	number 1
+	invoke_native do_exit
+	delete
+	number 0
+	return
+@end function
+@begin function prints
+prints:
+	variable in chr true
+	assign in
+10:
+	number 0
+	load_indexed in
+	goto_false 11
+	number 0
+	load_indexed in
+	invoke_native printc
+	delete
+	increase in
+	goto 10
+11:
+	number 10
+	invoke_native printc
+	delete
+	number 0
+	return
+@end function
+@begin function string_length
+string_length:
+	variable s chr true
+	assign s
+	variable ret int false
+	number 0
+	assign ret
+15:
+	load ret
+	load_indexed s
+	goto_false 16
+	increase ret
+	goto 15
+16:
+	load ret
+	return
+	number 0
+	return
+@end function
+@begin function string_copy
+string_copy:
+	variable src chr true
+	assign src
+	variable dest chr true
+	assign dest
+	variable idx int false
+	number 0
+	assign idx
+17:
+	load idx
+	load idx
+	load_indexed src
+	assign_indexed dest
+	increase idx
+	load idx
+	load_indexed src
+	goto_true 17
+	load idx
+	number 0
+	assign_indexed dest
+	number 0
+	return
+@end function
+@begin function string_from_int
+string_from_int:
+	variable base int false
+	assign base
+	variable num int false
+	assign num
+	variable sign int false
+	number 0
+	assign sign
+	load num
+	number 0
+	less
+	goto_false 18
+	number 1
+	assign sign
+	load num
+	number 0
+	number 1
+	sub
+	mul
+	assign num
+18:
+	variable digits chr true
+	string "0123456789abcdefghijklmnopqrstuvwxyz"
+	assign digits
+	variable buf chr true
+	number 65
+	invoke_native allocate
+	assign buf
+	variable p chr true
+	load buf
+	number 64
+	add
+	assign p
+	number 0
+	number 0
+	assign_indexed p
+19:
+	decrease p
+	number 0
+	load num
+	load base
+	mod
+	load_indexed digits
+	assign_indexed p
+	load num
+	load base
+	div
+	assign num
+	load num
+	goto_true 19
+	load sign
+	goto_false 20
+	decrease p
+	number 0
+	number 45
+	assign_indexed p
+20:
+	variable final_result chr true
+	load p
+	invoke string_length
+	number 1
+	add
+	invoke_native allocate
+	assign final_result
+	load final_result
+	load p
+	invoke string_copy
+	delete
+	load buf
+	invoke_native deallocate
+	delete
+	load final_result
+	return
+	number 0
+	return
+@end function
+@begin function parse_int
+parse_int:
+	variable input chr true
+	assign input
+	variable nummer int false
+	number 0
+	assign nummer
+	variable sign int false
+	number 1
+	assign sign
+	number 0
+	load_indexed input
+	number 45
+	equals
+	goto_false 21
+	number 0
+	number 1
+	sub
+	assign sign
+	increase input
+	goto 22
+21:
+	number 0
+	load_indexed input
+	number 43
+	equals
+	goto_false 23
+	increase input
+23:
+22:
+24:
+	number 0
+	load_indexed input
+	number 48
+	more_equals
+	number 0
+	load_indexed input
+	number 57
+	less_equals
+	and
+	goto_false 25
+	load nummer
+	number 10
+	mul
+	number 0
+	load_indexed input
+	number 48
+	sub
+	add
+	assign nummer
+	increase input
+	goto 24
+25:
+	load nummer
+	load sign
+	mul
+	return
+	number 0
+	return
+@end function
+@begin function memory_area_set_8
+memory_area_set_8:
+	variable ammount int false
+	assign ammount
+	variable value chr false
+	assign value
+	variable buffer chr true
+	assign buffer
+26:
+	load ammount
+	goto_false 27
+	decrease ammount
+	load ammount
+	load value
+	assign_indexed buffer
+	goto 26
+27:
+	load ammount
+	load value
+	assign_indexed buffer
+	number 0
+	return
+@end function

@@ -5,7 +5,10 @@
 	"mappings": {
         "src/flvm.elf": "bin/flvm.elf",
 		"example/main.fl.bytecode.flbb": "firestorm/example.flbb",
-		"example/main.fl.bytecode.flb": "firestorm/example.flb"
+		"example/main.fl.bytecode.flb": "firestorm/example.flb",
+
+		"tasks/tasks.fl.bytecode.flbb": "firestorm/tasks.flbb",
+		"tasks/tasks.fl.bytecode.flb": "firestorm/tasks.flb"
 	},
 	"name": "FireStorm runtime"
 }
