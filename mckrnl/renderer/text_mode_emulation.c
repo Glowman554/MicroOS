@@ -17,7 +17,7 @@ void init_text_mode_emulation(psf1_font_t font) {
 }
 
 static inline void set_pixel(uint32_t x, uint32_t y, uint32_t color) {
-    *(uint32_t*) (global_multiboot_info->fb_addr + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) = color;
+    *(uint32_t*) ((uint32_t) global_multiboot_info->fb_addr + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) = color;
 }
 
 void draw_char(uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor) {
