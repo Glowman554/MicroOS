@@ -322,6 +322,14 @@
 				"0x29",
 				"ms (return) "
 			]
+		},
+		{
+			"name": "SYS_THREAD",
+			"arguments": [
+				"0x2a",
+				"entry",
+				"pid (return)"
+			]
 		}
 	]
 }

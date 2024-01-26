@@ -32,6 +32,8 @@ typedef struct {
 	int wait_time;
 
 	bool pin;
+
+	int parent;
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];
@@ -40,7 +42,7 @@ extern bool is_scheduler_running;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
-task_t* init_task(void* entry);
+task_t* init_task(void* entry, bool thread, task_t* parent);
 int init_elf(void* image, char** argv, char** envp);
 void exit_task(task_t* task);
 

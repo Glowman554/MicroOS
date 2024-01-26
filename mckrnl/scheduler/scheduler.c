@@ -19,7 +19,7 @@
 int current_pid = 0;
 task_t tasks[MAX_TASKS] = { 0 };
 
-task_t* init_task(void* entry) {
+task_t* init_task(void* entry, bool thread, task_t* parent) {	
 	bool old_shed = is_scheduler_running;
 	is_scheduler_running = false;
 
@@ -67,8 +67,14 @@ task_t* init_task(void* entry) {
 	task->pid = current_pid++;
 	task->wait_time = 0;
 
-	task->context = vmm_create_context();
-	vmm_clone_kernel_context(task->context);
+	if (!thread) {
+		task->context = vmm_create_context();
+		vmm_clone_kernel_context(task->context);
+		task->parent = -1;
+	} else {
+		task->context = parent->context;
+		task->parent = parent->pid;
+	}
 
 	for (int i = 0; i < KERNEL_STACK_SIZE_PAGES; i++) {
 		// vmm_map_page(task->context, (uintptr_t) stack + i * 4096, (uintptr_t) stack + i * 4096, PTE_PRESENT | PTE_WRITE);
@@ -92,7 +98,7 @@ int init_elf(void* image, char** argv, char** envp) {
 		return -1;
 	}
 
-	task_t* task = init_task((void*) header->entry);
+	task_t* task = init_task((void*) header->entry, false, NULL);
 
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {
@@ -188,18 +194,24 @@ int init_elf(void* image, char** argv, char** envp) {
 void exit_task(task_t* task) {
 	asm volatile("cli");
 
+	task_t* self = get_self();
+
 	task->active = false;
 	task->pin = false;
 
 	resource_dealloc(task);
-	vmm_activate_context(kernel_context);
-	vmm_destroy_context(task->context);
+	if (task->parent == -1) {
+		vmm_activate_context(kernel_context);
+		vmm_destroy_context(task->context);
+	}
 
-	debugf("Task %p exited", task);
+	debugf("Task %p (%d) exited", task, task->pid);
 	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
-	asm volatile("sti");
-	asm volatile("hlt");
+	if (task == self) {
+		asm volatile("sti");
+		asm volatile("hlt");
+	}
 }
 
 int current_task = 0;
