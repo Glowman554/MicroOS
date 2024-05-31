@@ -3,7 +3,7 @@ clear
 figl fonts/speed.figl MicroOS
 
 export COPYRIGHT_HOLDER=Glowman554
-export COPYRIGHT_YEAR=2022, 2023
+export COPYRIGHT_YEAR=2022, 2023, 2024
 
 echo
 echo MicroOS Copyright (C) $COPYRIGHT_YEAR $COPYRIGHT_HOLDER
