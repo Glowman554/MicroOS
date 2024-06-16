@@ -1,5 +1,7 @@
 #include <interrupts/interrupts.h>
 
+#include <gdb/gdb.h>
+
 #include <interrupts/gdt.h>
 #include <stdio.h>
 #include <utils/io.h>
@@ -193,6 +195,11 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 
 	if (cpu->intr == 0xff) {
 		halt_internal();
+	}
+
+	if (cpu->intr == 1 || cpu->intr == 3) {
+		gdb_interrupt(new_cpu);
+		return new_cpu;
 	}
 
 	if (cpu->intr <= 0x1f) {

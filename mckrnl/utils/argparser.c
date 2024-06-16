@@ -26,6 +26,10 @@ bool is_arg(char* in, char* arg, char* out) {
 		// we found an arg
 		i += arg_len;
 
+		if (i >= in_len) {
+			return true;
+		}
+
 		if (in[i] != ' ' && in[i] != '=') {
 			goto next_try;
 		}

@@ -93,9 +93,16 @@ void _main(multiboot_info_t* mb_info) {
 	}
 #endif
 	text_console_clrscr();
+	serial_early_init();
 
 	init_initial_gdt();
 	init_interrupts();
+
+	bool gdb = false;
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
+		gdb = true;
+		__asm__ __volatile__ ("int3");
+	}
 
 	pmm_init();
 	vmm_init();
@@ -120,7 +127,9 @@ void _main(multiboot_info_t* mb_info) {
 
 	enumerate_pci();
 
-	register_driver((driver_t*) &serial_output_driver);
+	if (!gdb) {
+		register_driver((driver_t*) &serial_output_driver);
+	}
 #ifdef FULL_SCREEN_TERMINAL
 #ifndef TEXT_MODE_EMULATION
 #error TEXT_MODE_EMULATION required!

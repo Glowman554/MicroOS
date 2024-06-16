@@ -3,6 +3,7 @@
 // Kernel configuration
 // Debug
 #define DEBUG
+// #define GDB_DEBUG
 #define UBSAN_SUPRES_TYPE_MISSMATCH
 #define UBSAN_IGNORE_SHIFT_OUT_OF_BOUNDS
 #define WAIT

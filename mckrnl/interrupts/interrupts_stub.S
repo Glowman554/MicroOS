@@ -67,6 +67,11 @@ intr_common_handler:
 	push %ebx
 	push %eax
 
+	push %ds
+	push %es
+	push %fs
+	push %gs
+
 	// load kernel data segment
 	mov $0x10, %ax
 	mov %ax, %ds
@@ -82,6 +87,11 @@ intr_common_handler:
 	mov $0x23, %ax
 	mov %ax, %ds
 	mov %ax, %es
+
+	pop %gs
+	pop %fs
+	pop %es
+	pop %ds
 
 	pop %eax
 	pop %ebx

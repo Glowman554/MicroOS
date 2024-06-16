@@ -13,6 +13,10 @@
                             "value": true
                         },
                         {
+                            "name": "GDB_DEBUG",
+                            "value": false
+                        },
+                        {
                             "name": "UBSAN_SUPRES_TYPE_MISSMATCH",
                             "value": true
                         },
