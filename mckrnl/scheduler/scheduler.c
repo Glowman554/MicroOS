@@ -54,6 +54,11 @@ task_t* init_task(void* entry, bool thread, task_t* parent) {
 		.cs  = 0x18 | 0x03,
 		.ss  = 0x20 | 0x03,
 
+		.gs  = 0,
+		.fs  = 0,
+		.es  = 0x20 | 0x03,
+		.ds  = 0x20 | 0x03,
+
 		.eflags = 0x202,
 	};
 
