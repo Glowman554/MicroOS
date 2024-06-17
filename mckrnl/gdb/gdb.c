@@ -9,6 +9,8 @@
 typedef int (*gdb_enc_func)(char *buf, int buf_len, const char *data, int data_len);
 typedef int (*gdb_dec_func)(const char *buf, int buf_len, char *data, int data_len);
 
+bool gdb_active = false;
+
 int gdb_recv_ack(gdb_state_t* state) {
     int response = gdb_sys_getc(state);
 
@@ -355,6 +357,7 @@ int gdb_main(gdb_state_t* state) {
                 break;
 
             default:
+                debugf("unknown command %c", pkt_buf[0]);
                 gdb_send_packet(state, NULL, 0);
                 break;
         }

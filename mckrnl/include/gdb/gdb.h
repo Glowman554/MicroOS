@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <interrupts/interrupts.h>
 
@@ -30,6 +31,8 @@ typedef struct gdb_state {
     int signum;
     reg registers[GDB_CPU_NUM_REGISTERS];
 } gdb_state_t;
+
+extern bool gdb_active;
 
 #define GDB_EOF (-1)
 #define gdb_is_printable_char(ch) (ch >= 0x20 && ch <= 0x7e)

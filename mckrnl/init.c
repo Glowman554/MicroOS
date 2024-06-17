@@ -50,6 +50,8 @@
 #include <devices/framebuffer.h>
 #include <devices/fst.h>
 
+#include <gdb/gdb.h>
+
 
 // char test_str[] = "Hello world!";
 // void test_read(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
@@ -98,10 +100,9 @@ void _main(multiboot_info_t* mb_info) {
 	init_initial_gdt();
 	init_interrupts();
 
-	bool gdb = false;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
-		gdb = true;
-		__asm__ __volatile__ ("int3");
+		gdb_active = true;
+		breakpoint();
 	}
 
 	pmm_init();
@@ -127,7 +128,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	enumerate_pci();
 
-	if (!gdb) {
+	if (!gdb_active) {
 		register_driver((driver_t*) &serial_output_driver);
 	}
 #ifdef FULL_SCREEN_TERMINAL

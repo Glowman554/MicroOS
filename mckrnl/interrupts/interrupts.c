@@ -197,7 +197,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 		halt_internal();
 	}
 
-	if (cpu->intr == 1 || cpu->intr == 3) {
+	if ((cpu->intr == 1 || cpu->intr == 3) && gdb_active) {
 		gdb_interrupt(new_cpu);
 		return new_cpu;
 	}
