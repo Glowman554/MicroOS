@@ -20,7 +20,6 @@ build_dir brainasm
 build_dir phoenix_tools
 build_dir phoenixv2_tools
 build_dir nyanmbr
-build_dir flvm
 
 (
 	cd pkgs
