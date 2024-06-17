@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "**"
-  pull_request:
-    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -30,3 +28,10 @@ jobs:
           libs.zip
     - name: test
       run: make test
+    - uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: "Development Build"
+        files: cdrom.iso 
