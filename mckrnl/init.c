@@ -231,6 +231,6 @@ void _main(multiboot_info_t* mb_info) {
 		abortf("Please use --init to set a init process");
 	}
 
-	// init_killer();
+	init_killer();
 	init_scheduler();
 }
