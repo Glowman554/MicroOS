@@ -6,6 +6,8 @@
 
 #include <config.h>
 
+#include <driver/acpi/power.h>
+
 typedef int (*gdb_enc_func)(char *buf, int buf_len, const char *data, int data_len);
 typedef int (*gdb_dec_func)(const char *buf, int buf_len, char *data, int data_len);
 
@@ -355,6 +357,11 @@ int gdb_main(gdb_state_t* state) {
             case '?':
                 gdb_send_signal_packet(state, pkt_buf, sizeof(pkt_buf), state->signum);
                 break;
+
+            case 'k':
+                acpi_power_off();
+                break;
+
 
             default:
                 debugf("unknown command %c", pkt_buf[0]);

@@ -15,6 +15,10 @@ else
 	QEMU_FLAGS += -serial stdio
 endif
 
+ifdef AHCI
+	QEMU_FLAGS += -machine q35
+endif
+
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
@@ -60,9 +64,9 @@ format_disk:
 format_disk_gpt:
 	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
 	echo 'echo "o\ny\nn\n1\n\n\n0700\nw\ny\n" | gdisk res/foxos.img' | sh
-	sudo losetup /dev/loop28 res/foxos.img -P
-	sudo mkfs.vfat -F 32 /dev/loop28p1
-	sudo losetup -d /dev/loop28
+	sudo losetup /dev/loop100 res/foxos.img -P
+	sudo mkfs.vfat -F 32 /dev/loop100p1
+	sudo losetup -d /dev/loop100
 
 run_dbg: iso
 	qemu-system-i386 $(QEMU_FLAGS) --no-reboot --no-shutdown -s -S

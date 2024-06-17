@@ -16,6 +16,7 @@
 #include <driver/input/ps2_keyboard.h>
 #include <driver/input/ps2_mouse.h>
 #include <driver/disk/ata.h>
+#include <driver/disk/ahci.h>
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
 #include <driver/timer/pit.h>
@@ -119,6 +120,9 @@ void _main(multiboot_info_t* mb_info) {
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);
 	register_pci_driver_vd(0x1022, 0x2000, am79C973_pci_found);
 	register_pci_driver_vd(0x8086, 0x100E, e1000_pci_found);
+#ifdef AHCI_DRIVER
+	register_pci_driver_cs(0x1, 0x6, 0x1, ahci_pci_found);
+#endif
 
 	rsdp_init();
 	dsdt_init();
@@ -227,6 +231,6 @@ void _main(multiboot_info_t* mb_info) {
 		abortf("Please use --init to set a init process");
 	}
 
-	init_killer();
+	// init_killer();
 	init_scheduler();
 }

@@ -87,6 +87,10 @@
                         {
                             "name": "THREADS",
                             "value": false
+                        },
+                        {
+                            "name": "AHCI_DRIVER",
+                            "value": false
                         }
                     ]
                 }

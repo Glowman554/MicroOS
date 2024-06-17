@@ -25,6 +25,7 @@
 // #define SMP
 // #define PARSE_MADT
 // #define THREADS
+// #define AHCI_DRIVER
 // End Experimental
 
 // Input
