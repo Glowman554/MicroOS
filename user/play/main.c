@@ -67,4 +67,5 @@ int main(int argc, char* argv[], char* envp[]) {
 	free(context);
 
 	sound_clear(0);
+	return 0;
 }

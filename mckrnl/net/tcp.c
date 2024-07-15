@@ -42,7 +42,7 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     header->checksum = 0;
     header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
     
-	ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, header, total_length);
+	ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, (uint8_t*) header, total_length);
 	vmm_free(packet, TO_PAGES(length_phdr));
 }
 

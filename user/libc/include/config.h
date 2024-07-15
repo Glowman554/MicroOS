@@ -46,6 +46,7 @@
 #define SYS_MOUSE_INFO_ID 39
 #define SYS_TRUNCATE_ID 40
 #define SYS_TIME_MS_ID 41
+#define SYS_THREAD_ID 42
 // End Syscalls
 
 // End LibC configuration

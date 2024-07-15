@@ -51,7 +51,17 @@ extern void intr_stub_255(void);
 
 extern long long unsigned int idt[];
 
+struct gdb_interrupt_state {
+
+};
+
+
 typedef struct {
+    uint32_t gs;
+    uint32_t fs;
+    uint32_t es;
+    uint32_t ds;
+
 	uint32_t eax;
 	uint32_t ebx;
 	uint32_t ecx;

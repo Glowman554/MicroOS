@@ -3,6 +3,7 @@
 // Kernel configuration
 // Debug
 #define DEBUG
+// #define GDB_DEBUG
 #define UBSAN_SUPRES_TYPE_MISSMATCH
 #define UBSAN_IGNORE_SHIFT_OUT_OF_BOUNDS
 #define WAIT
@@ -23,6 +24,8 @@
 // Experimental
 // #define SMP
 // #define PARSE_MADT
+// #define THREADS
+// #define AHCI_DRIVER
 // End Experimental
 
 // Input
@@ -85,6 +88,7 @@
 #define SYS_MOUSE_INFO_ID 39
 #define SYS_TRUNCATE_ID 40
 #define SYS_TIME_MS_ID 41
+#define SYS_THREAD_ID 42
 // End Syscalls
 
 // End Kernel configuration

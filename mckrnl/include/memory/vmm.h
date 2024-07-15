@@ -41,3 +41,4 @@ void vmm_free(void* ptr, uint32_t num_pages);
 void* vmm_resize(int data_size, int old_size, int new_size, void* ptr);
 
 void vmm_read_context(void* ptr, void* out, int sz, vmm_context_t* context);
+void* vmm_lookup(uintptr_t ptr, vmm_context_t* context);

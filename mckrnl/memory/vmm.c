@@ -349,3 +349,20 @@ void vmm_read_context(void* ptr, void* out, int sz, vmm_context_t* context) {
 	vmm_activate_context(&current);
 	memcpy(out, buffer, sz);
 }
+
+void* vmm_lookup(uintptr_t ptr, vmm_context_t* context) {
+	uint32_t page_index = ptr / 0x1000;
+
+	uint32_t pd_index = page_index / 1024;
+	uint32_t pt_index = page_index % 1024;
+
+	if (context->pagedir[pd_index] & PTE_PRESENT) {
+		uint32_t* page_table = (uint32_t*) (context->pagedir[pd_index] & ~0xFFF);
+		if (page_table[pt_index] & PTE_PRESENT) {
+			void* phys = (void*) (page_table[pt_index] & ~0xFFF) + (ptr % 0x1000);
+			return phys;
+		}
+	}
+
+	return NULL;
+}

@@ -27,3 +27,9 @@ int get_task_list(task_list_t* out, int max) {
 void kill(int pid) {
 	asm volatile("int $0x30" : : "a"(SYS_KILL_ID), "b"(pid));
 }
+
+int thread(void* entry) {
+	int pid;
+	asm volatile("int $0x30" : "=c"(pid) : "a"(SYS_THREAD_ID), "b"(entry));
+	return pid;
+}

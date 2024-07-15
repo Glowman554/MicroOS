@@ -11,6 +11,7 @@
 #include <driver/char_input_driver.h>
 #include <utils/lock.h>
 #include <utils/trace.h>
+#include <gdb/gdb.h>
 
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
@@ -127,4 +128,12 @@ do_halt:
 	while (true) {
 		halt();
 	}
+}
+
+void breakpoint() {
+	if (!gdb_active) {
+		debugf("breakpoint() ignored since gdb isn't activated");
+		return;
+	}
+	__asm__ __volatile__ ("int3");
 }

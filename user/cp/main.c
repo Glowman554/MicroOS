@@ -139,4 +139,5 @@ int main(int argc, char** argv) {
 		fclose(src_file);
 		fclose(dest_file);
 	}
+	return 0;
 }

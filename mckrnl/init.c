@@ -16,6 +16,7 @@
 #include <driver/input/ps2_keyboard.h>
 #include <driver/input/ps2_mouse.h>
 #include <driver/disk/ata.h>
+#include <driver/disk/ahci.h>
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
 #include <driver/timer/pit.h>
@@ -49,6 +50,8 @@
 #include <devices/disk.h>
 #include <devices/framebuffer.h>
 #include <devices/fst.h>
+
+#include <gdb/gdb.h>
 
 
 // char test_str[] = "Hello world!";
@@ -93,9 +96,15 @@ void _main(multiboot_info_t* mb_info) {
 	}
 #endif
 	text_console_clrscr();
+	serial_early_init();
 
 	init_initial_gdt();
 	init_interrupts();
+
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
+		gdb_active = true;
+		breakpoint();
+	}
 
 	pmm_init();
 	vmm_init();
@@ -111,6 +120,9 @@ void _main(multiboot_info_t* mb_info) {
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);
 	register_pci_driver_vd(0x1022, 0x2000, am79C973_pci_found);
 	register_pci_driver_vd(0x8086, 0x100E, e1000_pci_found);
+#ifdef AHCI_DRIVER
+	register_pci_driver_cs(0x1, 0x6, 0x1, ahci_pci_found);
+#endif
 
 	rsdp_init();
 	dsdt_init();
@@ -120,7 +132,9 @@ void _main(multiboot_info_t* mb_info) {
 
 	enumerate_pci();
 
-	register_driver((driver_t*) &serial_output_driver);
+	if (!gdb_active) {
+		register_driver((driver_t*) &serial_output_driver);
+	}
 #ifdef FULL_SCREEN_TERMINAL
 #ifndef TEXT_MODE_EMULATION
 #error TEXT_MODE_EMULATION required!

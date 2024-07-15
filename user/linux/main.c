@@ -111,6 +111,7 @@ restart:
                 break;
         }
     }
+	return 0;
 }
 
 char buf;

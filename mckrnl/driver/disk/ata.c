@@ -179,7 +179,7 @@ disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name) {
 
 	driver->physical = true;
 
-	driver->driver.driver_specific_data = driver + sizeof(disk_driver_t);
+	driver->driver.driver_specific_data = &driver[1];
 
 	ata_driver_data_t* data = (ata_driver_data_t*) driver->driver.driver_specific_data;
 	

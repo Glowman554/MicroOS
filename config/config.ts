@@ -43,7 +43,7 @@ async function configurePragmaOnce(configMenu: ConfigMenu): Promise<void> {
     }
   
     const option = prompt("Select an option (or press Enter to finish):");
-    if (option == null) {
+    if (option == null || option == "") {
         return;
     }
 

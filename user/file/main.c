@@ -32,4 +32,5 @@ int main(int argc, char* argv[]) {
 
 	fclose(f);
 	free(buffer);
+	return 0;
 }

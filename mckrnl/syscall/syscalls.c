@@ -69,6 +69,9 @@ void init_syscalls() {
 	register_syscall(SYS_MOUSE_INFO_ID, sys_mouse_info);
 	register_syscall(SYS_TRUNCATE_ID, sys_truncate);
 	register_syscall(SYS_TIME_MS_ID, sys_time_ms);
+#ifdef THREADS
+	register_syscall(SYS_THREAD_ID, sys_thread);
+#endif
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

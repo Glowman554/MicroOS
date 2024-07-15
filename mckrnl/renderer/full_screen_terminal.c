@@ -27,7 +27,7 @@ char* full_screen_terminal_driver_get_device_name(driver_t* driver) {
 void full_screen_terminal_clear() {
 	cursor_x = 0;
 	cursor_y = 0;
-	memset((void*) global_multiboot_info->fb_addr, 0x00, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
+	memset((void*) (uint32_t) global_multiboot_info->fb_addr, 0x00, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
 }
 
 void full_screen_terminal_driver_init(driver_t* driver) {
@@ -58,8 +58,8 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, char c) {
 	}
 
 	if (cursor_y + 16 > global_multiboot_info->fb_height) {
-		memcpy((void*) global_multiboot_info->fb_addr, (void*)(global_multiboot_info->fb_addr + (16 * global_multiboot_info->fb_pitch)), (global_multiboot_info->fb_width * 4 * (global_multiboot_info->fb_height - 16)));
-		memset((void*) (global_multiboot_info->fb_addr + ((global_multiboot_info->fb_width * 4) * (global_multiboot_info->fb_height - 16))), 0, (global_multiboot_info->fb_width * 4 * 16));
+		memcpy((void*) (uint32_t) global_multiboot_info->fb_addr, (void*)((uint32_t) global_multiboot_info->fb_addr + (16 * global_multiboot_info->fb_pitch)), (global_multiboot_info->fb_width * 4 * (global_multiboot_info->fb_height - 16)));
+		memset((void*) ((uint32_t) global_multiboot_info->fb_addr + ((global_multiboot_info->fb_width * 4) * (global_multiboot_info->fb_height - 16))), 0, (global_multiboot_info->fb_width * 4 * 16));
 		cursor_y -= 16;
 	}
 

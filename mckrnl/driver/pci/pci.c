@@ -22,12 +22,12 @@ void enumerate_pci() {
 				for (int i = 0; i < num_pci_drivers; i++) {
 					if (pci_drivers[i].use_class_subclass_prog_IF) {
 						if ((pci_drivers[i]._class == pci_header.class_ || pci_drivers[i]._class == 0) && (pci_drivers[i].subclass == pci_header.subclass || pci_drivers[i].subclass == 0) && (pci_drivers[i].prog_IF == pci_header.prog_if || pci_drivers[i].prog_IF == 0)) {
-							debugf("PCI: Found driver for %x:%x:%x: %p\n", bus, device, function, pci_drivers[i].load_driver);
+							debugf("PCI: Found driver for %x:%x:%x: %p", bus, device, function, pci_drivers[i].load_driver);
 							pci_drivers[i].load_driver(pci_header, bus, device, function);
 						}
 					} else if (pci_drivers[i].use_vendor_device_id) {
 						if (pci_drivers[i].vendor_id == pci_header.vendor_id && pci_drivers[i].device_id == pci_header.device_id) {
-							debugf("PCI: Found driver for %x:%x:%x: %p\n", bus, device, function, pci_drivers[i].load_driver);
+							debugf("PCI: Found driver for %x:%x:%x: %p", bus, device, function, pci_drivers[i].load_driver);
 							pci_drivers[i].load_driver(pci_header, bus, device, function);
 						}
 					} else {
@@ -39,6 +39,7 @@ void enumerate_pci() {
 			}
 		}
 	}
+	breakpoint();
 }
 
 void register_pci_driver_cs(uint8_t _class, uint8_t subclass, uint8_t prog_IF, void (*load_driver)(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function)) {
