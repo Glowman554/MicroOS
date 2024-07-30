@@ -139,6 +139,10 @@
                         {
                             "name": "FD_OFFSET",
                             "value": 5
+                        },
+                        {
+                            "name": "FAST_MEMORY",
+                            "value": true
                         }
                     ]
                 }

@@ -3,7 +3,6 @@
 #include <memory/vmm.h>
 #include <memory/pmm.h>
 #include <scheduler/scheduler.h>
-#include <stdio.h>
 
 cpu_registers_t* sys_mmap(cpu_registers_t* regs) {
 	// debugf("sys_mmap(%x)", regs->ebx);

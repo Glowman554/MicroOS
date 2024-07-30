@@ -11,9 +11,9 @@ char* strchr(const char* str, int chr);
 
 int sprintf(char *buf, const char *fmt, ...);
 
-void* memcpy(void* dest, const void* src, int n);
-int memcmp(const void * _s1, const void* _s2, int n); // X
-void* memset(void* start, uint8_t value, uint32_t num);
+void* memcpy(void* dest, const void* src, unsigned int n);
+int memcmp(const void * _s1, const void* _s2, unsigned  int n); // X
+void* memset(void* start, uint8_t value, unsigned int num);
 
 char* copy_until(char until, char* src, char* dest);
 
