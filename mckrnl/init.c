@@ -1,3 +1,4 @@
+#include "stdbool.h"
 #include <driver/driver.h>
 #include <renderer/text_console.h>
 #include <renderer/psf1_font.h>
@@ -96,12 +97,21 @@ void _main(multiboot_info_t* mb_info) {
 	}
 #endif
 	text_console_clrscr();
-	serial_early_init();
+
+	bool enable_serial = false;
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--serial", NULL)) {
+		enable_serial = true;
+		serial_early_init();
+	}
+
 
 	init_initial_gdt();
 	init_interrupts();
 
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
+		if (!enable_serial) {
+			abortf("Cannot use gdb without serial");
+		}
 		gdb_active = true;
 		breakpoint();
 	}
@@ -132,7 +142,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	enumerate_pci();
 
-	if (!gdb_active) {
+	if (!gdb_active && enable_serial) {
 		register_driver((driver_t*) &serial_output_driver);
 	}
 #ifdef FULL_SCREEN_TERMINAL

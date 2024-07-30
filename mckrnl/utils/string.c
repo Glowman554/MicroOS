@@ -69,6 +69,7 @@ void* memcpy(void* dest, const void* src, int n) {
 	return dest;
 }
 
+
 void* memset(void* start, uint8_t value, uint32_t num) {
 	char* s = (char*) start;
 	while(num--) {
