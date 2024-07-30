@@ -33,8 +33,32 @@ void full_screen_terminal_clear() {
 void full_screen_terminal_driver_init(driver_t* driver) {
 	full_screen_terminal_clear();
 	printf_driver = (char_output_driver_t*) driver;
+	if (!debugf_driver) {
+		debugf_driver = (char_output_driver_t*) driver;
+	}
 	global_char_output_driver = (char_output_driver_t*) driver;
 }
+
+// void* memcpy32(void* dest, const void* src, int n) {
+//     uint8_t *d = (uint8_t *)dest;
+//     const uint8_t *s = (const uint8_t *)src;
+
+//     int chunks = n / 4;
+//     for (int i = 0; i < chunks; i++) {
+//         ((uint32_t *)d)[i] = ((const uint32_t *)s)[i];
+//     }
+
+//     int remaining_bytes = n % 4;
+//     if (remaining_bytes) {
+//         d += chunks * 4;
+//         s += chunks * 4;
+//         for (int i = 0; i < remaining_bytes; i++) {
+//             d[i] = s[i];
+//         }
+//     }
+
+//     return dest;
+// }
 
 void full_screen_terminal_driver_putc(char_output_driver_t* driver, char c) {
 	if(c == 0) {

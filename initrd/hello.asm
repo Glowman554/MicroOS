@@ -1,4 +1,4 @@
-format ELF executable at 0xA0000000
+format ELF executable at 0xB0000000
 entry _start
 
 segment readable executable
@@ -31,4 +31,4 @@ strlen:
 	sub eax, ecx
 	ret
 
-hello: db "Hello world!", 0
+hello: db "Hello world!", 10, 0

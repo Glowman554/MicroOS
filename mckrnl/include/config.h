@@ -41,6 +41,7 @@
 
 // Other
 #define FD_OFFSET 5
+#define FAST_MEMORY
 // End Other
 
 // Paging
