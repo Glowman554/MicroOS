@@ -40,7 +40,7 @@ void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len)
 		}
 
 		if (!handled) {
-			abortf("--- WARNING --- Unhandled etherframe %x!", frame->ether_type_be);
+			debugf("--- WARNING --- Unhandled etherframe %x!", frame->ether_type_be);
 		}
 	}
 }

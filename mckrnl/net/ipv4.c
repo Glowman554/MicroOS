@@ -71,7 +71,7 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload,
 		}
 
 		if (!handled) {
-			abortf("--- WARNING --- Unhandled ipv4 %x!", ipv4->protocol);
+			debugf("--- WARNING --- Unhandled ipv4 %x!", ipv4->protocol);
 		}
 	}
 }
