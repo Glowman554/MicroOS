@@ -7,12 +7,15 @@
 
 #include <sys/graphics.h>
 #define FB_SET_PX_IMPL
+#define FB_UNSAFE_SETPX
 #include <buildin/framebuffer.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <sys/getc.h>
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 static int currentTick = 0;
 
@@ -40,10 +43,7 @@ int main(int argc, char* argv[]) {
     fread(vgamap, fsize, 1, f);
     fclose(f);
 
-    int SCALE = 1;
-    if (getenv("SCALE")) {
-        SCALE = atoi(getenv("SCALE"));
-    }
+
 
     doom_set_gettime(emulate_doom_gettime);
 
@@ -56,9 +56,15 @@ int main(int argc, char* argv[]) {
     doom_set_default_int("mouse_move", 0);
     doom_set_default_int("screenblocks", 11);
     
+    int SCALE = 1;
     fb_info_t info;
     if (vmode() == CUSTOM) {
         info = fb_load_info();
+        SCALE = MIN(info.fb_width / 320, info.fb_height / 200);
+    }
+
+    if (getenv("SCALE")) {
+        SCALE = atoi(getenv("SCALE"));
     }
 
     doom_init(argc, argv, 0);
