@@ -101,7 +101,7 @@ pre_commit:
 	deno run -A config/config.ts --clean --auto config/libc.json
 	deno run -A config/config.ts --clean --auto config/kernel.json
 
-preset_fst: clean
+preset_fst:
 	deno run -A config/config.ts --clean --auto --load config/preset.fst.json config/kernel.json
 
 
