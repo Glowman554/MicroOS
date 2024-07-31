@@ -171,7 +171,7 @@ char* color_table[] = {
 	"white"
 };
 
-void text_console_set_color(char_output_driver_t*, char* color, bool background) {
+void text_console_set_color(char_output_driver_t* driver, char* color, bool background) {
 	int i;
 	for (i = 0; i < sizeof(color_table) / sizeof(color_table[0]); i++) {
 		if (strcmp(color_table[i], color) == 0) {

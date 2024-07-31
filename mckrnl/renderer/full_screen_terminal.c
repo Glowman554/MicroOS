@@ -117,6 +117,17 @@ void full_screen_terminal_set_color(char_output_driver_t* driver, char* color, b
 	}
 }
 
+
+void full_screen_terminal_vcursor(char_output_driver_t* driver, int x, int y) {
+	cursor_x = x * 16;
+	cursor_y = y * 8;
+}
+
+void  full_screen_terminal_vcursor_get(char_output_driver_t* driver, int* x, int* y) {
+	*x = cursor_x / 16;
+	*y = cursor_y / 8;
+}
+
 char_output_driver_t full_screen_terminal_driver = {
 	.driver = {
 		.is_device_present = full_screen_terminal_driver_is_present,
@@ -125,5 +136,7 @@ char_output_driver_t full_screen_terminal_driver = {
 	},
 	.putc = full_screen_terminal_driver_putc,
 	.vmode = full_screen_terminal_driver_vmode,
+	.vcursor = full_screen_terminal_vcursor,
+	.vcursor_get = full_screen_terminal_vcursor_get,
 	.set_color = full_screen_terminal_set_color
 };
