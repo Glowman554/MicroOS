@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include <sys/graphics.h>
+#include <sys/env.h>
 #define FB_SET_PX_IMPL
 #define FB_UNSAFE_SETPX
 #include <buildin/framebuffer.h>
@@ -54,7 +55,10 @@ int main(int argc, char* argv[]) {
     doom_set_default_int("key_use", DOOM_KEY_E);
     doom_set_default_int("key_fire", 'f');
     doom_set_default_int("mouse_move", 0);
-    doom_set_default_int("screenblocks", 11);
+
+    if (vmode() == TEXT_80x25) {
+        doom_set_default_int("screenblocks", 11);
+    }
     
     int SCALE = 1;
     fb_info_t info;
@@ -68,6 +72,9 @@ int main(int argc, char* argv[]) {
     }
 
     doom_init(argc, argv, 0);
+
+	set_env(SYS_ENV_PIN, (void*) 1);
+
 
     int next_key_up = 0;
     while (true) {
