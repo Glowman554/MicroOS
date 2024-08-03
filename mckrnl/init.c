@@ -1,4 +1,3 @@
-#include "stdbool.h"
 #include <driver/driver.h>
 #include <renderer/text_console.h>
 #include <renderer/psf1_font.h>
@@ -51,6 +50,7 @@
 #include <devices/disk.h>
 #include <devices/framebuffer.h>
 #include <devices/fst.h>
+#include <devices/font.h>
 
 #include <gdb/gdb.h>
 
@@ -74,11 +74,11 @@
 // 	.name = test_name
 // };
 
-void* find_multiboot_module(char* name) {
+multiboot_module_t* find_multiboot_module(char* name) {
 	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
 	for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
 		if (strcmp(modules[i].cmdline, name) == 0) {
-			return (void*) modules[i].mod_start;
+			return &modules[i];
 		}
 	}
 	abortf("Could not find multiboot module %s", name);
@@ -86,14 +86,15 @@ void* find_multiboot_module(char* name) {
 }
 
 
-
-void _main(multiboot_info_t* mb_info) {	
+void _main(multiboot_info_t* mb_info) {
    	global_multiboot_info = mb_info;
 
 #ifdef TEXT_MODE_EMULATION
     char font_module[64] = { 0 };
+    multiboot_module_t* font = NULL;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--font", font_module)) {
-		init_text_mode_emulation(psf1_buffer_to_font(find_multiboot_module(font_module)));
+	    font = find_multiboot_module(font_module);
+		init_text_mode_emulation(psf1_buffer_to_font((void*) font->mod_start));
 	}
 #endif
 	text_console_clrscr();
@@ -123,7 +124,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	char symbols_module[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--syms", symbols_module)) {
-		init_global_symbols(find_multiboot_module(symbols_module));
+		init_global_symbols((void*) find_multiboot_module(symbols_module)->mod_start);
 	}
 
 	register_pci_driver_cs(0x1, 0x1, 0x0, ata_pci_found);
@@ -166,7 +167,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	char initrd_module[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--initrd", initrd_module)) {
-		vfs_mount(initrd_mount((void*) find_multiboot_module(initrd_module)));
+		vfs_mount(initrd_mount((void*) find_multiboot_module(initrd_module)->mod_start));
 	}
 
 	vfs_mount(get_ramfs("tmp"));
@@ -181,13 +182,14 @@ void _main(multiboot_info_t* mb_info) {
 #endif
 #ifdef FULL_SCREEN_TERMINAL
 	devfs_register_file(&global_devfs, &fst_file);
+	devfs_register_file(&global_devfs, get_font_file(font));
 #endif
 
 	vfs_register_fs_scanner(fatfs_scanner);
 	vfs_register_fs_scanner(nextfs_scanner);
 
 	vfs_scan_fs();
-    
+
 
     char keymap_path[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", keymap_path)) {
@@ -207,8 +209,8 @@ void _main(multiboot_info_t* mb_info) {
 	debugf("--- WARNING --- SMP is very experimantel!");
 	// wait();
 	smp_startup_all();
-#endif	
-	
+#endif
+
 	debugf("Boot finished at %d", time(global_clock_driver));
 
 	// while (true) {
