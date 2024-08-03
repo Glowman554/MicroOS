@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 	strcat(limine_config, "MODULE_PATH=boot:///EFI/BOOT/zap-light16.psf\nMODULE_STRING=/zap-light16.psf\n");
 	strcat(limine_config, "MODULE_PATH=boot:///EFI/BOOT/mckrnl.syms\nMODULE_STRING=/mckrnl.syms\n");
 	strcat(limine_config, "KERNEL_PATH=boot:///EFI/BOOT/mckrnl.elf\n");
-	strcat(limine_config, "KERNEL_CMDLINE=--font=/zap-light16.psf --syms=/mckrnl.syms --keymap=MicroOS:/keymap.mkm --init=MicroOS:/bin/init.elf");
+	strcat(limine_config, "KERNEL_CMDLINE=--serial --font=/zap-light16.psf --syms=/mckrnl.syms --keymap=MicroOS:/keymap.mkm --init=MicroOS:/bin/init.elf");
 
 	write_text_file(partition_path, "limine.cfg", limine_config);
 

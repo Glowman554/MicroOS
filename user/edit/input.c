@@ -109,10 +109,12 @@ bool listen_input(edit_state_t* state) {
 				move_down(state);
 				break;
 
-			case '+': 
+			case '+':
 				state->file = freopen(state->file_name, "w", state->file);
 				fseek(state->file, 0, SEEK_SET);
 				fwrite(state->input_buffer, state->current_size, 1, state->file);
+				fseek(state->file, state->current_size, SEEK_SET);
+				ftruncate(state->file);
 				state->is_edited = false;
 				break;
 		}
