@@ -5,7 +5,7 @@ OBJS = $(addsuffix .o,$(basename $(SRCS) $(CPPSRC)))
 CC = i686-linux-gnu-gcc
 LD = i686-linux-gnu-gcc
 
-OPT_LVL = 0
+OPT_LVL = 2
 
 ASFLAGS = -m32 -g
 CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -Wno-builtin-declaration-mismatch -fno-builtin -nostdinc -Iinclude -ffreestanding

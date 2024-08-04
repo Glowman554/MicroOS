@@ -1,7 +1,9 @@
 SRCS = $(shell find -name '*.[cS]')
 OBJS = $(addsuffix .o,$(basename $(SRCS)))
 
-CFLAGS = -m32 -Wall -g -fno-stack-protector -nostdinc -ffreestanding -no-pie -I include -Wno-builtin-declaration-mismatch -fno-builtin -I../libc/include
+OPT_LVL = 2
+
+CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -nostdinc -ffreestanding -no-pie -I include -Wno-builtin-declaration-mismatch -fno-builtin -I../libc/include
 LDFLAGS = -m32 -ffreestanding -no-pie -nostdlib
 
 LOAD_ADDR = 0xB0000000
