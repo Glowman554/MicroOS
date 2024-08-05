@@ -67,7 +67,6 @@ int main(int argc, char* argv[]) {
         info = fb_load_info();
         info.fb_addr = (uint32_t) malloc(info.fb_pitch * info.fb_height);
         memset((void*) info.fb_addr, 0, info.fb_pitch * info.fb_height);
-        vpoke(0, (uint8_t*) info.fb_addr, info.fb_pitch * info.fb_height);
         SCALE = MIN(info.fb_width / 320, info.fb_height / 200);
     }
 
@@ -76,6 +75,10 @@ int main(int argc, char* argv[]) {
     }
 
     doom_init(argc, argv, 0);
+
+    if (vmode() == CUSTOM) {
+        vpoke(0, (uint8_t*) info.fb_addr, info.fb_pitch * info.fb_height);
+    }
 
 	set_env(SYS_ENV_PIN, (void*) 1);
 
