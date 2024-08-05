@@ -118,19 +118,6 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 			continue;
 		}    
 
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// this is to fix alignment issues. THIS MIGHT LEAK MEMORY, it doesn't look like it does currently though
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// TODO
-		// TODO
 		int real_size = ph->mem_size / 4096 + 1;
 		if (dest != real_dest) {
 			real_size++;
@@ -138,8 +125,11 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 
 		void* phys_loc = pmm_alloc_range(real_size);
 		for (int j = 0; j < real_size; j++) {
-			// maybe check if page is already mapped at virt loc?
-			vmm_map_page(task->context, (uintptr_t) real_dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
+			if (vmm_lookup((uintptr_t) real_dest + j * 4096, task->context)) {
+				pmm_free(phys_loc + j * 4096);
+			} else {
+				vmm_map_page(task->context, (uintptr_t) real_dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
+			}
 		}
 
 		vmm_context_t old = vmm_get_current_context();
