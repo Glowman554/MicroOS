@@ -5,24 +5,24 @@ if (!webhookUrl) {
     throw new Error("Missing MESSAGE_WEBHOOK");
 }
 
-const files = new Map<string, string>();
+const values = new Map<string, string>();
 for (const arg of Deno.args) {
-    const [key, file] = arg.split("::");
-    files.set(key, file);
+    const [key, value] = arg.split("::");
+    values.set(key, value);
 }
 
-console.log(files);
+console.log(values);
 
 await new Webhook(webhookUrl)
     .setUsername("Website")
     .addEmbed(
         new Embed()
-            .setTitle("New release")
-            .addField({ name: "cdrom", value: files.get("cdrom")! })
+            .setTitle(`New release (${values.get("name")})`)
+            .addField({ name: "cdrom", value: values.get("cdrom")! })
             .addField({
                 name: "cdrom (no packages)",
-                value: files.get("cdromMinimal")!,
+                value: values.get("cdromMinimal")!,
             })
-            .addField({ name: "libs", value: files.get("libs")! })
-            .addField({ name: "screenshot", value: files.get("screenshot")! }),
+            .addField({ name: "libs", value: values.get("libs")! })
+            .addField({ name: "screenshot", value: values.get("screenshot")! }),
     ).send();
