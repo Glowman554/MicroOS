@@ -127,6 +127,10 @@
                         {
                             "name": "FULL_SCREEN_TERMINAL",
                             "value": false
+                        },
+                        {
+                            "name": "MAX_VTERM",
+                            "value": 4
                         }
                     ]
                 }

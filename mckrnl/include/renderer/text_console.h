@@ -1,8 +1,8 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <stdint.h>
 #include <driver/char_output_driver.h>
+#include <stdint.h>
 
 #define VIDEO_MEM 0xb8000
 
@@ -43,12 +43,20 @@
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
-void text_console_puts(const char *s);
-void text_console_putc(char c);
-void text_console_clrscr();
+void text_console_early();
+void text_console_puts(char_output_driver_t* driver, int term, const char *s);
+void text_console_putc(char_output_driver_t* driver, int term, char c);
+void text_console_clrscr(char_output_driver_t* driver, int term);
 
 extern char* color_table[];
 
 extern char_output_driver_t text_console_driver;
+
+typedef struct text_console_vterm {
+    int x;
+    int y;
+    uint32_t color;
+    char* buffer;
+} text_console_vterm_t;
 
 #endif

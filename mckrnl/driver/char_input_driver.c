@@ -1,10 +1,13 @@
 #include <driver/char_input_driver.h>
 
+#include <driver/char_output_driver.h>
+
 #include <fs/vfs.h>
 #include <stdio.h>
 #include <utils/string.h>
 #include <memory/vmm.h>
 #include <assert.h>
+#include <config.h>
 
 bool default_keyboard_is_device_present(driver_t* driver) {
 	return true;
@@ -89,4 +92,13 @@ void set_layout(char* name) {
     }
 
     debugf("Layout %s not found, not changing layout!", name);
+}
+
+void global_fkey_handler(int f, bool up) {
+    debugf("f%d %s", f, up ? "up" : "down");
+
+    if (!up && f <= MAX_VTERM) {
+        debugf("Switching to vterm: %d", f);
+        global_char_output_driver->vterm(global_char_output_driver, f);
+    }
 }

@@ -330,6 +330,14 @@
 				"entry",
 				"pid (return)"
 			]
+		},
+		{
+			"name": "SYS_SET_TERM",
+			"arguments": [
+				"0x2b",
+				"pid",
+				"term"
+			]
 		}
 	]
 }

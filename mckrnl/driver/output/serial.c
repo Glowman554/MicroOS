@@ -45,7 +45,7 @@ void write_serial(char c) {
 	outb(PORT, c);
 }
 
-void serial_putc(char_output_driver_t* driver, char c) {
+void serial_putc(char_output_driver_t* driver, int term, char c) {
 	write_serial(c);
 }
 

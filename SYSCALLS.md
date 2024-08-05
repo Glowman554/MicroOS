@@ -43,3 +43,4 @@
 | SYS_TRUNCATE | 0x28 | fd | new_size | - | - | - |
 | SYS_TIME_MS | 0x29 | ms (return)  | - | - | - | - |
 | SYS_THREAD | 0x2a | entry | pid (return) | - | - | - |
+| SYS_SET_TERM | 0x2b | pid | term | - | - | - |

@@ -6,7 +6,7 @@
 int print_num(unsigned long x, int base, char* str) {
 	const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-	char buf[65];
+	char buf[65] = {0};
 
 	char* p;
 

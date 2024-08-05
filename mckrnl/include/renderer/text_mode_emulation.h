@@ -15,4 +15,4 @@ void text_mode_emulation_update();
 
 extern uint32_t color_translation_table[];
 
-void draw_char(uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor);
+void draw_char(void* buffer, uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor);

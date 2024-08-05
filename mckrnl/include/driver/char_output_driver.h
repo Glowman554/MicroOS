@@ -10,17 +10,20 @@ enum video_mode_e {
 
 typedef struct char_output_driver {
 	driver_t driver;
-	void (*putc)(struct char_output_driver*, char);
+	void (*putc)(struct char_output_driver*, int term, char);
 
 	// optional
 	int (*vmode)(struct char_output_driver*);
-	void (*vpoke)(struct char_output_driver*, uint32_t offset, uint8_t* val, uint32_t range);
-	void (*vpeek)(struct char_output_driver*, uint32_t offset, uint8_t* val, uint32_t range);
+	void (*vpoke)(struct char_output_driver*, int term, uint32_t offset, uint8_t* val, uint32_t range);
+	void (*vpeek)(struct char_output_driver*, int term, uint32_t offset, uint8_t* val, uint32_t range);
+	void (*vterm)(struct char_output_driver*, int term);
 
-	void (*vcursor)(struct char_output_driver*, int x, int y);
-	void (*vcursor_get)(struct char_output_driver*, int* x, int* y);
+	void (*vcursor)(struct char_output_driver*, int term, int x, int y);
+	void (*vcursor_get)(struct char_output_driver*, int term, int* x, int* y);
 
-	void (*set_color)(struct char_output_driver*, char* color, bool background);
+	void (*set_color)(struct char_output_driver*, int term, char* color, bool background);
+
+	int current_term;
 } char_output_driver_t;
 
 extern char_output_driver_t* global_char_output_driver;

@@ -37,6 +37,7 @@
 // #define STATUS_BAR
 // #define RAW_FRAMEBUFFER_ACCESS
 // #define FULL_SCREEN_TERMINAL
+#define MAX_VTERM 4
 // End Output
 
 // Other
@@ -90,6 +91,7 @@
 #define SYS_TRUNCATE_ID 40
 #define SYS_TIME_MS_ID 41
 #define SYS_THREAD_ID 42
+#define SYS_SET_TERM_ID 43
 // End Syscalls
 
 // End Kernel configuration

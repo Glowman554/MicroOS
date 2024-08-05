@@ -3,10 +3,10 @@
 #include <stdbool.h>
 #include <sys/graphics.h>
 #include <stdio.h>
-#include <stddef.h>
 #include <sys/file.h>
 #include <assert.h>
 #include <buildin/number_parser.h>
+#include <buildin/framebuffer.h>
 #include <ctype.h>
 
 char* color_pallet[] = {
@@ -59,6 +59,8 @@ void ansi_debug(char f, int* argv, int argc) {
 	}
 	printf(")\n");
 }
+
+#define TEXT_MODE(body) if (vmode() == TEXT_80x25) { body }
 
 #warning TODO: complete
 void ansi_run(char f, int* argv, int argc) {
@@ -116,27 +118,33 @@ void ansi_run(char f, int* argv, int argc) {
 			}
 			break;
 		case 'H':
-			if (argc == 0) {
-				vcursor(0, 0);
-			} else if (argc == 2) {
-				vcursor(MIN(25, argv[1] - 1), MIN(80, argv[0] - 1));
-			} else {
-				ansi_debug(f, argv, argc);
-			}
+			TEXT_MODE(
+				if (argc == 0) {
+					vcursor(0, 0);
+				} else if (argc == 2) {
+					vcursor(MIN(25, argv[1] - 1), MIN(80, argv[0] - 1));
+				} else {
+					ansi_debug(f, argv, argc);
+				}
+			)
 			break;
 		case 'J':
-			if (argc == 0) {
-				ansi_clear_from_cursor();
-			} else {
-				ansi_debug(f, argv, argc);
-			}
+			TEXT_MODE(
+				if (argc == 0) {
+					ansi_clear_from_cursor();
+				} else {
+					ansi_debug(f, argv, argc);
+				}
+			)
 			break;
 		case 'K':
-			if (argc == 0) {
-				ansi_clear_from_cursor_eol();
-			} else {
-				ansi_debug(f, argv, argc);
-			}
+			TEXT_MODE(
+				if (argc == 0) {
+					ansi_clear_from_cursor_eol();
+				} else {
+					ansi_debug(f, argv, argc);
+				}
+			)
 			break;
 		default:
 			ansi_debug(f, argv, argc);
@@ -170,7 +178,7 @@ void ansi_process(char* ansi) {
 }
 
 void ansi_putchar(char c) {
-	assert(vmode() == TEXT_80x25);
+	// assert(vmode() == TEXT_80x25);
 
 	static bool esc = false;
 	static char esc_buf[32] = { 0 };
@@ -193,7 +201,7 @@ void ansi_putchar(char c) {
 }
 
 int ansi_printf(const char *format, ...) {
-	assert(vmode() == TEXT_80x25);
+	// assert(vmode() == TEXT_80x25);
 
 	va_list args;
 	char buf[1024] = {0};

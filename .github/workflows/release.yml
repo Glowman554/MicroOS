@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        preset: [ default, full_screen_terminal ]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+    - name: install tools
+      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl -y
+    - name: release
+      run: MESSAGE_WEBHOOK=${{ secrets.MESSAGE_WEBHOOK }} bash release.sh ${{ matrix.preset }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: build-${{ matrix.preset }}
+        path: | 
+          cdrom.iso
+          cdrom.minimal.iso
+          libs.zip

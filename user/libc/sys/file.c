@@ -2,6 +2,9 @@
 #include <sys/getc.h>
 #include <config.h>
 
+#include <ipc.h>
+#include <stdlib.h>
+
 int open(char* path, int flags) {
 	int fd = -1;
 	asm volatile("int $0x30" : "=d"(fd) : "a"(SYS_OPEN_ID), "b"(path), "c"(flags));
@@ -25,7 +28,24 @@ void read(int fd, void* buf, int count, int offset) {
 	}
 }
 
+bool voutput_ipc_initialised = false;
+
 void write(int fd, void* buf, int count, int offset) {
+	if (fd == 1 || fd == 2) {
+		if (getenv("VTERM") && *getenv("VTERM") == '1') {
+			if (!voutput_ipc_initialised) {
+				ipc_init(IPC_CONNECTION_VOUTPUT);
+				voutput_ipc_initialised = true;
+			}
+
+			if (count > 0x800) {
+				abort();
+			}
+
+			ipc_message_send(IPC_CONNECTION_VOUTPUT, buf, count);
+			return;
+		}
+	}
 	asm volatile("int $0x30" : : "a"(SYS_WRITE_ID), "b"(fd), "c"(buf), "d"(count), "S"(offset));
 }
 

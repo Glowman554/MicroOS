@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <sys/spawn.h>
+#include <sys/graphics.h>
 #include <sys/env.h>
 #include <string.h>
 #include <stddef.h>
@@ -28,7 +29,7 @@ char* copy_until(char until, char* src, char* dest) {
 char* child_envp[32] = { NULL };
 void envp_append(char* key, char* val) {
 	printf("Appending %s=%s to envp...\n", key, val);
-	
+
 	int sz = strlen(key) + strlen(val) + 2;
 	char* buf = malloc(sz);
 	memset(buf, 0, sz);
@@ -66,6 +67,10 @@ int main(int argc, char* argv[]) {
 	envp_append("PATH", path);
 
 	envp_append("ROOT_FS", cwd);
+
+	if (vmode() == CUSTOM) {
+	    envp_append("FONT", "dev:/font");
+	}
 
 	char* autostart = "startup.msh";
 	FILE* f = fopen(autostart, "r");

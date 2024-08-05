@@ -1,4 +1,3 @@
-#include "driver/input/ps2_keyboard.h"
 #include <driver/input/ps2_mouse.h>
 
 #include <utils/io.h>
@@ -8,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <memory/vmm.h>
-#include <assert.h>
 
 #define PS2_X_SIGN 0b00010000
 #define PS2_Y_SIGN 0b00100000

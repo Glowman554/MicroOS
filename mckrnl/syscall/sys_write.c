@@ -1,14 +1,17 @@
 #include <syscall/syscalls.h>
 
+#include <driver/char_output_driver.h>
+#include <scheduler/scheduler.h>
 #include <fs/vfs.h>
 #include <fs/fd.h>
-#include <stdio.h>
 
 cpu_registers_t* sys_write(cpu_registers_t* regs) {
 	int fd = regs->ebx;
 	void* buffer = (void*) regs->ecx;
 	size_t count = regs->edx;
 	size_t offset = regs->esi;
+
+	task_t* current = get_self();
 
 	switch (fd) {
 		case 0:
@@ -18,7 +21,7 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 		case 2:
 			{
 				for (size_t i = 0; i < count; i++) {
-					printf("%c", ((char*) buffer)[i]);
+					global_char_output_driver->putc(global_char_output_driver, current->term, ((char*) buffer)[i]);
 				}
 			}
 			break;

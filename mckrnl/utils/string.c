@@ -68,14 +68,13 @@ void* memcpy(void* dest, const void* src, unsigned int n) {
     unsigned int nn = n / 4;
 
     __asm__ __volatile__ (
-        "rep movsd;" :: "D" (dest), "S" (src), "c" (nn)
+        "rep movsl;" : "+D" (dest), "+S" (src), "+c" (nn) :: "memory"
     );
 
-    unsigned int offset = nn * 4;
     unsigned int remaining = n % 4;
 
-    uint8_t* d = (uint8_t*) dest + offset;
-    const uint8_t* s = (const uint8_t*) src + offset;
+    uint8_t* d = (uint8_t*) dest;
+    const uint8_t* s = (const uint8_t*) src;
     while (remaining--) {
         *d++ = *s++;
     }
@@ -88,21 +87,20 @@ void* memset(void* start, uint8_t value, unsigned int num) {
     unsigned int long_value = (value << 24) | (value << 16) | (value << 8) | value;
 
     __asm__ __volatile__ (
-        "rep stosl;" :: "D" (start), "a" (long_value), "c" (nn)
+        "rep stosl;" : "+D" (start), "+c" (nn) : "a" (long_value) : "memory"
     );
 
-    unsigned int offset = nn * 4;
     unsigned int remaining = num % 4;
 
-    uint8_t* s = (uint8_t*) start + offset;
+    uint8_t* s = (uint8_t*) start;
     while (remaining--) {
         *s++ = value;
     }
 
     return start;
 }
-#else 
-void* memcpy(void* dest, const void* src, int n) {
+#else
+void* memcpy(void* dest, const void* src, unsigned int n) {
 	char* d = (char*) dest;
 	char* s = (char*) src;
 	while(n--) {
@@ -112,7 +110,7 @@ void* memcpy(void* dest, const void* src, int n) {
 }
 
 
-void* memset(void* start, uint8_t value, int num) {
+void* memset(void* start, uint8_t value, unsigned int num) {
 	char* s = (char*) start;
 	while(num--) {
 		*s++ = value;

@@ -71,6 +71,9 @@ format_disk_gpt:
 run_dbg: iso
 	qemu-system-i386 $(QEMU_FLAGS) --no-reboot --no-shutdown -s -S
 
+run_vnc: iso set_kvm
+	qemu-system-i386 $(QEMU_FLAGS) -s -vnc :1
+
 EXECUTABLE = mckrnl/mckrnl.elf
 
 debug:
@@ -100,9 +103,6 @@ pre_commit:
 	deno run -A config/write_syscalls_md.ts
 	deno run -A config/config.ts --clean --auto config/libc.json
 	deno run -A config/config.ts --clean --auto config/kernel.json
-
-preset_fst:
-	deno run -A config/config.ts --clean --auto --load config/preset.fst.json config/kernel.json
 
 
 config_libc:

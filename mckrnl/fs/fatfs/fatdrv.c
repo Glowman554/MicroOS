@@ -35,11 +35,11 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 		case FILE_OPEN_MODE_READ:
 			mode = FA_READ;
 			break;
-		
+
 		case FILE_OPEN_MODE_WRITE:
 			mode = FA_WRITE;
 			break;
-		
+
 		case FILE_OPEN_MODE_READ_WRITE:
 			mode = FA_WRITE | FA_READ;
 			break;
@@ -100,6 +100,7 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 }
 
 void fatfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
+    debugf("fatfs_truncate: %d", new_size);
 	FIL* fil = (FIL*) file->driver_specific_data;
 
 	f_lseek(fil, new_size);
@@ -219,7 +220,7 @@ vfs_mount_t* fatfs_mount(int disk_id, char* name) {
 	mount->driver_specific_data = mount_data;
 
 	FATFS* fs = (FATFS*) vmm_alloc(1); // dont ask why but fatfs doesent like heap addresses
-	
+
 	char new_path[3] = {0};
 	new_path[0] = '0' + disk_id;
 	new_path[1] = ':';

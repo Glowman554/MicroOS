@@ -56,3 +56,5 @@ extern char_input_driver_t* global_char_input_driver;
 char keymap(uint8_t key, special_keys_down_t* special_keys_down);
 void init_keymap(char* path);
 void set_layout(char* name);
+
+void global_fkey_handler(int f, bool up);

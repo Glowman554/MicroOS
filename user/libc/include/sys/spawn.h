@@ -16,3 +16,5 @@ int get_task_list(task_list_t* out, int max);
 void kill(int pid);
 
 int thread(void* entry);
+
+void set_term(int pid, int term);

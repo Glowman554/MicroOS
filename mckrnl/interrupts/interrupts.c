@@ -11,6 +11,7 @@
 
 #include <driver/apic/smp.h>
 #include <driver/acpi/madt.h>
+#include <config.h>
 
 #include <stddef.h>
 
@@ -100,8 +101,6 @@ void init_interrupts() {
 
 
 void halt_internal() {
-	LAPIC_ID(id);
-	printf("Halting core %d!\n", id);
 	while(1) {
 		asm volatile("cli; hlt");
 	}
@@ -250,12 +249,14 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 }
 
 void halt() {
+#ifdef SMP
 	LAPIC_ID(id);
 	for (int i = 0; i < madt_lapic_count; i++) {
 		if (i != id) {
 			lapic_ipi(i, 0xff);
 		}
 	}
+#endif
 
 	halt_internal();
 }

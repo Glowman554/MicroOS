@@ -2,7 +2,6 @@
 #include <renderer/text_console.h>
 #include <stdint.h>
 #include <utils/multiboot.h>
-#include <string.h>
 #include <renderer/status_bar.h>
 #include <driver/timer_driver.h>
 
@@ -16,19 +15,19 @@ void init_text_mode_emulation(psf1_font_t font) {
     text_mode_emulation_font = font;
 }
 
-static inline void set_pixel(uint32_t x, uint32_t y, uint32_t color) {
-    *(uint32_t*) ((uint32_t) global_multiboot_info->fb_addr + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) = color;
+static inline void set_pixel(void* buffer, uint32_t x, uint32_t y, uint32_t color) {
+    *(uint32_t*) (buffer + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) = color;
 }
 
-void draw_char(uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor) {
+void draw_char(void* buffer, uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor) {
 	char* font_ptr = (char*) text_mode_emulation_font.glyph_buffer + (c * text_mode_emulation_font.header->charsize);
 
 	for (unsigned long i = y; i < y + 16; i++){
 		for (unsigned long j = x; j < x + 8; j++){
 			if ((*font_ptr & (0b10000000 >> (j - x))) > 0) {
-				set_pixel(j, i, color);
+				set_pixel(buffer, j, i, color);
 			} else {
-				set_pixel(j, i, bgcolor);
+				set_pixel(buffer, j, i, bgcolor);
             }
 		}
 		font_ptr++;
@@ -73,7 +72,7 @@ void text_mode_emulation_update() {
                 uint32_t fg = color_translation_table[clr & 0x0f];
                 uint32_t bg = color_translation_table[(clr & 0xf0) >> 4];
 
-                draw_char(j * 8, i * 16, chr, fg, bg);
+                draw_char((void*)(uint32_t) global_multiboot_info->fb_addr, j * 8, i * 16, chr, fg, bg);
 
                 text_console_video_old[buffer_idx] = chr;
                 text_console_video_old[buffer_idx_color] = clr;

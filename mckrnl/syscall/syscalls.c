@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <memory/vmm.h>
-#include <assert.h>
 #include <config.h>
 
 syscall_handler_t* syscall_table = { 0 };
@@ -69,6 +68,7 @@ void init_syscalls() {
 	register_syscall(SYS_MOUSE_INFO_ID, sys_mouse_info);
 	register_syscall(SYS_TRUNCATE_ID, sys_truncate);
 	register_syscall(SYS_TIME_MS_ID, sys_time_ms);
+	register_syscall(SYS_SET_TERM_ID, sys_set_term);
 #ifdef THREADS
 	register_syscall(SYS_THREAD_ID, sys_thread);
 #endif

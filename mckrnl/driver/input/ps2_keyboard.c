@@ -4,10 +4,9 @@
 #include <utils/argparser.h>
 #include <utils/multiboot.h>
 #include <interrupts/interrupts.h>
-#include <stdio.h>
 #include <string.h>
 #include <memory/vmm.h>
-#include <assert.h>
+#include <stdio.h>
 
 
 #define KBD_CHAR 0
@@ -123,8 +122,24 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 			case 0xB6: //Right shift up
 				special_keys_down->right_shift = false;
 				break;
+
+			
 			default:
 				{
+					if (key >= 0x3b && key <= 0x44) {
+						global_fkey_handler(key - 0x3a, false);
+					}
+					if (key >= 0x57 && key <= 0x58) {
+						global_fkey_handler(key - 0x4c, false);
+					}
+
+					if (key >= 0xbb && key <= 0xc4) {
+						global_fkey_handler(key - 0xba, true);
+					}
+					if (key >= 0xd7 && key <= 0xd8) {
+						global_fkey_handler(key - 0xcc, true);
+					}
+
 					char c = keymap(key, special_keys_down);
 					((char*) ps2_keyboard->driver_specific_data)[KBD_CHAR] = c;
 				}

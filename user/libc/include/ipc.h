@@ -15,6 +15,7 @@ typedef struct ipc_communication_tunnel {
 } ipc_communication_tunnel_t;
 
 #define IPC_CONNECTION_TERMINAL ((void*) 0xF0001000)
+#define IPC_CONNECTION_VOUTPUT ((void*) 0xF0000000)
 
 void ipc_init_mapping(void* ipc_loc, int pid);
 bool ipc_init_host(void* ipc_loc);

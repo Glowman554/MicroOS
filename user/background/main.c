@@ -1,5 +1,6 @@
 #include <sys/spawn.h>
 #include <sys/file.h>
+#include <sys/env.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,19 +57,25 @@ char* search_executable(char* command) {
 }
 
 int main(int argc, char* argv[], char* envp[]) {
-	if (argc == 1) {
-		printf("Usage: %s <args>\n", argv[0]);
+	if (argc < 3) {
+		printf("Usage: %s <term> <args>\n", argv[0]);
 		return -1;
 	}
 
-	char* exec = search_executable(argv[1]);
+	int term = atoi(argv[1]);
+
+	char* exec = search_executable(argv[2]);
 	if (exec == NULL) {
 		printf("Could not find %s in PATH!\n", argv[1]);
 		return -1;
 	}
 
 	printf("Going to run %s in the background...\n", exec);
-	spawn(exec, (const char**) &argv[1], (const char**) envp);
+
+	set_env(SYS_ENV_PIN, (void*) 1);
+	int child = spawn(exec, (const char**) &argv[2], (const char**) envp);
+	set_term(child, term);
+	set_env(SYS_ENV_PIN, (void*) 0);
 
 	free(exec);
 
