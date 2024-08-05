@@ -34,6 +34,8 @@ typedef struct {
 	bool pin;
 
 	int parent;
+
+	int term;
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];
@@ -42,8 +44,8 @@ extern bool is_scheduler_running;
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
-task_t* init_task(void* entry, bool thread, task_t* parent);
-int init_elf(void* image, char** argv, char** envp);
+task_t* init_task(int term, void* entry, bool thread, task_t* parent);
+int init_elf(int term, void* image, char** argv, char** envp);
 void exit_task(task_t* task);
 
 task_t* get_task_by_pid(int pid);

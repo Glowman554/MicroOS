@@ -1,6 +1,6 @@
 #include <buildin/graphics.h>
+#include <stdint.h>
 #include <sys/graphics.h>
-#include <assert.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +13,7 @@ uint8_t* fb;
 int fb_mode;
 
 fb_info_t fb_info;
+void* buffer;
 psf1_font_t fb_font;
 
 bool fb_initialized = false;
@@ -25,6 +26,8 @@ void start_frame() {
 			fb = (uint8_t*) malloc(get_width() * get_height() * 2);
 		} else {
 			fb_info = fb_load_info();
+			buffer = malloc(fb_info.fb_pitch * fb_info.fb_height);
+			fb_info.fb_addr = (uint32_t) buffer;
 
 			char* font = getenv("FONT");
 			if (font) {
@@ -41,13 +44,15 @@ void start_frame() {
 	if (fb_mode == TEXT_80x25) {
 		memset(fb, 0, get_width() * get_height() * 2);
 	} else {
-		memset((void*) fb_info.fb_addr, 0x00, fb_info.fb_pitch * fb_info.fb_height);
+		memset(buffer, 0x00, fb_info.fb_pitch * fb_info.fb_height);
 	}
 }
 
 void end_frame() {
 	if (fb_mode == TEXT_80x25) {
 		vpoke(0, fb, get_width() * get_height() * 2);
+	} else {
+		vpoke(0, buffer, fb_info.fb_pitch * fb_info.fb_height);
 	}
 }
 
@@ -108,7 +113,7 @@ void set_pixel(int x, int y, int color) {
 		fb[(y * get_width() + x) * 2] = ' ';
 		fb[(y * get_width() + x) * 2 + 1] = color;
 	} else {
-			printf("set_pixel not implemented\n");
+		printf("set_pixel not implemented\n");
 		abort();
 	}
 }

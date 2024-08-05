@@ -2,19 +2,16 @@
 #include <renderer/text_mode_emulation.h>
 #include <renderer/text_console.h>
 
+#include <memory/vmm.h>
+#include <stdint.h>
 #include <utils/multiboot.h>
 
-#include <stdint.h>
 #include <utils/io.h>
 #include <stdio.h>
 #include <string.h>
 #include <config.h>
 
-int cursor_x = 0;
-int cursor_y = 0;
-
-uint32_t fst_bgcolor = 0x0;
-uint32_t fst_color = 0xffffffff;
+full_screen_terminal_vterm_t full_screen_terminal_vterms[MAX_VTERM] = { 0 };
 
 bool full_screen_terminal_driver_is_present(driver_t* driver) {
 	return true;
@@ -24,14 +21,31 @@ char* full_screen_terminal_driver_get_device_name(driver_t* driver) {
 	return "full_screen_terminal";
 }
 
-void full_screen_terminal_clear() {
-	cursor_x = 0;
-	cursor_y = 0;
-	memset((void*) (uint32_t) global_multiboot_info->fb_addr, 0x00, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
+void full_screen_terminal_clear(char_output_driver_t* driver, int term) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	vterm->x = 0;
+	vterm->y = 0;
+
+	void* buffer = (void*)(uint32_t) global_multiboot_info->fb_addr;
+	if (driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
+
+	memset(buffer, 0x00, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
 }
 
 void full_screen_terminal_driver_init(driver_t* driver) {
-	full_screen_terminal_clear();
+	int size = TO_PAGES(global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
+	debugf("framebuffer size (pages): %d", size);
+
+	for (int i = 0; i < MAX_VTERM; i++) {
+		full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[i];
+		vterm->buffer = vmm_alloc(size);
+		vterm->color = 0xffffffff;
+		vterm->bgcolor = 0;
+		full_screen_terminal_clear((char_output_driver_t*) driver, i + 1);
+	}
+
 	printf_driver = (char_output_driver_t*) driver;
 	if (!debugf_driver) {
 		debugf_driver = (char_output_driver_t*) driver;
@@ -60,31 +74,37 @@ void full_screen_terminal_driver_init(driver_t* driver) {
 //     return dest;
 // }
 
-void full_screen_terminal_driver_putc(char_output_driver_t* driver, char c) {
+void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, char c) {
 	if(c == 0) {
 		return;
 	}
 
-	if(c == '\b') {
-		draw_char(cursor_x, cursor_y, ' ', fst_color, fst_bgcolor);
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	void* buffer = (void*)(uint32_t) global_multiboot_info->fb_addr;
+	if (driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
 
-		if (cursor_x - 16 >= 0) {			
-			cursor_x -= 8;
+	if(c == '\b') {
+		draw_char(buffer, vterm->x, vterm->y, ' ', vterm->color, vterm->bgcolor);
+
+		if (vterm->x - 16 >= 0) {			
+			vterm->x -= 8;
 		}
 		return;
 	}
 
-	if(cursor_x + 16 > global_multiboot_info->fb_width || c == '\n') {
-		cursor_x = 0;
-		cursor_y += 16;
+	if(vterm->x + 16 > global_multiboot_info->fb_width || c == '\n') {
+		vterm->x = 0;
+		vterm->y += 16;
 	} else {
-		cursor_x += 8;
+		vterm->x += 8;
 	}
 
-	if (cursor_y + 16 > global_multiboot_info->fb_height) {
-		memcpy((void*) (uint32_t) global_multiboot_info->fb_addr, (void*)((uint32_t) global_multiboot_info->fb_addr + (16 * global_multiboot_info->fb_pitch)), (global_multiboot_info->fb_width * 4 * (global_multiboot_info->fb_height - 16)));
-		memset((void*) ((uint32_t) global_multiboot_info->fb_addr + ((global_multiboot_info->fb_width * 4) * (global_multiboot_info->fb_height - 16))), 0, (global_multiboot_info->fb_width * 4 * 16));
-		cursor_y -= 16;
+	if (vterm->y + 16 > global_multiboot_info->fb_height) {
+		memcpy(buffer, buffer + (16 * global_multiboot_info->fb_pitch), (global_multiboot_info->fb_width * 4 * (global_multiboot_info->fb_height - 16)));
+		memset(buffer + ((global_multiboot_info->fb_width * 4) * (global_multiboot_info->fb_height - 16)), 0, (global_multiboot_info->fb_width * 4 * 16));
+		vterm->y -= 16;
 	}
 
 	if(c == '\n') {
@@ -92,7 +112,7 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, char c) {
 	}
 
 	if (c >= 20 && c <= 126) {
-		draw_char(cursor_x, cursor_y, c, fst_color, fst_bgcolor);
+		draw_char(buffer, vterm->x, vterm->y, c, vterm->color, vterm->bgcolor);
 	}
 }
 
@@ -102,7 +122,8 @@ int full_screen_terminal_driver_vmode(char_output_driver_t* driver) {
 
 
 
-void full_screen_terminal_set_color(char_output_driver_t* driver, char* color, bool background) {
+void full_screen_terminal_set_color(char_output_driver_t* driver, int term, char* color, bool background) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
 	int i;
 	for (i = 0; i < 16; i++) {
 		if (strcmp(color_table[i], color) == 0) {
@@ -111,22 +132,53 @@ void full_screen_terminal_set_color(char_output_driver_t* driver, char* color, b
 	}
 
 	if (background) {
-		fst_bgcolor = color_translation_table[i];
+		vterm->bgcolor = color_translation_table[i];
 	} else {
-		fst_color = color_translation_table[i];
+		vterm->color = color_translation_table[i];
+	}
+}
+
+void full_screen_terminal_vpoke(char_output_driver_t* driver, int term, uint32_t offset, uint8_t* val, uint32_t range) {
+	if (driver->current_term == term) {
+    	memcpy((void*)(uint32_t)global_multiboot_info->fb_addr + offset, val, range);
+	} else {
+    	memcpy(full_screen_terminal_vterms[term - 1].buffer + offset, val, range);
+	}
+    EMU_UPDATE();
+}
+
+void full_screen_terminal_vpeek(char_output_driver_t* driver, int term, uint32_t offset, uint8_t* val, uint32_t range) {
+	if (driver->current_term == term) {
+    	memcpy(val, (void*)(uint32_t)global_multiboot_info->fb_addr + offset, range);
+	} else {
+    	memcpy(val, full_screen_terminal_vterms[term - 1].buffer + offset, range);
 	}
 }
 
 
-void full_screen_terminal_vcursor(char_output_driver_t* driver, int x, int y) {
-	cursor_x = x * 16;
-	cursor_y = y * 8;
+void full_screen_terminal_vcursor(char_output_driver_t* driver, int term, int x, int y) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	vterm->x = x * 16;
+	vterm->y = y * 8;
 }
 
-void  full_screen_terminal_vcursor_get(char_output_driver_t* driver, int* x, int* y) {
-	*x = cursor_x / 16;
-	*y = cursor_y / 8;
+void  full_screen_terminal_vcursor_get(char_output_driver_t* driver, int term, int* x, int* y) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	*x = vterm->x / 16;
+	*y = vterm->y / 8;
 }
+
+
+void full_screen_terminal_vterm(char_output_driver_t* driver, int term) {
+	full_screen_terminal_vterm_t* new = &full_screen_terminal_vterms[term - 1];
+	full_screen_terminal_vterm_t* old = &full_screen_terminal_vterms[driver->current_term - 1];
+
+	memcpy(old->buffer, (void*)(uint32_t) global_multiboot_info->fb_addr, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
+	memcpy((void*)(uint32_t) global_multiboot_info->fb_addr, new->buffer, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
+
+	driver->current_term = term;
+}
+
 
 char_output_driver_t full_screen_terminal_driver = {
 	.driver = {
@@ -134,8 +186,12 @@ char_output_driver_t full_screen_terminal_driver = {
 		.get_device_name = full_screen_terminal_driver_get_device_name,
 		.init = full_screen_terminal_driver_init
 	},
+	.current_term = 1,
 	.putc = full_screen_terminal_driver_putc,
 	.vmode = full_screen_terminal_driver_vmode,
+	.vpoke = full_screen_terminal_vpoke,
+    .vpeek = full_screen_terminal_vpeek,
+	.vterm = full_screen_terminal_vterm,
 	.vcursor = full_screen_terminal_vcursor,
 	.vcursor_get = full_screen_terminal_vcursor_get,
 	.set_color = full_screen_terminal_set_color

@@ -97,7 +97,8 @@ void _main(multiboot_info_t* mb_info) {
 		init_text_mode_emulation(psf1_buffer_to_font((void*) font->mod_start));
 	}
 #endif
-	text_console_clrscr();
+	text_console_early();
+	text_console_clrscr(NULL, 1);
 
 	bool enable_serial = false;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--serial", NULL)) {
@@ -174,10 +175,7 @@ void _main(multiboot_info_t* mb_info) {
 	vfs_mount((vfs_mount_t*) &global_devfs);
 
 	devfs_register_file(&global_devfs, &disk_file);
-#ifdef RAW_FRAMEBUFFER_ACCESS
-#ifndef TEXT_MODE_EMULATION
-#error TEXT_MODE_EMULATION required!
-#endif
+#ifdef TEXT_MODE_EMULATION
 	devfs_register_file(&global_devfs, &framebuffer_file);
 #endif
 #ifdef FULL_SCREEN_TERMINAL
@@ -236,7 +234,7 @@ void _main(multiboot_info_t* mb_info) {
 		}
 		void* buffer = vmm_alloc(file->size / 4096 + 1);
 		vfs_read(file, buffer, file->size, 0);
-		init_elf(buffer, argv, envp);
+		init_elf(1, buffer, argv, envp);
 		vmm_free(buffer, file->size / 4096 + 1);
 		vfs_close(file);
 	} else {

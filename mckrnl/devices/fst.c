@@ -2,11 +2,14 @@
 #include <renderer/full_screen_terminal.h>
 #include <stdio.h>
 
+#include <scheduler/scheduler.h>
+
 void fst_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
     char cmd = *(char*) buf;
+    task_t* current = get_self();
     switch (cmd) {
         case 0: // clear
-            full_screen_terminal_clear();
+            full_screen_terminal_clear(&full_screen_terminal_driver, current->term);
             break;
         case 1: // send output to serial
             printf_driver = debugf_driver;

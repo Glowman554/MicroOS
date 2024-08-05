@@ -47,6 +47,7 @@
 #define SYS_TRUNCATE_ID 40
 #define SYS_TIME_MS_ID 41
 #define SYS_THREAD_ID 42
+#define SYS_SET_TERM_ID 43
 // End Syscalls
 
 // End LibC configuration

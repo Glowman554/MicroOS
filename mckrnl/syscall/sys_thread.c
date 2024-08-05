@@ -13,7 +13,8 @@ void sys_thread_kill(void* resource) {
 
 cpu_registers_t* sys_thread(cpu_registers_t* regs) {
     void* entry = (void*) regs->ebx;
-    task_t* thread = init_task(entry, true, get_self());
+    task_t* current = get_self();
+    task_t* thread = init_task(current->term, entry, true, current);
     resource_register_self((resource_t) {
         .resource = (void*) thread->pid,
         .dealloc = sys_thread_kill

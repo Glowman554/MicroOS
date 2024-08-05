@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <memory/pmm.h>
 #include <scheduler/scheduler.h>
-#include <string.h>
 #include <driver/clock_driver.h>
 #include <utils/time.h>
+#include <utils/multiboot.h>
 
 #define is_kb(x) ((x) >= 1024)
 #define is_mb(x) ((x) >= 1024 * 1024)
@@ -35,11 +35,12 @@ void draw_status_bar() {
     static bool initial = true;
 
     char* ptr = buffer;
-    ptr += sprintf(ptr, "Free: ");
-    ptr += format_memory_usage(ptr, free_memory);
-    ptr += sprintf(ptr, ", Used: ");
+    ptr += sprintf(ptr, "Used: ");
     ptr += format_memory_usage(ptr, used_memory);
     ptr += sprintf(ptr, ", Tasks: %d", get_ammount_running_tasks());
+    if (global_char_output_driver) {
+        ptr += sprintf(ptr, ", Terminal: %d", global_char_output_driver->current_term);
+    }
 
     if (global_clock_driver) {
         ptr += sprintf(ptr, ", Time: ");
@@ -49,7 +50,7 @@ void draw_status_bar() {
 
     for (int i = 0; i < 80; i++) {
         if (buffer[i] != buffer_old[i] || initial) {
-            draw_char(8 * i, 16 * 25, buffer[i] ? buffer[i] : ' ', 0x00000000, 0xffffffff);
+            draw_char((void*)(uint32_t)global_multiboot_info->fb_addr, 8 * i, 16 * 25, buffer[i] ? buffer[i] : ' ', 0x00000000, 0xffffffff);
             buffer_old[i] = buffer[i];
         }
     }

@@ -1,3 +1,4 @@
+#include "config.h"
 #include <scheduler/scheduler.h>
 
 #include <stdint.h>
@@ -19,7 +20,7 @@
 int current_pid = 0;
 task_t tasks[MAX_TASKS] = { 0 };
 
-task_t* init_task(void* entry, bool thread, task_t* parent) {	
+task_t* init_task(int term, void* entry, bool thread, task_t* parent) {	
 	bool old_shed = is_scheduler_running;
 	is_scheduler_running = false;
 
@@ -71,6 +72,7 @@ task_t* init_task(void* entry, bool thread, task_t* parent) {
 	task->user_stack = user_stack;
 	task->pid = current_pid++;
 	task->wait_time = 0;
+	task->term = term;
 
 	if (!thread) {
 		task->context = vmm_create_context();
@@ -94,7 +96,7 @@ task_t* init_task(void* entry, bool thread, task_t* parent) {
 	return task;
 }
 
-int init_elf(void* image, char** argv, char** envp) {
+int init_elf(int term, void* image, char** argv, char** envp) {
 
 	struct elf_header* header = image;
 
@@ -103,7 +105,7 @@ int init_elf(void* image, char** argv, char** envp) {
 		return -1;
 	}
 
-	task_t* task = init_task((void*) header->entry, false, NULL);
+	task_t* task = init_task(term, (void*) header->entry, false, NULL);
 
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {

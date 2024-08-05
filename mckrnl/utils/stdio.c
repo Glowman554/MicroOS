@@ -38,11 +38,11 @@ int printf(const char *format, ...) {
 	if (printf_driver != NULL) {
 		int i = 0;
 		while (buf[i] != '\0') {
-			printf_driver->putc(printf_driver, buf[i]);
+			printf_driver->putc(printf_driver, printf_driver->current_term, buf[i]);
 			i++;
 		}
 	} else {
-		text_console_puts(buf);
+		text_console_puts(NULL, 1, buf);
 	}
 	atomic_release_spinlock(printf_lock);
 
@@ -62,11 +62,11 @@ int debugf_intrnl(const char *format, ...) {
 	if (debugf_driver != NULL) {
 		int i = 0;
 		while (buf[i] != '\0') {
-			debugf_driver->putc(debugf_driver, buf[i]);
+			debugf_driver->putc(debugf_driver, debugf_driver->current_term, buf[i]);
 			i++;
 		}
 	} else {
-		text_console_puts(buf);
+		text_console_puts(NULL, 1, buf);
 	}
 	atomic_release_spinlock(debugf_lock);
 
