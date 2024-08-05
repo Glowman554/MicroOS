@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
     fb_info_t info;
     if (vmode() == CUSTOM) {
         info = fb_load_info();
+        info.fb_addr = (uint32_t) malloc(info.fb_pitch * info.fb_height);
         SCALE = MIN(info.fb_width / 320, info.fb_height / 200);
     }
 
@@ -147,6 +148,7 @@ int main(int argc, char* argv[]) {
                     fb_set_pixel(&info, x, y, target);
                 }
             }
+            vpoke(0, (uint8_t*) info.fb_addr, info.fb_pitch * info.fb_height);
         }
         currentTick++;
     }
