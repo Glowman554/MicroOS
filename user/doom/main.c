@@ -4,6 +4,7 @@
 // #include "PureDOOM.h"
 
 #include <stdint.h>
+#include <string.h>
 
 #include <sys/graphics.h>
 #include <sys/env.h>
@@ -65,6 +66,8 @@ int main(int argc, char* argv[]) {
     if (vmode() == CUSTOM) {
         info = fb_load_info();
         info.fb_addr = (uint32_t) malloc(info.fb_pitch * info.fb_height);
+        memset((void*) info.fb_addr, 0, info.fb_pitch * info.fb_height);
+        vpoke(0, (uint8_t*) info.fb_addr, info.fb_pitch * info.fb_height);
         SCALE = MIN(info.fb_width / 320, info.fb_height / 200);
     }
 
@@ -147,8 +150,8 @@ int main(int argc, char* argv[]) {
 
                     fb_set_pixel(&info, x, y, target);
                 }
+                vpoke(y * info.fb_pitch, (uint8_t*) info.fb_addr + y * info.fb_pitch, 4 * 320 * SCALE);
             }
-            vpoke(0, (uint8_t*) info.fb_addr, info.fb_pitch * info.fb_height);
         }
         currentTick++;
     }
