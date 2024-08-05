@@ -26,7 +26,7 @@ jobs:
       run: MESSAGE_WEBHOOK=${{ secrets.MESSAGE_WEBHOOK }} bash release.sh ${{ matrix.preset }}
     - uses: actions/upload-artifact@v2
       with:
-        name: "build"
+        name: build-${{ matrix.preset }}
         path: | 
           cdrom.iso
           cdrom.minimal.iso
