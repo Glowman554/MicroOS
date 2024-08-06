@@ -31,6 +31,10 @@
                         {
                             "name": "ALLOW_PANIC_CONTINUE",
                             "value": true
+                        },
+                        {
+                            "name": "STACK_TRACE",
+                            "value": false
                         }
                     ]
                 }

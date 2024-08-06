@@ -10,9 +10,8 @@ MicroOS is a small operating system. It's mainly made for fun, and supports ring
 - Full vfs and a fat32 filesystem driver
 - Network stack with dns/udp/dhcp
 - 3 network drivers (rtl8139, am79C973 and e1000)
-- pc speaker sound
 - Working fasm port
-- Colored text support
+- Multiple framebuffers (can be switched with the f* keys)
 
 ## Special thanks to
 

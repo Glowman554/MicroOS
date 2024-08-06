@@ -81,6 +81,7 @@ int _debugf(const char* str) {
 #endif
 }
 
+#ifdef STACK_TRACE
 void stacktrace_print(int frame_num, uint32_t eip) {
 	char* symbol = resolve_symbol_from_addr(eip);
 	if (symbol) {
@@ -90,8 +91,9 @@ void stacktrace_print(int frame_num, uint32_t eip) {
 		printf("[ 0x%x ] <unknown>\n", eip);
 	}
 }
+#endif
 
-int abortf(const char *format, ...) {
+int abortf_intrnl(const char* file, int line, const char* function, const char *format, ...) {
 	__asm__ volatile("cli");
 	
 	va_list args;
@@ -104,8 +106,12 @@ int abortf(const char *format, ...) {
 	printf("(/ o_o)/ Oh no! Something terrible has happened...\n");
 	printf("Kernel PANIC -> %s\n", buf);
 
+#ifdef STACK_TRACE
 	printf("Call Trace:\n");
 	stack_unwind(100, stacktrace_print);
+#else
+	printf("Location: %s:%d in %s\n", file, line, function);
+#endif
 
 #ifdef ALLOW_PANIC_CONTINUE
 	debugf("KERNEL PANIC: Press <x> to continue execution or <h> to halt");

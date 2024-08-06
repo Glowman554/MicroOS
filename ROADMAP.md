@@ -20,7 +20,7 @@ these points are to be reached in order:
 - [x] pci
 - [x] acpi
 - [x] shutdown / reboot
-- [ ] ahci driver
+- [x] ahci driver
 - [x] gpt driver
 - [ ] mbr driver
 - [x] fat32 driver

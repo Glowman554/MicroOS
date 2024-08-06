@@ -24,7 +24,8 @@ initrd.saf:
 	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
-	cp *.md ./res/initrd/. -v
+	mkdir -p ./res/initrd/docs
+	cp *.md ./res/initrd/docs/. -v
 	mkdir -p ./res/initrd/EFI/BOOT
 	cp mckrnl/mckrnl.* ./res/initrd/EFI/BOOT/. -v
 	cp ./cdrom/zap-light16.psf ./res/initrd/EFI/BOOT/. -v
