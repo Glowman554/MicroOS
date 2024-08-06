@@ -104,6 +104,7 @@ pre_commit:
 	deno run -A config/write_syscalls_md.ts
 	deno run -A config/config.ts --clean --auto config/libc.json
 	deno run -A config/config.ts --clean --auto config/kernel.json
+	cd pkgs; bash clean.sh
 
 
 config_libc:

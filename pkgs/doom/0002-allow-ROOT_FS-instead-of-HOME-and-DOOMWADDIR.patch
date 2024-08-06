@@ -1,0 +1,46 @@
+From 706a58bb1c0a7136abd168dcf32d7a1edfc55b56 Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Tue, 6 Aug 2024 17:13:25 +0200
+Subject: [PATCH 2/2] allow $ROOT_FS instead of $HOME and $DOOMWADDIR
+
+---
+ src/DOOM/d_main.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/src/DOOM/d_main.c b/src/DOOM/d_main.c
+index 6cf98c8..6e83a8b 100644
+--- a/src/DOOM/d_main.c
++++ b/src/DOOM/d_main.c
+@@ -546,8 +546,12 @@ void IdentifyVersion(void)
+     char* home;
+     char* doomwaddir;
+     doomwaddir = doom_getenv("DOOMWADDIR");
+-    if (!doomwaddir)
+-        doomwaddir = ".";
++    if (!doomwaddir) {
++        doomwaddir = doom_getenv("ROOT_FS");
++        if (!doomwaddir) {
++            doomwaddir = ".";
++        }
++    }
+ 
+     // Commercial.
+     doom2wad = doom_malloc(doom_strlen(doomwaddir) + 1 + 9 + 1);
+@@ -593,8 +597,12 @@ void IdentifyVersion(void)
+ 
+ #if !defined(DOOM_WIN32)
+     home = doom_getenv("HOME");
+-    if (!home)
+-        I_Error("Error: Please set $HOME to your home directory");
++    if (!home) {
++        home = doom_getenv("ROOT_FS");
++        if (!home) {
++            I_Error("Error: Please set $HOME or $ROOT_FS to your home directory");
++        }
++    }
+ #else
+     home = ".";
+ #endif
+-- 
+2.43.0
+
