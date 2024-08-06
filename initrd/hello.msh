@@ -1,3 +1,0 @@
-cp hello.asm tmp:/hello.asm
-fasm tmp:/hello.asm tmp:/hello.elf
-tmp:/hello.elf

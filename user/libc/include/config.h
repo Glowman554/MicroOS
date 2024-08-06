@@ -5,6 +5,10 @@
 // #define ALLOC_DEBUG
 // End Debug
 
+// Startup
+// #define COPY_TO_TMPFS
+// End Startup
+
 // Syscalls
 #define SYS_OPEN_ID 1
 #define SYS_CLOSE_ID 2

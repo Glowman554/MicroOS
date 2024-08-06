@@ -59,16 +59,16 @@ int main(int argc, char* argv[]) {
 	create_directory(partition_path, "/EFI");
 	create_directory(partition_path, "/EFI/BOOT");
 
-	write_text_file(partition_path, "LABEL", "MicroOS");
+	write_text_file(partition_path, "/LABEL", "MicroOS");
 
-	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "bin");
-	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "fonts");
-	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "syntax");
-	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "docs");
-	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "EFI/BOOT");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/bin");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/fonts");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/syntax");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/docs");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/EFI/BOOT");
 
-	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "", "keymap.mkm");
-	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "", "smp.bin");
+	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "keymap.mkm");
+	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "smp.bin");
 	
 
 	char* startup_script = (char*) malloc(8192);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
         strcat(startup_script, "figl fonts/speed.figl MicroOS\n");
     }
 
-	write_text_file(partition_path, "startup.msh", startup_script);
+	write_text_file(partition_path, "/startup.msh", startup_script);
 
 	char* limine_config = (char*) malloc(8192);
 	memset(limine_config, 0, 8192);
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 	strcat(limine_config, "KERNEL_PATH=boot:///EFI/BOOT/mckrnl.elf\n");
 	strcat(limine_config, "KERNEL_CMDLINE=--serial --font=/zap-light16.psf --syms=/mckrnl.syms --keymap=MicroOS:/keymap.mkm --init=MicroOS:/bin/init.elf");
 
-	write_text_file(partition_path, "limine.cfg", limine_config);
+	write_text_file(partition_path, "/limine.cfg", limine_config);
 
 	free(startup_script);
 

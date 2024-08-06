@@ -12,7 +12,7 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 
 	file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
 	if (!file) {
-		debugf("Failed to open initrd:/bin/terminal.elf");
+		debugf("Failed to open %s", path);
 		regs->esi = -1;
 		return regs;
 	}
