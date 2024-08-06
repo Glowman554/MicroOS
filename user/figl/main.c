@@ -11,7 +11,6 @@ char* get_char(char c, char* figl) {
 
 	uint32_t* offsets = (uint32_t*) (figl + sizeof(uint32_t));
 	uint32_t offset = offsets[(int) c];
-	assert(offset != 0);
 	return &figl[offset + 0xff * sizeof(uint32_t) + sizeof(uint32_t)];
 }
 
@@ -120,13 +119,20 @@ int main(int argc, char** argv) {
 	fread(buffer, size, 1, figl);
 	fclose(figl);
 
-	char* joined_string = malloc(strlen(argv[2]) + 1);
-	strcpy(joined_string, argv[2]);
-	for (int i = 3; i < argc; i++) {
-		joined_string = realloc(joined_string, strlen(joined_string) + strlen(argv[i]) + 1);
-		strcat(joined_string, " ");
-		strcat(joined_string, argv[i]);
-	}
+    int total_length = 0;
+    for (int i = 2; i < argc; i++) {
+        total_length += strlen(argv[i]);
+    }
+
+    char* joined_string = (char*) malloc(total_length * sizeof(char) + 1);
+	joined_string[0] = '\0';
+
+	for (int i = 2; i < argc; i++) {
+        strcat(joined_string, argv[i]);
+        if (i < argc - 1) {
+            strcat(joined_string, " ");
+        }
+    }
 
 	char* result = get_string(joined_string, buffer);
 	printf("%s\n", result);
