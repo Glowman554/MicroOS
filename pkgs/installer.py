@@ -3,20 +3,20 @@ import struct
 import json
 import gzip
 
-compress=True
 
 src_compress = """
 #include <stdio.h>
 #include <stdlib.h>
 #include <tinf.h>
 #include <stdbool.h>
+#include <sys/file.h>
 
 {{data}}
 
 struct file_mapping {
 	char* path;
 
-	const char* content;
+	const unsigned char* content;
 	int size;
 };
 
@@ -108,93 +108,6 @@ int main() {
 }
 """
 
-src_normal = """
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/file.h>
-#include <stdbool.h>
-
-{{data}}
-
-struct file_mapping {
-	char* path;
-
-	const char* content;
-	int size;
-};
-
-{{mappings}}
-
-char* command = {{command}};
-
-char* license = {{license}};
-
-char* directories[] = { {{directories}} };
-
-int main() {
-	bool auto_accept = getenv("ACCEPT_ALL") != NULL;
-	printf("going to install {{name}} (%d files)\\n", sizeof(files) / sizeof(struct file_mapping));
-	if (!auto_accept) {
-		printf("do you want to continue? (y/n) ");
-		char c = getchar();
-		if (c != 'y') {
-			printf("\\naborting\\n");
-			return 0;
-		}
-	}
-
-	printf("\\n");
-
-	if (license != NULL) {
-		fputs(license, stdout);
-		if (!auto_accept) {
-			printf("do you accept the license? (y/n) ");
-			char c = getchar();
-			if (c != 'y') {
-				printf("\\naborting\\n");
-				return 0;
-			}
-		}
-	}
-
-	printf("\\n");
-
-	for (int i = 0; i < sizeof(directories) / sizeof(directories[0]); i++) {
-		char final_path[0xff] = { 0 };
-		sprintf(final_path, "%s%s", getenv("ROOT_FS"), directories[i]);
-
-		printf("Creating directory %s...\\n", final_path);
-		mkdir(final_path);
-	}
-
-	for (int i = 0; i < sizeof(files) / sizeof(struct file_mapping); i++) {
-		struct file_mapping* file = &files[i];
-		char final_path[0xff] = { 0 };
-		sprintf(final_path, "%s%s", getenv("ROOT_FS"), file->path);
-
-		printf("Extracting %s... ", final_path);
-
-		FILE* f = fopen(final_path, "wb");
-		if (f == NULL) {
-			printf("Failed to open file %s\\n", final_path);
-			return 1;
-		}
-
-		fwrite(file->content, 1, file->size, f);
-		fclose(f);
-
-		printf("Done\\n");
-	}
-
-	if (command) {
-		printf("running command: %s\\n", command);
-		system(command);
-	}
-
-	return 0;
-}
-"""
-
 def gen_data(file):
 	# replace every caracter witch is not a-z, A-Z, 0-9, _, - with _
 	name = file.split("/")[-1]
@@ -208,8 +121,7 @@ def gen_data(file):
 	out = ""
 	with open(file, 'rb') as f:
 		data = f.read()
-		if compress:
-			data = gzip.compress(data)
+		data = gzip.compress(data)
 		out += 'const unsigned char {}[] = {{\n'.format(normalized_name)
 		for i in range(0, len(data), 16):
 			out += '    '
@@ -256,8 +168,5 @@ if "directories" in json_data:
 		directories.append('"' + i + '"')
 
 with open(sys.argv[2], 'w') as f:
-	if compress:
-		src = src_compress
-	else:
-		src = src_normal
+	src = src_compress
 	f.write(src.replace("{{data}}", file_data).replace("{{mappings}}", mappings_struct).replace("{{name}}", installer_name).replace("{{command}}", command).replace("{{license}}", license).replace("{{directories}}", ",".join(directories)))

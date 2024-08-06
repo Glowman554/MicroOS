@@ -11,8 +11,8 @@ else
 fi
 
 
-if [ -d "foxtail" ]; then
-	rm -rvf foxtail
+if [ -d "installer" ]; then
+	rm -rvf installer
 fi
 
 make -f $1 -C src/tools/assemblerv2 PROGRAM=phoenixv2-as.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
@@ -20,5 +20,5 @@ make -f $1 -C src/tools/disassembler PROGRAM=phoenixv2-disasm.elf LIBS_ZIP=$2 US
 make -f $1 -C src/tools/emulator PROGRAM=phoenixv2-emu.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
 make -f $1 -C src/tools/visual_eumlator PROGRAM=phoenixv2-emu-visual.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
 
-bash ../run_foxtail.sh $1 $2 $3
-cp -v foxtail/install.elf ../pkgs/phoenixv2_tools_install.elf
+bash ../run_installer.sh $1 $2 $3
+cp -v installer/install.elf ../pkgs/phoenixv2_tools_install.elf

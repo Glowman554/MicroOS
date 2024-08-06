@@ -42,6 +42,16 @@ int main(int argc, char* argv[]) {
 		banner = banner_in[0] == 'y';
 	}
 
+	int init_terms = 0;
+	if (getenv("terms")) {
+		init_terms = atoi(getenv("terms"));
+	} else {
+		printf("How many extra terminals do you want to start? > ");
+		char terms_in[16] = { 0 };
+		gets(terms_in);
+		init_terms = atoi(terms_in);
+	}
+
 	create_directory(partition_path, "/bin");
 	create_directory(partition_path, "/fonts");
 	create_directory(partition_path, "/syntax");
@@ -67,6 +77,14 @@ int main(int argc, char* argv[]) {
     strcat(startup_script, "layout ");
     strcat(startup_script, keyboard_layout);
     strcat(startup_script, "\n");
+
+	for (int i = 0; i < init_terms; i++) {
+        strcat(startup_script, "background ");
+		char buf[6] = { 0 };
+		sprintf(buf, "%d", i + 2);
+        strcat(startup_script, buf);
+        strcat(startup_script, " terminal\n");
+	}
 
     if (banner) {
         strcat(startup_script, "clear\n");

@@ -70,7 +70,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		return -1;
 	}
 
-	printf("Going to run %s in the background...\n", exec);
+	printf("Going to run %s in the background in term %d...\n", exec, term);
 
 	set_env(SYS_ENV_PIN, (void*) 1);
 	int child = spawn(exec, (const char**) &argv[2], (const char**) envp);

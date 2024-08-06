@@ -1,6 +1,7 @@
 export partition=fat32_0:
 export keyboard=de
 export banner=y
+export terms=3
 
 install
 terminal limine/install_env_auto.msh

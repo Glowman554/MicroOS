@@ -27,7 +27,7 @@ make iso libs.zip
 
 cp cdrom.iso cdrom.minimal.iso
 (
-    cd foxtail
+    cd pkgs
     bash build.sh
     bash clean.sh
 )

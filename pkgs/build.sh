@@ -1,12 +1,12 @@
 export PROGRAM_MK=$PWD/build/program.mk
 export LIBS_ZIP=$PWD/../libs.zip
-export FOXTAIL_PY=$PWD/foxtail.py
+export INSTALLER_PY=$PWD/installer.py
 
 function build_dir {
 	echo "Building $1"
 	(
 		cd $1
-		bash build.sh $PROGRAM_MK $LIBS_ZIP $FOXTAIL_PY
+		bash build.sh $PROGRAM_MK $LIBS_ZIP $INSTALLER_PY
 	)
 }
 

@@ -6,11 +6,11 @@ else
 fi
 
 
-if [ -d "foxtail" ]; then
-	rm -rvf foxtail
+if [ -d "installer" ]; then
+	rm -rvf installer
 fi
 
 make -f $1 -C src/src PROGRAM=brainasm.elf LIBS_ZIP=$2 extract_libs prog
 
-bash ../run_foxtail.sh $1 $2 $3
-cp -v foxtail/install.elf ../pkgs/brainasm_install.elf
+bash ../run_installer.sh $1 $2 $3
+cp -v installer/install.elf ../pkgs/brainasm_install.elf

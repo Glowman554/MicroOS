@@ -1,5 +1,5 @@
-if [ -d "foxtail" ]; then
-	rm -rvf foxtail
+if [ -d "installer" ]; then
+	rm -rvf installer
 fi
 
 if [ -f "nyan.bin" ]; then
