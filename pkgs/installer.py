@@ -46,15 +46,13 @@ int main() {
 
 	printf("\\n");
 
-	if (license != NULL) {
+	if (license != NULL && !auto_accept) {
 		fputs(license, stdout);
-		if (!auto_accept) {
-			printf("do you accept the license? (y/n) ");
-			char c = getchar();
-			if (c != 'y') {
-				printf("\\naborting\\n");
-				return 0;
-			}
+		printf("do you accept the license? (y/n) ");
+		char c = getchar();
+		if (c != 'y') {
+			printf("\\naborting\\n");
+			return 0;
 		}
 	}
 
