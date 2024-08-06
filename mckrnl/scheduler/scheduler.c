@@ -1,4 +1,3 @@
-#include "config.h"
 #include <scheduler/scheduler.h>
 
 #include <stdint.h>
@@ -15,6 +14,7 @@
 #include <driver/apic/lapic.h>
 #include <driver/apic/smp.h>
 #include <driver/timer_driver.h>
+#include <driver/char_output_driver.h>
 
 
 int current_pid = 0;
@@ -243,7 +243,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 		return registers;
 	}
 
-	if (tasks[current_task].pin) {
+	if (tasks[current_task].pin && tasks[current_task].term == global_char_output_driver->current_term) {
 		return tasks[current_task].registers;
 	}
 
@@ -309,6 +309,7 @@ int read_task_list(task_list_t* out, int max) {
 			char* argv;
 			vmm_read_context(tasks[i].argv, &argv, sizeof(char*), tasks[i].context);
 			vmm_read_context(argv, out[j].name, sizeof(out[j].name), tasks[i].context);
+			out[j].term = tasks[i].term;
 			out[j++].pid = tasks[i].pid;
 
 			if (j >= max) {

@@ -63,6 +63,7 @@ task_t* get_self();
 typedef struct task_list {
 	char name[128];
 	int pid;
+	int term;
 } task_list_t;
 
 int read_task_list(task_list_t* out, int max);
