@@ -24,5 +24,7 @@ await new Webhook(webhookUrl)
                 value: values.get("cdromMinimal")!,
             })
             .addField({ name: "libs", value: values.get("libs")! })
-            .addField({ name: "screenshot", value: values.get("screenshot")! }),
+            .addField({ name: "message", value: values.get("message")! })
+            .addField({ name: "screenshot", value: values.get("screenshot")! })
+            .setImage({ url: values.get("screenshot")! }),
     ).send();
