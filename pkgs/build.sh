@@ -21,6 +21,7 @@ build_dir phoenix_tools
 build_dir phoenixv2_tools
 build_dir nyanmbr
 build_dir doom
+build_dir saf
 
 (
 	cd pkgs

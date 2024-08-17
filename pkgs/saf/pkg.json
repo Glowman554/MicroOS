@@ -1,0 +1,7 @@
+{
+	"mappings": {
+		"make/make.elf": "bin/saf-make.elf",
+		"extract/extract.elf": "bin/saf-extract.elf"
+	},
+	"name": "saf tools"
+}

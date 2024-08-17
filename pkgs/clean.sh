@@ -15,3 +15,4 @@ clean_dir phoenix_tools
 clean_dir phoenixv2_tools
 clean_dir nyanmbr
 clean_dir doom
+clean_dir saf
