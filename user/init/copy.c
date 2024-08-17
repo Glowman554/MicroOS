@@ -55,7 +55,7 @@ void recursive_dir_copy(char* src_dir, char* dest_dir, bool verbose) {
 
 	dir_t dir = {0};
 	dir_at(src_dir, 0, &dir);
-	do {
+	while (!dir.is_none) {
 		char file_name[512] = { 0 };
 		strcpy(file_name, dir.name);
 
@@ -79,5 +79,5 @@ void recursive_dir_copy(char* src_dir, char* dest_dir, bool verbose) {
 		}
 
 		dir_at(src_path, dir.idx + 1, &dir);
-	} while (!dir.is_none);
+	}
 }
