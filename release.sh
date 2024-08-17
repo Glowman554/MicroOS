@@ -18,7 +18,7 @@ function uploadFile {
 }
 
 function release {
-    deno run -A release.ts screenshot::$(uploadFile microos.jpg) name::$1 cdrom::$(uploadFile cdrom.iso) cdromMinimal::$(uploadFile cdrom.minimal.iso) libs::$(uploadFile libs.zip) message::$2
+    deno run -A release.ts screenshot::$(uploadFile microos.jpg) name::$1 cdrom::$(uploadFile cdrom.iso) cdromMinimal::$(uploadFile cdrom.minimal.iso) libs::$(uploadFile libs.zip) message::"$2"
 }
 
 applyPreset $1
@@ -36,4 +36,4 @@ make iso
 
 screenshot microos.jpg
 
-release $1 $2
+release $1 "$2"
