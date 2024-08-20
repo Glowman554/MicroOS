@@ -51,18 +51,25 @@ void envp_append(char* key, char* val) {
 }
 
 int main(int argc, char* argv[]) {
-#ifdef COPY_TO_TMPFS
-	char* cwd = "tmp:/";
-	char src[64] = { 0 };
-	copy_until(':', argv[0], src);
-	strcat(src, ":/");
+	bool copy = false;
 
-	recursive_dir_copy(src, cwd, true);
-#else
+	if (argc == 2 && strcmp(argv[1], "tmpfs") == 0) {
+		copy = true;
+	} 
+
 	char cwd[64] = { 0 };
-	copy_until(':', argv[0], cwd);
-	strcat(cwd, ":/");
-#endif
+	if (copy) {
+		strcpy(cwd, "tmp:/");
+
+		char src[64] = { 0 };
+		copy_until(':', argv[0], src);
+		strcat(src, ":/");
+
+		recursive_dir_copy(src, cwd, true);
+	} else {
+		copy_until(':', argv[0], cwd);
+		strcat(cwd, ":/");
+	}
 	printf("got cwd %s\n", cwd);
 
 	set_env(SYS_SET_PWD_ID, cwd);
