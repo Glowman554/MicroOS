@@ -1,8 +1,11 @@
 {
+	"directories": [
+		"doom"
+	],
 	"mappings": {
 		"src/doom.elf": "bin/doom.elf",
-		"rgbmap.bin": "rgbmap.bin",
-		"doom_src/doom1.wad": "doom1.wad"
+		"rgbmap.bin": "doom/rgbmap.bin",
+		"doom_src/doom1.wad": "doom/doom1.wad"
 	},
 	"name": "DOOM",
 	"license": "src/DOOM/DOOMLIC.TXT"

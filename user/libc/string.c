@@ -208,3 +208,10 @@ char *strstr(char* haystack, char* needle) {
 
     return NULL;
 }
+
+char* strdup(const char *src) {
+    char *dup = malloc(strlen(src) + 1);
+    strcpy(dup, src);
+
+    return dup;
+}

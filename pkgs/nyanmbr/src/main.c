@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 	}
 
     char path[0xff] = { 0 };
-    sprintf(path, "%snyan.bin", getenv("ROOT_FS"));
+    sprintf(path, "%s/opt/nyanmbr/nyan.bin", getenv("ROOT_FS"));
 	printf("Loading %s...\n", path);
 
     FILE* f = fopen(path, "rb");

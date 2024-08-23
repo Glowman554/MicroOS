@@ -1,22 +1,38 @@
-From 706a58bb1c0a7136abd168dcf32d7a1edfc55b56 Mon Sep 17 00:00:00 2001
+From ea9a646c506090502dd27734aff8e9d42309f504 Mon Sep 17 00:00:00 2001
 From: Glowman554 <glowman434@gmail.com>
-Date: Tue, 6 Aug 2024 17:13:25 +0200
+Date: Fri, 23 Aug 2024 12:38:27 +0200
 Subject: [PATCH 2/2] allow $ROOT_FS instead of $HOME and $DOOMWADDIR
 
 ---
- src/DOOM/d_main.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ src/DOOM/d_main.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
 diff --git a/src/DOOM/d_main.c b/src/DOOM/d_main.c
-index 6cf98c8..6e83a8b 100644
+index 6cf98c8..9ea425b 100644
 --- a/src/DOOM/d_main.c
 +++ b/src/DOOM/d_main.c
-@@ -546,8 +546,12 @@ void IdentifyVersion(void)
+@@ -532,6 +532,7 @@ void D_AddFile(char* file)
+ // to determine whether registered/commercial features
+ // should be executed (notably loading PWAD's).
+ //
++char doomwaddir_buffer_iv[0xff] = { 0 };
+ void IdentifyVersion(void)
+ {
+     char* doom1wad;
+@@ -545,9 +546,19 @@ void IdentifyVersion(void)
+ 
      char* home;
      char* doomwaddir;
-     doomwaddir = doom_getenv("DOOMWADDIR");
+-    doomwaddir = doom_getenv("DOOMWADDIR");
 -    if (!doomwaddir)
 -        doomwaddir = ".";
++
++    char* rootfs = doom_getenv("ROOT_FS");
++    if (rootfs) {
++        doom_concat(doomwaddir_buffer_iv, rootfs);
++        doom_concat(doomwaddir_buffer_iv, "opt/doom/");
++        doomwaddir = doomwaddir_buffer_iv;
++    }
 +    if (!doomwaddir) {
 +        doomwaddir = doom_getenv("ROOT_FS");
 +        if (!doomwaddir) {
@@ -26,7 +42,7 @@ index 6cf98c8..6e83a8b 100644
  
      // Commercial.
      doom2wad = doom_malloc(doom_strlen(doomwaddir) + 1 + 9 + 1);
-@@ -593,8 +597,12 @@ void IdentifyVersion(void)
+@@ -593,8 +604,12 @@ void IdentifyVersion(void)
  
  #if !defined(DOOM_WIN32)
      home = doom_getenv("HOME");

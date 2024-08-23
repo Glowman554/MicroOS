@@ -82,6 +82,9 @@ int main(int argc, char* argv[]) {
 	char path[128] = { 0 };
 	strcat(path, cwd);
 	strcat(path, "bin");
+	strcat(path, ";");
+	strcat(path, cwd);
+	strcat(path, "opt/bin");
 	envp_append("PATH", path);
 
 	envp_append("ROOT_FS", cwd);

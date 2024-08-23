@@ -28,15 +28,13 @@ void emulate_doom_gettime(int* sec, int* usec) {
 
 int main(int argc, char* argv[]) {
     char* doomwaddir = getenv("DOOMWADDIR");
-    if (!doomwaddir) {
-        doomwaddir = getenv("ROOT_FS");
-        if (!doomwaddir) {
-            printf("Please set $DOOMWADDIR or $ROOT_FS\n");
-            return -1;
-        }
-    }
+
     char rgbmap_path[128] = { 0 };
-    sprintf(rgbmap_path, "%s/rgbmap.bin", doomwaddir);
+    if (doomwaddir) {
+        sprintf(rgbmap_path, "%s/rgbmap.bin", doomwaddir);
+    } else {
+        sprintf(rgbmap_path, "%sopt/doom/rgbmap.bin", getenv("ROOT_FS"));
+    }
 
     // Magic vga map from the rocc
     FILE* f = fopen(rgbmap_path, "rb");

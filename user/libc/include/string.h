@@ -23,3 +23,5 @@ int strncmp(char* str1, char* str2, int n);
 char* strndup(char* str, int n);
 
 char *strstr(char* haystack, char* needle);
+
+char* strdup(const char* src);

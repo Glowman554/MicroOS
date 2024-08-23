@@ -58,9 +58,21 @@ int main() {
 
 	printf("\\n");
 
+	{
+		char final_path[0xff] = { 0 };
+		sprintf(final_path, "%sopt", getenv("ROOT_FS"));
+		mkdir(final_path);
+	}
+
+	{
+		char final_path[0xff] = { 0 };
+		sprintf(final_path, "%sopt/bin", getenv("ROOT_FS"));
+		mkdir(final_path);
+	}
+
 	for (int i = 0; i < sizeof(directories) / sizeof(directories[0]); i++) {
 		char final_path[0xff] = { 0 };
-		sprintf(final_path, "%s%s", getenv("ROOT_FS"), directories[i]);
+		sprintf(final_path, "%sopt/%s", getenv("ROOT_FS"), directories[i]);
 
 		printf("Creating directory %s...\\n", final_path);
 		mkdir(final_path);
@@ -69,7 +81,7 @@ int main() {
 	for (int i = 0; i < sizeof(files) / sizeof(struct file_mapping); i++) {
 		struct file_mapping* file = &files[i];
 		char final_path[0xff] = { 0 };
-		sprintf(final_path, "%s%s", getenv("ROOT_FS"), file->path);
+		sprintf(final_path, "%sopt/%s", getenv("ROOT_FS"), file->path);
 
 		printf("Extracting %s... ", final_path);
 
