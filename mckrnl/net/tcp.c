@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <driver/timer_driver.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uint16_t flags) {
     uint16_t total_length = size + sizeof(tcp_header_t);
@@ -242,3 +244,4 @@ void tcp_init(network_stack_t* stack) {
 	stack->tcp->handler.recv = tcp_ipv4_recv;
 	ipv4_register(stack, stack->tcp->handler);
 }
+#endif

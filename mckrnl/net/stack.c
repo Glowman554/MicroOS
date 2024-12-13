@@ -11,7 +11,8 @@
 #include <net/dhcp.h>
 #include <net/dns.h>
 
-#include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void load_network_stack(nic_driver_t* nic) {
 	network_stack_t* stack = vmm_alloc(sizeof(network_stack_t) / 0x1000 + 1);
@@ -38,3 +39,4 @@ void load_network_stack(nic_driver_t* nic) {
 
 	dns_init(stack, stack->dhcp->dns);
 }
+#endif

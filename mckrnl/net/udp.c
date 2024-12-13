@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void udp_socket_disconnect(udp_socket_t* socket) {
 	for (int i = 0; i < socket->stack->udp->num_binds; i++) {
@@ -142,3 +144,4 @@ void udp_init(network_stack_t* stack) {
 	stack->udp->handler.recv = udp_ipv4_recv;
 	ipv4_register(stack, stack->udp->handler);
 }
+#endif

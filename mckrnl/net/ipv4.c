@@ -6,6 +6,8 @@
 
 #include <memory/vmm.h>
 #include <string.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 	stack->ipv4->handlers = vmm_resize(sizeof(ipv4_handler_t), stack->ipv4->num_handlers, stack->ipv4->num_handlers + 1, stack->ipv4->handlers);
@@ -105,3 +107,4 @@ void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask) {
 	stack->ipv4->gateway_ip = gateway_ip;
 	stack->ipv4->subnet_mask = subnet_mask;
 }
+#endif

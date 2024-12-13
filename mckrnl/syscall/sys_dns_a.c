@@ -4,6 +4,8 @@
 #include <net/dns.h>
 #include <assert.h>
 #include <scheduler/scheduler.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 cpu_registers_t* sys_dns_a(cpu_registers_t* regs) {
 	assert(regs->ebx < num_nic_drivers);
@@ -14,3 +16,4 @@ cpu_registers_t* sys_dns_a(cpu_registers_t* regs) {
 
 	return regs;
 }
+#endif

@@ -5,6 +5,9 @@
 #include <assert.h>
 #include <scheduler/scheduler.h>
 #include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
+
 
 void sys_connect_dealloc(void* resource) {
 	debugf("Freeing resource %x", resource);
@@ -25,3 +28,4 @@ cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) {
 
 	return regs;
 }
+#endif

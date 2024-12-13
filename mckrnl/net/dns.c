@@ -2,6 +2,8 @@
 #include <memory/vmm.h>
 #include <string.h>
 #include <stddef.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void dns_resolv_domain_to_hostname(char* dst_hostname, char* src_domain) {
 	int len = strlen(src_domain) + 1;
@@ -252,3 +254,4 @@ void dns_init(network_stack_t* stack, ip_u dns_server) {
 	stack->dns->socket = udp_connect(stack, dns_server, 53);
 	stack->dns->socket->recv = dns_udp_recv;
 }
+#endif

@@ -1,6 +1,7 @@
 #include <interrupts/gdt.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
+#include <stdint.h>
 #include <stdio.h>
 
 
@@ -58,6 +59,6 @@ void set_tss(int index, uint32_t val) {
 	gdt_ptr gdtp;
 	asm volatile("sgdt %0" : : "m" (gdtp));
 
-	uint32_t* tss = (((uint64_t*) gdtp.pointer)[5] >> 16) & 0xffffffLL;
+	uint32_t* tss = (uint32_t*)((((uint64_t*) gdtp.pointer)[5] >> 16) & 0xffffffLL);
 	tss[index] = val;
 }

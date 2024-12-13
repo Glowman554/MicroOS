@@ -3,6 +3,8 @@
 #include <memory/vmm.h>
 #include <string.h>
 #include <stddef.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void dhcp_request(network_stack_t* stack) {
 	dhcp_packet_t packet;
@@ -131,3 +133,4 @@ void dhcp_init(network_stack_t* stack) {
 	stack->dhcp->socket->local_port = BSWAP16(68);
 	stack->dhcp->socket->recv = dhcp_udp_recv;
 }
+#endif

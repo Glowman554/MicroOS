@@ -3,6 +3,8 @@
 #include <memory/vmm.h>
 #include <string.h>
 #include <net/stack.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) {
 	stack->ether_frame->handlers = vmm_resize(sizeof(ether_frame_handler_t), stack->ether_frame->num_handlers, stack->ether_frame->num_handlers + 1, stack->ether_frame->handlers);
@@ -51,3 +53,4 @@ void etherframe_init(network_stack_t* stack) {
 
 	stack->driver->recv = etherframe_nic_recv;
 }
+#endif

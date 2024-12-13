@@ -3,6 +3,8 @@
 #include <memory/vmm.h>
 #include <string.h>
 #include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void icmp_send_echo_request(network_stack_t* stack, ip_u ip) {
 	icmp_message_t icmp = {
@@ -101,3 +103,4 @@ void icmp_init(network_stack_t* stack) {
 	stack->icmp->handler.recv = icmp_ipv4_recv;
 	ipv4_register(stack, stack->icmp->handler);
 }
+#endif

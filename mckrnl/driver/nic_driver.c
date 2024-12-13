@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <memory/vmm.h>
 #include <stddef.h>
+#include <config.h>
 
 nic_driver_t** nic_drivers = NULL;
 int num_nic_drivers = 0;
@@ -15,7 +16,9 @@ void register_nic_driver(nic_driver_t* driver) {
 
 void load_network_stacks() {
 	for (int i = 0; i < num_nic_drivers; i++) {
+	#ifdef NETWORK_STACK
 		debugf("Loading network stack for %s...", nic_drivers[i]->driver.get_device_name((driver_t*) nic_drivers[i]));
 		load_network_stack(nic_drivers[i]);
+	#endif
 	}
 }

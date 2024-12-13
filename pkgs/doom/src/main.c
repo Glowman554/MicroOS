@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
 
         doom_update();
 
-        const uint32_t* framebuffer = doom_get_framebuffer(4);
+        const uint32_t* framebuffer = (uint32_t*) doom_get_framebuffer(4);
         if (vmode() == TEXT_80x25) {
             uint16_t buffer[25 * 80] = { 0xf0 << 8 | 'A' };
             for (int y = 0; y < 25; y++) {

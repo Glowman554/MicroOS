@@ -228,7 +228,9 @@ void _main(multiboot_info_t* mb_info) {
 	init_syscalls();
 
 	load_network_stacks();
+#ifdef NETWORK_STACK
 	init_socket_manager();
+#endif
 
 #ifdef SMP
 #ifndef PARSE_MADT

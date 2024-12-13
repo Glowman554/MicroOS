@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <config.h>
+#ifdef NETWORK_STACK
 
 #define invalid() abortf("Inalid socket type!"); while(1)
 
@@ -171,3 +172,4 @@ void init_socket_manager() {
 
 	global_socket_manager->curr_socket = SOCK_OFFSET;
 }
+#endif

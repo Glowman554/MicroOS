@@ -50,12 +50,14 @@ void init_syscalls() {
 	register_syscall(SYS_VMODE_ID, sys_vmode);
 	register_syscall(SYS_VPOKE_ID, sys_vpoke);
 	register_syscall(SYS_VCURSOR_ID, sys_vcursor);
+#ifdef NETWORK_STACK
 	register_syscall(SYS_ICMP_ID, sys_icmp);
 	register_syscall(SYS_DNS_A_ID, sys_dns_a);
 	register_syscall(SYS_SOCK_CONNECT_ID, sys_sock_connect);
 	register_syscall(SYS_SOCK_DISCONNECT_ID, sys_sock_disconnect);
 	register_syscall(SYS_SOCK_SEND_ID, sys_sock_send);
 	register_syscall(SYS_SOCK_RECV_ID, sys_sock_recv);
+#endif
 	register_syscall(SYS_SOUND_RUN_ID, sys_sound_run);
 	register_syscall(SYS_TIME_ID, sys_time);
 	register_syscall(SYS_SET_COLOR_ID, sys_set_color);

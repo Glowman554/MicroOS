@@ -4,8 +4,8 @@
 
 #include <memory/vmm.h>
 #include <string.h>
-
-#include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
 
 void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(arp_message_t)) {
@@ -113,3 +113,4 @@ void arp_init(network_stack_t* stack) {
 	stack->arp->handler.recv = arp_etherframe_recv;
 	etherframe_register(stack, stack->arp->handler);
 }
+#endif
