@@ -1,0 +1,13 @@
+{
+	"directories": [
+		"nextfs"
+	],
+	"mappings": {
+        "src/loader/loader.bin": "nextfs/loader.bin",
+		"src/loader/loader_mb.bin": "nextfs/loader_mb.bin",
+		"tool/nextfs.elf": "bin/nextfs.elf",
+		"install.msh": "nextfs/install.msh"
+	},
+	"name": "NextFS",
+	"license": "src/LICENSE"
+}

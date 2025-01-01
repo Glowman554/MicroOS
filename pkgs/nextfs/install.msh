@@ -1,0 +1,4 @@
+export SOURCE=tmp:
+export DISK=0
+
+nextfs loader_mb.bin $SOURCE/EFI/BOOT/mckrnl.elf;mckrnl.elf $SOURCE/keymap.mkm;keymap.mkm $SOURCE/bin/init.elf;init.elf $SOURCE/bin/terminal.elf;terminal.elf $SOURCE/bin/ls.elf;ls.elf $SOURCE/bin/tasks.elf;tasks.elf 

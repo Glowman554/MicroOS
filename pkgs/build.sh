@@ -22,6 +22,7 @@ build_dir phoenixv2_tools
 build_dir nyanmbr
 build_dir doom
 build_dir saf
+build_dir nextfs
 
 (
 	cd pkgs
