@@ -37,7 +37,7 @@ void draw_status_bar() {
     char* ptr = buffer;
     ptr += sprintf(ptr, "Used: ");
     ptr += format_memory_usage(ptr, used_memory);
-    ptr += sprintf(ptr, ", Tasks: %d", get_ammount_running_tasks());
+    ptr += sprintf(ptr, ", Tasks: %d", get_amount_running_tasks());
     if (global_char_output_driver) {
         ptr += sprintf(ptr, ", Terminal: %d", global_char_output_driver->current_term);
     }

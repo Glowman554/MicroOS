@@ -320,7 +320,7 @@ int read_task_list(task_list_t* out, int max) {
 	return j;
 }
 
-int get_ammount_running_tasks() {
+int get_amount_running_tasks() {
     int j = 0;
 	for (int i = 0; i < MAX_TASKS; i++) {
 		if (tasks[i].active) {
