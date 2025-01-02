@@ -18,8 +18,7 @@ char_output_driver_t* printf_driver = NULL;
 
 int read_core_id() {
 #ifdef SMP
-	LAPIC_ID(id);
-	return id;
+	return lapic_id();
 #else
 	return 0;
 #endif

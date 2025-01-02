@@ -27,3 +27,13 @@ void lapic_ipi(uint8_t lapic_id, uint8_t vector) {
 	lapic_write(0x310, lapic_id << 24);
 	lapic_write(0x300, vector);
 }
+
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+int lapic_id() {
+	volatile unsigned char core_id = 0; 	
+	__asm__ __volatile__ ("mov $1, %%eax; cpuid; shrl $24, %%ebx;": "=b"(core_id) : : );
+
+	return core_id;
+}
+#pragma GCC pop_options

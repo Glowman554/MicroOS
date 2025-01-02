@@ -53,8 +53,7 @@ typedef struct {
 } __attribute__((packed)) ap_info_t;
 
 void smp_startup_all() {
-	LAPIC_ID(bspid);
-	bsp_id = bspid;
+	bsp_id = lapic_id();
 	cpu_started[bsp_id] = true;
 	debugf("bspid: %d", bsp_id);
 

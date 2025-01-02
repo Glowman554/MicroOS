@@ -236,7 +236,7 @@ void _main(multiboot_info_t* mb_info) {
 #ifndef PARSE_MADT
 #error PARSE_MADT required!
 #endif
-	debugf("--- WARNING --- SMP is very experimantel!");
+	debugf("--- WARNING --- SMP is very experimental!");
 	// wait();
 	smp_startup_all();
 #endif

@@ -18,13 +18,14 @@
 
 // Scheduler
 #define MAX_TASKS 32
+#define MAX_CORES 8
 #define USER_STACK_SIZE_PAGES 4
 #define KERNEL_STACK_SIZE_PAGES 4
 // End Scheduler
 
 // Experimental
-// #define SMP
-// #define PARSE_MADT
+#define SMP
+#define PARSE_MADT
 // #define THREADS
 // #define AHCI_DRIVER
 // #define NETWORK_STACK

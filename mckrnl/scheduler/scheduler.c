@@ -238,7 +238,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 		return registers;
 	}
 
-	LAPIC_ID(core_id);
+	int core_id = lapic_id();
 	if (core_id != bsp_id) {
 		return registers;
 	}

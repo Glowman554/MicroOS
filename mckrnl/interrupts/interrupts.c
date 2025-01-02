@@ -217,7 +217,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 			}
 
 		#ifdef SMP
-			LAPIC_ID(core);
+			int core = lapic_id();
 			if (core != 0) { // TODO do not hard code
 				lapic_eoi();
 			} else {
@@ -250,7 +250,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 
 void halt() {
 #ifdef SMP
-	LAPIC_ID(id);
+	int id = lapic_id();
 	for (int i = 0; i < madt_lapic_count; i++) {
 		if (i != id) {
 			lapic_ipi(i, 0xff);
