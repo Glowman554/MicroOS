@@ -104,7 +104,7 @@ void* recv_thread(void* sock_ptr) {
 }
 
 int main(int argc, char* argv[]) {
-    printf("MicroOS Stream server Copyright (C) 2023 Glowman554\n");
+    printf("MicroOS Stream server Copyright (C) 2023-2025 Glowman554\n");
 
     printf("Loading font %s\n", FONT);
     FILE* f = fopen(FONT, "rb");

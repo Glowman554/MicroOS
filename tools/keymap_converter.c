@@ -50,7 +50,7 @@ keymap_foxos_t* load_keymap(char* name) {
 #define OUTPUT "keymap.mkm"
 
 int main() {
-	printf("MicroOS Keymap converter Copyright (C) 2023 Glowman554\n");
+	printf("MicroOS Keymap converter Copyright (C) 2023-2025 Glowman554\n");
 
     char* keymaps[] = {
         "de",

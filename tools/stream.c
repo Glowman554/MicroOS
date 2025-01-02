@@ -17,7 +17,7 @@ void print_border() {
 }
 
 int main() {
-	printf("MicroOS Stream server Copyright (C) 2023 Glowman554\n");
+	printf("MicroOS Stream server Copyright (C) 2023-2025 Glowman554\n");
 
 	int sockfd;
 	if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
