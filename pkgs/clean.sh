@@ -17,3 +17,4 @@ clean_dir nyanmbr
 clean_dir doom
 clean_dir saf
 clean_dir nextfs
+clean_dir mcc

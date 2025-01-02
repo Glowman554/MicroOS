@@ -23,6 +23,7 @@ build_dir nyanmbr
 build_dir doom
 build_dir saf
 build_dir nextfs
+build_dir mcc
 
 (
 	cd pkgs

@@ -1,0 +1,12 @@
+{
+	"directories": [
+		"mcc"
+	],
+	"mappings": {
+        "src/mcc.elf": "bin/mcc.elf",
+
+		"hello.c": "mcc/hello.c",
+		"tests.c": "mcc/tests.c"
+	},
+	"name": "MicroOS c compiler"
+}
