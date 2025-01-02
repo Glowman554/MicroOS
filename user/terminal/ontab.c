@@ -118,7 +118,10 @@ void tab_complete(char* command, char* extra, int extra_size) {
 
 	if (did_complete != 0) {
 		int extra_len = strlen(extra);
-		if (extra[extra_len - 4] == '.' && extra[extra_len - 3] == 'e' && extra[extra_len - 2] == 'l' && extra[extra_len - 1] == 'f') { //Remove the .elf of files from /BIN
+		if (
+			(extra[extra_len - 4] == '.' && extra[extra_len - 3] == 'e' && extra[extra_len - 2] == 'l' && extra[extra_len - 1] == 'f') ||
+			(extra[extra_len - 4] == '.' && extra[extra_len - 3] == 'm' && extra[extra_len - 2] == 'e' && extra[extra_len - 1] == 'x')
+		) { //Remove the .elf of files from /BIN
 			extra[extra_len - 4] = 0;
 			extra[extra_len - 3] = 0;
 			extra[extra_len - 2] = 0;

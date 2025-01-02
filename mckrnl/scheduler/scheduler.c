@@ -15,7 +15,7 @@
 #include <driver/apic/smp.h>
 #include <driver/timer_driver.h>
 #include <driver/char_output_driver.h>
-
+#include <utils/tinf.h>
 
 int current_pid = 0;
 task_t tasks[MAX_TASKS] = { 0 };
@@ -186,6 +186,56 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 	task->envp = (char**) ((uint32_t) task->envp + USER_SPACE_OFFSET);
 
 	return task->pid;
+}
+
+static unsigned int read_le32(const unsigned char *p) {
+	return ((unsigned int) p[0]) | ((unsigned int) p[1] << 8) | ((unsigned int) p[2] << 16) | ((unsigned int) p[3] << 24);
+}
+
+int init_mex(int term, void* image, char** argv, char** envp) {
+	mex_header_t* header = image;
+	void* content = (void*) header + sizeof(mex_header_t);
+
+	if (memcmp(header->header, "MEX", 4) != 0) {
+		printf("MEX magic mismatch\n");
+		return -1;
+	}
+
+	unsigned int decompressed_size = read_le32(content + header->elfSizeCompressed - 4);
+	debugf("decompressing %dkb to %dkb", header->elfSizeCompressed / 1024, decompressed_size / 1024);
+	char* dest = (char*) vmm_alloc(TO_PAGES(decompressed_size));
+	unsigned int output_size = decompressed_size;
+	int res = tinf_gzip_uncompress(dest, &output_size, content, header->elfSizeCompressed);
+		
+	if ((res != TINF_OK) || (output_size != decompressed_size)) {
+		printf("decompression failed: ");
+		switch (res) {
+			case TINF_DATA_ERROR:
+				printf("TINF_DATA_ERROR\n");
+				break;
+			case TINF_BUF_ERROR:
+				printf("TINF_BUF_ERROR\n");
+				break;
+			default:
+				printf("Unknown error\n");
+				break;
+		}
+		vmm_free(dest, TO_PAGES(decompressed_size));
+		return -1;
+	}
+
+	int pid = init_elf(term, dest, argv, envp);
+	vmm_free(dest, TO_PAGES(decompressed_size));
+	return pid;
+}
+
+int init_executable(int term, void* image, char** argv, char** envp) {
+	mex_header_t* header = image;
+	if (memcmp(header->header, "MEX", 4) == 0) {
+		return init_mex(term, image, argv, envp);
+	}
+
+	return init_elf(term, image, argv, envp);
 }
 
 void exit_task(task_t* task) {

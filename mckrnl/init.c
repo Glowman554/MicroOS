@@ -108,7 +108,7 @@ void load_init() {
 		}
 		void* buffer = vmm_alloc(file->size / 4096 + 1);
 		vfs_read(file, buffer, file->size, 0);
-		init_elf(1, buffer, argv, envp);
+		init_executable(1, buffer, argv, envp);
 		vmm_free(buffer, file->size / 4096 + 1);
 		vfs_close(file);
 	} else {

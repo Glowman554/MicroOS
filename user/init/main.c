@@ -9,7 +9,7 @@
 #include <config.h>
 
 // #define ROOT_FS "initrd:/"
-#define TERMINAL "bin/terminal.elf"
+#define TERMINAL "bin/terminal.mex"
 
 // char* envp[] = {
 // 	"ROOT=initrd:",

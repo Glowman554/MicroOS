@@ -11,8 +11,6 @@ bool command_received(char* command, bool* should_break, char* stdin);
 
 bool run_command(char* command, char** terminal_envp, bool* should_break, char** stdin, char** stdout);
 
-char* search_executable(char* command);
-
 void set_layout(char* command);
 void cd(char** argv);
 void pwd();

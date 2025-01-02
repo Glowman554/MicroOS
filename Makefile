@@ -21,7 +21,7 @@ endif
 
 initrd.saf:
 	mkdir -p ./res/initrd/bin
-	cp -r ./user/bin/*.elf ./res/initrd/bin/ -v
+	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	mkdir -p ./res/initrd/docs
@@ -40,7 +40,7 @@ iso: all initrd.saf
 
 set_kvm:
 ifneq ("$(wildcard ./kvm)","")
-	@echo "enabeling kvm"
+	@echo "enabling kvm"
 	$(eval QEMU_FLAGS += --enable-kvm)
 endif
 

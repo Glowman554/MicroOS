@@ -12,6 +12,7 @@ prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
 	i686-linux-gnu-gcc $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ $(EXTRA_OBJS) ../lib/libc.o -lgcc
+	@deno run -A ../../encode_mex.ts glowman554 ../bin/$@ ../bin/$(addsuffix .mex,$(basename $@))
 
 %.o: %.c
 	@echo CC $^
