@@ -21,7 +21,7 @@ jobs:
       with:
         deno-version: v1.x
     - name: install tools
-      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl -y
+      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl nasm -y
     - name: release
       run: MESSAGE_WEBHOOK=${{ secrets.MESSAGE_WEBHOOK }} bash release.sh ${{ matrix.preset }} "${{ github.event.head_commit.message }}"
     - uses: actions/upload-artifact@v4
