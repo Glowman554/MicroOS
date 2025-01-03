@@ -14,7 +14,7 @@ prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
 	i686-linux-gnu-gcc $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o $@ $^ $(EXTRA_OBJS) res/libs/libc.o -lgcc
-	@deno run -A https://raw.githubusercontent.com/Glowman554/MicroOS/master/encode_mex.ts glowman554 $@ $(addsuffix .mex,$(basename $@))
+	@deno run -A https://raw.githubusercontent.com/Glowman554/MicroOS/master/encode_mex.ts $(AUTHOR) $@ $(addsuffix .mex,$(basename $@))
 
 %.o: %.c
 	@echo CC $^

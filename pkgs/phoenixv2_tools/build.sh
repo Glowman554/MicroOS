@@ -15,10 +15,10 @@ if [ -d "installer" ]; then
 	rm -rvf installer
 fi
 
-make -f $1 -C src/tools/assemblerv2 PROGRAM=phoenixv2-as.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
-make -f $1 -C src/tools/disassembler PROGRAM=phoenixv2-disasm.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
-make -f $1 -C src/tools/emulator PROGRAM=phoenixv2-emu.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
-make -f $1 -C src/tools/visual_eumlator PROGRAM=phoenixv2-emu-visual.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
+make -f $1 -C src/tools/assemblerv2 PROGRAM=phoenixv2-as.elf AUTHOR=glowman554 LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
+make -f $1 -C src/tools/disassembler PROGRAM=phoenixv2-disasm.elf AUTHOR=glowman554 LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
+make -f $1 -C src/tools/emulator PROGRAM=phoenixv2-emu.elf AUTHOR=glowman554 LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
+make -f $1 -C src/tools/visual_eumlator PROGRAM=phoenixv2-emu-visual.elf AUTHOR=glowman554 LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3
 cp -v installer/install.mex ../pkgs/phoenixv2_tools_install.mex
