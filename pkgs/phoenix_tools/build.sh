@@ -19,4 +19,4 @@ make -f $1 -C src/tools/disassembler PROGRAM=phoenix-disasm.elf LIBS_ZIP=$2 USER
 make -f $1 -C src/tools/emulator PROGRAM=phoenix-emu.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3
-cp -v installer/install.elf ../pkgs/phoenix_tools_install.elf
+cp -v installer/install.mex ../pkgs/phoenix_tools_install.mex

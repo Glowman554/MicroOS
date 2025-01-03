@@ -5,7 +5,7 @@
 	"mappings": {
         "src/loader/loader.bin": "nextfs/loader.bin",
 		"src/loader/loader_mb.bin": "nextfs/loader_mb.bin",
-		"tool/nextfs.elf": "bin/nextfs.elf",
+		"tool/nextfs.mex": "bin/nextfs.mex",
 		"install.msh": "nextfs/install.msh"
 	},
 	"name": "NextFS",

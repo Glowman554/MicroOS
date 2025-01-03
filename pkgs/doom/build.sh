@@ -21,4 +21,4 @@ fi
 make -C src LIBS_ZIP=$2 compile_flags.txt extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3
-cp -v installer/install.elf ../pkgs/doom_install.elf
+cp -v installer/install.mex ../pkgs/doom_install.mex

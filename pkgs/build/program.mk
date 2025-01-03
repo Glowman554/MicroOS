@@ -14,13 +14,14 @@ prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
 	i686-linux-gnu-gcc $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o $@ $^ $(EXTRA_OBJS) res/libs/libc.o -lgcc
+	@deno run -A https://raw.githubusercontent.com/Glowman554/MicroOS/master/encode_mex.ts glowman554 $@ $(addsuffix .mex,$(basename $@))
 
 %.o: %.c
 	@echo CC $^
 	@i686-linux-gnu-gcc $(CFLAGS) -c -o $@ $^
 
 clean:
-	rm -f $(OBJS) $(PROGRAM) compile_flags.txt
+	rm -f $(OBJS) $(PROGRAM) $(addsuffix .mex,$(basename $(PROGRAM))) compile_flags.txt
 
 extract_libs:
 	unzip -o $(LIBS_ZIP)

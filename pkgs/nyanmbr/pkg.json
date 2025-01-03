@@ -3,7 +3,7 @@
 		"nyanmbr"
 	],
 	"mappings": {
-        "src/nyanmbr.elf": "bin/nyanmbr.elf",
+        "src/nyanmbr.mex": "bin/nyanmbr.mex",
 
         "nyan.bin": "nyanmbr/nyan.bin"
 	},

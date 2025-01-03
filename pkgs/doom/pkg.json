@@ -3,7 +3,7 @@
 		"doom"
 	],
 	"mappings": {
-		"src/doom.elf": "bin/doom.elf",
+		"src/doom.mex": "bin/doom.mex",
 		"rgbmap.bin": "doom/rgbmap.bin",
 		"doom_src/doom1.wad": "doom/doom1.wad"
 	},

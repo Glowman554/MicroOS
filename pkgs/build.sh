@@ -29,6 +29,7 @@ build_dir mcc
 	cd pkgs
 	echo export ACCEPT_ALL=1 > all.msh
 	ls *.elf >> all.msh
+	ls *.mex >> all.msh
 )
 
 mkdir ../res/initrd/pkgs -p

@@ -14,4 +14,4 @@ make -C src/loader
 make -f $1 -C tool PROGRAM=nextfs.elf LIBS_ZIP=$2 extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3
-cp -v installer/install.elf ../pkgs/nextfs_install.elf
+cp -v installer/install.mex ../pkgs/nextfs_install.mex

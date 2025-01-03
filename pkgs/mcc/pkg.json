@@ -3,7 +3,7 @@
 		"mcc"
 	],
 	"mappings": {
-        "src/mcc.elf": "bin/mcc.elf",
+        "src/mcc.mex": "bin/mcc.mex",
 
 		"hello.c": "mcc/hello.c",
 		"tests.c": "mcc/tests.c"

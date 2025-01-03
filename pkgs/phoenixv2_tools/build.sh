@@ -21,4 +21,4 @@ make -f $1 -C src/tools/emulator PROGRAM=phoenixv2-emu.elf LIBS_ZIP=$2 USER_CFLA
 make -f $1 -C src/tools/visual_eumlator PROGRAM=phoenixv2-emu-visual.elf LIBS_ZIP=$2 USER_CFLAGS=-I../common extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3
-cp -v installer/install.elf ../pkgs/phoenixv2_tools_install.elf
+cp -v installer/install.mex ../pkgs/phoenixv2_tools_install.mex

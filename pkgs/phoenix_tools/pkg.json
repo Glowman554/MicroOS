@@ -3,9 +3,9 @@
 		"phoenix"
 	],
 	"mappings": {
-        "src/tools/assemblerv2/phoenix-as.elf": "bin/phoenix-as.elf",
-        "src/tools/disassembler/phoenix-disasm.elf": "bin/phoenix-disasm.elf",
-        "src/tools/emulator/phoenix-emu.elf": "bin/phoenix-emu.elf",
+        "src/tools/assemblerv2/phoenix-as.mex": "bin/phoenix-as.mex",
+        "src/tools/disassembler/phoenix-disasm.mex": "bin/phoenix-disasm.mex",
+        "src/tools/emulator/phoenix-emu.mex": "bin/phoenix-emu.mex",
 
 		"src/examples/fib.asm": "phoenix/fib.asm",
 		"src/examples/direct_jump.asm": "phoenix/direct_jump.asm",
