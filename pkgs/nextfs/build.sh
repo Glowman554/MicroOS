@@ -11,6 +11,7 @@ if [ -d "installer" ]; then
 fi
 
 make -C src/loader
+make -C src/kernel
 make -f $1 -C tool PROGRAM=nextfs.elf AUTHOR=glowman554 LIBS_ZIP=$2 extract_libs prog
 
 bash ../run_installer.sh $1 $2 $3

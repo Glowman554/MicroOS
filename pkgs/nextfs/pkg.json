@@ -5,6 +5,7 @@
 	"mappings": {
         "src/loader/loader.bin": "nextfs/loader.bin",
 		"src/loader/loader_mb.bin": "nextfs/loader_mb.bin",
+		"src/kernel/kernel.bin": "nextfs/tos.bin",
 		"tool/nextfs.mex": "bin/nextfs.mex",
 		"install.msh": "nextfs/install.msh"
 	},
