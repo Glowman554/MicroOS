@@ -40,20 +40,24 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint3
 	}
 }
 
-void arp_broadcast_mac(network_stack_t* stack, ip_u ip) {
-	arp_message_t arp = {
-		.hardware_type = 0x0100,
-		.protocol = 0x0008,
-		.hardware_address_size = 6,
-		.protocol_address_size = 4,
-		.command = 0x0200,
-		.src_mac = stack->driver->mac.mac,
-		.src_ip = stack->driver->ip.ip,
-		.dest_mac = arp_resolve(stack, ip).mac,
-		.dest_ip = ip.ip
-	};
+void arp_broadcast_mac(network_stack_t *stack, resolvable_t* res, ip_u ip) {
+	arp_resolve(stack, res, ip);
+	
+	if (is_resolved(res)) {
+		arp_message_t arp = {
+			.hardware_type = 0x0100,
+			.protocol = 0x0008,
+			.hardware_address_size = 6,
+			.protocol_address_size = 4,
+			.command = 0x0200,
+			.src_mac = stack->driver->mac.mac,
+			.src_ip = stack->driver->ip.ip,
+			.dest_mac = cast_buffer(res, mac_u)->mac,
+			.dest_ip = ip.ip
+		};
 
-	etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
+		etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
+	}
 }
 
 void arp_request_mac(network_stack_t* stack, ip_u ip) {
@@ -65,7 +69,7 @@ void arp_request_mac(network_stack_t* stack, ip_u ip) {
 		.command = 0x0100,
 		.src_mac = stack->driver->mac.mac,
 		.src_ip = stack->driver->ip.ip,
-		.dest_mac = 0xFFFFFFFFFFFF,
+		.dest_mac = NOMAC,
 		.dest_ip = ip.ip
 	};
 
@@ -73,35 +77,59 @@ void arp_request_mac(network_stack_t* stack, ip_u ip) {
 }
 
 mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip) {
-		for (int i = 0; i < stack->arp->num_cache_entry; i++) {
+	for (int i = 0; i < stack->arp->num_cache_entry; i++) {
 		if (stack->arp->ip_cache[i].ip == ip.ip) {
 			return stack->arp->mac_cache[i];
 		}
 	} 
-	mac_u m = { .mac = 0xFFFFFFFFFFFF };
+	mac_u m = { .mac = NOMAC };
 	return m;
 }
 
-mac_u arp_resolve(network_stack_t* stack, ip_u ip) {
-	if (ip.ip == 0xffffffff) {
-		mac_u m = { .mac = 0xFFFFFFFFFFFF };
-		return m;
+
+void arp_resolve(network_stack_t* stack, resolvable_t* res, ip_u ip) {
+	switch (res->state) {
+		case STATE_INIT:
+			if (ip.ip == NOIP) {
+				cast_buffer(res, mac_u)->mac = NOMAC;
+				res->state = STATE_DONE;
+			} else {
+				res->state = STATE_REQUEST;
+			}
+			break;
+		
+		case STATE_REQUEST:
+			{
+				mac_u result = arp_get_mac_from_cache(stack, ip);
+
+				if (result.mac == NOMAC) {
+					arp_request_mac(stack, ip);
+					res->state = STATE_WAIT;
+				} else {
+					cast_buffer(res, mac_u)->mac = result.mac;
+					res->state = STATE_DONE;
+				}
+			}
+			break;
+		
+		case STATE_WAIT:
+			{
+				mac_u result = arp_get_mac_from_cache(stack, ip);
+
+				if (result.mac != NOMAC) {
+					cast_buffer(res, mac_u)->mac = result.mac;
+					res->state = STATE_DONE;
+				}
+			}
+			break;
+		
+		case STATE_DONE:
+			break;
+
+		default:
+			res->state = STATE_INIT;
+			break;
 	}
-
-	mac_u result = arp_get_mac_from_cache(stack, ip);
-
-	if (result.mac == 0xFFFFFFFFFFFF) {
-		arp_request_mac(stack, ip);
-	}
-	
-	NET_TIMEOUT(
-		if (result.mac != 0xFFFFFFFFFFFF) {
-			return result;
-		}
-		result = arp_get_mac_from_cache(stack, ip);
-	);
-
-	return result;
 }
 
 void arp_init(network_stack_t* stack) {

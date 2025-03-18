@@ -3,6 +3,7 @@
 #include <net/stack.h>
 #include <net/udp.h>
 #include <stdint.h>
+#include <resolvable.h>
 
 typedef struct dhcp_packet {
 	uint8_t op;
@@ -27,16 +28,21 @@ typedef struct dhcp_packet {
 
 #define DHCP_TRANSACTION_IDENTIFIER 0x55555555
 
-typedef struct dhcp_provider {
-	udp_socket_t* socket;
+typedef struct dhcp_result {
 	ip_u ip;
 	ip_u gateway;
 	ip_u subnet;
 	ip_u dns;
+} dhcp_result_t;
+
+typedef struct dhcp_provider {
+	udp_socket_t* socket;
+	dhcp_result_t result;
 	bool completed;
 } dhpc_provider_t;
 
-void dhcp_request(network_stack_t* stack);
+
+void dhcp_request(network_stack_t* stack, resolvable_t* res);
 void dhcp_request_ip(network_stack_t* stack, ip_u ip);
 
 void dhcp_make_packet(network_stack_t* stack, dhcp_packet_t* packet, uint8_t msg_type, uint32_t request_ip);

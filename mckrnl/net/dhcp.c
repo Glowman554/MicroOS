@@ -6,18 +6,33 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-void dhcp_request(network_stack_t* stack) {
-	dhcp_packet_t packet;
-	memset(&packet, 0, sizeof(dhcp_packet_t));
+void dhcp_request(network_stack_t* stack, resolvable_t* res) {
+	switch (res->state) {
+		case STATE_REQUEST:
+			{
+				dhcp_packet_t packet;
+				memset(&packet, 0, sizeof(dhcp_packet_t));
 
-	dhcp_make_packet(stack, &packet, 1, 0x00000000);
-	udp_socket_send(stack->dhcp->socket, (uint8_t*) &packet, sizeof(dhcp_packet_t));
+				dhcp_make_packet(stack, &packet, 1, 0x00000000);
+				udp_socket_send(stack->dhcp->socket, (uint8_t*) &packet, sizeof(dhcp_packet_t));
+				res->state = STATE_WAIT;
+			}
+			break;
 
-	NET_TIMEOUT(
-		if (stack->dhcp->completed) {
-			return;
-		}
-	);
+		case STATE_WAIT:
+			if (stack->dhcp->completed) {
+				*cast_buffer(res, dhcp_result_t) = stack->dhcp->result;
+				res->state = STATE_DONE;
+			}
+			break;
+
+		case STATE_DONE:
+			break;
+
+		default:
+			res->state = STATE_REQUEST;
+			break;
+	}
 }
 
 void dhcp_request_ip(network_stack_t* stack, ip_u ip) {
@@ -116,11 +131,12 @@ void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 			dhcp_request_ip(socket->stack, (ip_u) {.ip = packet->your_ip});
 			break;
 		case 5:
-			socket->stack->dhcp->ip = (ip_u) {.ip = packet->your_ip};
-			socket->stack->dhcp->gateway = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 3)};
-			socket->stack->dhcp->dns = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 6)};
+			socket->stack->dhcp->result.ip = (ip_u) {.ip = packet->your_ip};
+			socket->stack->dhcp->result.gateway = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 3)};
+			socket->stack->dhcp->result.dns = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 6)};
+			socket->stack->dhcp->result.subnet = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 1)};
+
 			socket->stack->dhcp->completed = true;
-			socket->stack->dhcp->subnet = (ip_u) {.ip = *(uint32_t*) dhcp_get_options(packet, 1)};
 			break;
 	}
 }

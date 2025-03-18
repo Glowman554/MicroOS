@@ -15,6 +15,15 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 	stack->ipv4->num_handlers++;
 }
 
+mac_u sync_arp_resolve(network_stack_t* stack, ip_u ip) {
+	resolvable_t resolvable = { .state = STATE_INIT };
+	while (!is_resolved(&resolvable)) {
+		arp_resolve(stack, &resolvable, ip);
+	}
+
+	return *cast_buffer(&resolvable, mac_u);
+}
+
 void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size) {
 	uint8_t* buffer = vmm_alloc((size + sizeof(ipv4_message_t)) / 0x1000 + 1);
 	memset(buffer, 0, size + sizeof(ipv4_message_t));
@@ -46,7 +55,7 @@ void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, ui
 		route = stack->ipv4->gateway_ip;
 	}
 
-	etherframe_send(&stack->ipv4->handler, stack, arp_resolve(stack, route).mac, buffer, size + sizeof(ipv4_message_t));
+	etherframe_send(&stack->ipv4->handler, stack, sync_arp_resolve(stack, route).mac, buffer, size + sizeof(ipv4_message_t));
 
 	vmm_free(buffer, (size + sizeof(ipv4_message_t)) / 0x1000 + 1);
 }

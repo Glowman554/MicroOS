@@ -14,6 +14,9 @@ typedef union mac {
 	uint64_t mac;
 } mac_u;
 
+#define NOMAC 0xFFFFFFFFFFFF
+#define NOIP 0xFFFFFFFF
+
 typedef struct nic_driver {
 	driver_t driver; // the driver_specific_data is reserved for a poniter to a network_stack_t ptr!
 
