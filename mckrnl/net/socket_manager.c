@@ -28,6 +28,7 @@ void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	_socket->num_bytes_received += size;
 }
 
+#ifdef TCP
 void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	socket_t* _socket = socket->data;
 	debugf("socket_tcp_recv(): %d bytes", size);
@@ -44,8 +45,18 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
 	_socket->num_bytes_received += size;
 }
+#endif
 
-
+udp_socket_t* sync_udp_connect(network_stack_t* stack, ip_u ip, uint16_t port) {
+	#warning "Temporary solution, should not be blocking!"
+	resolvable_t resolvable = { .state = STATE_INIT };
+	while (true) {
+		udp_socket_t* socket = udp_connect(stack, &resolvable, ip, port);
+		if (is_resolved(&resolvable)) {
+			return socket;
+		}
+	}
+}
 
 socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint16_t port) {
 	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
@@ -55,15 +66,17 @@ socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint1
 
 	switch (socket_type) {
 		case SOCKET_UDP:
-			socket->udp_socket = udp_connect(stack, ip, port);
+			socket->udp_socket = sync_udp_connect(stack, ip, port);
 			socket->udp_socket->data = socket;
 			socket->udp_socket->recv = socket_udp_recv;
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			socket->tcp_socket = tcp_connect(stack, ip, port);
 			socket->tcp_socket->data = socket;
 			socket->tcp_socket->recv = socket_tcp_recv;
 			break;
+		#endif
 		default:
 			invalid();
 	}
@@ -78,9 +91,11 @@ void socket_disconnect(socket_t* socket) {
 		case SOCKET_UDP:
 			udp_socket_disconnect(socket->udp_socket);
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			tcp_socket_disconnect(socket->tcp_socket);
 			break;
+		#endif
 		default:
 			invalid();
 	}
@@ -95,9 +110,11 @@ void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
 		case SOCKET_UDP:
 			udp_socket_send(socket->udp_socket, data, size);
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			tcp_socket_send(socket->tcp_socket, data, size);
 			break;
+		#endif
 		default:
 			invalid();
 	}

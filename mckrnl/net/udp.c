@@ -31,43 +31,49 @@ void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size) {
 
 	udp->checksum = 0;
 
-	ipv4_send(&socket->stack->udp->handler, socket->stack, socket->remote_ip, packet, total_size);
+	ipv4_send(&socket->stack->udp->handler, socket->stack, socket->remote_ip, socket->route_mac, packet, total_size);
 
 	vmm_free(packet, TO_PAGES(total_size));
 }
 
-udp_socket_t* udp_connect(network_stack_t* stack, ip_u ip, uint16_t port) {
-	udp_socket_t* socket = vmm_alloc(PAGES_OF(udp_socket_t));
-	memset(socket, 0, sizeof(udp_socket_t));
+udp_socket_t* udp_connect(network_stack_t* stack, resolvable_t* res, ip_u ip, uint16_t port) {
+	ipv4_resolve_route(stack, res, ip);
+	if (is_resolved(res)) {
+		udp_socket_t* socket = vmm_alloc(PAGES_OF(udp_socket_t));
+		memset(socket, 0, sizeof(udp_socket_t));
 
-	socket->remote_ip = ip;
-	socket->remote_port = port;
-	socket->local_port = stack->udp->free_port++;
-	socket->local_ip = stack->driver->ip;
+		socket->remote_ip = ip;
+		socket->remote_port = port;
+		socket->local_port = stack->udp->free_port++;
+		socket->local_ip = stack->driver->ip;
+		socket->route_mac = *cast_buffer(res, mac_u);
 
-	socket->local_port = BSWAP16(socket->local_port);
-	socket->remote_port = BSWAP16(socket->remote_port);
+		socket->local_port = BSWAP16(socket->local_port);
+		socket->remote_port = BSWAP16(socket->remote_port);
 
-	socket->stack = stack;
+		socket->stack = stack;
 
-	udp_bind_t bind = {
-		.port = socket->local_port,
-		.socket = socket
-	};
+		udp_bind_t bind = {
+			.port = socket->local_port,
+			.socket = socket
+		};
 
-	for (int i = 0; i < stack->udp->num_binds; i++) {
-		if (stack->udp->binds[i].socket == NULL) {
-			stack->udp->binds[i] = bind;
-			return socket;
+		for (int i = 0; i < stack->udp->num_binds; i++) {
+			if (stack->udp->binds[i].socket == NULL) {
+				stack->udp->binds[i] = bind;
+				return socket;
+			}
 		}
-	}
 
-	stack->udp->binds = vmm_resize(sizeof(udp_bind_t), stack->udp->num_binds, stack->udp->num_binds + 1, stack->udp->binds);
-	stack->udp->binds[stack->udp->num_binds] = bind;
-	stack->udp->num_binds++;
-	return socket;
+		stack->udp->binds = vmm_resize(sizeof(udp_bind_t), stack->udp->num_binds, stack->udp->num_binds + 1, stack->udp->binds);
+		stack->udp->binds[stack->udp->num_binds] = bind;
+		stack->udp->num_binds++;
+		return socket;
+	}
+	return NULL;
 }
 
+#if 0
 udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port) {
 	udp_socket_t* socket = vmm_alloc(PAGES_OF(udp_socket_t));
 	memset(socket, 0, sizeof(udp_socket_t));
@@ -98,6 +104,7 @@ udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port) {
 	stack->udp->num_binds++;
 	return socket;
 }
+#endif
 
 void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(udp_header_t)) {

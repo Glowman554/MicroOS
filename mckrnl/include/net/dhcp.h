@@ -50,4 +50,4 @@ void* dhcp_get_options(dhcp_packet_t* packet, uint8_t type);
 
 void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size);
 
-void dhcp_init(network_stack_t* stack);
+void dhcp_init(network_stack_t* stack, resolvable_t* res);

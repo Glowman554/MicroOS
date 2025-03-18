@@ -6,6 +6,18 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
+mac_u sync_route_resolve(network_stack_t* stack, ip_u ip) {
+	#warning "Temporary solution, should not be blocking!"
+	resolvable_t resolvable = { .state = STATE_INIT };
+	while (!is_resolved(&resolvable)) {
+		ipv4_resolve_route(stack, &resolvable, ip);
+	}
+
+	return *cast_buffer(&resolvable, mac_u);
+}
+
+
+
 void icmp_send_echo_request(network_stack_t* stack, ip_u ip) {
 	icmp_message_t icmp = {
 		.type = 8,
@@ -15,7 +27,7 @@ void icmp_send_echo_request(network_stack_t* stack, ip_u ip) {
 	};
 
 	icmp.checksum = ipv4_checksum((uint16_t*) &icmp, sizeof(icmp_message_t));
-	ipv4_send(&stack->icmp->handler, stack, ip, (uint8_t*) &icmp, sizeof(icmp_message_t));
+	ipv4_send(&stack->icmp->handler, stack, ip, sync_route_resolve(stack, ip), (uint8_t*) &icmp, sizeof(icmp_message_t));
 }
 
 bool icmp_send_echo_reqest_and_wait(network_stack_t* stack, ip_u ip) {
@@ -55,7 +67,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 				icmp->type = 0;
 				icmp->checksum = 0;
 				icmp->checksum = ipv4_checksum((uint16_t*) icmp, sizeof(icmp_message_t));
-				ipv4_send(handler, handler->stack, srcIP, (uint8_t*) icmp, sizeof(icmp_message_t));
+				ipv4_send(handler, handler->stack, srcIP, sync_route_resolve(handler->stack, srcIP), (uint8_t*) icmp, sizeof(icmp_message_t));
 			}
 			break;
 		case 3:

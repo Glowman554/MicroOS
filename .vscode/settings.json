@@ -40,8 +40,9 @@
 		"getc.h": "c",
 		"stdbool.h": "c",
 		"stdint.h": "c",
-		"sound.h": "c"
-    },
+		"sound.h": "c",
+		"timer_driver.h": "c"
+	},
     "deno.enable": true,
     "deno.lint": true,
     "deno.unstable": false

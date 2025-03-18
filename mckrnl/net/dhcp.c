@@ -141,12 +141,15 @@ void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	}
 }
 
-void dhcp_init(network_stack_t* stack) {
-	stack->dhcp = vmm_alloc(PAGES_OF(dhpc_provider_t));
-	memset(stack->dhcp, 0, sizeof(dhpc_provider_t));
+void dhcp_init(network_stack_t* stack, resolvable_t* res) {
+	udp_socket_t* socket = udp_connect(stack, res, (ip_u) {.ip = 0xffffffff}, 67);
+	if (is_resolved(res)) {
+		stack->dhcp = vmm_alloc(PAGES_OF(dhpc_provider_t));
+		memset(stack->dhcp, 0, sizeof(dhpc_provider_t));
 
-	stack->dhcp->socket = udp_connect(stack, (ip_u) {.ip = 0xffffffff}, 67);
-	stack->dhcp->socket->local_port = BSWAP16(68);
-	stack->dhcp->socket->recv = dhcp_udp_recv;
+		stack->dhcp->socket = socket;
+		stack->dhcp->socket->local_port = BSWAP16(68);
+		stack->dhcp->socket->recv = dhcp_udp_recv;
+	}
 }
 #endif

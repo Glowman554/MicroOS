@@ -3,6 +3,7 @@
 #include <net/stack.h>
 #include <net/ipv4.h>
 #include <stdbool.h>
+#include <resolvable.h>
 
 typedef struct udp_header {
 	uint16_t src_port;
@@ -16,6 +17,9 @@ typedef struct udp_socket {
 	uint16_t local_port;
 	ip_u remote_ip;
 	ip_u local_ip;
+
+	mac_u route_mac;
+
 	bool listening;
 	network_stack_t* stack;
 
@@ -39,7 +43,7 @@ typedef struct udp_provider {
 void udp_socket_disconnect(udp_socket_t* socket);
 void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size);
 
-udp_socket_t* udp_connect(network_stack_t* stack, ip_u ip, uint16_t port);
+udp_socket_t* udp_connect(network_stack_t* stack, resolvable_t* res, ip_u ip, uint16_t port);
 udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port);
 
 void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);

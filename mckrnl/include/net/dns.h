@@ -2,6 +2,7 @@
 
 #include <net/stack.h>
 #include <net/udp.h>
+#include <resolvable.h>
 
 typedef struct dnshdr {
 	uint16_t id;
@@ -49,4 +50,4 @@ void dns_request(network_stack_t* stack, char* name);
 
 void dns_udp_recv(struct udp_socket* socket, uint8_t* data, int size);
 
-void dns_init(network_stack_t* stack, ip_u dns_server);
+void dns_init(network_stack_t* stack, resolvable_t* res, ip_u dns_server);

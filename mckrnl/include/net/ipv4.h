@@ -4,6 +4,7 @@
 #include <net/etherframe.h>
 #include <stdint.h>
 #include <config.h>
+#include <resolvable.h>
 
 typedef struct ipv4_message {
 	uint8_t header_length : 4;
@@ -36,7 +37,9 @@ typedef struct ipv4_provider {
 	ether_frame_handler_t handler; 
 } ipv4_provider_t;
 
-void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, uint8_t* payload, uint32_t size);
+void ipv4_resolve_route(network_stack_t* stack, resolvable_t* res, ip_u dest_ip);
+
+void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, mac_u route, uint8_t* payload, uint32_t size);
 void ipv4_register(network_stack_t* stack, ipv4_handler_t handler);
 
 uint16_t ipv4_checksum(uint16_t* data, uint32_t size);

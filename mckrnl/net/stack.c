@@ -14,7 +14,14 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-ip_u do_dhcp(nic_driver_t* nic, network_stack_t* stack) {
+void load_dhcp(nic_driver_t* nic, network_stack_t* stack) {
+	resolvable_t resolvable = { .state = STATE_INIT };
+	while (!is_resolved(&resolvable)) {
+		dhcp_init(stack, &resolvable);
+	}
+}
+
+ip_u configure_ip(nic_driver_t* nic, network_stack_t* stack) {
 	resolvable_t resolvable = { .state = STATE_INIT };
 	while (!is_resolved(&resolvable)) {
 		dhcp_request(stack, &resolvable);
@@ -42,6 +49,13 @@ void broadcast_mac(network_stack_t* stack, ip_u gateway) {
 	}
 }
 
+void load_dns(network_stack_t* stack, ip_u dns) {
+	resolvable_t resolvable = { .state = STATE_INIT };
+	while (!is_resolved(&resolvable)) {
+		dns_init(stack, &resolvable, dns);
+	}
+}
+
 void load_network_stack(nic_driver_t* nic) {
 	network_stack_t* stack = vmm_alloc(sizeof(network_stack_t) / 0x1000 + 1);
 	memset(stack, 0, sizeof(network_stack_t));
@@ -54,12 +68,14 @@ void load_network_stack(nic_driver_t* nic) {
 	ipv4_init(stack, (ip_u) {.ip = 0xffffffff}, (ip_u) {.ip = 0xffffffff});
 	icmp_init(stack);
 	udp_init(stack);
+#ifdef TCP
 	tcp_init(stack);
-	dhcp_init(stack);
+#endif
+	load_dhcp(nic, stack);
 
-	ip_u dns = do_dhcp(nic, stack);
+	ip_u dns = configure_ip(nic, stack);
 	broadcast_mac(stack, dns);
 
-	dns_init(stack, dns);
+	load_dns(stack, dns);
 }
 #endif
