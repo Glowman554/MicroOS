@@ -7,13 +7,16 @@
 #ifdef NETWORK_STACK
 
 mac_u sync_route_resolve(network_stack_t* stack, ip_u ip) {
-	#warning "Temporary solution, should not be blocking!"
-	resolvable_t resolvable = { .state = STATE_INIT };
-	while (!is_resolved(&resolvable)) {
-		ipv4_resolve_route(stack, &resolvable, ip);
+	note("sync_route_resolve() called. This function blocks the whole system until the route is resolved and SHOULD NOT be used!");
+
+	async_t async = { .state = STATE_INIT };
+	
+	mac_u route;
+	while (!is_resolved(&async)) {
+		route = ipv4_resolve_route(stack, &async, ip);
 	}
 
-	return *cast_buffer(&resolvable, mac_u);
+	return route;
 }
 
 

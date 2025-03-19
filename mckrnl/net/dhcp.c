@@ -6,8 +6,8 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-void dhcp_request(network_stack_t* stack, resolvable_t* res) {
-	switch (res->state) {
+dhcp_result_t dhcp_request(network_stack_t* stack, async_t* async) {
+	switch (async->state) {
 		case STATE_REQUEST:
 			{
 				dhcp_packet_t packet;
@@ -15,14 +15,14 @@ void dhcp_request(network_stack_t* stack, resolvable_t* res) {
 
 				dhcp_make_packet(stack, &packet, 1, 0x00000000);
 				udp_socket_send(stack->dhcp->socket, (uint8_t*) &packet, sizeof(dhcp_packet_t));
-				res->state = STATE_WAIT;
+				async->state = STATE_WAIT;
 			}
 			break;
 
 		case STATE_WAIT:
 			if (stack->dhcp->completed) {
-				*cast_buffer(res, dhcp_result_t) = stack->dhcp->result;
-				res->state = STATE_DONE;
+				async->state = STATE_DONE;
+				return stack->dhcp->result;
 			}
 			break;
 
@@ -30,9 +30,11 @@ void dhcp_request(network_stack_t* stack, resolvable_t* res) {
 			break;
 
 		default:
-			res->state = STATE_REQUEST;
+		async->state = STATE_REQUEST;
 			break;
 	}
+
+	return (dhcp_result_t) {.ip = 0};
 }
 
 void dhcp_request_ip(network_stack_t* stack, ip_u ip) {
@@ -141,9 +143,9 @@ void dhcp_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	}
 }
 
-void dhcp_init(network_stack_t* stack, resolvable_t* res) {
-	udp_socket_t* socket = udp_connect(stack, res, (ip_u) {.ip = 0xffffffff}, 67);
-	if (is_resolved(res)) {
+void dhcp_init(network_stack_t* stack, async_t* async) {
+	udp_socket_t* socket = udp_connect(stack, async, (ip_u) {.ip = 0xffffffff}, 67);
+	if (is_resolved(async)) {
 		stack->dhcp = vmm_alloc(PAGES_OF(dhpc_provider_t));
 		memset(stack->dhcp, 0, sizeof(dhpc_provider_t));
 

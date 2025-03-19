@@ -36,9 +36,9 @@ void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size) {
 	vmm_free(packet, TO_PAGES(total_size));
 }
 
-udp_socket_t* udp_connect(network_stack_t* stack, resolvable_t* res, ip_u ip, uint16_t port) {
-	ipv4_resolve_route(stack, res, ip);
-	if (is_resolved(res)) {
+udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint16_t port) {
+	mac_u route = ipv4_resolve_route(stack, async, ip);
+	if (is_resolved(async)) {
 		udp_socket_t* socket = vmm_alloc(PAGES_OF(udp_socket_t));
 		memset(socket, 0, sizeof(udp_socket_t));
 
@@ -46,7 +46,7 @@ udp_socket_t* udp_connect(network_stack_t* stack, resolvable_t* res, ip_u ip, ui
 		socket->remote_port = port;
 		socket->local_port = stack->udp->free_port++;
 		socket->local_ip = stack->driver->ip;
-		socket->route_mac = *cast_buffer(res, mac_u);
+		socket->route_mac = route;
 
 		socket->local_port = BSWAP16(socket->local_port);
 		socket->remote_port = BSWAP16(socket->remote_port);

@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <net/stack.h>
 #include <net/etherframe.h>
-#include <resolvable.h>
+#include <async.h>
 
 typedef struct arp_message
 {
@@ -32,9 +32,9 @@ typedef struct arp_provider
 
 void arp_etherframe_recv(ether_frame_handler_t *handler, uint8_t *payload, uint32_t size);
 
-void arp_broadcast_mac(network_stack_t *stack, resolvable_t* res, ip_u ip);
+void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip);
 void arp_request_mac(network_stack_t *stack, ip_u ip);
 mac_u arp_get_mac_from_cache(network_stack_t *stack, ip_u ip);
-void arp_resolve(network_stack_t *stack, resolvable_t* res, ip_u ip);
+mac_u arp_resolve(network_stack_t *stack, async_t* async, ip_u ip);
 
 void arp_init(network_stack_t *stack);

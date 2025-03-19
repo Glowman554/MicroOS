@@ -15,13 +15,13 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 	stack->ipv4->num_handlers++;
 }
 
-void ipv4_resolve_route(network_stack_t* stack, resolvable_t* res, ip_u dest_ip) {
+mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 	ip_u route = dest_ip;
 	if((dest_ip.ip & stack->ipv4->subnet_mask.ip) != (stack->driver->ip.ip & stack->ipv4->subnet_mask.ip)) {
 		route = stack->ipv4->gateway_ip;
 	}
 
-	arp_resolve(stack, res, route);
+	return arp_resolve(stack, async, route);
 }
 
 void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, mac_u route, uint8_t* payload, uint32_t size) {

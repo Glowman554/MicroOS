@@ -15,44 +15,45 @@
 #ifdef NETWORK_STACK
 
 void load_dhcp(nic_driver_t* nic, network_stack_t* stack) {
-	resolvable_t resolvable = { .state = STATE_INIT };
-	while (!is_resolved(&resolvable)) {
-		dhcp_init(stack, &resolvable);
+	async_t async = { .state = STATE_INIT };
+	while (!is_resolved(&async)) {
+		dhcp_init(stack, &async);
 	}
 }
 
 ip_u configure_ip(nic_driver_t* nic, network_stack_t* stack) {
-	resolvable_t resolvable = { .state = STATE_INIT };
-	while (!is_resolved(&resolvable)) {
-		dhcp_request(stack, &resolvable);
+	async_t async = { .state = STATE_INIT };
+	
+	dhcp_result_t result;
+	while (!is_resolved(&async)) {
+		result = dhcp_request(stack, &async);
 	}
 
-	dhcp_result_t* result = cast_buffer(&resolvable, dhcp_result_t);
-	nic->ip = result->ip;
+	nic->ip = result.ip;
 
-	stack->ipv4->gateway_ip = result->gateway;
-	stack->ipv4->subnet_mask = result->subnet;
+	stack->ipv4->gateway_ip = result.gateway;
+	stack->ipv4->subnet_mask = result.subnet;
 
 	debugf("IP: %d.%d.%d.%d", nic->ip.ip_p[0], nic->ip.ip_p[1], nic->ip.ip_p[2], nic->ip.ip_p[3]);
-	debugf("Gateway: %d.%d.%d.%d", result->gateway.ip_p[0], result->gateway.ip_p[1], result->gateway.ip_p[2], result->gateway.ip_p[3]);
-	debugf("Subnet: %d.%d.%d.%d", result->subnet.ip_p[0], result->subnet.ip_p[1], result->subnet.ip_p[2], result->subnet.ip_p[3]);
-	debugf("DNS: %d.%d.%d.%d", result->dns.ip_p[0], result->dns.ip_p[1], result->dns.ip_p[2], result->dns.ip_p[3]);
+	debugf("Gateway: %d.%d.%d.%d", stack->ipv4->gateway_ip.ip_p[0], stack->ipv4->gateway_ip.ip_p[1], stack->ipv4->gateway_ip.ip_p[2], stack->ipv4->gateway_ip.ip_p[3]);
+	debugf("Subnet: %d.%d.%d.%d", stack->ipv4->subnet_mask.ip_p[0], stack->ipv4->subnet_mask.ip_p[1], stack->ipv4->subnet_mask.ip_p[2], stack->ipv4->subnet_mask.ip_p[3]);
+	debugf("DNS: %d.%d.%d.%d", result.dns.ip_p[0], result.dns.ip_p[1], result.dns.ip_p[2], result.dns.ip_p[3]);
 
-	return result->dns;
+	return result.dns;
 }
 
 void broadcast_mac(network_stack_t* stack, ip_u gateway) {
-	resolvable_t resolvable = { .state = STATE_INIT };
+	async_t async = { .state = STATE_INIT };
 
-	while (!is_resolved(&resolvable)) {
-		arp_broadcast_mac(stack, &resolvable, gateway);
+	while (!is_resolved(&async)) {
+		arp_broadcast_mac(stack, &async, gateway);
 	}
 }
 
 void load_dns(network_stack_t* stack, ip_u dns) {
-	resolvable_t resolvable = { .state = STATE_INIT };
-	while (!is_resolved(&resolvable)) {
-		dns_init(stack, &resolvable, dns);
+	async_t async = { .state = STATE_INIT };
+	while (!is_resolved(&async)) {
+		dns_init(stack, &async, dns);
 	}
 }
 

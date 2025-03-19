@@ -247,9 +247,9 @@ dnshdr_t* dns = (dnshdr_t*) data;
 	return;
 }
 
-void dns_init(network_stack_t* stack, resolvable_t* res, ip_u dns_server) {
-	udp_socket_t* socket = udp_connect(stack, res, dns_server, 53);
-	if (is_resolved(res)) {
+void dns_init(network_stack_t* stack, async_t* async, ip_u dns_server) {
+	udp_socket_t* socket = udp_connect(stack, async, dns_server, 53);
+	if (is_resolved(async)) {
 		stack->dns = vmm_alloc(PAGES_OF(dns_provider_t));
 		memset(stack->dns, 0, sizeof(dns_provider_t));
 

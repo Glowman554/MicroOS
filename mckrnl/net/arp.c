@@ -40,10 +40,10 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint3
 	}
 }
 
-void arp_broadcast_mac(network_stack_t *stack, resolvable_t* res, ip_u ip) {
-	arp_resolve(stack, res, ip);
+void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip) {
+	mac_u dest = arp_resolve(stack, async, ip);
 	
-	if (is_resolved(res)) {
+	if (is_resolved(async)) {
 		arp_message_t arp = {
 			.hardware_type = 0x0100,
 			.protocol = 0x0008,
@@ -52,7 +52,7 @@ void arp_broadcast_mac(network_stack_t *stack, resolvable_t* res, ip_u ip) {
 			.command = 0x0200,
 			.src_mac = stack->driver->mac.mac,
 			.src_ip = stack->driver->ip.ip,
-			.dest_mac = cast_buffer(res, mac_u)->mac,
+			.dest_mac = dest.mac,
 			.dest_ip = ip.ip
 		};
 
@@ -87,14 +87,14 @@ mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip) {
 }
 
 
-void arp_resolve(network_stack_t* stack, resolvable_t* res, ip_u ip) {
-	switch (res->state) {
+mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) {
+	switch (async->state) {
 		case STATE_INIT:
 			if (ip.ip == NOIP) {
-				cast_buffer(res, mac_u)->mac = NOMAC;
-				res->state = STATE_DONE;
+				async->state = STATE_DONE;
+				return (mac_u) { .mac = NOMAC };
 			} else {
-				res->state = STATE_REQUEST;
+				async->state = STATE_REQUEST;
 			}
 			break;
 		
@@ -104,10 +104,10 @@ void arp_resolve(network_stack_t* stack, resolvable_t* res, ip_u ip) {
 
 				if (result.mac == NOMAC) {
 					arp_request_mac(stack, ip);
-					res->state = STATE_WAIT;
+					async->state = STATE_WAIT;
 				} else {
-					cast_buffer(res, mac_u)->mac = result.mac;
-					res->state = STATE_DONE;
+					async->state = STATE_DONE;
+					return result;
 				}
 			}
 			break;
@@ -117,8 +117,8 @@ void arp_resolve(network_stack_t* stack, resolvable_t* res, ip_u ip) {
 				mac_u result = arp_get_mac_from_cache(stack, ip);
 
 				if (result.mac != NOMAC) {
-					cast_buffer(res, mac_u)->mac = result.mac;
-					res->state = STATE_DONE;
+					async->state = STATE_DONE;
+					return result;
 				}
 			}
 			break;
@@ -127,7 +127,7 @@ void arp_resolve(network_stack_t* stack, resolvable_t* res, ip_u ip) {
 			break;
 
 		default:
-			res->state = STATE_INIT;
+			async->state = STATE_INIT;
 			break;
 	}
 }

@@ -49,10 +49,10 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 
 udp_socket_t* sync_udp_connect(network_stack_t* stack, ip_u ip, uint16_t port) {
 	#warning "Temporary solution, should not be blocking!"
-	resolvable_t resolvable = { .state = STATE_INIT };
+	async_t async = { .state = STATE_INIT };
 	while (true) {
-		udp_socket_t* socket = udp_connect(stack, &resolvable, ip, port);
-		if (is_resolved(&resolvable)) {
+		udp_socket_t* socket = udp_connect(stack, &async, ip, port);
+		if (is_resolved(&async)) {
 			return socket;
 		}
 	}
