@@ -181,8 +181,9 @@
 			"arguments": [
 				"0x17",
 				"nic",
+				"&async",
 				"ip",
-				"result (return)"
+				"&route"
 			]
 		},
 		{
@@ -337,6 +338,16 @@
 				"0x2b",
 				"pid",
 				"term"
+			]
+		},
+		{
+			"name": "SYS_IPV4_RESOLVE_ROUTE",
+			"arguments": [
+				"0x2c",
+				"nic",
+				"&async",
+				"ip",
+				"&mac (return)"
 			]
 		}
 	]

@@ -41,7 +41,12 @@
 		"stdbool.h": "c",
 		"stdint.h": "c",
 		"sound.h": "c",
-		"timer_driver.h": "c"
+		"timer_driver.h": "c",
+		"icmp.h": "c",
+		"stdlib.h": "c",
+		"ipv4.h": "c",
+		"etherframe.h": "c",
+		"stack.h": "c"
 	},
     "deno.enable": true,
     "deno.lint": true,

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <sys/net.h>
+#include <net/icmp.h>
 
 
 int main(int argc, char* argv[], char* envp[]) {
@@ -61,7 +62,7 @@ int main(int argc, char* argv[], char* envp[]) {
 	for (int i = 0; i < num_ping; i++) {
 		char out[0xff] = { 0 };
 		format_ip(ip, out);
-		printf("[%s] %d / %d: %s\n", out, i + 1, num_ping, icmp_ping(nic_id, ip) ? "got response" : "no response");
+		printf("[%s] %d / %d: %s\n", out, i + 1, num_ping, sync_icmp_ping(nic_id, ip) ? "got response" : "no response");
 	}
 
     return 0;

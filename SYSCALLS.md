@@ -24,7 +24,7 @@
 | SYS_VMODE | 0x14 | mode (return) | - | - | - | - |
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - | - | - |
-| SYS_ICMP | 0x17 | nic | ip | result (return) | - | - |
+| SYS_ICMP | 0x17 | nic | &async | ip | &route | - |
 | SYS_DNS_A | 0x18 | nic | domain | result (return) | - | - |
 | SYS_SOCK_CONNECT | 0x1a | nic | ip | port | socket_type / socket_id (return) | - |
 | SYS_SOCK_DISCONNECT | 0x1b | socket_id | - | - | - | - |
@@ -44,3 +44,4 @@
 | SYS_TIME_MS | 0x29 | ms (return)  | - | - | - | - |
 | SYS_THREAD | 0x2a | entry | pid (return) | - | - | - |
 | SYS_SET_TERM | 0x2b | pid | term | - | - | - |
+| SYS_IPV4_RESOLVE_ROUTE | 0x2c | nic | &async | ip | &mac (return) | - |

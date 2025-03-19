@@ -74,6 +74,9 @@ void init_syscalls() {
 #ifdef THREADS
 	register_syscall(SYS_THREAD_ID, sys_thread);
 #endif
+#ifdef NETWORK_STACK
+	register_syscall(SYS_IPV4_RESOLVE_ROUTE_ID, sys_ipv4_resolve_route);
+#endif
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }
