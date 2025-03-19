@@ -130,6 +130,8 @@ mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) {
 			async->state = STATE_INIT;
 			break;
 	}
+
+	return (mac_u) { .mac = NOMAC };
 }
 
 void arp_init(network_stack_t* stack) {

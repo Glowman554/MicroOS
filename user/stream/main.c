@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <sys/net.h>
+#include <net/socket.h>
 #include <sys/spawn.h>
 #include <sys/graphics.h>
 #include <assert.h>
@@ -68,17 +68,17 @@ int main(int argc, char* argv[]) {
 	}
 
 	ip_u ip = parse_ip(ip_str);
-	int sock = connect(nic_id, SOCKET_UDP, ip, 9999);
+	int sock = sync_connect(nic_id, SOCKET_UDP, ip, 9999);
 
-    uint16_t cheksum = 0;
+    uint16_t checksum = 0;
 
     while (true) {
         uint8_t buffer[FB_SIZE] = { 0 };
         vpeek(0, buffer, FB_SIZE);
 
         uint16_t new_checksum = calculate_checksum(buffer, sizeof(buffer));
-        if (cheksum != new_checksum) {
-            cheksum = new_checksum;
+        if (checksum != new_checksum) {
+            checksum = new_checksum;
             send(sock, buffer, sizeof(buffer));
         }
         yield();

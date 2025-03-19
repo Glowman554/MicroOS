@@ -47,28 +47,28 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 }
 #endif
 
-udp_socket_t* sync_udp_connect(network_stack_t* stack, ip_u ip, uint16_t port) {
-	#warning "Temporary solution, should not be blocking!"
-	async_t async = { .state = STATE_INIT };
-	while (true) {
-		udp_socket_t* socket = udp_connect(stack, &async, ip, port);
-		if (is_resolved(&async)) {
-			return socket;
-		}
-	}
-}
-
-socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint16_t port) {
+socket_t* socket_create(int socket_type) {
 	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
 	memset(socket, 0, sizeof(socket_t));
 	socket->socket_id = socket_manager_alloc();
 	socket->socket_type = socket_type;
 
+	socket_manager_register(socket);
+
+	return socket;
+}
+
+socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port) {
 	switch (socket_type) {
 		case SOCKET_UDP:
-			socket->udp_socket = sync_udp_connect(stack, ip, port);
-			socket->udp_socket->data = socket;
-			socket->udp_socket->recv = socket_udp_recv;
+			udp_socket_t* udp_socket = udp_connect(stack, async, ip, port);
+			if (is_resolved(async)) {
+				socket_t* socket = socket_create(SOCKET_UDP);
+				socket->udp_socket = udp_socket;
+				socket->udp_socket->data = socket;
+				socket->udp_socket->recv = socket_udp_recv;
+				return socket;
+			}
 			break;
 		#ifdef TCP
 		case SOCKET_TCP:
@@ -81,9 +81,7 @@ socket_t* socket_connect(network_stack_t* stack, int socket_type, ip_u ip, uint1
 			invalid();
 	}
 
-	socket_manager_register(socket);
-
-	return socket;
+	return NULL;
 }
 
 void socket_disconnect(socket_t* socket) {

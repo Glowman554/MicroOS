@@ -17,14 +17,16 @@ void sys_connect_dealloc(void* resource) {
 cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) {
 	assert(regs->ebx < num_nic_drivers);
 
-	NOSHED(
-		regs->esi = socket_connect((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, regs->esi, (ip_u) regs->ecx, regs->edx)->socket_id;
-	);
+	socket_t* socket = socket_connect((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, (async_t*) regs->ecx, regs->edi, (ip_u) regs->edx, regs->esi);
 
-	resource_register_self((resource_t) {
-		.dealloc = sys_connect_dealloc,
-		.resource = socket_manager_find(regs->esi)
-	});
+	if (is_resolved((async_t*) regs->ecx)) {
+		regs->edi = socket->socket_id;
+
+		resource_register_self((resource_t) {
+			.dealloc = sys_connect_dealloc,
+			.resource = socket_manager_find(regs->esi)
+		});
+	}
 
 	return regs;
 }

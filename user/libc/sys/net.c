@@ -14,9 +14,9 @@ ip_u dns_resolve_A(int nic, const char* domain) {
 	return (ip_u) {.ip = ret};
 }
 
-int connect(int nic, int type, ip_u ip, uint16_t port) {
+int connect(int nic, async_t* async, int type, ip_u ip, uint16_t port) {
 	int ret;
-	asm volatile("int $0x30" : "=S"(ret) : "a"(SYS_SOCK_CONNECT_ID), "b"(nic), "c"(ip), "d"(port), "S"(type));
+	asm volatile("int $0x30" : "D="(ret) : "a"(SYS_SOCK_CONNECT_ID), "b"(nic), "c"(async), "d"(ip), "S"(port), "D"(type));
 	return ret;
 }
 

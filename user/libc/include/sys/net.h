@@ -14,7 +14,7 @@ enum socket_type_e {
 	SOCKET_TCP
 };
 
-int connect(int nic, int type, ip_u ip, uint16_t port);
+int connect(int nic, async_t* async, int type, ip_u ip, uint16_t port);
 void disconnect(int sock);
 void send(int sock, uint8_t* data, int size);
 int recv(int sock, uint8_t* data, int size);

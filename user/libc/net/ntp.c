@@ -4,8 +4,10 @@
 #include <buildin/unix_time.h>
 #include <assert.h>
 
+#include <net/socket.h>
+
 __libc_time_t ntp_time(int nic, ip_u sv) {
-	int socket = connect(nic, SOCKET_UDP, sv, 123);
+	int socket = sync_connect(nic, SOCKET_UDP, sv, 123);
 
 	ntp_packet_t packet;
 	memset(&packet, 0, sizeof(ntp_packet_t));

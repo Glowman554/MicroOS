@@ -200,6 +200,7 @@
 			"arguments": [
 				"0x1a",
 				"nic",
+				"&async",
 				"ip",
 				"port",
 				"socket_type / socket_id (return)"
