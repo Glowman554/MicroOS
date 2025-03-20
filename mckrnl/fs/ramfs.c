@@ -34,7 +34,7 @@ ramfs_node_t* ramfs_find(char* path, ramfs_node_t* current) {
 char* ramfs_split_path(char* path, char* out) {
 	char buffer[128] = { 0 };
 	char* next = path;
-	char* to_create;
+	char* to_create = NULL;
 	while (*(next = copy_until('/', next, buffer))) {
 		to_create = next;
 	}

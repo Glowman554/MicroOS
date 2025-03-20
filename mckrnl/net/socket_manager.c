@@ -61,13 +61,15 @@ socket_t* socket_create(int socket_type) {
 socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port) {
 	switch (socket_type) {
 		case SOCKET_UDP:
-			udp_socket_t* udp_socket = udp_connect(stack, async, ip, port);
-			if (is_resolved(async)) {
-				socket_t* socket = socket_create(SOCKET_UDP);
-				socket->udp_socket = udp_socket;
-				socket->udp_socket->data = socket;
-				socket->udp_socket->recv = socket_udp_recv;
-				return socket;
+			{
+				udp_socket_t* udp_socket = udp_connect(stack, async, ip, port);
+				if (is_resolved(async)) {
+					socket_t* socket = socket_create(SOCKET_UDP);
+					socket->udp_socket = udp_socket;
+					socket->udp_socket->data = socket;
+					socket->udp_socket->recv = socket_udp_recv;
+					return socket;
+				}
 			}
 			break;
 		#ifdef TCP

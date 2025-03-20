@@ -129,7 +129,7 @@ int ReadKBByte() {
 			case 2:
 				{
 					send_state = 0;
-					char ret;
+					char ret = 0;
 					switch (arrow) {
 						case 1:
 							ret = 'A';

@@ -39,7 +39,7 @@ int render_terms(task_list_t* list, int amount, int offset) {
 	return MAX(max, 4);
 }
 
-int render_names(task_list_t* list, int amount, int offset) {
+void render_names(task_list_t* list, int amount, int offset) {
 	draw_string(offset, 1, "name", FOREGROUND_WHITE | BACKGROUND_BLACK);
 	for (int i = 0; i < amount; i++) {
 		draw_string(offset, i + 2, list[i].name, FOREGROUND_WHITE | BACKGROUND_BLACK);
