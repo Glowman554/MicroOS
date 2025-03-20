@@ -13,7 +13,6 @@
 
 // Network
 #define SOCK_OFFSET 5
-#define HOSTNAME "MicroOS"
 // End Network
 
 // Scheduler

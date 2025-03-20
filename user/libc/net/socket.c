@@ -22,3 +22,22 @@ int sync_connect(int nic, int type, ip_u ip, uint16_t port) {
     
     return socket;
 }
+
+int sync_recv(int sock, uint8_t* data, int size) {
+    async_t async = { .state = STATE_INIT };
+    
+    int bytes_received = 0;
+    
+    int timeout = 0;
+    while (bytes_received == 0) {
+        bytes_received = recv(sock, &async, data, size);
+
+        sleep_ms(1);
+        if (timeout++ > TIMEOUT) {
+            printf("socket: Timeout while receiving\n");
+            abort();
+        }
+    }
+    
+    return bytes_received;
+}

@@ -14,7 +14,7 @@ __libc_time_t ntp_time(int nic, ip_u sv) {
 	*((char*) &packet) = 0x1b;
 	send(socket, (uint8_t*) &packet, sizeof(packet));
 	
-	assert(recv(socket, (uint8_t*) &packet, sizeof(ntp_packet_t)) == sizeof(ntp_packet_t));
+	assert(sync_recv(socket, (uint8_t*) &packet, sizeof(ntp_packet_t)) == sizeof(ntp_packet_t));
 	disconnect(socket);
 
 	long long unix_time = (BSWAP32(packet.txTm_s) - 2208988800);

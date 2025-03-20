@@ -132,13 +132,13 @@ cpu_registers_t* e1000_interrupt(cpu_registers_t* regs, void* data) {
 	} else if(status & 0x10) {
 		debugf("e1000: Good threshold");
 	} else if(status & 0x80) {
-		e1000_recieve(driver);
+		e1000_receive(driver);
 	}
 
 	return regs;
 }
 
-void e1000_recieve(e1000_driver_t* driver) {
+void e1000_receive(e1000_driver_t* driver) {
 	while(driver->rx_descs[driver->rx_cur]->status & 0x1) {
 		uint8_t* data = (uint8_t*) (uint32_t) driver->rx_descs[driver->rx_cur]->addr;
 		uint16_t size = driver->rx_descs[driver->rx_cur]->length;

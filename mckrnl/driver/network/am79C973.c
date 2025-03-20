@@ -118,7 +118,7 @@ void am79C973_init(driver_t* driver) {
 
 void am79C973_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
 	am79C973_driver_t* am_driver = (am79C973_driver_t*) driver;
-	am_driver->init_block->logical_address = driver->ip.ip;
+	am_driver->init_block->logical_address = driver->ip_config.ip.ip;
 
 	uint16_t register_data_port = am_driver->base_port + 0x10;
 	uint16_t register_address_port = am_driver->base_port + 0x12;

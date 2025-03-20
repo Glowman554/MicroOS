@@ -47,10 +47,6 @@
                         {
                             "name": "SOCK_OFFSET",
                             "value": 5
-                        },
-                        {
-                            "name": "HOSTNAME",
-                            "value": "MicroOS"
                         }
                     ]
                 }

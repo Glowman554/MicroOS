@@ -14,6 +14,13 @@ typedef union mac {
 	uint64_t mac;
 } mac_u;
 
+typedef struct ip_configuration {
+	ip_u ip;
+	ip_u subnet_mask;
+	ip_u gateway_ip;
+	ip_u dns_ip;
+} ip_configuration_t;
+
 #define NOMAC 0xFFFFFFFFFFFF
 #define NOIP 0xFFFFFFFF
 
@@ -23,7 +30,7 @@ typedef struct nic_driver {
 	void (*send)(struct nic_driver* driver, uint8_t* data, uint32_t len);
 	void (*recv)(struct nic_driver* driver, uint8_t* data, uint32_t len); // this is a callback function CALLED BY THE DRIVER!
 
-	ip_u ip;
+	ip_configuration_t ip_config;
 	mac_u mac;
 } nic_driver_t;
 

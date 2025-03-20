@@ -45,7 +45,7 @@ udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 		socket->remote_ip = ip;
 		socket->remote_port = port;
 		socket->local_port = stack->udp->free_port++;
-		socket->local_ip = stack->driver->ip;
+		socket->local_ip = stack->driver->ip_config.ip;
 		socket->route_mac = route;
 
 		socket->local_port = BSWAP16(socket->local_port);

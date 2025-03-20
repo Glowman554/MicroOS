@@ -32,8 +32,6 @@ typedef struct ipv4_handler {
 typedef struct ipv4_provider {
 	ipv4_handler_t* handlers;
 	int num_handlers;
-	ip_u gateway_ip;
-	ip_u subnet_mask;
 	ether_frame_handler_t handler; 
 } ipv4_provider_t;
 
@@ -46,4 +44,4 @@ uint16_t ipv4_checksum(uint16_t* data, uint32_t size);
 
 void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size);
 
-void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask);
+void ipv4_init(network_stack_t* stack);

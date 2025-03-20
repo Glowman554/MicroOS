@@ -33,7 +33,7 @@ extern socket_manager_t* global_socket_manager;
 socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port);
 void socket_disconnect(socket_t* socket);
 void socket_send(socket_t* socket, uint8_t* data, uint32_t size);
-int socket_recv(socket_t* socket, uint8_t* data, uint32_t size);
+int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size);
 
 void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size);
 

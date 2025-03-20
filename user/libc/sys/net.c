@@ -28,9 +28,9 @@ void send(int sock, uint8_t* data, int size) {
 	asm volatile("int $0x30" :: "a"(SYS_SOCK_SEND_ID), "b"(sock), "c"(data), "d"(size));
 }
 
-int recv(int sock, uint8_t* data, int size) {
+int recv(int sock, async_t* async, uint8_t* data, int size) {
 	int ret;
-	asm volatile("int $0x30" : "=S"(ret) : "a"(SYS_SOCK_RECV_ID), "b"(sock), "c"(data), "d"(size));
+	asm volatile("int $0x30" : "=D"(ret) : "a"(SYS_SOCK_RECV_ID), "b"(sock), "c"(async), "d"(data), "S"(size));
 	return ret;
 }
 

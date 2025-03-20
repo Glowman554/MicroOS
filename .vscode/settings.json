@@ -48,7 +48,13 @@
 		"etherframe.h": "c",
 		"stack.h": "c",
 		"in.h": "c",
-		"inet.h": "c"
+		"inet.h": "c",
+		"socket": "c",
+		"pci_bar.h": "c",
+		"mmio.h": "c",
+		"e1000.h": "c",
+		"devfs.h": "c",
+		"nic_driver.h": "c"
 	},
     "deno.enable": true,
     "deno.lint": true,

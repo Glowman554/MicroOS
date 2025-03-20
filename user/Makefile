@@ -36,6 +36,7 @@ all:
 	make -C install prog
 	make -C lminst prog
 	make -C touch prog
+	make -C dhcp prog
 
 clean:
 	make -C libc clean
@@ -73,6 +74,7 @@ clean:
 	make -C install clean
 	make -C lminst clean
 	make -C touch clean
+	make -C dhcp clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -110,3 +112,4 @@ compile_flags.txt:
 	make -C install compile_flags.txt
 	make -C lminst compile_flags.txt
 	make -C touch compile_flags.txt
+	make -C dhcp compile_flags.txt

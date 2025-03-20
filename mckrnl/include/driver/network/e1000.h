@@ -138,7 +138,7 @@ void e1000_init(driver_t* driver);
 void e1000_send(nic_driver_t* driver, uint8_t* data, uint32_t size);
 
 cpu_registers_t* e1000_interrupt(cpu_registers_t* regs, void* data);
-void e1000_recieve(e1000_driver_t* driver);
+void e1000_receive(e1000_driver_t* driver);
 mac_u e1000_get_mac(e1000_driver_t* driver);
 
 void e1000_pci_found(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function);

@@ -29,7 +29,7 @@
 | SYS_SOCK_CONNECT | 0x1a | nic | &async | ip | port | socket_type / socket_id (return) |
 | SYS_SOCK_DISCONNECT | 0x1b | socket_id | - | - | - | - |
 | SYS_SOCK_SEND | 0x1c | socket_id | &data | size | - | - |
-| SYS_SOCK_RECV | 0x1d | socket_id | &data | size | bytes (return) | - |
+| SYS_SOCK_RECV | 0x1d | socket_id | &async | &data | size | bytes (return) |
 | SYS_SOUND_RUN | 0x1e | &coro | &context | - | - | - |
 | SYS_TIME | 0x1f | time (return) | - | - | - | - |
 | SYS_SET_COLOR | 0x20 | color | background | - | - | - |

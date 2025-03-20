@@ -14,14 +14,14 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint3
 
 	arp_message_t* arp = (arp_message_t*) payload;
 	if (arp->hardware_type == 0x0100) {
-		if(arp->protocol == 0x0008 && arp->hardware_address_size == 6 && arp->protocol_address_size == 4 && arp->dest_ip == handler->stack->driver->ip.ip) {
+		if(arp->protocol == 0x0008 && arp->hardware_address_size == 6 && arp->protocol_address_size == 4 && arp->dest_ip == handler->stack->driver->ip_config.ip.ip) {
 			switch (arp->command) {
 				case 0x0100: // request
 					{
 						arp->command = 0x0200;
 						arp->dest_ip = arp->src_ip;
 						arp->dest_mac = arp->src_mac;
-						arp->src_ip = handler->stack->driver->ip.ip;
+						arp->src_ip = handler->stack->driver->ip_config.ip.ip;
 						arp->src_mac = handler->stack->driver->mac.mac;
 						etherframe_send(&handler->stack->arp->handler, handler->stack, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
 					}
@@ -51,7 +51,7 @@ void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip) {
 			.protocol_address_size = 4,
 			.command = 0x0200,
 			.src_mac = stack->driver->mac.mac,
-			.src_ip = stack->driver->ip.ip,
+			.src_ip = stack->driver->ip_config.ip.ip,
 			.dest_mac = dest.mac,
 			.dest_ip = ip.ip
 		};
@@ -68,7 +68,7 @@ void arp_request_mac(network_stack_t* stack, ip_u ip) {
 		.protocol_address_size = 4,
 		.command = 0x0100,
 		.src_mac = stack->driver->mac.mac,
-		.src_ip = stack->driver->ip.ip,
+		.src_ip = stack->driver->ip_config.ip.ip,
 		.dest_mac = NOMAC,
 		.dest_ip = ip.ip
 	};

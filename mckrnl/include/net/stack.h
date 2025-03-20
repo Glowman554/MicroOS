@@ -13,17 +13,11 @@ typedef struct network_stack {
 #ifdef TCP
 	struct tcp_provider* tcp;
 #endif
-	struct dhcp_provider* dhcp;
-	struct ntp_provider* ntp;
 	struct dns_provider* dns;
 	nic_driver_t* driver;
 } network_stack_t;
 
 void load_network_stack(nic_driver_t* nic);
-
-// #include <net/etherframe.h>
-// #include <net/arp.h>
-// #include <net/ipv4.h>
 
 
 #define BSWAP16(n) (((n & 0x00FF) << 8) | ((n & 0xFF00) >> 8))

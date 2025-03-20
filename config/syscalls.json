@@ -227,6 +227,7 @@
 			"arguments": [
 				"0x1d",
 				"socket_id",
+				"&async",
 				"&data",
 				"size",
 				"bytes (return)"

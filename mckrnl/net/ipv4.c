@@ -17,8 +17,8 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 
 mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 	ip_u route = dest_ip;
-	if((dest_ip.ip & stack->ipv4->subnet_mask.ip) != (stack->driver->ip.ip & stack->ipv4->subnet_mask.ip)) {
-		route = stack->ipv4->gateway_ip;
+	if((dest_ip.ip & stack->driver->ip_config.ip.ip) != (stack->driver->ip_config.ip.ip & stack->driver->ip_config.subnet_mask.ip)) {
+		route = stack->driver->ip_config.gateway_ip;
 	}
 
 	return arp_resolve(stack, async, route);
@@ -43,7 +43,7 @@ void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, ma
 	ipv4->time_to_live = 0x40;
 	ipv4->protocol = handler->protocol;
 	ipv4->destination_address = dest_ip.ip;
-	ipv4->source_address = stack->driver->ip.ip;
+	ipv4->source_address = stack->driver->ip_config.ip.ip;
 
 	ipv4->header_checksum = 0;
 	ipv4->header_checksum = ipv4_checksum((uint16_t*) ipv4, sizeof(ipv4_message_t));
@@ -62,7 +62,7 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload,
 
 	ipv4_message_t* ipv4 = (ipv4_message_t*) payload;
 
-	if (ipv4->destination_address == handler->stack->driver->ip.ip || ipv4->destination_address == 0xFFFFFFFF || handler->stack->driver->ip.ip == 0) {
+	if (ipv4->destination_address == handler->stack->driver->ip_config.ip.ip || ipv4->destination_address == 0xFFFFFFFF || handler->stack->driver->ip_config.ip.ip == 0) {
 		int length = ipv4->total_length;
 		if (length > size) {
 			length = size;
@@ -100,7 +100,7 @@ uint16_t ipv4_checksum(uint16_t* data, uint32_t size) {
 	return ((~temp & 0xFF00) >> 8) | ((~temp & 0x00FF) << 8);
 }
 
-void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask) {
+void ipv4_init(network_stack_t* stack) {
 	stack->ipv4 = vmm_alloc(PAGES_OF(ipv4_provider_t));
 	memset(stack->ipv4, 0, sizeof(ipv4_provider_t));
 
@@ -108,7 +108,5 @@ void ipv4_init(network_stack_t* stack, ip_u gateway_ip, ip_u subnet_mask) {
 	stack->ipv4->handler.stack = stack;
 	stack->ipv4->handler.recv = ipv4_etherframe_recv;
 	etherframe_register(stack, stack->ipv4->handler);
-	stack->ipv4->gateway_ip = gateway_ip;
-	stack->ipv4->subnet_mask = subnet_mask;
 }
 #endif

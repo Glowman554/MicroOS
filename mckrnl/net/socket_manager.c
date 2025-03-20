@@ -120,24 +120,35 @@ void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
 	}
 }
 
-int socket_recv(socket_t* socket, uint8_t* data, uint32_t size) {
-	NET_TIMEOUT(
-		if (socket->num_bytes_received != 0) {
+int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size) {
+	switch (async->state) {
+		case STATE_WAIT:
+			if (socket->num_bytes_received != 0) {
 
-		int num_bytes_to_copy = socket->num_bytes_received;
+				int num_bytes_to_copy = socket->num_bytes_received;
+		
+				if (num_bytes_to_copy > size) {
+					num_bytes_to_copy = size;
+				}
+		
+				memcpy(data, socket->received_data, num_bytes_to_copy);
+		
+				socket->num_bytes_received -= num_bytes_to_copy;
+				memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
+		
+				async->state = STATE_DONE;
 
-		if (num_bytes_to_copy > size) {
-			num_bytes_to_copy = size;
-		}
+				return num_bytes_to_copy;
+			}
+			break;
+			
+		case STATE_DONE:
+			break;
 
-		memcpy(data, socket->received_data, num_bytes_to_copy);
-
-		socket->num_bytes_received -= num_bytes_to_copy;
-		memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
-
-		return num_bytes_to_copy;
-		}
-	);
+		default:
+			async->state = STATE_WAIT;
+			break;
+	}
 	
 	return 0;
 }

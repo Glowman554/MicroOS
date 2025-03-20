@@ -12,5 +12,12 @@ typedef union mac {
 	uint64_t mac;
 } mac_u;
 
+typedef struct ip_configuration {
+	ip_u ip;
+	ip_u subnet_mask;
+	ip_u gateway_ip;
+	ip_u dns_ip;
+} ip_configuration_t;
+
 void format_ip(ip_u ip, char* out);
 ip_u parse_ip(const char* in);
