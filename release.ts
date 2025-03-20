@@ -26,5 +26,8 @@ await new Webhook(webhookUrl)
             .addField({ name: "libs", value: values.get("libs")! })
             .addField({ name: "message", value: values.get("message")! })
             .addField({ name: "screenshot", value: values.get("screenshot")! })
+            .addField({ name: "kernel", value: values.get("kernel")! })
+            .addField({ name: "symbols", value: values.get("symbols")! })
+            .addField({ name: "initrd", value: values.get("initrd")! })
             .setImage({ url: values.get("screenshot")! }),
     ).send();

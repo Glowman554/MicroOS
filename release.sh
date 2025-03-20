@@ -18,7 +18,7 @@ function uploadFile {
 }
 
 function release {
-    deno run -A release.ts screenshot::$(uploadFile microos.jpg) name::$1 cdrom::$(uploadFile cdrom.iso) cdromMinimal::$(uploadFile cdrom.minimal.iso) libs::$(uploadFile libs.zip) message::"$2"
+    deno run -A release.ts screenshot::$(uploadFile microos.jpg) name::$1 cdrom::$(uploadFile cdrom.iso) cdromMinimal::$(uploadFile cdrom.minimal.iso) libs::$(uploadFile libs.zip) message::"$2" kernel::$(uploadFile mckrnl/mckrnl.elf) symbols::$(uploadFile mckrnl/mckrnl.syms) initrd::$(uploadFile res/initrd.saf)
 }
 
 applyPreset $1

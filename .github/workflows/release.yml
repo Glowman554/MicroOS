@@ -35,3 +35,6 @@ jobs:
           cdrom.iso
           cdrom.minimal.iso
           libs.zip
+          mckrnl/mckrnl.elf
+          mckrnl/mckrnl.syms
+          res/initrd.saf
