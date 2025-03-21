@@ -57,7 +57,7 @@ void set_gdt(uint64_t* gdt) {
 
 void set_tss(int index, uint32_t val) { 
 	gdt_ptr gdtp;
-	asm volatile("sgdt %0" : : "m" (gdtp));
+	asm volatile("sgdt %0" : "=m" (gdtp));
 
 	uint32_t* tss = (uint32_t*)((((uint64_t*) gdtp.pointer)[5] >> 16) & 0xffffffLL);
 	tss[index] = val;

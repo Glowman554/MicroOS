@@ -11,6 +11,7 @@ dump.pcap
 Cargo.lock
 compile_flags.txt
 libs.zip
+test_out
 
 user/fasm/fasm
 
