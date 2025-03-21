@@ -11,7 +11,7 @@ char* strcpy(char* dest, const char* src) {
 	return 0;
 }
 
-int strlen(char* src) {
+int strlen(const char* src) {
 	int i = 0;
 	while (*src++)
 		i++;
@@ -134,7 +134,7 @@ int memcmp(const void * _s1, const void* _s2, unsigned int n) {
 	return 0;
 }
 
-int strcmp(char* str1, char* str2) {
+int strcmp(const char* str1, const char* str2) {
 	while (*str1 && *str2) {
 		if (*str1 != *str2)
 			return *str1 - *str2;
@@ -158,7 +158,7 @@ char* copy_until(char until, char* src, char* dest) {
 #define isupper(c) (c >= 'A' && c <= 'Z')
 #define tolower(c) (isupper(c) ? c - ('A' - 'a') : c)
 
-int strcasecmp(char* str1, char* str2) {
+int strcasecmp(const char* str1, const char* str2) {
 	while (*str1 && (tolower(*str1) == tolower(*str2))) {
 		++str1;
 		++str2;

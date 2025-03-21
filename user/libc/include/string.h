@@ -3,10 +3,10 @@
 #include <stdint.h>
 
 char* strcpy(char* dest, const char* src);
-int strlen(char* src);
+int strlen(const char* src);
 int strnlen(const char *s, int maxlen);
 char* strcat(char* dest, const char* src); // X
-int strcmp(char* str1, char* str2); // x
+int strcmp(const char* str1, const char* str2); // x
 char* strchr(const char* str, int chr);
 
 int sprintf(char *buf, const char *fmt, ...);
@@ -18,9 +18,9 @@ void* memmove(void* dest, const void* src, uint32_t len);
 
 char* strtok(char* src_string, char* delim);
 
-int strncmp(char* str1, char* str2, int n);
+int strncmp(const char* str1, const char* str2, int n);
 
-char* strndup(char* str, int n);
+char* strndup(const char* str, int n);
 
 char *strstr(char* haystack, char* needle);
 

@@ -11,7 +11,7 @@ char* strcpy(char* dest, const char* src) {
 	return 0;
 }
 
-int strlen(char* src) {
+int strlen(const char* src) {
 	int i = 0;
 	while (*src++)
 		i++;
@@ -20,9 +20,10 @@ int strlen(char* src) {
 
 int strnlen(const char *s, int maxlen) {
 	int i;
-	for (i = 0; i < maxlen; ++i)
-	if (s[i] == '\0')
-		break;
+	for (i = 0; i < maxlen; ++i) {
+		if (s[i] == '\0')
+			break;
+	}
 	return i;
 }
 
@@ -96,7 +97,7 @@ void* memmove(void* dest, const void* src, uint32_t len) {
 	return dest;
 }
 
-int strcmp(char* str1, char* str2) {
+int strcmp(const char* str1, const char* str2) {
 	while (*str1 && *str2) {
 		if (*str1 != *str2)
 			return *str1 - *str2;
@@ -161,7 +162,7 @@ char* strtok(char* src_string, char* delim) {
 	}
 }
 
-int strncmp(char* str1, char* str2, int n) {
+int strncmp(const char* str1, const char* str2, int n) {
 	while (n && *str1 && (*str1 == *str2)) {
 		++str1;
 		++str2;
@@ -174,7 +175,7 @@ int strncmp(char* str1, char* str2, int n) {
 	}
 }
 
-char* strndup(char* str, int n) {
+char* strndup(const char* str, int n) {
     int len = strlen(str);
     int copy_len = len < n ? len : n;
     char* new_str = malloc(copy_len + 1);
