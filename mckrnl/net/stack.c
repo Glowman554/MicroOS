@@ -8,7 +8,6 @@
 #include <net/icmp.h>
 #include <net/udp.h>
 #include <net/tcp.h>
-#include <net/dns.h>
 
 #include <config.h>
 #ifdef NETWORK_STACK

@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
 			hostname = argv[idx + 1];
 			idx++;
 		} else if (strcmp(argv[idx], "-h") == 0) {
-			printf("Usage: %s [-i <nic_id>] [-n] <hostname>\n", argv[0]);
+			printf("Usage: %s [-i <nic_id>] [-n <hostname>]\n", argv[0]);
 			exit(0);
 		} 
 		idx++;

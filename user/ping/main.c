@@ -5,6 +5,7 @@
 
 #include <sys/net.h>
 #include <net/icmp.h>
+#include <net/dns.h>
 
 
 int main(int argc, char* argv[], char* envp[]) {

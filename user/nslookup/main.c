@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/net.h>
+#include <net/dns.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char* domain = NULL;

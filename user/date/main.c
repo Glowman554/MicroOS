@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <net/ntp.h>
 #include <sys/net.h>
+#include <net/dns.h>
 #include <string.h>
 #include <stdlib.h>
 

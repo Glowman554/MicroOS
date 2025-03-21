@@ -8,12 +8,6 @@ void icmp_ping(int nic, async_t* async, ip_u ip, mac_u route) {
 	asm volatile("int $0x30" :: "a"(SYS_ICMP_ID), "b"(nic), "c"(async), "d"(ip), "S"(&route));
 }
 
-ip_u dns_resolve_A(int nic, const char* domain) {
-	uint32_t ret;
-	asm volatile("int $0x30" : "=d"(ret) : "a"(SYS_DNS_A_ID), "b"(nic), "c"(domain));
-	return (ip_u) {.ip = ret};
-}
-
 int connect(int nic, async_t* async, int type, ip_u ip, uint16_t port) {
 	int ret;
 	asm volatile("int $0x30" : "=D"(ret) : "a"(SYS_SOCK_CONNECT_ID), "b"(nic), "c"(async), "d"(ip), "S"(port), "D"(type));

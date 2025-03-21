@@ -187,15 +187,6 @@
 			]
 		},
 		{
-			"name": "SYS_DNS_A",
-			"arguments": [
-				"0x18",
-				"nic",
-				"domain",
-				"result (return)"
-			]
-		},
-		{
 			"name": "SYS_SOCK_CONNECT",
 			"arguments": [
 				"0x1a",

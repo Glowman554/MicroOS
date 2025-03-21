@@ -25,7 +25,6 @@
 | SYS_VPOKE | 0x15 | offset | &data | range | - | - |
 | SYS_VCURSOR | 0x16 | x | y | - | - | - |
 | SYS_ICMP | 0x17 | nic | &async | ip | &route | - |
-| SYS_DNS_A | 0x18 | nic | domain | result (return) | - | - |
 | SYS_SOCK_CONNECT | 0x1a | nic | &async | ip | port | socket_type / socket_id (return) |
 | SYS_SOCK_DISCONNECT | 0x1b | socket_id | - | - | - | - |
 | SYS_SOCK_SEND | 0x1c | socket_id | &data | size | - | - |

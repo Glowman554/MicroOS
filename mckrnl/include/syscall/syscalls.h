@@ -36,7 +36,6 @@ cpu_registers_t* sys_vpoke(cpu_registers_t* regs);
 cpu_registers_t* sys_vcursor(cpu_registers_t* regs);
 
 cpu_registers_t* sys_icmp(cpu_registers_t* regs);
-cpu_registers_t* sys_dns_a(cpu_registers_t* regs);
 
 cpu_registers_t* sys_sock_connect(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs);

@@ -6,7 +6,6 @@
 #include <async.h>
 
 void icmp_ping(int nic, async_t* async, ip_u ip, mac_u route);
-ip_u dns_resolve_A(int nic, const char* domain);
 // __libc_time_t ntp_time(int nic);
 
 enum socket_type_e {
