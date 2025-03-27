@@ -19,6 +19,7 @@ void fst_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t si
 
 
 void fst_file_prepare(struct devfs_file* dfile, file_t* file) {
+    file->size = 1;
 }
 
 char* fst_file_name(devfs_file_t* file) {
