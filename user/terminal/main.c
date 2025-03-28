@@ -6,6 +6,7 @@
 #include <sys/spawn.h>
 #include <sys/env.h>
 #include <sys/file.h>
+#include <sys/getc.h>
 #include <sys/graphics.h>
 
 #include <argv_tools.h>
@@ -20,6 +21,7 @@
 
 char** terminal_envp;
 
+
 void print_prompt() {
 	GET_CWD(cwd_buf);
 	set_color("cyan", false);
@@ -27,6 +29,35 @@ void print_prompt() {
 	printf("\n" SHELL_PREFIX , cwd_buf);
 	set_color("white", false);
 }
+
+char** history = NULL;
+int history_size = 0;
+int history_index = 0;
+
+void append_to_history(char* command) {
+	if (history_size == 0) {
+		history = malloc(sizeof(char*) * 1);
+	} else {
+		history = realloc(history, sizeof(char*) * (history_size + 1));
+	}
+	history[history_size] = strdup(command);
+	history_size++;
+	history_index = history_size;
+
+	// for (int i = 0; i < history_size; i++) {
+	// 	printf("%d: %s\n", i, history[i]);
+	// }
+}
+
+int insert_history(char* buffer, int idx) {
+	memset(buffer, 0, MAX_BUFFER_SIZE + 1);
+	strcpy(buffer, history[history_index]);
+	print_prompt();
+	printf("%s", buffer);
+
+	return strlen(buffer);
+}
+
 
 int main(int argc, char* argv[], char* envp[]) {
 	terminal_envp = envp;
@@ -62,7 +93,41 @@ int main(int argc, char* argv[], char* envp[]) {
 	print_prompt();
 
 	while (true) {
-		char input = getchar();
+		char input = 0;
+		while (input == 0) {
+			input = async_getc();
+			char arrow = async_getarrw();
+			if (arrow != 0) {
+				switch (arrow) {
+					case 1: // up
+						{
+							if (history_index <= 0) {
+								break;
+							}
+							history_index--;
+
+							buffer_len = insert_history(buffer, history_index);
+						}
+						break;
+					case 2: // down
+						{
+							if (history_index >= history_size) {
+								break;
+							}
+							history_index++;
+
+							if (history_index == history_size) {
+								memset(buffer, 0, MAX_BUFFER_SIZE + 1);
+								buffer_len = 0;
+								print_prompt();
+							} else {
+								buffer_len = insert_history(buffer, history_index);
+							}
+						}
+						break;
+				}
+			}
+		}
 		if ((input >= 0x20 && input <= 0x7E) || input == '\n'|| input == '\b') {
 			printf("%c", input);
 		}
@@ -114,6 +179,10 @@ int main(int argc, char* argv[], char* envp[]) {
 			} else if (is_quote_open(buffer)) {
 				printf(" quote> ");
 			} else {
+				buffer[++buffer_len] = 0;
+				printf("%s\n", buffer);
+				append_to_history(buffer);
+
 				bool should_break;
 				command_received(buffer, &should_break, NULL); //This should block while command is running.
 				if (should_break) {

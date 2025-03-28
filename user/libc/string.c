@@ -211,7 +211,9 @@ char *strstr(char* haystack, char* needle) {
 }
 
 char* strdup(const char *src) {
-    char *dup = malloc(strlen(src) + 1);
+	int len = strlen(src) + 1;
+	char* dup = malloc(len);
+	memset(dup, 0, len);
     strcpy(dup, src);
 
     return dup;
