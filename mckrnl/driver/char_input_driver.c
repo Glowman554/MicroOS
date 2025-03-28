@@ -48,6 +48,9 @@ void init_keymap(char* path) {
     debugf("Loading keymap from %s", path);
 
     file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
+    if (!file) {
+        abortf("Failed to open keymap: %s", path);
+    }
     loaded_keymap = vmm_alloc(TO_PAGES(file->size));
     vfs_read(file, loaded_keymap, file->size, 0);
     vfs_close(file);

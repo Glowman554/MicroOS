@@ -31,6 +31,7 @@ void disk_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t s
 }
 
 void disk_file_prepare(struct devfs_file* dfile, file_t* file) {
+    file->size = sizeof(raw_disk_command_t);
 }
 
 char* disk_file_name(devfs_file_t* file) {
