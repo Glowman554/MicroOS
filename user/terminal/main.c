@@ -180,7 +180,6 @@ int main(int argc, char* argv[], char* envp[]) {
 				printf(" quote> ");
 			} else {
 				buffer[++buffer_len] = 0;
-				printf("%s\n", buffer);
 				append_to_history(buffer);
 
 				bool should_break;
