@@ -218,8 +218,6 @@ void ne2k_receive(ne2k_driver_t* driver) {
             break;
         }
 
-        length -= 3;
-
         while (!(inb(driver->io_base + NE_ISR) & 0x40));
         outb(driver->io_base + NE_ISR, 0x40);        
 

@@ -2,6 +2,7 @@
 
 #include <utils/io.h>
 #include <stdio.h>
+#include <config.h>
 
 bool serial_is_device_present(driver_t* driver) {
 	return true;
@@ -47,6 +48,11 @@ void write_serial(char c) {
 
 void serial_putc(char_output_driver_t* driver, int term, char c) {
 	write_serial(c);
+#ifdef SERIAL_INSERT_CARRIAGE_RETURN
+	if (c == '\n') {
+		write_serial('\r');
+	}
+#endif
 }
 
 char_output_driver_t serial_output_driver = {

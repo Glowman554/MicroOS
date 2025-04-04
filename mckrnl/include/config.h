@@ -39,6 +39,7 @@
 // #define RAW_FRAMEBUFFER_ACCESS
 // #define FULL_SCREEN_TERMINAL
 #define MAX_VTERM 4
+#define SERIAL_INSERT_CARRIAGE_RETURN
 // End Output
 
 // Other

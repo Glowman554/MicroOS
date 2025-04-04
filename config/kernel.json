@@ -135,6 +135,10 @@
                         {
                             "name": "MAX_VTERM",
                             "value": 4
+                        },
+                        {
+                            "name": "SERIAL_INSERT_CARRIAGE_RETURN",
+                            "value": true
                         }
                     ]
                 }
