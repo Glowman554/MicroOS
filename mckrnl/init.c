@@ -31,6 +31,7 @@
 #include <driver/network/rtl8139.h>
 #include <driver/network/am79C973.h>
 #include <driver/network/e1000.h>
+#include <driver/network/ne2k.h>
 #include <driver/sound/pc_speaker.h>
 
 #include <fs/initrd.h>
@@ -162,6 +163,7 @@ void _main(multiboot_info_t* mb_info) {
 	register_pci_driver_vd(0x10EC, 0x8139, rtl8139_pci_found);
 	register_pci_driver_vd(0x1022, 0x2000, am79C973_pci_found);
 	register_pci_driver_vd(0x8086, 0x100E, e1000_pci_found);
+	register_pci_driver_vd(0x10ec, 0x8029, ne2k_pci_found);
 #ifdef AHCI_DRIVER
 	register_pci_driver_cs(0x1, 0x6, 0x1, ahci_pci_found);
 #endif
