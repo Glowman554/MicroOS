@@ -40,6 +40,14 @@ typedef struct pci_driver {
 	void (*load_driver)(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function);
 } pci_driver_t;
 
+typedef struct pci_device_list_entry {
+	pci_device_t device;
+	bool driver_loaded;
+} pci_device_list_entry_t;
+
+extern pci_device_list_entry_t* pci_devices;
+extern int num_pci_devices;
+
 const char* get_vendor_name(uint16_t vendor_ID);
 const char* get_device_name(uint16_t vendor_ID, uint16_t device_ID);
 const char* get_subclass_name(uint8_t class_code, uint8_t subclass_code);

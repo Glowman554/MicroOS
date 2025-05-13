@@ -38,6 +38,7 @@ all:
 	make -C touch prog
 	make -C dhcp prog
 	make -C ip prog
+	make -C pciinfo prog
 
 clean:
 	make -C libc clean
@@ -77,6 +78,7 @@ clean:
 	make -C touch clean
 	make -C dhcp clean
 	make -C ip clean
+	make -C pciinfo clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -116,3 +118,4 @@ compile_flags.txt:
 	make -C touch compile_flags.txt
 	make -C dhcp compile_flags.txt
 	make -C ip compile_flags.txt
+	make -C pciinfo compile_flags.txt

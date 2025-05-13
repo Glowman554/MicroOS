@@ -101,6 +101,21 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, ch
 		vterm->x += 8;
 	}
 
+	if (c == '\r') {
+		vterm->x = 0;
+		return;
+	}
+
+	if (c == '\t') {
+		int tab_width = 4 * 8;
+		if (vterm->x % tab_width == 0) {
+			vterm->x += tab_width;
+		} else {
+			vterm->x += (tab_width - (vterm->x % tab_width));
+		}
+		return;
+	}
+
 	if (vterm->y + 16 > global_multiboot_info->fb_height) {
 		memcpy(buffer, buffer + (16 * global_multiboot_info->fb_pitch), (global_multiboot_info->fb_width * 4 * (global_multiboot_info->fb_height - 16)));
 		memset(buffer + ((global_multiboot_info->fb_width * 4) * (global_multiboot_info->fb_height - 16)), 0, (global_multiboot_info->fb_width * 4 * 16));

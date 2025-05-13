@@ -9,6 +9,26 @@
 pci_driver_t* pci_drivers = NULL;
 int num_pci_drivers = 0;
 
+pci_device_list_entry_t* pci_devices = NULL;
+int num_pci_devices = 0;
+
+void apend_pci_device(pci_device_header_t header,  uint16_t bus, uint16_t device, uint16_t function, bool driver) {
+	pci_device_t devices = {
+		.header = header,
+		.bus = bus,
+		.device = device,
+		.function = function
+	};
+
+	pci_device_list_entry_t entry = {
+		.device = devices,
+		.driver_loaded = driver
+	};
+
+	pci_devices = vmm_resize(sizeof(pci_device_list_entry_t), num_pci_devices, num_pci_devices + 1, pci_devices);
+	pci_devices[num_pci_devices++] = entry;
+}
+
 void enumerate_pci() {
 	for (uint16_t bus = 0; bus < 8; bus++) {
 		for (uint16_t device = 0; device < 32; device++) {
@@ -19,22 +39,27 @@ void enumerate_pci() {
 					continue;
 				}
 
+				bool driver = false;
+
 				for (int i = 0; i < num_pci_drivers; i++) {
 					if (pci_drivers[i].use_class_subclass_prog_IF) {
 						if ((pci_drivers[i]._class == pci_header.class_ || pci_drivers[i]._class == 0) && (pci_drivers[i].subclass == pci_header.subclass || pci_drivers[i].subclass == 0) && (pci_drivers[i].prog_IF == pci_header.prog_if || pci_drivers[i].prog_IF == 0)) {
 							debugf("PCI: Found driver for %x:%x:%x: %p", bus, device, function, pci_drivers[i].load_driver);
 							pci_drivers[i].load_driver(pci_header, bus, device, function);
+							driver = true;
 						}
 					} else if (pci_drivers[i].use_vendor_device_id) {
 						if (pci_drivers[i].vendor_id == pci_header.vendor_id && pci_drivers[i].device_id == pci_header.device_id) {
 							debugf("PCI: Found driver for %x:%x:%x: %p", bus, device, function, pci_drivers[i].load_driver);
 							pci_drivers[i].load_driver(pci_header, bus, device, function);
+							driver = true;
 						}
 					} else {
 						abortf("Invalid pci driver");
 					}
 				}
 
+				apend_pci_device(pci_header, bus, device, function, driver);
 				debugf("Vendor name: %s, Device name: %s, Device class: %s, Sub class name: %s, Prog interface name: %s", get_vendor_name(pci_header.vendor_id), get_device_name(pci_header.vendor_id, pci_header.device_id), get_device_class(pci_header.class_), get_subclass_name(pci_header.class_, pci_header.subclass), get_prog_IF_name(pci_header.class_, pci_header.subclass, pci_header.prog_if));
 			}
 		}

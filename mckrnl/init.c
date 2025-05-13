@@ -52,6 +52,7 @@
 #include <devices/framebuffer.h>
 #include <devices/fst.h>
 #include <devices/font.h>
+#include <devices/pci.h>
 
 #include <gdb/gdb.h>
 
@@ -214,6 +215,7 @@ void _main(multiboot_info_t* mb_info) {
 	devfs_register_file(&global_devfs, &fst_file);
 	devfs_register_file(&global_devfs, get_font_file(font));
 #endif
+	devfs_register_file(&global_devfs, &pci_file);
 
 	vfs_register_fs_scanner(fatfs_scanner);
 	vfs_register_fs_scanner(nextfs_scanner);
