@@ -28,3 +28,5 @@ testProfile default
 testProfile full_screen_terminal
 testProfile network
 testProfile network_full_screen_terminal
+testProfile smp
+testProfile smp_full_screen_terminal

@@ -1,0 +1,8 @@
+{
+    "TEXT_MODE_EMULATION": true,
+    "STATUS_BAR": false,
+    "RAW_FRAMEBUFFER_ACCESS": false,
+    "FULL_SCREEN_TERMINAL": true,
+    "SMP": true,
+    "PARSE_MADT": true
+}
