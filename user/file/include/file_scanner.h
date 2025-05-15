@@ -22,6 +22,7 @@ extern file_scanner_t gz_scanner;
 extern file_scanner_t wad_scanner;
 extern file_scanner_t mkm_scanner;
 extern file_scanner_t mex_scanner;
+extern file_scanner_t wav_scanner;
 
 
 file_scanner_t* find_file_scanner(void* buffer, size_t size);
