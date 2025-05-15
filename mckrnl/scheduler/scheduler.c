@@ -14,23 +14,82 @@
 #include <driver/apic/lapic.h>
 #include <driver/apic/smp.h>
 #include <driver/timer_driver.h>
+#include <driver/acpi/madt.h>
 #include <driver/char_output_driver.h>
 #include <utils/tinf.h>
+#include <utils/lock.h>
 
 int current_pid = 0;
-task_t tasks[MAX_TASKS] = { 0 };
 
+#ifdef SMP
+task_t tasks[MAX_CPU][MAX_TASKS] = { 0 };
+int current_task[MAX_CPU] = { 0 };
+int last_time_ms[MAX_CPU] = { 0 };
+#else
+task_t tasks[MAX_TASKS] = { 0 };
+int current_task = 0;
+int last_time_ms = 0;
+#endif
+
+#ifdef SMP
+	#define c_task(x) tasks[core_id][x]
+	#define c_current_task current_task[core_id]
+	#define c_last_time_ms last_time_ms[core_id]
+#else
+	#define c_task(x) tasks[x]
+	#define c_current_task current_task
+	#define c_last_time_ms last_time_ms
+#endif
+
+bool is_scheduler_running = false;
+
+#ifdef SMP
+int find_least_loaded_core(void) {
+    int min_tasks = MAX_TASKS + 1;
+    int least_loaded_core = -1;
+
+    for (int cpu = 0; cpu < madt_lapic_count; cpu++) {
+        int count = 0;
+        for (int i = 0; i < MAX_TASKS; i++) {
+            if (tasks[cpu][i].active) {
+                count++;
+            }
+        }
+
+		if (count < min_tasks) {
+            min_tasks = count;
+            least_loaded_core = cpu;
+        }
+    }
+
+    return least_loaded_core;
+}
+#endif
+
+task_t* find_empty_task_slot() {
+#ifdef SMP
+	int core_id = find_least_loaded_core();
+	debugf("Selected core %d", core_id);
+#endif
+
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (!c_task(i).taken) {   
+			return &c_task(i);
+		}
+	}
+
+	abortf("Failed to find empty task slot");
+	return NULL;
+}
+
+define_spinlock(init_task_lock);
 task_t* init_task(int term, void* entry, bool thread, task_t* parent) {	
+	atomic_acquire_spinlock(init_task_lock);
+
 	bool old_shed = is_scheduler_running;
 	is_scheduler_running = false;
 
-	task_t* task = NULL;
-	for (int i = 0; i < MAX_TASKS; i++) {
-		if (!tasks[i].active) {   
-			task = &tasks[i];
-			break;
-		}
-	}
+	task_t* task = find_empty_task_slot();
 
 	assert(task != NULL);
 
@@ -67,7 +126,7 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	*state = new_state;
 
 	task->registers = state;
-	task->active = true;
+	task->taken = true;
 	task->stack = stack;
 	task->user_stack = user_stack;
 	task->pid = current_pid++;
@@ -92,6 +151,8 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	}
 
 	is_scheduler_running = old_shed;
+
+	atomic_release_spinlock(init_task_lock);
 
 	return task;
 }
@@ -185,6 +246,8 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 
 	task->envp = (char**) ((uint32_t) task->envp + USER_SPACE_OFFSET);
 
+	task->active = true;
+
 	return task->pid;
 }
 
@@ -255,32 +318,45 @@ void exit_task(task_t* task) {
 	debugf("Task %p (%d) exited", task, task->pid);
 	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
+	task->taken = false;
+
 	if (task == self) {
 		asm volatile("sti");
 		asm volatile("hlt");
 	}
 }
 
-int current_task = 0;
-int last_time_ms = 0;
-bool is_scheduler_running = false;
-
 cpu_registers_t* switch_to_next_task(int starting_from, int diff_ms, bool ignore_wait_time) {
+#ifdef SMP
+	int core_id = lapic_id();
+#endif
+
     for (int i = starting_from; i < MAX_TASKS; i++) {
-		if (!ignore_wait_time && tasks[i].active && tasks[i].wait_time > 0) {
-			tasks[i].wait_time -= diff_ms;
-			if (tasks[i].wait_time > 0) {
+		if (!ignore_wait_time && c_task(i).active && c_task(i).wait_time > 0) {
+			c_task(i).wait_time -= diff_ms;
+			if (c_task(i).wait_time > 0) {
 				continue;
             }
 		}
 		
-		if(tasks[i].active) {
-			current_task = i;
-			vmm_activate_context(tasks[current_task].context);
-			return tasks[current_task].registers;
+		if(c_task(i).active) {
+			c_current_task = i;
+			vmm_activate_context(c_task(c_current_task).context);
+			return c_task(c_current_task).registers;
 		}
 	}
     return NULL;
+}
+
+void interrupt_cores() {
+#ifdef SMP
+	int id = lapic_id();
+	for (int i = 0; i < madt_lapic_count; i++) {
+		if (i != id) {
+			lapic_ipi(madt_lapic_ids[i], 0x20);
+		}
+	}
+#endif
 }
 
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
@@ -289,31 +365,39 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 	}
 
 	int core_id = lapic_id();
+
+#ifndef SMP
 	if (core_id != bsp_id) {
 		return registers;
 	}
+#endif
 
-	if (tasks[current_task].pin && tasks[current_task].term == global_char_output_driver->current_term) {
-		return tasks[current_task].registers;
+
+	if (c_task(c_current_task).pin && c_task(c_current_task).term == global_char_output_driver->current_term) {
+		interrupt_cores();
+		return c_task(c_current_task).registers;
 	}
 
 	int curr_time_ms = global_timer_driver->time_ms(global_timer_driver);
-	int diff_ms = curr_time_ms - last_time_ms;
-	last_time_ms = curr_time_ms;
+	int diff_ms = curr_time_ms - c_last_time_ms;
+	c_last_time_ms = curr_time_ms;
 
     cpu_registers_t* new_state;
-    if ((new_state = switch_to_next_task(current_task + 1, diff_ms, false))) {
+    if ((new_state = switch_to_next_task(c_current_task + 1, diff_ms, false))) {
+		interrupt_cores();
         return new_state;
     }
 
     // we have no tasks left or we are at the end of the task list
 	// so we start searching from 0 again
     if ((new_state = switch_to_next_task(0, diff_ms, false))) {
+		interrupt_cores();
         return new_state;
     }
 
 	// no task is really busy rn, so we just pick the first active one even if its in timeout lol
     if ((new_state = switch_to_next_task(0, diff_ms, true))) {
+		interrupt_cores();
         return new_state;
     }
 
@@ -327,32 +411,62 @@ void init_scheduler() {
  
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
-	// file = vfs_open("initrd:/bin/test.elf", 0);
-	// buffer = vmm_alloc(file->size / 4096 + 1);
-	// vfs_read(file, buffer, file->size, 0);
-	// init_elf(buffer);
-	// vmm_free(buffer, file->size / 4096 + 1);
-	// vfs_close(file);
+#ifdef SMP // we do not need a idle task with only once core. The init process is the idle task in this case
+	file_t* file = vfs_open("initrd:/idle.bin", 0);
+	assert(file != NULL);
+	char* buffer = vmm_alloc(file->size / 4096 + 1);
+	vfs_read(file, buffer, file->size, 0);
+
+	for (int i = 0; i < madt_lapic_count; i++) {
+		char* argv[] = { "(idle)", NULL };
+		char* envp[] = { NULL };
+		init_elf(1, buffer, argv, envp);
+	}
+	
+	vmm_free(buffer, file->size / 4096 + 1);
+	vfs_close(file);
+#endif
 
 	is_scheduler_running = true;
 }
 
 
 task_t* get_task_by_pid(int pid) {
-	for (int i = 0; i < MAX_TASKS; i++) {
-		if (tasks[i].active && tasks[i].pid == pid) {
-			return &tasks[i];
+#ifdef SMP
+	for (int i = 0; i < MAX_CPU; i++) {
+		for (int j = 0; j < MAX_TASKS; j++) {
+			if (tasks[i][j].active && tasks[i][j].pid == pid) {
+				return &tasks[i][j];
+			}
 		}
 	}
+#else
+	for (int i = 0; i < MAX_TASKS; i++) {
+		for (int i = 0; i < MAX_TASKS; i++) {
+			if (tasks[i].active && tasks[i].pid == pid) {
+				return &tasks[i];
+			}
+		}
+	}
+#endif
 
 	return NULL;
 }
 
 task_t* get_self() {
+#ifdef SMP
+	int id = lapic_id();
+	return &tasks[id][current_task[id]];
+#else
 	return &tasks[current_task];
+#endif
 }
 
 int read_task_list(task_list_t* out, int max) {
+#ifdef SMP
+	todo();
+	return 0;
+#else
 	int j = 0;
 	for (int i = 0; i < MAX_TASKS; i++) {
 		if (tasks[i].active) {
@@ -368,9 +482,21 @@ int read_task_list(task_list_t* out, int max) {
 		}
 	}
 	return j;
+#endif
 }
 
 int get_amount_running_tasks() {
+#ifdef SMP
+    int k = 0;
+	for (int i = 0; i < MAX_CPU; i++) {
+		for (int j = 0; j < MAX_TASKS; j++) {
+			if (tasks[i][j].active) {
+				k++;
+			}
+		}
+    }
+    return k;
+#else
     int j = 0;
 	for (int i = 0; i < MAX_TASKS; i++) {
 		if (tasks[i].active) {
@@ -378,4 +504,5 @@ int get_amount_running_tasks() {
         }
     }
     return j;
+#endif
 }

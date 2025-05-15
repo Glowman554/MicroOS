@@ -4,6 +4,9 @@
 #include <scheduler/scheduler.h>
 #include <fs/vfs.h>
 #include <fs/fd.h>
+#include <utils/lock.h>
+
+define_spinlock(stdout_lock);
 
 cpu_registers_t* sys_write(cpu_registers_t* regs) {
 	int fd = regs->ebx;
@@ -20,9 +23,11 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 		case 1:
 		case 2:
 			{
+				atomic_acquire_spinlock(stdout_lock);
 				for (size_t i = 0; i < count; i++) {
 					global_char_output_driver->putc(global_char_output_driver, current->term, ((char*) buffer)[i]);
 				}
+				atomic_release_spinlock(stdout_lock);
 			}
 			break;
 

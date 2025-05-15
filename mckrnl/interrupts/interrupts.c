@@ -253,7 +253,7 @@ void halt() {
 	int id = lapic_id();
 	for (int i = 0; i < madt_lapic_count; i++) {
 		if (i != id) {
-			lapic_ipi(i, 0xff);
+			lapic_ipi(madt_lapic_ids[i], 0xff);
 		}
 	}
 #endif

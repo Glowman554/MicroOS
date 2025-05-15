@@ -1,3 +1,4 @@
+#include "driver/apic/lapic.h"
 #include <driver/timer/pit.h>
 
 #include <interrupts/interrupts.h>
@@ -23,6 +24,13 @@ char* pit_get_device_name(driver_t* driver) {
 }
 
 cpu_registers_t* pit_interrupt_handler(cpu_registers_t* registers, void* data) {
+#ifdef SMP
+	int core_id = lapic_id();
+	if (core_id != 0) { // TODO: not hardcode
+		return schedule(registers, data);
+	}
+#endif
+
 	driver_t* driver = (driver_t*) data;
 	driver->driver_specific_data = (void*) ((uint32_t) driver->driver_specific_data + 1);
 

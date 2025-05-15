@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
 
 	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "keymap.mkm");
 	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "smp.bin");
+	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "idle.bin");
 	
 
 	char* startup_script = (char*) malloc(8192);
