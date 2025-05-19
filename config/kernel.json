@@ -67,6 +67,10 @@
                         {
                             "name": "KERNEL_STACK_SIZE_PAGES",
                             "value": 4
+                        },
+                        {
+                            "name": "MAX_CPU",
+                            "value": 4
                         }
                     ]
                 }

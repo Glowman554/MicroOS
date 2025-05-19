@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <config.h>
 #include <utils/multiboot.h>
+#include <utils/lock.h>
 
 vmm_context_t* kernel_context;
 
@@ -285,7 +286,10 @@ vmm_context_t vmm_get_current_context(void) {
 	return context;
 }
 
+define_spinlock(vmm_lock);
+
 void* vmm_alloc(uint32_t num_pages) {
+	atomic_acquire_spinlock(vmm_lock);
 	void* ptr = pmm_alloc_range(num_pages);
 
 	for (int i = 0; i < num_pages; i++) {
@@ -293,6 +297,7 @@ void* vmm_alloc(uint32_t num_pages) {
 	}
 	
 	vmm_synchronize_task_contexts_with_kernel_context();
+	atomic_release_spinlock(vmm_lock);
 	return ptr;
 }
 
@@ -303,7 +308,9 @@ void* vmm_calloc(uint32_t num_pages) {
 }
 
 void vmm_free(void* ptr, uint32_t num_pages) {
+	atomic_acquire_spinlock(vmm_lock);
 	pmm_free_range(ptr, num_pages);
+	atomic_release_spinlock(vmm_lock);
 }
 
 void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {

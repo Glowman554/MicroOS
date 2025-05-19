@@ -13,6 +13,7 @@ typedef struct resource {
 typedef struct {
 	cpu_registers_t* registers;
 	bool active;
+	bool taken;
 
 	vmm_context_t* context;
 
@@ -70,6 +71,7 @@ typedef struct task_list {
 	char name[128];
 	int pid;
 	int term;
+	int core;
 } task_list_t;
 
 int read_task_list(task_list_t* out, int max);

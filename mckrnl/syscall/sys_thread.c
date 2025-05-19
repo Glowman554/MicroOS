@@ -20,5 +20,6 @@ cpu_registers_t* sys_thread(cpu_registers_t* regs) {
         .dealloc = sys_thread_kill
     });
     regs->ecx = thread->pid;
+    thread->active = true;
 	return regs;
 }
