@@ -67,9 +67,9 @@ int main(int argc, char* argv[]) {
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/docs");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/EFI/BOOT");
 
-	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "keymap.mkm");
-	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "smp.bin");
-	copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "idle.bin");
+	// copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "keymap.mkm");
+	// copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "smp.bin");
+	// copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "idle.bin");
 	
 
 	char* startup_script = (char*) malloc(8192);
@@ -101,10 +101,9 @@ int main(int argc, char* argv[]) {
 	strcat(limine_config, ":MicroOS\n");
 	strcat(limine_config, "KASLR=no\n");
 	strcat(limine_config, "PROTOCOL=multiboot1\n");
-	strcat(limine_config, "MODULE_PATH=boot:///EFI/BOOT/zap-light16.psf\nMODULE_STRING=/zap-light16.psf\n");
 	strcat(limine_config, "MODULE_PATH=boot:///EFI/BOOT/mckrnl.syms\nMODULE_STRING=/mckrnl.syms\n");
 	strcat(limine_config, "KERNEL_PATH=boot:///EFI/BOOT/mckrnl.elf\n");
-	strcat(limine_config, "KERNEL_CMDLINE=--serial --font=/zap-light16.psf --syms=/mckrnl.syms --keymap=MicroOS:/keymap.mkm --init=MicroOS:/bin/init.mex");
+	strcat(limine_config, "KERNEL_CMDLINE=--serial --syms=/mckrnl.syms --init=MicroOS:/bin/init.mex");
 
 	write_text_file(partition_path, "/limine.cfg", limine_config);
 
