@@ -23,8 +23,8 @@
 // End Scheduler
 
 // Experimental
-#define SMP
-#define PARSE_MADT
+// #define SMP
+// #define PARSE_MADT
 // #define THREADS
 // #define AHCI_DRIVER
 // #define NETWORK_STACK
@@ -35,10 +35,10 @@
 // End Input
 
 // Output
-#define TEXT_MODE_EMULATION
+// #define TEXT_MODE_EMULATION
 // #define STATUS_BAR
 // #define RAW_FRAMEBUFFER_ACCESS
-#define FULL_SCREEN_TERMINAL
+// #define FULL_SCREEN_TERMINAL
 #define MAX_VTERM 4
 #define SERIAL_INSERT_CARRIAGE_RETURN
 // End Output
