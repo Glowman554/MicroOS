@@ -14,6 +14,9 @@
 #define SMP_TRAMPOLINE_PAGE 8
 #define SMP_TRAMPOLINE_ADDR (SMP_TRAMPOLINE_PAGE * 0x1000)
 
+extern uint8_t smp_trampoline[];
+extern int smp_trampoline_size;
+
 bool cpu_started[256] = { false };
 int bsp_id = 0;
 
@@ -61,11 +64,7 @@ void smp_startup_all() {
 	debugf("Mapped LAPIC memory at %p", (void*) madt_lapic_base_addr);
 
 	vmm_map_page(kernel_context, SMP_TRAMPOLINE_ADDR, SMP_TRAMPOLINE_ADDR, PTE_PRESENT | PTE_WRITE);
-
-	file_t* trampoline = vfs_open("initrd:/smp.bin", FILE_OPEN_MODE_READ);
-	assert(trampoline != NULL);
-	vfs_read(trampoline, (void*) SMP_TRAMPOLINE_ADDR, 0x1000, 0);
-	vfs_close(trampoline);
+	memcpy((void*) SMP_TRAMPOLINE_ADDR, smp_trampoline, 0x1000);
 
 	ap_info_t* info = (ap_info_t*) (void*) (SMP_TRAMPOLINE_ADDR + 0x1000);
 

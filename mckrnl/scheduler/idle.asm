@@ -11,14 +11,15 @@ _start:
 	mov eax, 0x4
 	mov ebx, 1
 	mov ecx, idle
-	; mov edx, 12
 	mov esi, 0
 	int 0x30
 
 _loop:
+	; sleep
 	mov eax, 0x12
 	mov ebx, 8
 	mov ecx, 1000
+	int 0x30
 
 	; yield
 	mov eax, 0x11

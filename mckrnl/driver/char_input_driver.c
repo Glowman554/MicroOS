@@ -59,6 +59,13 @@ void init_keymap(char* path) {
     assert(loaded_keymap->num_keymaps > 0);
 }
 
+void init_keymap_buffer(void* map) {
+    loaded_keymap = (keymap_file_header_t*) map;
+    assert(loaded_keymap->magic == 0xab1589fd);
+    assert(loaded_keymap->num_keymaps > 0);
+}
+
+
 char keymap(uint8_t key, special_keys_down_t* special_keys_down) {
     if (loaded_keymap == NULL) {
         return 0;

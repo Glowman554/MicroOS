@@ -19,6 +19,8 @@
 #include <utils/tinf.h>
 #include <utils/lock.h>
 
+extern uint8_t idle_task[];
+
 int current_pid = 0;
 
 #ifdef SMP
@@ -412,19 +414,11 @@ void init_scheduler() {
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 
 #ifdef SMP // we do not need a idle task with only once core. The init process is the idle task in this case
-	file_t* file = vfs_open("initrd:/idle.bin", 0);
-	assert(file != NULL);
-	char* buffer = vmm_alloc(file->size / 4096 + 1);
-	vfs_read(file, buffer, file->size, 0);
-
 	for (int i = 0; i < madt_lapic_count; i++) {
 		char* argv[] = { "(idle)", NULL };
 		char* envp[] = { NULL };
-		init_elf(1, buffer, argv, envp);
+		init_elf(1, idle_task, argv, envp);
 	}
-	
-	vmm_free(buffer, file->size / 4096 + 1);
-	vfs_close(file);
 #endif
 
 	is_scheduler_running = true;

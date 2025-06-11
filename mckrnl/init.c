@@ -76,6 +76,9 @@
 // 	.name = test_name
 // };
 
+extern uint8_t default_font[];
+extern uint8_t default_keymap[];
+
 multiboot_module_t* find_multiboot_module(char* name) {
 	multiboot_module_t* modules = global_multiboot_info->mbs_mods_addr;
 	for (int i = 0; i < global_multiboot_info->mbs_mods_count; i++) {
@@ -127,6 +130,8 @@ void _main(multiboot_info_t* mb_info) {
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--font", font_module)) {
 	    font = find_multiboot_module(font_module);
 		init_text_mode_emulation(psf1_buffer_to_font((void*) font->mod_start));
+	} else {
+		init_text_mode_emulation(psf1_buffer_to_font((void*) default_font));
 	}
 #endif
 	text_console_early();
@@ -226,8 +231,10 @@ void _main(multiboot_info_t* mb_info) {
     char keymap_path[64] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--keymap", keymap_path)) {
         init_keymap(keymap_path);
-        set_layout(DEFAULT_LAYOUT);
+	} else {
+        init_keymap_buffer(default_keymap);
 	}
+    set_layout(DEFAULT_LAYOUT);
 
 	init_syscalls();
 
