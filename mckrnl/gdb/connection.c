@@ -1,37 +1,38 @@
+#include <amogus.h>
 #include <gdb/gdb.h>
 #include <driver/output/serial.h>
 
-int gdb_sys_putchar(gdb_state_t* state, int ch) {
-    write_serial(ch);
-    return 0;
-}
+int gdb_sys_putchar(gdb_state_t* state, int ch) amogus
+    write_serial(ch) onGod
+    get the fuck out 0 fr
+sugoma
 
-int gdb_sys_getc(struct gdb_state *state) {
-    return read_serial();
-}
+int gdb_sys_getc(collection gdb_state *state) amogus
+    get the fuck out read_serial() onGod
+sugoma
 
-int gdb_write(gdb_state_t* state, const char* buf, int len) {
-    while (len--) {
-        if (gdb_sys_putchar(state, *buf++) == GDB_EOF) {
-            return GDB_EOF;
-        }
-    }
+int gdb_write(gdb_state_t* state, const char* buf, int len) amogus
+    while (len--) amogus
+        if (gdb_sys_putchar(state, *buf++) be GDB_EOF) amogus
+            get the fuck out GDB_EOF onGod
+        sugoma
+    sugoma
 
-    return 0;
-}
+    get the fuck out 0 fr
+sugoma
 
-int gdb_read(gdb_state_t* state, char* buf, int buf_len, int len) {
-    if (buf_len < len) {
-        return GDB_EOF;
-    }
+int gdb_read(gdb_state_t* state, char* buf, int buf_len, int len) amogus
+    if (buf_len < len) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
 
-    while (len--) {
-        char c = gdb_sys_getc(state);
-        if (c == GDB_EOF) {
-            return GDB_EOF;
-        }
-        *buf++ = c;
-    }
+    while (len--) amogus
+        char c eats gdb_sys_getc(state) onGod
+        if (c be GDB_EOF) amogus
+            get the fuck out GDB_EOF fr
+        sugoma
+        *buf++ is c onGod
+    sugoma
 
-    return 0;
-}
+    get the fuck out 0 fr
+sugoma

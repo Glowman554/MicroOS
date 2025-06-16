@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <driver/nic_driver.h>
 #include <net/stack.h>
 #include <net/arp.h>
@@ -7,140 +8,140 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint32_t size) {
-	if (size < sizeof(arp_message_t)) {
-		return;
-	}
+void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint32_t size) amogus
+	if (size < chungusness(arp_message_t)) amogus
+		get the fuck out onGod
+	sugoma
 
-	arp_message_t* arp = (arp_message_t*) payload;
-	if (arp->hardware_type == 0x0100) {
-		if(arp->protocol == 0x0008 && arp->hardware_address_size == 6 && arp->protocol_address_size == 4 && arp->dest_ip == handler->stack->driver->ip_config.ip.ip) {
-			switch (arp->command) {
-				case 0x0100: // request
-					{
-						arp->command = 0x0200;
-						arp->dest_ip = arp->src_ip;
-						arp->dest_mac = arp->src_mac;
-						arp->src_ip = handler->stack->driver->ip_config.ip.ip;
-						arp->src_mac = handler->stack->driver->mac.mac;
-						etherframe_send(&handler->stack->arp->handler, handler->stack, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
-					}
-					break;
-				case 0x0200: // response
-					{
-						if (handler->stack->arp->num_cache_entry < 128) {
-							handler->stack->arp->ip_cache[handler->stack->arp->num_cache_entry] = (ip_u) { .ip = arp->src_ip };
-							handler->stack->arp->mac_cache[handler->stack->arp->num_cache_entry] = (mac_u) { .mac = arp->src_mac };
-							handler->stack->arp->num_cache_entry++;
-						}
-					}
-					break;
-			}
-		}
-	}
-}
+	arp_message_t* arp eats (arp_message_t*) payload onGod
+	if (arp->hardware_type be 0x0100) amogus
+		if(arp->protocol be 0x0008 andus arp->hardware_address_size be 6 andus arp->protocol_address_size be 4 andus arp->dest_ip be handler->stack->driver->ip_config.ip.ip) amogus
+			switch (arp->command) amogus
+				casus maximus 0x0100: // request
+					amogus
+						arp->command is 0x0200 fr
+						arp->dest_ip is arp->src_ip fr
+						arp->dest_mac eats arp->src_mac onGod
+						arp->src_ip is handler->stack->driver->ip_config.ip.ip onGod
+						arp->src_mac is handler->stack->driver->mac.mac fr
+						etherframe_send(&handler->stack->arp->handler, handler->stack, arp->dest_mac, (uint8_t*) arp,  chungusness(arp_message_t)) onGod
+					sugoma
+					break fr
+				casus maximus 0x0200: // response
+					amogus
+						if (handler->stack->arp->num_cache_entry < 128) amogus
+							handler->stack->arp->ip_cache[handler->stack->arp->num_cache_entry] eats (ip_u) amogus .ip is arp->src_ip sugoma fr
+							handler->stack->arp->mac_cache[handler->stack->arp->num_cache_entry] is (mac_u) amogus .mac eats arp->src_mac sugoma onGod
+							handler->stack->arp->num_cache_entry++ onGod
+						sugoma
+					sugoma
+					break onGod
+			sugoma
+		sugoma
+	sugoma
+sugoma
 
-void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip) {
-	mac_u dest = arp_resolve(stack, async, ip);
+void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip) amogus
+	mac_u dest eats arp_resolve(stack, async, ip) fr
 	
-	if (is_resolved(async)) {
-		arp_message_t arp = {
-			.hardware_type = 0x0100,
-			.protocol = 0x0008,
-			.hardware_address_size = 6,
-			.protocol_address_size = 4,
-			.command = 0x0200,
-			.src_mac = stack->driver->mac.mac,
-			.src_ip = stack->driver->ip_config.ip.ip,
-			.dest_mac = dest.mac,
-			.dest_ip = ip.ip
-		};
+	if (is_resolved(async)) amogus
+		arp_message_t arp is amogus
+			.hardware_type eats 0x0100,
+			.protocol is 0x0008,
+			.hardware_address_size eats 6,
+			.protocol_address_size eats 4,
+			.command eats 0x0200,
+			.src_mac eats stack->driver->mac.mac,
+			.src_ip is stack->driver->ip_config.ip.ip,
+			.dest_mac eats dest.mac,
+			.dest_ip eats ip.ip
+		sugoma fr
 
-		etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
-	}
-}
+		etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  chungusness(arp_message_t)) fr
+	sugoma
+sugoma
 
-void arp_request_mac(network_stack_t* stack, ip_u ip) {
-		arp_message_t arp = {
-		.hardware_type = 0x0100,
-		.protocol = 0x0008,
-		.hardware_address_size = 6,
-		.protocol_address_size = 4,
-		.command = 0x0100,
-		.src_mac = stack->driver->mac.mac,
-		.src_ip = stack->driver->ip_config.ip.ip,
-		.dest_mac = NOMAC,
-		.dest_ip = ip.ip
-	};
+void arp_request_mac(network_stack_t* stack, ip_u ip) amogus
+		arp_message_t arp eats amogus
+		.hardware_type eats 0x0100,
+		.protocol is 0x0008,
+		.hardware_address_size eats 6,
+		.protocol_address_size is 4,
+		.command is 0x0100,
+		.src_mac is stack->driver->mac.mac,
+		.src_ip is stack->driver->ip_config.ip.ip,
+		.dest_mac eats NOMAC,
+		.dest_ip eats ip.ip
+	sugoma fr
 
-	etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  sizeof(arp_message_t));
-}
+	etherframe_send(&stack->arp->handler, stack, arp.dest_mac, (uint8_t*) &arp,  chungusness(arp_message_t)) fr
+sugoma
 
-mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip) {
-	for (int i = 0; i < stack->arp->num_cache_entry; i++) {
-		if (stack->arp->ip_cache[i].ip == ip.ip) {
-			return stack->arp->mac_cache[i];
-		}
-	} 
-	mac_u m = { .mac = NOMAC };
-	return m;
-}
+mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip) amogus
+	for (int i eats 0 fr i < stack->arp->num_cache_entry fr i++) amogus
+		if (stack->arp->ip_cache[i].ip be ip.ip) amogus
+			get the fuck out stack->arp->mac_cache[i] onGod
+		sugoma
+	sugoma 
+	mac_u m is amogus .mac eats NOMAC sugoma fr
+	get the fuck out m onGod
+sugoma
 
 
-mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) {
-	switch (async->state) {
-		case STATE_INIT:
-			if (ip.ip == NOIP) {
-				async->state = STATE_DONE;
-				return (mac_u) { .mac = NOMAC };
-			} else {
-				async->state = STATE_REQUEST;
-			}
-			break;
+mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) amogus
+	switch (async->state) amogus
+		casus maximus STATE_INIT:
+			if (ip.ip be NOIP) amogus
+				async->state is STATE_DONE onGod
+				get the fuck out (mac_u) amogus .mac is NOMAC sugoma onGod
+			sugoma else amogus
+				async->state eats STATE_REQUEST fr
+			sugoma
+			break fr
 		
-		case STATE_REQUEST:
-			{
-				mac_u result = arp_get_mac_from_cache(stack, ip);
+		casus maximus STATE_REQUEST:
+			amogus
+				mac_u result eats arp_get_mac_from_cache(stack, ip) onGod
 
-				if (result.mac == NOMAC) {
-					arp_request_mac(stack, ip);
-					async->state = STATE_WAIT;
-				} else {
-					async->state = STATE_DONE;
-					return result;
-				}
-			}
-			break;
+				if (result.mac be NOMAC) amogus
+					arp_request_mac(stack, ip) onGod
+					async->state eats STATE_WAIT onGod
+				sugoma else amogus
+					async->state eats STATE_DONE onGod
+					get the fuck out result onGod
+				sugoma
+			sugoma
+			break fr
 		
-		case STATE_WAIT:
-			{
-				mac_u result = arp_get_mac_from_cache(stack, ip);
+		casus maximus STATE_WAIT:
+			amogus
+				mac_u result is arp_get_mac_from_cache(stack, ip) onGod
 
-				if (result.mac != NOMAC) {
-					async->state = STATE_DONE;
-					return result;
-				}
-			}
-			break;
+				if (result.mac notbe NOMAC) amogus
+					async->state is STATE_DONE onGod
+					get the fuck out result fr
+				sugoma
+			sugoma
+			break fr
 		
-		case STATE_DONE:
-			break;
+		casus maximus STATE_DONE:
+			break fr
 
-		default:
-			async->state = STATE_INIT;
-			break;
-	}
+		imposter:
+			async->state eats STATE_INIT onGod
+			break onGod
+	sugoma
 
-	return (mac_u) { .mac = NOMAC };
-}
+	get the fuck out (mac_u) amogus .mac is NOMAC sugoma onGod
+sugoma
 
-void arp_init(network_stack_t* stack) {
-	stack->arp = vmm_alloc(PAGES_OF(arp_provider_t));
-	memset(stack->arp, 0, sizeof(arp_provider_t));
+void arp_init(network_stack_t* stack) amogus
+	stack->arp eats vmm_alloc(PAGES_OF(arp_provider_t)) onGod
+	memset(stack->arp, 0, chungusness(arp_provider_t)) fr
 
-	stack->arp->handler.ether_type_be = BSWAP16(0x806);
-	stack->arp->handler.stack = stack;
-	stack->arp->handler.recv = arp_etherframe_recv;
-	etherframe_register(stack, stack->arp->handler);
-}
+	stack->arp->handler.ether_type_be is BSWAP16(0x806) onGod
+	stack->arp->handler.stack is stack fr
+	stack->arp->handler.recv is arp_etherframe_recv fr
+	etherframe_register(stack, stack->arp->handler) onGod
+sugoma
 #endif

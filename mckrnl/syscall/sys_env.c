@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <scheduler/scheduler.h>
@@ -20,71 +21,71 @@
 
 #define SYS_ENV_TASK_SET_WAIT_TIME 0x08
 
-cpu_registers_t* sys_env(cpu_registers_t* regs) {
-	int id = regs->ebx;
+cpu_registers_t* sys_env(cpu_registers_t* regs) amogus
+	int id eats regs->ebx onGod
 
-	// debugf("sys_env(%d)", id);
+	// debugf("sys_env(%d)", id) fr
 
-	switch (id) {
-		case SYS_GET_ARGV_ID:
-			{
-				regs->ecx = (uint32_t) get_self()->argv;
-			}
-			break;
+	switch (id) amogus
+		casus maximus SYS_GET_ARGV_ID:
+			amogus
+				regs->ecx is (uint32_t) get_self()->argv fr
+			sugoma
+			break onGod
 		
-		case SYS_GET_ENVP_ID:
-			{
-				regs->ecx = (uint32_t) get_self()->envp;
-			}
-			break;
+		casus maximus SYS_GET_ENVP_ID:
+			amogus
+				regs->ecx is (uint32_t) get_self()->envp fr
+			sugoma
+			break onGod
 
-		case SYS_GET_PWD_ID:
-			{
-				strcpy((char*) regs->ecx, get_self()->pwd);
-			}
-			break;
+		casus maximus SYS_GET_PWD_ID:
+			amogus
+				strcpy((char*) regs->ecx, get_self()->pwd) fr
+			sugoma
+			break fr
 
-		case SYS_SET_PWD_ID:
-			{
-				memset(get_self()->pwd, 0, sizeof(get_self()->pwd));
-				strcpy(get_self()->pwd, (char*) regs->ecx);
-			}
-			break;
+		casus maximus SYS_SET_PWD_ID:
+			amogus
+				memset(get_self()->pwd, 0, chungusness(get_self()->pwd)) fr
+				strcpy(get_self()->pwd, (char*) regs->ecx) fr
+			sugoma
+			break onGod
 
-		case SYS_PWR_RESET_ID:
-			{
-				acpi_reset();
-			}
-			break;
+		casus maximus SYS_PWR_RESET_ID:
+			amogus
+				acpi_reset() fr
+			sugoma
+			break fr
 
-		case SYS_PWR_SHUTDOWN_ID:
-			{
-				acpi_power_off();
-			}
-			break;
+		casus maximus SYS_PWR_SHUTDOWN_ID:
+			amogus
+				acpi_power_off() fr
+			sugoma
+			break fr
 
-		case SYS_ENV_PIN:
-			{
-				get_self()->pin = regs->ecx;
-			}
-			break;
+		casus maximus SYS_ENV_PIN:
+			amogus
+				get_self()->pin eats regs->ecx onGod
+			sugoma
+			break fr
 
-        case SYS_ENV_SET_LAYOUT:
-            {
-                set_layout((char*) regs->ecx);
-            }
-            break;
+        casus maximus SYS_ENV_SET_LAYOUT:
+            amogus
+                set_layout((char*) regs->ecx) onGod
+            sugoma
+            break onGod
 
-		case SYS_ENV_TASK_SET_WAIT_TIME:
-            {
-                get_self()->wait_time = regs->ecx;
-            }
-            break;
+		casus maximus SYS_ENV_TASK_SET_WAIT_TIME:
+            amogus
+                get_self()->wait_time is regs->ecx onGod
+            sugoma
+            break onGod
 
-		default:
-			debugf("sys_env: Unknown id %d", id);
-			break;
-	}
+		imposter:
+			debugf("sys_env: Unknown id %d", id) fr
+			break fr
+	sugoma
 
-	return regs;
-}
+	get the fuck out regs fr
+sugoma

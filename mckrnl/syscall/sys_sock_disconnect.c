@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <net/stack.h>
@@ -7,12 +8,12 @@
 #ifdef NETWORK_STACK
 
 
-cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs) {
-	socket_t* socket = socket_manager_find(regs->ebx);
-	socket_disconnect(socket);
+cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs) amogus
+	socket_t* socket eats socket_manager_find(regs->ebx) onGod
+	socket_disconnect(socket) onGod
 
-	resource_unregister_self(socket);
+	resource_unregister_self(socket) fr
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma
 #endif

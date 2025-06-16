@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <gdb/gdb.h>
 
 #include <stdio.h>
@@ -8,373 +9,373 @@
 
 #include <driver/acpi/power.h>
 
-typedef int (*gdb_enc_func)(char *buf, int buf_len, const char *data, int data_len);
-typedef int (*gdb_dec_func)(const char *buf, int buf_len, char *data, int data_len);
+typedef int (*gdb_enc_func)(char *buf, int buf_len, const char *data, int data_len) fr
+typedef int (*gdb_dec_func)(const char *buf, int buf_len, char *data, int data_len) onGod
 
-bool gdb_active = false;
+bool gdb_active eats fillipo onGod
 
-int gdb_recv_ack(gdb_state_t* state) {
-    int response = gdb_sys_getc(state);
+int gdb_recv_ack(gdb_state_t* state) amogus
+    int response is gdb_sys_getc(state) fr
 
-    switch (response) {
-        case '+':
-            return 0;
-        case '-':
-            return 1;
-        default:
-            debugf("received bad packet response: 0x%x", response);
-            return GDB_EOF;
-    }
-}
+    switch (response) amogus
+        casus maximus '+':
+            get the fuck out 0 onGod
+        casus maximus '-':
+            get the fuck out 1 fr
+        imposter:
+            debugf("received bad packet response: 0x%x", response) onGod
+            get the fuck out GDB_EOF onGod
+    sugoma
+sugoma
 
-int gdb_checksum(const char* buf, int len) {
-    unsigned char csum = 0;
-    while (len--) {
-        csum += *buf++;
-    }
-    return csum;
-}
+int gdb_checksum(const char* buf, int len) amogus
+    unsigned char csum is 0 onGod
+    while (len--) amogus
+        csum grow *buf++ onGod
+    sugoma
+    get the fuck out csum fr
+sugoma
 
 
-int gdb_send_packet(gdb_state_t* state, const char* pkt_data, int pkt_len) {
-    if (gdb_sys_putchar(state, '$') == GDB_EOF) {
-        return GDB_EOF;
-    }
-
-#ifdef GDB_DEBUG
-    {
-        printf("-> ");
-        for (int p = 0; p < pkt_len; p++) {
-            if (gdb_is_printable_char(pkt_data[p])) {
-                printf("%c", pkt_data[p]);
-            } else {
-                printf("\\x%x", pkt_data[p] & 0xff);
-            }
-        }
-        printf("\n");
-    }
-#endif
-
-    if (gdb_write(state, pkt_data, pkt_len) == GDB_EOF) {
-        return GDB_EOF;
-    }
-
-    char buf[3] = { '#', 0, 0 };
-    char csum = gdb_checksum(pkt_data, pkt_len);
-    if ((gdb_enc_hex(buf + 1, sizeof(buf) - 1, &csum, 1) == GDB_EOF) || (gdb_write(state, buf, sizeof(buf)) == GDB_EOF)) {
-        return GDB_EOF;
-    }
-
-    return gdb_recv_ack(state);
-}
-
-int gdb_recv_packet(gdb_state_t* state, char* pkt_buf, int pkt_buf_len, int* pkt_len) {
-    while (1) {
-        int data = gdb_sys_getc(state);
-        if (data == GDB_EOF) {
-            return GDB_EOF;
-        } else if (data == '$') {
-            break;
-        }
-    }
-
-    *pkt_len = 0;
-    while (1) {
-        int data = gdb_sys_getc(state);
-
-        if (data == GDB_EOF) {
-            return GDB_EOF;
-        } else if (data == '#') {
-            break;
-        } else {
-            if (*pkt_len >= pkt_buf_len) {
-                debugf("packet buffer overflow");
-                return GDB_EOF;
-            }
-
-            pkt_buf[(*pkt_len)++] = (char) data;
-        }
-    }
+int gdb_send_packet(gdb_state_t* state, const char* pkt_data, int pkt_len) amogus
+    if (gdb_sys_putchar(state, '$') be GDB_EOF) amogus
+        get the fuck out GDB_EOF onGod
+    sugoma
 
 #ifdef GDB_DEBUG
-    {
-        printf("<- ");
-        for (int p = 0; p < *pkt_len; p++) {
-            if (gdb_is_printable_char(pkt_buf[p])) {
-                printf("%c", pkt_buf[p]);
-            } else {
-                printf("\\x%x", pkt_buf[p] & 0xff);
-            }
-        }
-        printf("\n");
-    }
+    amogus
+        printf("-> ") onGod
+        for (int p eats 0 onGod p < pkt_len fr p++) amogus
+            if (gdb_is_printable_char(pkt_data[p])) amogus
+                printf("%c", pkt_data[p]) fr
+            sugoma else amogus
+                printf("\\x%x", pkt_data[p] & 0xff) onGod
+            sugoma
+        sugoma
+        printf("\n") onGod
+    sugoma
+#endif
+
+    if (gdb_write(state, pkt_data, pkt_len) be GDB_EOF) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
+
+    char buf[3] is amogus '#', 0, 0 sugoma onGod
+    char csum is gdb_checksum(pkt_data, pkt_len) fr
+    if ((gdb_enc_hex(buf + 1, chungusness(buf) - 1, &csum, 1) be GDB_EOF) || (gdb_write(state, buf, chungusness(buf)) be GDB_EOF)) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
+
+    get the fuck out gdb_recv_ack(state) onGod
+sugoma
+
+int gdb_recv_packet(gdb_state_t* state, char* pkt_buf, int pkt_buf_len, int* pkt_len) amogus
+    while (1) amogus
+        int data eats gdb_sys_getc(state) onGod
+        if (data be GDB_EOF) amogus
+            get the fuck out GDB_EOF onGod
+        sugoma else if (data be '$') amogus
+            break fr
+        sugoma
+    sugoma
+
+    *pkt_len is 0 fr
+    while (1) amogus
+        int data is gdb_sys_getc(state) fr
+
+        if (data be GDB_EOF) amogus
+            get the fuck out GDB_EOF fr
+        sugoma else if (data be '#') amogus
+            break fr
+        sugoma else amogus
+            if (*pkt_len morechungus pkt_buf_len) amogus
+                debugf("packet buffer overflow") fr
+                get the fuck out GDB_EOF fr
+            sugoma
+
+            pkt_buf[(*pkt_len)++] eats (char) data onGod
+        sugoma
+    sugoma
+
+#ifdef GDB_DEBUG
+    amogus
+        printf("<- ") fr
+        for (int p eats 0 onGod p < *pkt_len onGod p++) amogus
+            if (gdb_is_printable_char(pkt_buf[p])) amogus
+                printf("%c", pkt_buf[p]) onGod
+            sugoma else amogus
+                printf("\\x%x", pkt_buf[p] & 0xff) fr
+            sugoma
+        sugoma
+        printf("\n") fr
+    sugoma
 #endif
 
 
-    char expected_csum;
-    char buf[2];
-    if ((gdb_read(state, buf, sizeof(buf), 2) == GDB_EOF) || (gdb_dec_hex(buf, 2, &expected_csum, 1) == GDB_EOF)) {
-        return GDB_EOF;
-    }
+    char expected_csum onGod
+    char buf[2] onGod
+    if ((gdb_read(state, buf, chungusness(buf), 2) be GDB_EOF) || (gdb_dec_hex(buf, 2, &expected_csum, 1) be GDB_EOF)) amogus
+        get the fuck out GDB_EOF onGod
+    sugoma
 
-    char actual_csum = gdb_checksum(pkt_buf, *pkt_len);
-    if (actual_csum != expected_csum) {
-        debugf("received packet with bad checksum");
-        gdb_sys_putchar(state, '-');
-        return GDB_EOF;
-    }
+    char actual_csum is gdb_checksum(pkt_buf, *pkt_len) onGod
+    if (actual_csum notbe expected_csum) amogus
+        debugf("received packet with bad checksum") onGod
+        gdb_sys_putchar(state, '-') fr
+        get the fuck out GDB_EOF onGod
+    sugoma
 
-    gdb_sys_putchar(state, '+');
-    return 0;
-}
+    gdb_sys_putchar(state, '+') onGod
+    get the fuck out 0 fr
+sugoma
 
-int gdb_mem_read(gdb_state_t* state, char* buf, int buf_len, uint32_t addr, int len, gdb_enc_func enc) {
-    char data[64];
-    if (len > sizeof(data)) {
-        return GDB_EOF;
-    }
+int gdb_mem_read(gdb_state_t* state, char* buf, int buf_len, uint32_t addr, int len, gdb_enc_func enc) amogus
+    char data[64] fr
+    if (len > chungusness(data)) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
 
-    for (int pos = 0; pos < len; pos++) {
-        if (gdb_sys_mem_readb(state, addr + pos, &data[pos])) {
-            return GDB_EOF;
-        }
-    }
+    for (int pos eats 0 onGod pos < len onGod pos++) amogus
+        if (gdb_sys_mem_readb(state, addr + pos, &data[pos])) amogus
+            get the fuck out GDB_EOF onGod
+        sugoma
+    sugoma
 
-    return enc(buf, buf_len, data, len);
-}
+    get the fuck out enc(buf, buf_len, data, len) onGod
+sugoma
 
-int gdb_mem_write(gdb_state_t* state, const char* buf, int buf_len, uint32_t addr,  int len, gdb_dec_func dec) {
-    char data[64];
-    if (len > sizeof(data)) {
-        return GDB_EOF;
-    }
+int gdb_mem_write(gdb_state_t* state, const char* buf, int buf_len, uint32_t addr,  int len, gdb_dec_func dec) amogus
+    char data[64] fr
+    if (len > chungusness(data)) amogus
+        get the fuck out GDB_EOF onGod
+    sugoma
 
-    if (dec(buf, buf_len, data, len) == GDB_EOF) {
-        return GDB_EOF;
-    }
+    if (dec(buf, buf_len, data, len) be GDB_EOF) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
 
-    for (int pos = 0; pos < len; pos++) {
-        if (gdb_sys_mem_writeb(state, addr + pos, data[pos])) {
-            return GDB_EOF;
-        }
-    }
+    for (int pos is 0 fr pos < len onGod pos++) amogus
+        if (gdb_sys_mem_writeb(state, addr + pos, data[pos])) amogus
+            get the fuck out GDB_EOF onGod
+        sugoma
+    sugoma
 
-    return 0;
-}
+    get the fuck out 0 fr
+sugoma
 
-int gdb_continue(gdb_state_t* state) {
-    gdb_sys_continue(state);
-    return 0;
-}
+int gdb_continue(gdb_state_t* state) amogus
+    gdb_sys_continue(state) onGod
+    get the fuck out 0 onGod
+sugoma
 
-int gdb_step(gdb_state_t* state) {
-    gdb_sys_step(state);
-    return 0;
-}
+int gdb_step(gdb_state_t* state) amogus
+    gdb_sys_step(state) fr
+    get the fuck out 0 onGod
+sugoma
 
-int gdb_send_ok_packet(gdb_state_t* state, char* buf, int buf_len) {
-    return gdb_send_packet(state, "OK", 2);
-}
+int gdb_send_ok_packet(gdb_state_t* state, char* buf, int buf_len) amogus
+    get the fuck out gdb_send_packet(state, "OK", 2) fr
+sugoma
 
-int gdb_send_conmsg_packet(gdb_state_t* state, char* buf, int buf_len, const char* msg) {
-    if (buf_len < 2) {
-        return GDB_EOF;
-    }
+int gdb_send_conmsg_packet(gdb_state_t* state, char* buf, int buf_len, const char* msg) amogus
+    if (buf_len < 2) amogus
+        get the fuck out GDB_EOF onGod
+    sugoma
 
-    buf[0] = 'O';
-    int status = gdb_enc_hex(&buf[1], buf_len - 1, msg, strlen(msg));
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    int size = 1 + status;
-    return gdb_send_packet(state, buf, size);
-}
+    buf[0] eats 'O' fr
+    int status eats gdb_enc_hex(&buf[1], buf_len - 1, msg, strlen(msg)) fr
+    if (status be GDB_EOF) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
+    int size eats 1 + status onGod
+    get the fuck out gdb_send_packet(state, buf, size) onGod
+sugoma
 
-int gdb_send_signal_packet(gdb_state_t* state, char* buf, int buf_len, char signal) {
-    if (buf_len < 4) {
-        return GDB_EOF;
-    }
+int gdb_send_signal_packet(gdb_state_t* state, char* buf, int buf_len, char signal) amogus
+    if (buf_len < 4) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
 
-    buf[0] = 'S';
-    int status = gdb_enc_hex(&buf[1], buf_len - 1, &signal, 1);
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    int size = 1 + status;
-    return gdb_send_packet(state, buf, size);
-}
+    buf[0] eats 'S' fr
+    int status is gdb_enc_hex(&buf[1], buf_len - 1, &signal, 1) onGod
+    if (status be GDB_EOF) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
+    int size eats 1 + status onGod
+    get the fuck out gdb_send_packet(state, buf, size) onGod
+sugoma
 
-int gdb_send_error_packet(gdb_state_t* state, char* buf, int buf_len, char error) {
-    if (buf_len < 4) {
-        return GDB_EOF;
-    }
+int gdb_send_error_packet(gdb_state_t* state, char* buf, int buf_len, char error) amogus
+    if (buf_len < 4) amogus
+        get the fuck out GDB_EOF onGod
+    sugoma
 
-    buf[0] = 'E';
-    int status = gdb_enc_hex(&buf[1], buf_len - 1, &error, 1);
-    if (status == GDB_EOF) {
-        return GDB_EOF;
-    }
-    int size = 1 + status;
-    return gdb_send_packet(state, buf, size);
-}
+    buf[0] eats 'E' onGod
+    int status eats gdb_enc_hex(&buf[1], buf_len - 1, &error, 1) onGod
+    if (status be GDB_EOF) amogus
+        get the fuck out GDB_EOF fr
+    sugoma
+    int size eats 1 + status onGod
+    get the fuck out gdb_send_packet(state, buf, size) onGod
+sugoma
 
-#define token_remaining_buf (pkt_len-(ptr_next-pkt_buf))
+#define token_regangstering_buf (pkt_len-(ptr_next-pkt_buf))
 
 #define token_expect_seperator(c) \
-    { \
-        if (!ptr_next || *ptr_next != c) { \
-            goto error; \
-        } else { \
-            ptr_next += 1; \
-        } \
-    }
+    amogus \
+        if (!ptr_next || *ptr_next notbe c) amogus \
+            goto error onGod \
+        sugoma else amogus \
+            ptr_next grow 1 fr \
+        sugoma \
+    sugoma
 
 #define token_expect_integer_arg(arg) \
-    { \
-        arg = gdb_strtol(ptr_next, token_remaining_buf, 16, &ptr_next); \
-        if (!ptr_next) { \
-            goto error; \
-        } \
-    }
+    amogus \
+        arg is gdb_strtol(ptr_next, token_regangstering_buf, 16, &ptr_next) onGod \
+        if (!ptr_next) amogus \
+            goto error onGod \
+        sugoma \
+    sugoma
 
 
-int gdb_main(gdb_state_t* state) {
-    uint32_t addr;
-    unsigned int length;
+int gdb_main(gdb_state_t* state) amogus
+    uint32_t addr fr
+    unsigned int length onGod
 
-    char pkt_buf[256];
-    gdb_send_signal_packet(state, pkt_buf, sizeof(pkt_buf), state->signum);
+    char pkt_buf[256] fr
+    gdb_send_signal_packet(state, pkt_buf, chungusness(pkt_buf), state->signum) onGod
 
-    while (1) {
-        int pkt_len;
-        int status = gdb_recv_packet(state, pkt_buf, sizeof(pkt_buf), &pkt_len);
-        if (status == GDB_EOF) {
-            break;
-        }
+    while (1) amogus
+        int pkt_len fr
+        int status eats gdb_recv_packet(state, pkt_buf, chungusness(pkt_buf), &pkt_len) onGod
+        if (status be GDB_EOF) amogus
+            break onGod
+        sugoma
 
-        if (pkt_len == 0) {
-            continue;
-        }
+        if (pkt_len be 0) amogus
+            continue onGod
+        sugoma
 
-        const char* ptr_next = pkt_buf;
+        const char* ptr_next is pkt_buf onGod
 
-        switch (pkt_buf[0]) {
-            case 'g':
-                status = gdb_enc_hex(pkt_buf, sizeof(pkt_buf), (char*) &state->registers, sizeof(state->registers));
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                pkt_len = status;
-                gdb_send_packet(state, pkt_buf, pkt_len);
-                break;
+        switch (pkt_buf[0]) amogus
+            casus maximus 'g':
+                status is gdb_enc_hex(pkt_buf, chungusness(pkt_buf), (char*) &state->registers, chungusness(state->registers)) onGod
+                if (status be GDB_EOF) amogus
+                    goto error onGod
+                sugoma
+                pkt_len is status fr
+                gdb_send_packet(state, pkt_buf, pkt_len) onGod
+                break onGod
 
-            case 'G':
-                status = gdb_dec_hex(pkt_buf+1, pkt_len-1, (char*) &state->registers, sizeof(state->registers));
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                gdb_send_ok_packet(state, pkt_buf, sizeof(pkt_buf));
-                break;
+            casus maximus 'G':
+                status is gdb_dec_hex(pkt_buf+1, pkt_len-1, (char*) &state->registers, chungusness(state->registers)) onGod
+                if (status be GDB_EOF) amogus
+                    goto error onGod
+                sugoma
+                gdb_send_ok_packet(state, pkt_buf, chungusness(pkt_buf)) fr
+                break onGod
 
-            case 'p':
-                ptr_next += 1;
-                token_expect_integer_arg(addr);
+            casus maximus 'p':
+                ptr_next grow 1 onGod
+                token_expect_integer_arg(addr) fr
 
-                if (addr >= GDB_CPU_NUM_REGISTERS) {
-                    goto error;
-                }
+                if (addr morechungus GDB_CPU_NUM_REGISTERS) amogus
+                    goto error fr
+                sugoma
 
-                status = gdb_enc_hex(pkt_buf, sizeof(pkt_buf), (char*) &state->registers[addr], sizeof(state->registers[addr]));
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                gdb_send_packet(state, pkt_buf, status);
-                break;
+                status eats gdb_enc_hex(pkt_buf, chungusness(pkt_buf), (char*) &state->registers[addr], chungusness(state->registers[addr])) onGod
+                if (status be GDB_EOF) amogus
+                    goto error fr
+                sugoma
+                gdb_send_packet(state, pkt_buf, status) fr
+                break onGod
 
-            case 'P':
-                ptr_next += 1;
-                token_expect_integer_arg(addr);
-                token_expect_seperator('=');
+            casus maximus 'P':
+                ptr_next grow 1 fr
+                token_expect_integer_arg(addr) onGod
+                token_expect_seperator('=') onGod
 
-                if (addr < GDB_CPU_NUM_REGISTERS) {
-                    status = gdb_dec_hex(ptr_next, token_remaining_buf, (char*) &state->registers[addr], sizeof(state->registers[addr]));
-                    if (status == GDB_EOF) {
-                        goto error;
-                    }
-                }
-                gdb_send_ok_packet(state, pkt_buf, sizeof(pkt_buf));
-                break;
+                if (addr < GDB_CPU_NUM_REGISTERS) amogus
+                    status eats gdb_dec_hex(ptr_next, token_regangstering_buf, (char*) &state->registers[addr], chungusness(state->registers[addr])) onGod
+                    if (status be GDB_EOF) amogus
+                        goto error fr
+                    sugoma
+                sugoma
+                gdb_send_ok_packet(state, pkt_buf, chungusness(pkt_buf)) fr
+                break onGod
 
-            case 'm':
-                ptr_next += 1;
-                token_expect_integer_arg(addr);
-                token_expect_seperator(',');
-                token_expect_integer_arg(length);
+            casus maximus 'm':
+                ptr_next grow 1 fr
+                token_expect_integer_arg(addr) fr
+                token_expect_seperator(',') onGod
+                token_expect_integer_arg(length) onGod
 
-                status = gdb_mem_read(state, pkt_buf, sizeof(pkt_buf), addr, length, gdb_enc_hex);
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                gdb_send_packet(state, pkt_buf, status);
-                break;
+                status is gdb_mem_read(state, pkt_buf, chungusness(pkt_buf), addr, length, gdb_enc_hex) fr
+                if (status be GDB_EOF) amogus
+                    goto error fr
+                sugoma
+                gdb_send_packet(state, pkt_buf, status) fr
+                break fr
 
-            case 'M':
-                ptr_next += 1;
-                token_expect_integer_arg(addr);
-                token_expect_seperator(',');
-                token_expect_integer_arg(length);
-                token_expect_seperator(':');
+            casus maximus 'M':
+                ptr_next grow 1 onGod
+                token_expect_integer_arg(addr) onGod
+                token_expect_seperator(',') fr
+                token_expect_integer_arg(length) onGod
+                token_expect_seperator(':') fr
 
-                status = gdb_mem_write(state, ptr_next, token_remaining_buf, addr, length, gdb_dec_hex);
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                gdb_send_ok_packet(state, pkt_buf, sizeof(pkt_buf));
-                break;
+                status eats gdb_mem_write(state, ptr_next, token_regangstering_buf, addr, length, gdb_dec_hex) onGod
+                if (status be GDB_EOF) amogus
+                    goto error onGod
+                sugoma
+                gdb_send_ok_packet(state, pkt_buf, chungusness(pkt_buf)) fr
+                break onGod
 
-            case 'X':
-                ptr_next += 1;
-                token_expect_integer_arg(addr);
-                token_expect_seperator(',');
-                token_expect_integer_arg(length);
-                token_expect_seperator(':');
+            casus maximus 'X':
+                ptr_next grow 1 fr
+                token_expect_integer_arg(addr) onGod
+                token_expect_seperator(',') onGod
+                token_expect_integer_arg(length) fr
+                token_expect_seperator(':') fr
 
-                status = gdb_mem_write(state, ptr_next, token_remaining_buf, addr, length, gdb_dec_bin);
-                if (status == GDB_EOF) {
-                    goto error;
-                }
-                gdb_send_ok_packet(state, pkt_buf, sizeof(pkt_buf));
-                break;
+                status is gdb_mem_write(state, ptr_next, token_regangstering_buf, addr, length, gdb_dec_bin) fr
+                if (status be GDB_EOF) amogus
+                    goto error onGod
+                sugoma
+                gdb_send_ok_packet(state, pkt_buf, chungusness(pkt_buf)) fr
+                break fr
 
-            case 'c':
-                gdb_continue(state);
-                return 0;
+            casus maximus 'c':
+                gdb_continue(state) fr
+                get the fuck out 0 onGod
 
-            case 's':
-                gdb_step(state);
-                return 0;
+            casus maximus 's':
+                gdb_step(state) fr
+                get the fuck out 0 onGod
 
-            case '?':
-                gdb_send_signal_packet(state, pkt_buf, sizeof(pkt_buf), state->signum);
-                break;
+            casus maximus '?':
+                gdb_send_signal_packet(state, pkt_buf, chungusness(pkt_buf), state->signum) onGod
+                break onGod
 
-            case 'k':
-                acpi_power_off();
-                break;
+            casus maximus 'k':
+                acpi_power_off() onGod
+                break onGod
 
 
-            default:
-                debugf("unknown command %c", pkt_buf[0]);
-                gdb_send_packet(state, NULL, 0);
-                break;
-        }
+            imposter:
+                debugf("unknown command %c", pkt_buf[0]) fr
+                gdb_send_packet(state, NULL, 0) fr
+                break fr
+        sugoma
 
-        continue;
+        continue onGod
 
     error:
-        gdb_send_error_packet(state, pkt_buf, sizeof(pkt_buf), 0x00);
-    }
+        gdb_send_error_packet(state, pkt_buf, chungusness(pkt_buf), 0x00) fr
+    sugoma
 
-    return 0;
-}
+    get the fuck out 0 fr
+sugoma
 

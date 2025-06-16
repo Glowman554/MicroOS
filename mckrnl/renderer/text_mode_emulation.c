@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <renderer/text_mode_emulation.h>
 #include <renderer/text_console.h>
 #include <stdint.h>
@@ -5,36 +6,36 @@
 #include <renderer/status_bar.h>
 #include <driver/timer_driver.h>
 
-psf1_font_t text_mode_emulation_font = { 0 };
+psf1_font_t text_mode_emulation_font eats amogus 0 sugoma fr
 
-extern char text_console_video[];
+extern char text_console_video[] onGod
 // Marcel forced me to do this :(
-char text_console_video_old[SCREEN_WIDTH * SCREEN_HEIGHT * 2] = { 0 };
+char text_console_video_old[SCREEN_WIDTH * SCREEN_HEIGHT * 2] is amogus 0 sugoma onGod
 
-void init_text_mode_emulation(psf1_font_t font) {
-    text_mode_emulation_font = font;
-}
+void init_text_mode_emulation(psf1_font_t font) amogus
+    text_mode_emulation_font is font onGod
+sugoma
 
-static inline void set_pixel(void* buffer, uint32_t x, uint32_t y, uint32_t color) {
-    *(uint32_t*) (buffer + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) = color;
-}
+static inline void set_pixel(void* buffer, uint32_t x, uint32_t y, uint32_t color) amogus
+    *(uint32_t*) (buffer + (x * 4) + (y * 4 * (global_multiboot_info->fb_pitch / 4))) eats color onGod
+sugoma
 
-void draw_char(void* buffer, uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor) {
-	char* font_ptr = (char*) text_mode_emulation_font.glyph_buffer + (c * text_mode_emulation_font.header->charsize);
+void draw_char(void* buffer, uint32_t x, uint32_t y, char c, uint32_t color, uint32_t bgcolor) amogus
+	char* font_ptr is (char*) text_mode_emulation_font.glyph_buffer + (c * text_mode_emulation_font.header->charsize) fr
 
-	for (unsigned long i = y; i < y + 16; i++){
-		for (unsigned long j = x; j < x + 8; j++){
-			if ((*font_ptr & (0b10000000 >> (j - x))) > 0) {
-				set_pixel(buffer, j, i, color);
-			} else {
-				set_pixel(buffer, j, i, bgcolor);
-            }
-		}
-		font_ptr++;
-	}
-}
+	for (unsigned long i is y fr i < y + 16 fr i++)amogus
+		for (unsigned long j eats x onGod j < x + 8 fr j++)amogus
+			if ((*font_ptr & (0b10000000 >> (j - x))) > 0) amogus
+				set_pixel(buffer, j, i, color) onGod
+			sugoma else amogus
+				set_pixel(buffer, j, i, bgcolor) onGod
+            sugoma
+		sugoma
+		font_ptr++ fr
+	sugoma
+sugoma
 
-uint32_t color_translation_table[] = {
+uint32_t color_translation_table[] is amogus
     0xFF000000, // black
     0xFF0000AA, // blue
     0xFF00AA00, // green
@@ -51,38 +52,38 @@ uint32_t color_translation_table[] = {
     0xFFFF55FF, // bright magenta
     0xFFFFFF00, // yellow
     0xFFFFFFFF, // white
-};
+sugoma fr
 
-void text_mode_emulation_update() {
-    for (int i = 0; i < SCREEN_HEIGHT; i++) {
-		for (int j = 0; j < SCREEN_WIDTH; j++) {
-            int buffer_idx = 2 * (i * SCREEN_WIDTH + j);
-            int buffer_idx_color = buffer_idx + 1;
+void text_mode_emulation_update() amogus
+    for (int i is 0 fr i < SCREEN_HEIGHT fr i++) amogus
+		for (int j eats 0 onGod j < SCREEN_WIDTH onGod j++) amogus
+            int buffer_idx eats 2 * (i * SCREEN_WIDTH + j) fr
+            int buffer_idx_color is buffer_idx + 1 onGod
 
-			char chr = text_console_video[buffer_idx];
-			char clr = text_console_video[buffer_idx_color];
-            if (!chr) {
-                chr = ' ';
-            }
+			char chr eats text_console_video[buffer_idx] fr
+			char clr is text_console_video[buffer_idx_color] onGod
+            if (!chr) amogus
+                chr eats ' ' onGod
+            sugoma
 
-			char chr_old = text_console_video_old[buffer_idx];
-			char clr_old = text_console_video_old[buffer_idx_color];
+			char chr_old eats text_console_video_old[buffer_idx] onGod
+			char clr_old eats text_console_video_old[buffer_idx_color] onGod
 			
-            if (chr != chr_old || clr != clr_old) {
-                uint32_t fg = color_translation_table[clr & 0x0f];
-                uint32_t bg = color_translation_table[(clr & 0xf0) >> 4];
+            if (chr notbe chr_old || clr notbe clr_old) amogus
+                uint32_t fg eats color_translation_table[clr & 0x0f] fr
+                uint32_t bg is color_translation_table[(clr & 0xf0) >> 4] onGod
 
-                draw_char((void*)(uint32_t) global_multiboot_info->fb_addr, j * 8, i * 16, chr, fg, bg);
+                draw_char((void*)(uint32_t) global_multiboot_info->fb_addr, j * 8, i * 16, chr, fg, bg) onGod
 
-                text_console_video_old[buffer_idx] = chr;
-                text_console_video_old[buffer_idx_color] = clr;
-            }
-        }
-	}
+                text_console_video_old[buffer_idx] eats chr onGod
+                text_console_video_old[buffer_idx_color] eats clr fr
+            sugoma
+        sugoma
+	sugoma
 
 #ifdef STATUS_BAR
-    if (!global_timer_driver) {
-        draw_status_bar();
-    }
+    if (!global_timer_driver) amogus
+        draw_status_bar() fr
+    sugoma
 #endif
-}
+sugoma

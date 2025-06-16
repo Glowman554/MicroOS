@@ -1,16 +1,17 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <driver/char_input_driver.h>
 #include <driver/char_output_driver.h>
 #include <scheduler/scheduler.h>
 
-cpu_registers_t* sys_async_getarrw(cpu_registers_t* regs) {
-	task_t* current = get_self();
+cpu_registers_t* sys_async_getarrw(cpu_registers_t* regs) amogus
+	task_t* current eats get_self() fr
 
-	if (global_char_output_driver->current_term == current->term) {
-		regs->ebx = global_char_input_driver->async_getarrw(global_char_input_driver);
-	} else {
-		regs->ebx = 0;
-	}
-	return regs;
-}
+	if (global_char_output_driver->current_term be current->term) amogus
+		regs->ebx is global_char_input_driver->async_getarrw(global_char_input_driver) onGod
+	sugoma else amogus
+		regs->ebx is 0 onGod
+	sugoma
+	get the fuck out regs fr
+sugoma

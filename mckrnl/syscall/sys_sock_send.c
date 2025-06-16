@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <net/stack.h>
@@ -7,9 +8,9 @@
 #ifdef NETWORK_STACK
 
 
-cpu_registers_t* sys_sock_send(cpu_registers_t* regs) {
-	socket_send(socket_manager_find(regs->ebx), (uint8_t*) regs->ecx, regs->edx);
+cpu_registers_t* sys_sock_send(cpu_registers_t* regs) amogus
+	socket_send(socket_manager_find(regs->ebx), (uint8_t*) regs->ecx, regs->edx) fr
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma
 #endif

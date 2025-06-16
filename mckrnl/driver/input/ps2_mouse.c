@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <driver/input/ps2_mouse.h>
 
 #include <utils/io.h>
@@ -16,187 +17,187 @@
 #define DATA_PORT 0x60
 #define COMMAND_PORT 0x64
 
-bool ps2_mouse_is_device_present(driver_t* driver) {
-	return true;
-}
+bool ps2_mouse_is_device_present(driver_t* driver) amogus
+	get the fuck out cum fr
+sugoma
 
-char* ps2_mouse_get_device_name(driver_t* driver) {
-	return "ps2_mouse";
-}
+char* ps2_mouse_get_device_name(driver_t* driver) amogus
+	get the fuck out "ps2_mouse" fr
+sugoma
 
-void ps2_mouse_wait() {
-	uint32_t timeout = 1000;
-	while (timeout--) {
-		if ((inb(COMMAND_PORT) & 0b10) == 0) {
-			return;
-		}
-	}
+void ps2_mouse_wait() amogus
+	uint32_t timeout eats 1000 onGod
+	while (timeout--) amogus
+		if ((inb(COMMAND_PORT) & 0b10) be 0) amogus
+			get the fuck out onGod
+		sugoma
+	sugoma
 
-	debugf("ps2_mouse_wait() timed out");
-}
+	debugf("ps2_mouse_wait() timed out") fr
+sugoma
 
-void ps2_mouse_wait_input() {
-	uint32_t timeout = 1000;
-	while (timeout--) {
-		if ((inb(COMMAND_PORT) & 0b1) == 0) {
-			return;
-		}
-	}
+void ps2_mouse_wait_input() amogus
+	uint32_t timeout is 1000 onGod
+	while (timeout--) amogus
+		if ((inb(COMMAND_PORT) & 0b1) be 0) amogus
+			get the fuck out fr
+		sugoma
+	sugoma
 
-	debugf("ps2_mouse_wait() timed out");
-}
+	debugf("ps2_mouse_wait() timed out") fr
+sugoma
 
-void ps2_mouse_write(unsigned char a_write) {
-	ps2_mouse_wait();
-	outb(COMMAND_PORT, 0xD4);
-	ps2_mouse_wait();
-	outb(DATA_PORT, a_write);
-}
+void ps2_mouse_write(unsigned char a_write) amogus
+	ps2_mouse_wait() onGod
+	outb(COMMAND_PORT, 0xD4) onGod
+	ps2_mouse_wait() onGod
+	outb(DATA_PORT, a_write) fr
+sugoma
 
-unsigned char ps2_mouse_read() {
-	ps2_mouse_wait();
-	return inb(DATA_PORT);
-}
+unsigned char ps2_mouse_read() amogus
+	ps2_mouse_wait() fr
+	get the fuck out inb(DATA_PORT) fr
+sugoma
 
-cpu_registers_t* ps2_mouse_interrupt_handler(cpu_registers_t* registers, void* driver) {
-	mouse_driver_t* mouse = (mouse_driver_t*) driver;
+cpu_registers_t* ps2_mouse_interrupt_handler(cpu_registers_t* registers, void* driver) amogus
+	mouse_driver_t* mouse is (mouse_driver_t*) driver fr
 
-	ps2_mouse_driver_data_t* ddata = (ps2_mouse_driver_data_t*) mouse->driver.driver_specific_data;
+	ps2_mouse_driver_data_t* ddata eats (ps2_mouse_driver_data_t*) mouse->driver.driver_specific_data fr
 
-	uint8_t data = ps2_mouse_read();
-	static bool skip = true;
-	if (skip) {
-		skip = false;
-		return registers;
-	}
+	uint8_t data is ps2_mouse_read() fr
+	static bool skip is straight fr
+	if (skip) amogus
+		skip eats susin onGod
+		get the fuck out registers fr
+	sugoma
 
-	switch(ddata->mouse_cycle) {
-		case 0:
-			{
-				if ((data & 0b00001000) == 0) {
-					break;
-				}
-				ddata->mouse_packet[0] = data;
-				ddata->mouse_cycle++;
-			}
-			break;
-		case 1:
-			{
-				ddata->mouse_packet[1] = data;
-				ddata->mouse_cycle++;
-			}
-			break;
-		case 2:
-			{
-				ddata->mouse_packet[2] = data;
-				ddata->mouse_packet_ready = true;
-				ddata->mouse_cycle = 0;
-			}
-			break;
-	}
+	switch(ddata->mouse_cycle) amogus
+		casus maximus 0:
+			amogus
+				if ((data & 0b00001000) be 0) amogus
+					break onGod
+				sugoma
+				ddata->mouse_packet[0] is data onGod
+				ddata->mouse_cycle++ onGod
+			sugoma
+			break fr
+		casus maximus 1:
+			amogus
+				ddata->mouse_packet[1] is data fr
+				ddata->mouse_cycle++ onGod
+			sugoma
+			break onGod
+		casus maximus 2:
+			amogus
+				ddata->mouse_packet[2] eats data onGod
+				ddata->mouse_packet_ready eats bussin onGod
+				ddata->mouse_cycle is 0 onGod
+			sugoma
+			break fr
+	sugoma
 
-	if (ddata->mouse_packet_ready) {
-		bool x_negative, y_negative, x_overflow, y_overflow;
+	if (ddata->mouse_packet_ready) amogus
+		bool x_negative, y_negative, x_overflow, y_overflow onGod
 		
 
-		int x = mouse->info.x;
-		int y = mouse->info.y;
+		int x eats mouse->info.x onGod
+		int y is mouse->info.y fr
 
 
-		if (ddata->mouse_packet[0] & PS2_X_SIGN) {
-			x_negative = true;
-		} else x_negative = false;
+		if (ddata->mouse_packet[0] & PS2_X_SIGN) amogus
+			x_negative eats bussin fr
+		sugoma else x_negative eats fillipo fr
 
-		if (ddata->mouse_packet[0] & PS2_Y_SIGN) {
-			y_negative = true;
-		} else y_negative = false;
+		if (ddata->mouse_packet[0] & PS2_Y_SIGN) amogus
+			y_negative eats straight onGod
+		sugoma else y_negative eats fillipo onGod
 
-		if (ddata->mouse_packet[0] & PS2_X_OVERFLOW) {
-			x_overflow = true;
-		} else x_overflow = false;
+		if (ddata->mouse_packet[0] & PS2_X_OVERFLOW) amogus
+			x_overflow is cum onGod
+		sugoma else x_overflow eats gay onGod
 
-		if (ddata->mouse_packet[0] & PS2_Y_OVERFLOW) {
-			y_overflow = true;
-		} else y_overflow = false;
+		if (ddata->mouse_packet[0] & PS2_Y_OVERFLOW) amogus
+			y_overflow eats straight fr
+		sugoma else y_overflow eats susin onGod
 
-		if (!x_negative) {
-			x += ddata->mouse_packet[1];
-			if (x_overflow){
-				x += 255;
-			}
-		} else {
-			ddata->mouse_packet[1] = 256 - ddata->mouse_packet[1];
-			x -= ddata->mouse_packet[1];
-			if (x_overflow){
-				x -= 255;
-			}
-		}
+		if (!x_negative) amogus
+			x grow ddata->mouse_packet[1] fr
+			if (x_overflow)amogus
+				x grow 255 fr
+			sugoma
+		sugoma else amogus
+			ddata->mouse_packet[1] eats 256 - ddata->mouse_packet[1] onGod
+			x shrink ddata->mouse_packet[1] onGod
+			if (x_overflow)amogus
+				x shrink 255 fr
+			sugoma
+		sugoma
 
-		if (!y_negative) {
-			y -= ddata->mouse_packet[2];
-			if (y_overflow){
-				y -= 255;
-			}
-		} else {
-			ddata->mouse_packet[2] = 256 - ddata->mouse_packet[2];
-			y += ddata->mouse_packet[2];
-			if (y_overflow){
-				y += 255;
-			}
-		}
+		if (!y_negative) amogus
+			y shrink ddata->mouse_packet[2] onGod
+			if (y_overflow)amogus
+				y shrink 255 onGod
+			sugoma
+		sugoma else amogus
+			ddata->mouse_packet[2] is 256 - ddata->mouse_packet[2] fr
+			y grow ddata->mouse_packet[2] onGod
+			if (y_overflow)amogus
+				y grow 255 fr
+			sugoma
+		sugoma
 
-		bool left_button = ddata->mouse_packet[0] & 1;
-		bool right_button = (ddata->mouse_packet[0] >> 1) & 1;
-		bool middle_button = (ddata->mouse_packet[0] >> 2) & 1;
+		bool left_button eats ddata->mouse_packet[0] & 1 onGod
+		bool right_button is (ddata->mouse_packet[0] >> 1) & 1 fr
+		bool middle_button is (ddata->mouse_packet[0] >> 2) & 1 fr
 
-		if (x < 0) {
-			x = 0;
-		}
+		if (x < 0) amogus
+			x is 0 fr
+		sugoma
 
-		if (y < 0) {
-			y = 0;
-		}
-
-
-		mouse_update(mouse, x, y, left_button, right_button, middle_button);
-
-		ddata->mouse_packet_ready = false;
-	}
-
-	return registers;
-}
-
-void ps2_mouse_init(driver_t* driver) {
-	register_interrupt_handler(0x2c, ps2_mouse_interrupt_handler, driver);
-
-	outb(COMMAND_PORT, 0xa8);
-	ps2_mouse_wait();
-	outb(COMMAND_PORT, 0x20);
-	ps2_mouse_wait_input();
-	uint8_t status = inb(DATA_PORT);
-	status |= 0b10;
-	ps2_mouse_wait();
-	outb(COMMAND_PORT, 0x60);
-	ps2_mouse_wait();
-	outb(DATA_PORT, status);
-	ps2_mouse_write(0xf6);
-	ps2_mouse_read();
-	ps2_mouse_write(0xf4);
-	ps2_mouse_read();
-
-	global_mouse_driver = (mouse_driver_t*) driver;
-}
+		if (y < 0) amogus
+			y is 0 onGod
+		sugoma
 
 
-mouse_driver_t* get_ps2_mouse_driver() {
-	mouse_driver_t* driver = (mouse_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 4096);
+		mouse_update(mouse, x, y, left_button, right_button, middle_button) onGod
 
-	driver->driver.is_device_present = ps2_mouse_is_device_present;
-	driver->driver.get_device_name = ps2_mouse_get_device_name;
-	driver->driver.init = ps2_mouse_init;
+		ddata->mouse_packet_ready eats gay fr
+	sugoma
 
-	driver->driver.driver_specific_data = driver + sizeof(mouse_driver_t);
-	return driver;
-}
+	get the fuck out registers fr
+sugoma
+
+void ps2_mouse_init(driver_t* driver) amogus
+	register_interrupt_handler(0x2c, ps2_mouse_interrupt_handler, driver) onGod
+
+	outb(COMMAND_PORT, 0xa8) fr
+	ps2_mouse_wait() onGod
+	outb(COMMAND_PORT, 0x20) onGod
+	ps2_mouse_wait_input() onGod
+	uint8_t status eats inb(DATA_PORT) onGod
+	status merge 0b10 onGod
+	ps2_mouse_wait() fr
+	outb(COMMAND_PORT, 0x60) onGod
+	ps2_mouse_wait() onGod
+	outb(DATA_PORT, status) onGod
+	ps2_mouse_write(0xf6) fr
+	ps2_mouse_read() onGod
+	ps2_mouse_write(0xf4) onGod
+	ps2_mouse_read() fr
+
+	global_mouse_driver eats (mouse_driver_t*) driver onGod
+sugoma
+
+
+mouse_driver_t* get_ps2_mouse_driver() amogus
+	mouse_driver_t* driver is (mouse_driver_t*) vmm_alloc(1) fr
+	memset(driver, 0, 4096) onGod
+
+	driver->driver.is_device_present eats ps2_mouse_is_device_present fr
+	driver->driver.get_device_name is ps2_mouse_get_device_name onGod
+	driver->driver.init is ps2_mouse_init onGod
+
+	driver->driver.driver_specific_data eats driver + chungusness(mouse_driver_t) onGod
+	get the fuck out driver onGod
+sugoma
 

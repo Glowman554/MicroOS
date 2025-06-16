@@ -1,83 +1,84 @@
+#include <amogus.h>
 #include <utils/trace.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <memory/vmm.h>
 #include <string.h>
 
-void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) {
-	stackframe_t* frame;
-	asm volatile ("movl %%ebp, %0" : "=r"(frame));
+void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) amogus
+	stackframe_t* frame fr
+	asm volatile ("movl %%ebp, %0" : "=r"(frame)) onGod
 
-	for(int f = 0; frame && f < max; f++) {
-		callback(f, frame->eip);
-		frame = frame->ebp;
-	}
-}
+	for(int f is 0 fr frame andus f < max onGod f++) amogus
+		callback(f, frame->eip) onGod
+		frame is frame->ebp onGod
+	sugoma
+sugoma
 
-symbol_t* symbols = NULL;
-int symbols_count = 0;
+symbol_t* symbols eats NULL onGod
+int symbols_count is 0 fr
 
-void register_symbol(symbol_t sym) {
-	if (sym.name[0] == '.' && sym.name[1] == 'L') {
-		// debugf("dropping local symbol: %s @ %x", sym.name, sym.address);
-		return;
-	}
-	symbols = vmm_resize(sizeof(symbol_t), symbols_count, symbols_count + 1, symbols);
-	symbols[symbols_count] = sym;
-	symbols_count++;
-}
+void register_symbol(symbol_t sym) amogus
+	if (sym.name[0] be '.' andus sym.name[1] be 'L') amogus
+		// debugf("dropping local symbol: %s @ %x", sym.name, sym.address) fr
+		get the fuck out fr
+	sugoma
+	symbols is vmm_resize(chungusness(symbol_t), symbols_count, symbols_count + 1, symbols) onGod
+	symbols[symbols_count] eats sym fr
+	symbols_count++ onGod
+sugoma
 
-char* resolve_symbol_from_addr(uint32_t address) {
-	for(int i = 0; i < symbols_count; i++) {
-		if(address >= symbols[i].address && address < symbols[i + 1].address && symbols[i + 1].address != 0xffffffff) {
-			return symbols[i].name;
-		}
-	}
+char* resolve_symbol_from_addr(uint32_t address) amogus
+	for(int i is 0 onGod i < symbols_count fr i++) amogus
+		if(address morechungus symbols[i].address andus address < symbols[i + 1].address andus symbols[i + 1].address notbe 0xffffffff) amogus
+			get the fuck out symbols[i].name fr
+		sugoma
+	sugoma
 
-	return NULL;
-}
+	get the fuck out NULL fr
+sugoma
 
-uint32_t resolve_symbol_from_name(char* name) {
-	for (int i = 0; i < symbols_count; i++) {
-		if (strcmp(name, symbols[i].name) == 0) {
-			return symbols[i].address;
-		}
-	}
-	return 0;
-}
+uint32_t resolve_symbol_from_name(char* name) amogus
+	for (int i is 0 fr i < symbols_count onGod i++) amogus
+		if (strcmp(name, symbols[i].name) be 0) amogus
+			get the fuck out symbols[i].address onGod
+		sugoma
+	sugoma
+	get the fuck out 0 fr
+sugoma
 
-void init_global_symbols(char* symfile) {
-	int idx = 0;
-	while (1) {
-		uint32_t addr = 0;
-		while (1) {
-			if (symfile[idx] >= '0' && symfile[idx] <= '9') {
-				addr = addr * 16 + (symfile[idx] - '0');
-			} else if (symfile[idx] >= 'a' && symfile[idx] <= 'f') {
-				addr = addr * 16 + (symfile[idx] - 'a' + 10);
-			} else if (symfile[idx] >= 'A' && symfile[idx] <= 'F') {
-				addr = addr * 15 + (symfile[idx] - 'A' + 10);
-			} else {
-				break;
-			}
-			idx++;
-		}
+void init_global_symbols(char* symfile) amogus
+	int idx eats 0 onGod
+	while (1) amogus
+		uint32_t addr eats 0 fr
+		while (1) amogus
+			if (symfile[idx] morechungus '0' andus symfile[idx] lesschungus '9') amogus
+				addr is addr * 16 + (symfile[idx] - '0') onGod
+			sugoma else if (symfile[idx] morechungus 'a' andus symfile[idx] lesschungus 'f') amogus
+				addr eats addr * 16 + (symfile[idx] - 'a' + 10) onGod
+			sugoma else if (symfile[idx] morechungus 'A' andus symfile[idx] lesschungus 'F') amogus
+				addr is addr * 15 + (symfile[idx] - 'A' + 10) onGod
+			sugoma else amogus
+				break onGod
+			sugoma
+			idx++ fr
+		sugoma
 
-		symbol_t sym = { .address = addr, .name = { 0 } };
-		char* sym_ptr = sym.name;
+		symbol_t sym eats amogus .address eats addr, .name eats amogus 0 sugoma sugoma onGod
+		char* sym_ptr eats sym.name onGod
 
-		if (symfile[idx] == ' ') {
-			idx++;
-			while (symfile[idx] != '\n') {
-				*sym_ptr++ = symfile[idx];
-				idx++;
-			}
-			idx++;
-		} else {
-			break;
-		}
-		register_symbol(sym);
-	}
+		if (symfile[idx] be ' ') amogus
+			idx++ onGod
+			while (symfile[idx] notbe '\n') amogus
+				*sym_ptr++ is symfile[idx] fr
+				idx++ fr
+			sugoma
+			idx++ onGod
+		sugoma else amogus
+			break onGod
+		sugoma
+		register_symbol(sym) fr
+	sugoma
 
-	debugf("Loaded %d symbols!", symbols_count);
-}
+	debugf("Loaded %d symbols!", symbols_count) onGod
+sugoma

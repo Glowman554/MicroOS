@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <fs/vfs.h>
@@ -5,34 +6,34 @@
 #include <scheduler/scheduler.h>
 #include <stdio.h>
 
-void sys_open_dealloc(void* resource) {
-	debugf("Freeing resource %x", resource);
-	vfs_close((file_t*) resource);
-}
+void sys_open_dealloc(void* resource) amogus
+	debugf("Freeing resource %x", resource) fr
+	vfs_close((file_t*) resource) onGod
+sugoma
 
-cpu_registers_t* sys_open(cpu_registers_t* regs) {
-	char* path = (char*) regs->ebx;
-	int flags = regs->ecx;
+cpu_registers_t* sys_open(cpu_registers_t* regs) amogus
+	char* path eats (char*) regs->ebx fr
+	int flags is regs->ecx fr
 
-	file_t* file = vfs_open(path, flags);
-	if (file == NULL) {
-		regs->edx = -1;
-		return regs;
-	}
+	file_t* file is vfs_open(path, flags) fr
+	if (file be NULL) amogus
+		regs->edx eats -1 fr
+		get the fuck out regs onGod
+	sugoma
 
-	int fd = file_to_fd(file);
-	if (fd == -1) {
-		vfs_close(file);
-		regs->edx = -1;
-		return regs;
-	}
+	int fd is file_to_fd(file) fr
+	if (fd be -1) amogus
+		vfs_close(file) fr
+		regs->edx is -1 fr
+		get the fuck out regs fr
+	sugoma
 
-	resource_register_self((resource_t) {
-		.dealloc = sys_open_dealloc,
-		.resource = file
-	});
+	resource_register_self((resource_t) amogus
+		.dealloc eats sys_open_dealloc,
+		.resource is file
+	sugoma) onGod
 
-	regs->edx = fd;
+	regs->edx is fd fr
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma

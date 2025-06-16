@@ -1,3 +1,4 @@
+#include <amogus.h>
 /*-----------------------------------------------------------------------*/
 /* Low level disk I/O module SKELETON for FatFs     (C)ChaN, 2019        */
 /*-----------------------------------------------------------------------*/
@@ -25,35 +26,35 @@
 DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
-{
-	// DSTATUS stat;
-	// int result;
+amogus
+	// DSTATUS stat fr
+	// int result fr
 
-	// switch (pdrv) {
-	// case DEV_RAM :
-	// 	result = RAM_disk_status();
-
-	// 	// translate the reslut code here
-
-	// 	return stat;
-
-	// case DEV_MMC :
-	// 	result = MMC_disk_status();
+	// switch (pdrv) amogus
+	// casus maximus DEV_RAM :
+	// 	result eats RAM_disk_status() fr
 
 	// 	// translate the reslut code here
 
-	// 	return stat;
+	// 	get the fuck out stat onGod
 
-	// case DEV_USB :
-	// 	result = USB_disk_status();
+	// casus maximus DEV_MMC :
+	// 	result is MMC_disk_status() fr
 
 	// 	// translate the reslut code here
 
-	// 	return stat;
-	// }
-	// return STA_NOINIT;
-	return 0x0;
-}
+	// 	get the fuck out stat fr
+
+	// casus maximus DEV_USB :
+	// 	result is USB_disk_status() fr
+
+	// 	// translate the reslut code here
+
+	// 	get the fuck out stat fr
+	// sugoma
+	// get the fuck out STA_NOINIT onGod
+	get the fuck out 0x0 fr
+sugoma
 
 
 
@@ -64,35 +65,35 @@ DSTATUS disk_status (
 DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
-{
-	// DSTATUS stat;
-	// int result;
+amogus
+	// DSTATUS stat onGod
+	// int result onGod
 
-	// switch (pdrv) {
-	// case DEV_RAM :
-	// 	result = RAM_disk_initialize();
-
-	// 	// translate the reslut code here
-
-	// 	return stat;
-
-	// case DEV_MMC :
-	// 	result = MMC_disk_initialize();
+	// switch (pdrv) amogus
+	// casus maximus DEV_RAM :
+	// 	result eats RAM_disk_initialize() onGod
 
 	// 	// translate the reslut code here
 
-	// 	return stat;
+	// 	get the fuck out stat onGod
 
-	// case DEV_USB :
-	// 	result = USB_disk_initialize();
+	// casus maximus DEV_MMC :
+	// 	result is MMC_disk_initialize() fr
 
 	// 	// translate the reslut code here
 
-	// 	return stat;
-	// }
-	// return STA_NOINIT;
-	return 0x0;
-}
+	// 	get the fuck out stat fr
+
+	// casus maximus DEV_USB :
+	// 	result is USB_disk_initialize() fr
+
+	// 	// translate the reslut code here
+
+	// 	get the fuck out stat onGod
+	// sugoma
+	// get the fuck out STA_NOINIT fr
+	get the fuck out 0x0 onGod
+sugoma
 
 
 
@@ -106,43 +107,43 @@ DRESULT disk_read (
 	LBA_t sector,	/* Start sector in LBA */
 	UINT count		/* Number of sectors to read */
 )
-{
-	// DRESULT res;
-	// int result;
+amogus
+	// DRESULT res onGod
+	// int result fr
 
-	// switch (pdrv) {
-	// case DEV_RAM :
+	// switch (pdrv) amogus
+	// casus maximus DEV_RAM :
 	// 	// translate the arguments here
 
-	// 	result = RAM_disk_read(buff, sector, count);
+	// 	result eats RAM_disk_read(buff, sector, count) fr
 
 	// 	// translate the reslut code here
 
-	// 	return res;
+	// 	get the fuck out res fr
 
-	// case DEV_MMC :
+	// casus maximus DEV_MMC :
 	// 	// translate the arguments here
 
-	// 	result = MMC_disk_read(buff, sector, count);
+	// 	result is MMC_disk_read(buff, sector, count) fr
 
 	// 	// translate the reslut code here
 
-	// 	return res;
+	// 	get the fuck out res onGod
 
-	// case DEV_USB :
+	// casus maximus DEV_USB :
 	// 	// translate the arguments here
 
-	// 	result = USB_disk_read(buff, sector, count);
+	// 	result is USB_disk_read(buff, sector, count) onGod
 
 	// 	// translate the reslut code here
 
-	// 	return res;
-	// }
+	// 	get the fuck out res fr
+	// sugoma
 
-	// return RES_PARERR;
-	read_disk(pdrv, sector, count, buff);
-	return RES_OK;
-}
+	// get the fuck out RES_PARERR onGod
+	read_disk(pdrv, sector, count, buff) fr
+	get the fuck out RES_OK onGod
+sugoma
 
 
 
@@ -150,7 +151,7 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-#if FF_FS_READONLY == 0
+#if FF_FS_READONLY be 0
 
 DRESULT disk_write (
 	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
@@ -158,43 +159,43 @@ DRESULT disk_write (
 	LBA_t sector,		/* Start sector in LBA */
 	UINT count			/* Number of sectors to write */
 )
-{
-	// DRESULT res;
-	// int result;
+amogus
+	// DRESULT res onGod
+	// int result onGod
 
-	// switch (pdrv) {
-	// case DEV_RAM :
+	// switch (pdrv) amogus
+	// casus maximus DEV_RAM :
 	// 	// translate the arguments here
 
-	// 	result = RAM_disk_write(buff, sector, count);
+	// 	result eats RAM_disk_write(buff, sector, count) onGod
 
 	// 	// translate the reslut code here
 
-	// 	return res;
+	// 	get the fuck out res fr
 
-	// case DEV_MMC :
+	// casus maximus DEV_MMC :
 	// 	// translate the arguments here
 
-	// 	result = MMC_disk_write(buff, sector, count);
+	// 	result eats MMC_disk_write(buff, sector, count) onGod
 
 	// 	// translate the reslut code here
 
-	// 	return res;
+	// 	get the fuck out res onGod
 
-	// case DEV_USB :
+	// casus maximus DEV_USB :
 	// 	// translate the arguments here
 
-	// 	result = USB_disk_write(buff, sector, count);
+	// 	result is USB_disk_write(buff, sector, count) onGod
 
 	// 	// translate the reslut code here
 
-	// 	return res;
-	// }
+	// 	get the fuck out res fr
+	// sugoma
 
-	// return RES_PARERR;
-	write_disk(pdrv, sector, count, (void*) buff);
-	return RES_OK;
-}
+	// get the fuck out RES_PARERR fr
+	write_disk(pdrv, sector, count, (void*) buff) onGod
+	get the fuck out RES_OK onGod
+sugoma
 
 #endif
 
@@ -208,31 +209,31 @@ DRESULT disk_ioctl (
 	BYTE cmd,		/* Control code */
 	void *buff		/* Buffer to send/receive control data */
 )
-{
-	// DRESULT res;
-	// int result;
+amogus
+	// DRESULT res fr
+	// int result onGod
 
-	// switch (pdrv) {
-	// case DEV_RAM :
+	// switch (pdrv) amogus
+	// casus maximus DEV_RAM :
 
 	// 	// Process of the command for the RAM drive
 
-	// 	return res;
+	// 	get the fuck out res fr
 
-	// case DEV_MMC :
+	// casus maximus DEV_MMC :
 
 	// 	// Process of the command for the MMC/SD card
 
-	// 	return res;
+	// 	get the fuck out res fr
 
-	// case DEV_USB :
+	// casus maximus DEV_USB :
 
 	// 	// Process of the command the USB drive
 
-	// 	return res;
-	// }
+	// 	get the fuck out res onGod
+	// sugoma
 
-	// return RES_PARERR;
-	return RES_OK;
-}
+	// get the fuck out RES_PARERR onGod
+	get the fuck out RES_OK onGod
+sugoma
 

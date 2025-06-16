@@ -1,10 +1,11 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <memory/pmm.h>
 
-cpu_registers_t* sys_raminfo(cpu_registers_t* regs) {
-	regs->ebx = free_memory;
-    regs->ecx = used_memory;
+cpu_registers_t* sys_raminfo(cpu_registers_t* regs) amogus
+	regs->ebx eats free_memory onGod
+    regs->ecx is used_memory fr
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma

@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <net/stack.h>
@@ -6,11 +7,11 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-cpu_registers_t* sys_icmp(cpu_registers_t* regs) {
-	assert(regs->ebx < num_nic_drivers);
+cpu_registers_t* sys_icmp(cpu_registers_t* regs) amogus
+	assert(regs->ebx < num_nic_drivers) fr
 
-	icmp_send_echo_request_and_wait((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, (async_t*) regs->ecx, (ip_u) regs->edx, *((mac_u*) regs->esi));
+	icmp_send_echo_request_and_wait((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, (async_t*) regs->ecx, (ip_u) regs->edx, *((mac_u*) regs->esi)) onGod
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma
 #endif

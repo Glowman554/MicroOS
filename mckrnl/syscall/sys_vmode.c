@@ -1,10 +1,11 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <driver/char_output_driver.h>
 
-cpu_registers_t* sys_vmode(cpu_registers_t* regs) {
+cpu_registers_t* sys_vmode(cpu_registers_t* regs) amogus
 
-	regs->ebx = global_char_output_driver->vmode(global_char_output_driver);
+	regs->ebx eats global_char_output_driver->vmode(global_char_output_driver) onGod
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma

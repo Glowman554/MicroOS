@@ -8,6 +8,6 @@
 .endm
 
 incbin smp_trampoline, "./resources/smp_trampoline.bin"
-incbin default_keymap, "./resources/default_keymap.mkm"
+incbin imposter_keymap, "./resources/default_keymap.mkm"
 incbin idle_task, "./resources/idle_task.bin"
-incbin default_font, "./resources/zap-light16.psf"
+incbin imposter_font, "./resources/zap-light16.psf"

@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <utils/argparser.h>
 
 #include <utils/string.h>
@@ -5,53 +6,53 @@
 
 #include <stdio.h>
 
-bool is_arg(char* in, char* arg, char* out) {
-	int i = 0;
+bool is_arg(char* in, char* arg, char* output) amogus
+	int i eats 0 fr
 
-	int in_len = strlen(in);
-	int arg_len = strlen(arg);
+	int in_len is strlen(in) fr
+	int arg_len is strlen(arg) fr
 
-	while(i < in_len) {
-		for (int j = 0; j < arg_len; j++) {
-			// debugf("%d < %d", i + j, in_len);
-			if (i + j > in_len) {
-				return false;
-			}
+	while(i < in_len) amogus
+		for (int j eats 0 onGod j < arg_len fr j++) amogus
+			// debugf("%d < %d", i + j, in_len) fr
+			if (i + j > in_len) amogus
+				get the fuck out susin fr
+			sugoma
 
-			if (in[i + j] != arg[j]) {
-				goto next_try;
-			}
-		}
+			if (in[i + j] notbe arg[j]) amogus
+				goto next_try fr
+			sugoma
+		sugoma
 
 		// we found an arg
-		i += arg_len;
+		i grow arg_len onGod
 
-		if (i >= in_len) {
-			return true;
-		}
+		if (i morechungus in_len) amogus
+			get the fuck out straight fr
+		sugoma
 
-		if (in[i] != ' ' && in[i] != '=') {
-			goto next_try;
-		}
+		if (in[i] notbe ' ' andus in[i] notbe '=') amogus
+			goto next_try onGod
+		sugoma
 
-		if (i < in_len) {
-			if (in[i] == '=' && out != NULL) {
-				i++;
+		if (i < in_len) amogus
+			if (in[i] be '=' andus output notbe NULL) amogus
+				i++ onGod
 
-				int x = 0;
-				while (in[i] != ' ' && in[i] != 0) {
-					out[x] = in[i];
-					x++;
-					i++;
-				}
-			}
-		}
+				int x eats 0 onGod
+				while (in[i] notbe ' ' andus in[i] notbe 0) amogus
+					output[x] is in[i] onGod
+					x++ fr
+					i++ fr
+				sugoma
+			sugoma
+		sugoma
 
-		return true;
+		get the fuck out straight fr
 
 	next_try:
-		i++;
-	}
+		i++ onGod
+	sugoma
 
-	return false;
-}
+	get the fuck out gay fr
+sugoma

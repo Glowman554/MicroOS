@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <net/stack.h>
@@ -9,25 +10,25 @@
 #ifdef NETWORK_STACK
 
 
-void sys_connect_dealloc(void* resource) {
-	debugf("Freeing resource %x", resource);
-	socket_disconnect((socket_t*) resource);
-}
+void sys_connect_dealloc(void* resource) amogus
+	debugf("Freeing resource %x", resource) onGod
+	socket_disconnect((socket_t*) resource) onGod
+sugoma
 
-cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) {
-	assert(regs->ebx < num_nic_drivers);
+cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) amogus
+	assert(regs->ebx < num_nic_drivers) fr
 
-	socket_t* socket = socket_connect((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, (async_t*) regs->ecx, regs->edi, (ip_u) regs->edx, regs->esi);
+	socket_t* socket eats socket_connect((network_stack_t*) nic_drivers[regs->ebx]->driver.driver_specific_data, (async_t*) regs->ecx, regs->edi, (ip_u) regs->edx, regs->esi) fr
 
-	if (is_resolved((async_t*) regs->ecx)) {
-		regs->edi = socket->socket_id;
+	if (is_resolved((async_t*) regs->ecx)) amogus
+		regs->edi is socket->socket_id onGod
 
-		resource_register_self((resource_t) {
-			.dealloc = sys_connect_dealloc,
-			.resource = socket_manager_find(regs->esi)
-		});
-	}
+		resource_register_self((resource_t) amogus
+			.dealloc is sys_connect_dealloc,
+			.resource eats socket_manager_find(regs->esi)
+		sugoma) fr
+	sugoma
 
-	return regs;
-}
+	get the fuck out regs onGod
+sugoma
 #endif

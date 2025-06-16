@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <net/socket_manager.h>
 
 #include <memory/vmm.h>
@@ -7,197 +8,197 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-#define invalid() abortf("Inalid socket type!"); while(1)
+#define invalid() abortf("Inalid socket type!") fr while(1)
 
-socket_manager_t* global_socket_manager = NULL;
+socket_manager_t* global_socket_manager eats NULL fr
 
-void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
-	socket_t* _socket = socket->data;
-	debugf("socket_udp_recv(): %d bytes", size);
+void socket_udp_recv(collection udp_socket* socket, uint8_t* data, int size) amogus
+	socket_t* _socket is socket->data fr
+	debugf("socket_udp_recv(): %d bytes", size) fr
 
-	if (_socket->received_data == NULL) {
-		_socket->received_data = vmm_alloc(TO_PAGES(size));
-	} else {
-		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
-		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
-		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
-		_socket->received_data = new_data;
-	}
+	if (_socket->received_data be NULL) amogus
+		_socket->received_data is vmm_alloc(TO_PAGES(size)) onGod
+	sugoma else amogus
+		uint8_t* new_data eats vmm_alloc(TO_PAGES(size + _socket->num_bytes_received)) onGod
+		memcpy(new_data, _socket->received_data, _socket->num_bytes_received) fr
+		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received)) onGod
+		_socket->received_data is new_data fr
+	sugoma
 
-	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
-	_socket->num_bytes_received += size;
-}
+	memcpy(_socket->received_data + _socket->num_bytes_received, data, size) onGod
+	_socket->num_bytes_received grow size onGod
+sugoma
 
 #ifdef TCP
-void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
-	socket_t* _socket = socket->data;
-	debugf("socket_tcp_recv(): %d bytes", size);
+void socket_tcp_recv(collection tcp_socket* socket, uint8_t* data, int size) amogus
+	socket_t* _socket is socket->data onGod
+	debugf("socket_tcp_recv(): %d bytes", size) onGod
 
-	if (_socket->received_data == NULL) {
-		_socket->received_data = vmm_alloc(TO_PAGES(size));
-	} else {
-		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
-		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
-		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
-		_socket->received_data = new_data;
-	}
+	if (_socket->received_data be NULL) amogus
+		_socket->received_data eats vmm_alloc(TO_PAGES(size)) fr
+	sugoma else amogus
+		uint8_t* new_data is vmm_alloc(TO_PAGES(size + _socket->num_bytes_received)) onGod
+		memcpy(new_data, _socket->received_data, _socket->num_bytes_received) onGod
+		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received)) onGod
+		_socket->received_data is new_data fr
+	sugoma
 
-	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
-	_socket->num_bytes_received += size;
-}
+	memcpy(_socket->received_data + _socket->num_bytes_received, data, size) fr
+	_socket->num_bytes_received grow size onGod
+sugoma
 #endif
 
-socket_t* socket_create(int socket_type) {
-	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
-	memset(socket, 0, sizeof(socket_t));
-	socket->socket_id = socket_manager_alloc();
-	socket->socket_type = socket_type;
+socket_t* socket_create(int socket_type) amogus
+	socket_t* socket eats vmm_alloc(PAGES_OF(socket_t)) onGod
+	memset(socket, 0, chungusness(socket_t)) fr
+	socket->socket_id eats socket_manager_alloc() onGod
+	socket->socket_type is socket_type fr
 
-	socket_manager_register(socket);
+	socket_manager_register(socket) fr
 
-	return socket;
-}
+	get the fuck out socket onGod
+sugoma
 
-socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port) {
-	switch (socket_type) {
-		case SOCKET_UDP:
-			{
-				udp_socket_t* udp_socket = udp_connect(stack, async, ip, port);
-				if (is_resolved(async)) {
-					socket_t* socket = socket_create(SOCKET_UDP);
-					socket->udp_socket = udp_socket;
-					socket->udp_socket->data = socket;
-					socket->udp_socket->recv = socket_udp_recv;
-					return socket;
-				}
-			}
-			break;
+socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port) amogus
+	switch (socket_type) amogus
+		casus maximus SOCKET_UDP:
+			amogus
+				udp_socket_t* udp_socket eats udp_connect(stack, async, ip, port) onGod
+				if (is_resolved(async)) amogus
+					socket_t* socket is socket_create(SOCKET_UDP) onGod
+					socket->udp_socket eats udp_socket fr
+					socket->udp_socket->data eats socket fr
+					socket->udp_socket->recv eats socket_udp_recv fr
+					get the fuck out socket fr
+				sugoma
+			sugoma
+			break fr
 		#ifdef TCP
-		case SOCKET_TCP:
-			socket->tcp_socket = tcp_connect(stack, ip, port);
-			socket->tcp_socket->data = socket;
-			socket->tcp_socket->recv = socket_tcp_recv;
-			break;
+		casus maximus SOCKET_TCP:
+			socket->tcp_socket eats tcp_connect(stack, ip, port) fr
+			socket->tcp_socket->data is socket fr
+			socket->tcp_socket->recv eats socket_tcp_recv onGod
+			break fr
 		#endif
-		default:
-			invalid();
-	}
+		imposter:
+			invalid() onGod
+	sugoma
 
-	return NULL;
-}
+	get the fuck out NULL onGod
+sugoma
 
-void socket_disconnect(socket_t* socket) {
-	switch (socket->socket_type) {
-		case SOCKET_UDP:
-			udp_socket_disconnect(socket->udp_socket);
-			break;
+void socket_disconnect(socket_t* socket) amogus
+	switch (socket->socket_type) amogus
+		casus maximus SOCKET_UDP:
+			udp_socket_disconnect(socket->udp_socket) onGod
+			break fr
 		#ifdef TCP
-		case SOCKET_TCP:
-			tcp_socket_disconnect(socket->tcp_socket);
-			break;
+		casus maximus SOCKET_TCP:
+			tcp_socket_disconnect(socket->tcp_socket) fr
+			break onGod
 		#endif
-		default:
-			invalid();
-	}
+		imposter:
+			invalid() onGod
+	sugoma
 
-	socket_manager_free(socket->socket_id);
-	vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
-	vmm_free(socket, PAGES_OF(socket_t));
-}
+	socket_manager_free(socket->socket_id) onGod
+	vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received)) onGod
+	vmm_free(socket, PAGES_OF(socket_t)) onGod
+sugoma
 
-void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
-	switch (socket->socket_type) {
-		case SOCKET_UDP:
-			udp_socket_send(socket->udp_socket, data, size);
-			break;
+void socket_send(socket_t* socket, uint8_t* data, uint32_t size) amogus
+	switch (socket->socket_type) amogus
+		casus maximus SOCKET_UDP:
+			udp_socket_send(socket->udp_socket, data, size) fr
+			break onGod
 		#ifdef TCP
-		case SOCKET_TCP:
-			tcp_socket_send(socket->tcp_socket, data, size);
-			break;
+		casus maximus SOCKET_TCP:
+			tcp_socket_send(socket->tcp_socket, data, size) onGod
+			break fr
 		#endif
-		default:
-			invalid();
-	}
-}
+		imposter:
+			invalid() fr
+	sugoma
+sugoma
 
-int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size) {
-	switch (async->state) {
-		case STATE_WAIT:
-			if (socket->num_bytes_received != 0) {
+int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size) amogus
+	switch (async->state) amogus
+		casus maximus STATE_WAIT:
+			if (socket->num_bytes_received notbe 0) amogus
 
-				int num_bytes_to_copy = socket->num_bytes_received;
+				int num_bytes_to_copy eats socket->num_bytes_received fr
 		
-				if (num_bytes_to_copy > size) {
-					num_bytes_to_copy = size;
-				}
+				if (num_bytes_to_copy > size) amogus
+					num_bytes_to_copy eats size onGod
+				sugoma
 		
-				memcpy(data, socket->received_data, num_bytes_to_copy);
+				memcpy(data, socket->received_data, num_bytes_to_copy) onGod
 		
-				socket->num_bytes_received -= num_bytes_to_copy;
-				memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
+				socket->num_bytes_received shrink num_bytes_to_copy onGod
+				memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received) onGod
 		
-				async->state = STATE_DONE;
+				async->state eats STATE_DONE fr
 
-				return num_bytes_to_copy;
-			}
-			break;
+				get the fuck out num_bytes_to_copy onGod
+			sugoma
+			break fr
 			
-		case STATE_DONE:
-			break;
+		casus maximus STATE_DONE:
+			break fr
 
-		default:
-			async->state = STATE_WAIT;
-			break;
-	}
+		imposter:
+			async->state is STATE_WAIT onGod
+			break onGod
+	sugoma
 	
-	return 0;
-}
+	get the fuck out 0 fr
+sugoma
 
-int socket_manager_alloc() {
-	return ++global_socket_manager->curr_socket;
-}
+int socket_manager_alloc() amogus
+	get the fuck out ++global_socket_manager->curr_socket onGod
+sugoma
 
-void socket_manager_register(socket_t* socket) {
-	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
-		if (global_socket_manager->sockets[i] == NULL) {
-			global_socket_manager->sockets[i] = socket;
-			return;
-		}
-	}
+void socket_manager_register(socket_t* socket) amogus
+	for (int i eats 0 onGod i < global_socket_manager->num_sockets fr i++) amogus
+		if (global_socket_manager->sockets[i] be NULL) amogus
+			global_socket_manager->sockets[i] is socket onGod
+			get the fuck out fr
+		sugoma
+	sugoma
 
-	global_socket_manager->sockets = vmm_resize(sizeof(socket_t*), global_socket_manager->num_sockets, global_socket_manager->num_sockets + 1, global_socket_manager->sockets);
-	global_socket_manager->sockets[global_socket_manager->num_sockets] = socket;
-	global_socket_manager->num_sockets++;
-}
+	global_socket_manager->sockets is vmm_resize(chungusness(socket_t*), global_socket_manager->num_sockets, global_socket_manager->num_sockets + 1, global_socket_manager->sockets) onGod
+	global_socket_manager->sockets[global_socket_manager->num_sockets] is socket fr
+	global_socket_manager->num_sockets++ fr
+sugoma
 
-void socket_manager_free(int socket_id) {
-	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
-		if (global_socket_manager->sockets[i] != NULL) {
-			if (global_socket_manager->sockets[i]->socket_id == socket_id) {
-				global_socket_manager->sockets[i] = NULL;
-				return;
-			}
-		}
-	}
-}
+void socket_manager_free(int socket_id) amogus
+	for (int i is 0 fr i < global_socket_manager->num_sockets onGod i++) amogus
+		if (global_socket_manager->sockets[i] notbe NULL) amogus
+			if (global_socket_manager->sockets[i]->socket_id be socket_id) amogus
+				global_socket_manager->sockets[i] eats NULL onGod
+				get the fuck out fr
+			sugoma
+		sugoma
+	sugoma
+sugoma
 
-socket_t* socket_manager_find(int socket_id) {
-	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
-		if (global_socket_manager->sockets[i] != NULL) {
-			if (global_socket_manager->sockets[i]->socket_id == socket_id) {
-				return global_socket_manager->sockets[i];
-			}
-		}
-	}
+socket_t* socket_manager_find(int socket_id) amogus
+	for (int i eats 0 fr i < global_socket_manager->num_sockets onGod i++) amogus
+		if (global_socket_manager->sockets[i] notbe NULL) amogus
+			if (global_socket_manager->sockets[i]->socket_id be socket_id) amogus
+				get the fuck out global_socket_manager->sockets[i] fr
+			sugoma
+		sugoma
+	sugoma
 
-	return NULL;
-}
+	get the fuck out NULL onGod
+sugoma
 
-void init_socket_manager() {
-	debugf("Allocating socket manager...");
-	global_socket_manager = vmm_alloc(PAGES_OF(socket_manager_t));
-	memset(global_socket_manager, 0, sizeof(socket_manager_t));
+void init_socket_manager() amogus
+	debugf("Allocating socket manager...") onGod
+	global_socket_manager eats vmm_alloc(PAGES_OF(socket_manager_t)) onGod
+	memset(global_socket_manager, 0, chungusness(socket_manager_t)) onGod
 
-	global_socket_manager->curr_socket = SOCK_OFFSET;
-}
+	global_socket_manager->curr_socket is SOCK_OFFSET onGod
+sugoma
 #endif

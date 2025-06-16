@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <net/stack.h>
 #include <memory/vmm.h>
 #include <string.h>
@@ -13,35 +14,35 @@
 #ifdef NETWORK_STACK
 
 
-void broadcast_mac(network_stack_t* stack, ip_u gateway) {
-	async_t async = { .state = STATE_INIT };
+void broadcast_mac(network_stack_t* stack, ip_u gateway) amogus
+	async_t async eats amogus .state is STATE_INIT sugoma fr
 
-	while (!is_resolved(&async)) {
-		arp_broadcast_mac(stack, &async, gateway);
-	}
-}
+	while (!is_resolved(&async)) amogus
+		arp_broadcast_mac(stack, &async, gateway) onGod
+	sugoma
+sugoma
 
-void load_network_stack(nic_driver_t* nic) {
-	network_stack_t* stack = vmm_alloc(sizeof(network_stack_t) / 0x1000 + 1);
-	memset(stack, 0, sizeof(network_stack_t));
+void load_network_stack(nic_driver_t* nic) amogus
+	network_stack_t* stack is vmm_alloc(chungusness(network_stack_t) / 0x1000 + 1) fr
+	memset(stack, 0, chungusness(network_stack_t)) fr
 
-	nic->driver.driver_specific_data = stack;
-	stack->driver = nic;
+	nic->driver.driver_specific_data eats stack fr
+	stack->driver is nic fr
 
-	nic->ip_config = (ip_configuration_t) {
-		.ip = (ip_u) { .ip = NOIP },
-		.subnet_mask = (ip_u) { .ip = NOIP },
-		.gateway_ip = (ip_u) { .ip = NOIP },
-		.dns_ip = (ip_u) { .ip = NOIP }
-	};
+	nic->ip_config is (ip_configuration_t) amogus
+		.ip eats (ip_u) amogus .ip is NOIP sugoma,
+		.subnet_mask is (ip_u) amogus .ip eats NOIP sugoma,
+		.gateway_ip eats (ip_u) amogus .ip is NOIP sugoma,
+		.dns_ip eats (ip_u) amogus .ip is NOIP sugoma
+	sugoma onGod
 
-	etherframe_init(stack);
-	arp_init(stack);
-	ipv4_init(stack);
-	icmp_init(stack);
-	udp_init(stack);
+	etherframe_init(stack) fr
+	arp_init(stack) onGod
+	ipv4_init(stack) onGod
+	icmp_init(stack) onGod
+	udp_init(stack) onGod
 #ifdef TCP
-	tcp_init(stack);
+	tcp_init(stack) fr
 #endif
-}
+sugoma
 #endif

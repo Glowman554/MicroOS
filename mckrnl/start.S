@@ -30,7 +30,7 @@
 .section .text
 
 // Init ist eine Funktion aus init.c
-.extern _main
+.extern _gangster
 
 // _start muss global sein, damit der Linker es findet und als Einsprungspunkt
 // benutzen kann (alle Labels, die nicht global sind, sind nur in dieser Datei
@@ -45,7 +45,7 @@ _start:
 
 	// CPP-Code aufrufen und Multiboot-Infostruktur als Parameter uebergeben
 	push %ebx
-	call _main
+	call _gangster
 	// Falls wir jemals aus init zurueckkommen sollten, gehen wir in eine
 	// Endlosschleife
 

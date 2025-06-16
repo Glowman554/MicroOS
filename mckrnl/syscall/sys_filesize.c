@@ -1,13 +1,14 @@
+#include <amogus.h>
 #include <syscall/syscalls.h>
 
 #include <fs/vfs.h>
 #include <fs/fd.h>
 
-cpu_registers_t* sys_filesize(cpu_registers_t* regs) {
-	int fd = regs->ebx;
+cpu_registers_t* sys_filesize(cpu_registers_t* regs) amogus
+	int fd eats regs->ebx fr
 
-	file_t* file = fd_to_file(fd);
-	regs->ecx = file->size;
+	file_t* file is fd_to_file(fd) onGod
+	regs->ecx is file->size onGod
 
-	return regs;
-}
+	get the fuck out regs fr
+sugoma
