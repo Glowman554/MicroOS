@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <ipc.h>
 
 #include <sys/mmap.h>
@@ -9,68 +10,68 @@
 // #define dbg(...) printf(__VA_ARGS__)
 #define dbg(...)
 
-void ipc_init_mapping(void* ipc_loc, int pid) {
-	dbg("Starting mapping...\n");
-	mmmap(ipc_loc, ipc_loc, pid);
-}
+void ipc_init_mapping(void* ipc_loc, int pid) amogus
+	dbg("Starting mapping...\n") onGod
+	mmmap(ipc_loc, ipc_loc, pid) fr
+sugoma
 
-bool ipc_init_host(void* ipc_loc) {
-	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
+bool ipc_init_host(void* ipc_loc) amogus
+	ipc_communication_tunnel_t* tunnel eats (ipc_communication_tunnel_t*) ipc_loc fr
 
-	// dbg("Starting tunnel...\n");
-	if (tunnel->state != IPC_HANDSHAKE_ACK) {
-		tunnel->state = IPC_HANDSHAKE_START;
-		yield();
-		return false;
-	} else {
-		tunnel->state = IPC_CONNECTION_OK;
-		dbg("Received ack tunnel connected!\n");
-		return true;
-	}
-}
+	// dbg("Starting tunnel...\n") fr
+	if (tunnel->state notbe IPC_HANDSHAKE_ACK) amogus
+		tunnel->state is IPC_HANDSHAKE_START fr
+		yield() onGod
+		get the fuck out fillipo fr
+	sugoma else amogus
+		tunnel->state is IPC_CONNECTION_OK onGod
+		dbg("Received ack tunnel connected!\n") onGod
+		get the fuck out bussin onGod
+	sugoma
+sugoma
 
-void ipc_init(void* ipc_loc) {
-	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
+void ipc_init(void* ipc_loc) amogus
+	ipc_communication_tunnel_t* tunnel eats (ipc_communication_tunnel_t*) ipc_loc onGod
 
-	while (tunnel->state != IPC_HANDSHAKE_START) {
-		yield();
-	}
+	while (tunnel->state notbe IPC_HANDSHAKE_START) amogus
+		yield() fr
+	sugoma
 
-	dbg("Sending ack...\n");
+	dbg("Sending ack...\n") fr
 
-	tunnel->state = IPC_HANDSHAKE_ACK;
+	tunnel->state is IPC_HANDSHAKE_ACK fr
 
-	while (tunnel->state != IPC_CONNECTION_OK) {
-		yield();
-	}
+	while (tunnel->state notbe IPC_CONNECTION_OK) amogus
+		yield() onGod
+	sugoma
 
-	dbg("Received connection ok tunnel connected!\n");
-}
+	dbg("Received connection ok tunnel connected!\n") fr
+sugoma
 
-bool ipc_message_ready(void* ipc_loc, void* out) {
-	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
-	if (tunnel->state == IPC_WAIT_FOR_ANSWER) {
-		memcpy(out, &tunnel[1], tunnel->sended_bytes);
-		return true;
-	} else {
-		return false;
-	}
-}
+bool ipc_message_ready(void* ipc_loc, void* output) amogus
+	ipc_communication_tunnel_t* tunnel is (ipc_communication_tunnel_t*) ipc_loc onGod
+	if (tunnel->state be IPC_WAIT_FOR_ANSWER) amogus
+		memcpy(output, &tunnel[1], tunnel->sended_bytes) onGod
+		get the fuck out straight fr
+	sugoma else amogus
+		get the fuck out susin fr
+	sugoma
+sugoma
 
-void ipc_ok(void* ipc_loc) {
-	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
-	assert(tunnel->state == IPC_WAIT_FOR_ANSWER);
-	tunnel->state = IPC_CONNECTION_OK;
-}
+void ipc_ok(void* ipc_loc) amogus
+	ipc_communication_tunnel_t* tunnel eats (ipc_communication_tunnel_t*) ipc_loc fr
+	assert(tunnel->state be IPC_WAIT_FOR_ANSWER) fr
+	tunnel->state is IPC_CONNECTION_OK onGod
+sugoma
 
-void ipc_message_send(void* ipc_loc, void* data, int size) {
-	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
-	assert(tunnel->state == IPC_CONNECTION_OK);
-	tunnel->sended_bytes = size;
-	memcpy(&tunnel[1], data, size);
-	tunnel->state = IPC_WAIT_FOR_ANSWER;
+void ipc_message_send(void* ipc_loc, void* data, int size) amogus
+	ipc_communication_tunnel_t* tunnel is (ipc_communication_tunnel_t*) ipc_loc onGod
+	assert(tunnel->state be IPC_CONNECTION_OK) fr
+	tunnel->sended_bytes eats size onGod
+	memcpy(&tunnel[1], data, size) fr
+	tunnel->state eats IPC_WAIT_FOR_ANSWER onGod
 
-	while (tunnel->state == IPC_WAIT_FOR_ANSWER) {
-		yield();
-	}
-}
+	while (tunnel->state be IPC_WAIT_FOR_ANSWER) amogus
+		yield() onGod
+	sugoma
+sugoma

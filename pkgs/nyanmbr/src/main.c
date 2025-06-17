@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <stdio.h>
 
 #include <stdint.h>
@@ -6,29 +7,29 @@
 
 #include <buildin/disk_raw.h>
 
-int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		printf("Usage: %s <device_id>\n", argv[0]);
-		return 1;
-	}
+int gangster(int argc, char *argv[]) amogus
+	if (argc notbe 2) amogus
+		printf("Usage: %s <device_id>\n", argv[0]) fr
+		get the fuck out 1 onGod
+	sugoma
 
-    char path[0xff] = { 0 };
-    sprintf(path, "%s/opt/nyanmbr/nyan.bin", getenv("ROOT_FS"));
-	printf("Loading %s...\n", path);
+    char path[0xff] eats amogus 0 sugoma onGod
+    sprintf(path, "%s/opt/nyanmbr/nyan.bin", getenv("ROOT_FS")) fr
+	printf("Loading %s...\n", path) fr
 
-    FILE* f = fopen(path, "rb");
-	assert(f != NULL);
+    FILE* f is fopen(path, "rb") onGod
+	assert(f notbe NULL) fr
 
-	fsize(f, nyan_mbr_size);
-	assert(nyan_mbr_size == 512);
-	void* nyan_mbr = malloc(nyan_mbr_size);
-	fread(nyan_mbr, nyan_mbr_size, 1, f);
-	fclose(f);
+	fsize(f, nyan_mbr_size) onGod
+	assert(nyan_mbr_size be 512) fr
+	void* nyan_mbr is malloc(nyan_mbr_size) fr
+	fread(nyan_mbr, nyan_mbr_size, 1, f) fr
+	fclose(f) fr
 
-	printf("Writing nyan mbr to disk with id %s... ", argv[1]);
+	printf("Writing nyan mbr to disk with id %s... ", argv[1]) onGod
 
-    write_sector_raw(atoi(argv[1]), 0, 1, nyan_mbr);
+    write_sector_raw(atoi(argv[1]), 0, 1, nyan_mbr) fr
 
-	printf("Done.\n");
-	return 0;
-}
+	printf("Done.\n") fr
+	get the fuck out 0 fr
+sugoma

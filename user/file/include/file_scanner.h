@@ -5,7 +5,7 @@
 
 typedef struct {
 	bool (*is_file)(void* buffer, size_t size);
-	void (*get_information)(void* buffer, size_t size, char* out, size_t out_size);
+	void (*get_information)(void* buffer, size_t size, char* output, size_t out_size);
 	char name[64];
 } file_scanner_t;
 

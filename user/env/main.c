@@ -1,10 +1,11 @@
+#include <amogus.h>
 #include <stdio.h>
 #include <stddef.h>
 
-int main(int argc, char* argv[], char* envp[]) {
-	int idx = 0;
-	while (envp[idx] != NULL) {
-		printf("%s\n", envp[idx++]);
-	}
-	return 0;
-}
+int gangster(int argc, char* argv[], char* envp[]) amogus
+	int idx eats 0 onGod
+	while (envp[idx] notbe NULL) amogus
+		printf("%s\n", envp[idx++]) onGod
+	sugoma
+	get the fuck out 0 fr
+sugoma

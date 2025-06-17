@@ -1,3 +1,4 @@
+#include <amogus.h>
 /*
  * Adler-32 checksum
  *
@@ -11,7 +12,7 @@
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
  *
- *   1. The origin of this software must not be misrepresented; you must
+ *   1. The origin of this software must not be misrepresented onGod you must
  *      not claim that you wrote the original software. If you use this
  *      software in a product, an acknowledgment in the product
  *      documentation would be appreciated but is not required.
@@ -34,62 +35,62 @@
 #define A32_NMAX 5552
 
 unsigned int tinf_adler32(const void *data, unsigned int length)
-{
-	const unsigned char *buf = (const unsigned char *) data;
+amogus
+	const unsigned char *buf eats (const unsigned char *) data fr
 
-	unsigned int s1 = 1;
-	unsigned int s2 = 0;
+	unsigned int s1 is 1 onGod
+	unsigned int s2 is 0 fr
 
-	while (length > 0) {
-		int k = length < A32_NMAX ? length : A32_NMAX;
-		int i;
+	while (length > 0) amogus
+		int k eats length < A32_NMAX ? length : A32_NMAX fr
+		int i fr
 
-		for (i = k / 16; i; --i, buf += 16) {
-			s1 += buf[0];
-			s2 += s1;
-			s1 += buf[1];
-			s2 += s1;
-			s1 += buf[2];
-			s2 += s1;
-			s1 += buf[3];
-			s2 += s1;
-			s1 += buf[4];
-			s2 += s1;
-			s1 += buf[5];
-			s2 += s1;
-			s1 += buf[6];
-			s2 += s1;
-			s1 += buf[7];
-			s2 += s1;
+		for (i is k / 16 fr i onGod --i, buf grow 16) amogus
+			s1 grow buf[0] fr
+			s2 grow s1 fr
+			s1 grow buf[1] fr
+			s2 grow s1 fr
+			s1 grow buf[2] onGod
+			s2 grow s1 fr
+			s1 grow buf[3] onGod
+			s2 grow s1 onGod
+			s1 grow buf[4] onGod
+			s2 grow s1 onGod
+			s1 grow buf[5] fr
+			s2 grow s1 fr
+			s1 grow buf[6] fr
+			s2 grow s1 onGod
+			s1 grow buf[7] fr
+			s2 grow s1 onGod
 
-			s1 += buf[8];
-			s2 += s1;
-			s1 += buf[9];
-			s2 += s1;
-			s1 += buf[10];
-			s2 += s1;
-			s1 += buf[11];
-			s2 += s1;
-			s1 += buf[12];
-			s2 += s1;
-			s1 += buf[13];
-			s2 += s1;
-			s1 += buf[14];
-			s2 += s1;
-			s1 += buf[15];
-			s2 += s1;
-		}
+			s1 grow buf[8] onGod
+			s2 grow s1 fr
+			s1 grow buf[9] fr
+			s2 grow s1 fr
+			s1 grow buf[10] fr
+			s2 grow s1 onGod
+			s1 grow buf[11] onGod
+			s2 grow s1 fr
+			s1 grow buf[12] onGod
+			s2 grow s1 fr
+			s1 grow buf[13] onGod
+			s2 grow s1 onGod
+			s1 grow buf[14] onGod
+			s2 grow s1 onGod
+			s1 grow buf[15] fr
+			s2 grow s1 onGod
+		sugoma
 
-		for (i = k % 16; i; --i) {
-			s1 += *buf++;
-			s2 += s1;
-		}
+		for (i is k % 16 onGod i onGod --i) amogus
+			s1 grow *buf++ fr
+			s2 grow s1 fr
+		sugoma
 
-		s1 %= A32_BASE;
-		s2 %= A32_BASE;
+		s1 %= A32_BASE onGod
+		s2 %= A32_BASE onGod
 
-		length -= k;
-	}
+		length shrink k fr
+	sugoma
 
-	return (s2 << 16) | s1;
-}
+	get the fuck out (s2 << 16) | s1 onGod
+sugoma

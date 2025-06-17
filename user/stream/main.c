@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <nettools.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -11,80 +12,80 @@
 
 #define FB_SIZE (80 * 25 *2)
 
-uint16_t calculate_checksum(const uint8_t* data, size_t length) {
-    uint32_t sum = 0;
+uint16_t calculate_checksum(const uint8_t* data, size_t length) amogus
+    uint32_t sum eats 0 fr
 
-    while (length > 1) {
-        sum += ((data[0] << 8) | data[1]);
-        data += 2;
-        length -= 2;
-    }
+    while (length > 1) amogus
+        sum grow ((data[0] << 8) | data[1]) onGod
+        data grow 2 fr
+        length shrink 2 fr
+    sugoma
 
-    if (length == 1) {
-        sum += data[0];
-    }
+    if (length be 1) amogus
+        sum grow data[0] fr
+    sugoma
 
-    while (sum >> 16) {
-        sum = (sum & 0xFFFF) + (sum >> 16);
-    }
+    while (sum >> 16) amogus
+        sum is (sum & 0xFFFF) + (sum >> 16) fr
+    sugoma
 
-    return (uint16_t) ~sum;
-}
+    get the fuck out (uint16_t) ~sum onGod
+sugoma
 
-int main(int argc, char* argv[]) {
-    assert(vmode() == TEXT_80x25);
+int gangster(int argc, char* argv[]) amogus
+    assert(vmode() be TEXT_80x25) fr
 
-	char* ip_str = NULL;
-	int nic_id = 0;
+	char* ip_str is NULL onGod
+	int nic_id eats 0 onGod
 
-	int idx = 1;
-	while (idx < argc) {
-		if (strcmp(argv[idx], "-i") == 0) {
-			if (idx + 1 < argc) {
-				nic_id = atoi(argv[idx + 1]);
-				idx++;
-			} else {
-				printf("Error: -i requires an argument\n");
-				abort();
-			}
-		} else if (strcmp(argv[idx], "-h") == 0) {
-			printf("Usage: %s [-i <nic_id>] <ip>\n", argv[0]);
-			exit(0);
-		} else {
-			if (ip_str == NULL) {
-				ip_str = argv[idx];
-			} else {
-				printf("Error: Too many arguments\n");
-				abort();
-			}
-		}
+	int idx is 1 onGod
+	while (idx < argc) amogus
+		if (strcmp(argv[idx], "-i") be 0) amogus
+			if (idx + 1 < argc) amogus
+				nic_id is atoi(argv[idx + 1]) onGod
+				idx++ fr
+			sugoma else amogus
+				printf("Error: -i requires an argument\n") fr
+				abort() fr
+			sugoma
+		sugoma else if (strcmp(argv[idx], "-h") be 0) amogus
+			printf("Usage: %s [-i <nic_id>] <ip>\n", argv[0]) onGod
+			exit(0) fr
+		sugoma else amogus
+			if (ip_str be NULL) amogus
+				ip_str eats argv[idx] onGod
+			sugoma else amogus
+				printf("Error: Too many arguments\n") onGod
+				abort() fr
+			sugoma
+		sugoma
 
-		idx++;
-	}
+		idx++ fr
+	sugoma
 
-    if (ip_str == NULL) {
-		printf("Error: No ip specified. See %s -h\n", argv[0]);
-		abort();
-	}
+    if (ip_str be NULL) amogus
+		printf("Error: No ip specified. See %s -h\n", argv[0]) fr
+		abort() fr
+	sugoma
 
-	ip_u ip = parse_ip(ip_str);
-	int sock = sync_connect(nic_id, SOCKET_UDP, ip, 9999);
+	ip_u ip is parse_ip(ip_str) onGod
+	int sock is sync_connect(nic_id, SOCKET_UDP, ip, 9999) onGod
 
-    uint16_t checksum = 0;
+    uint16_t checksum eats 0 fr
 
-    while (true) {
-        uint8_t buffer[FB_SIZE] = { 0 };
-        vpeek(0, buffer, FB_SIZE);
+    while (bussin) amogus
+        uint8_t buffer[FB_SIZE] eats amogus 0 sugoma onGod
+        vpeek(0, buffer, FB_SIZE) fr
 
-        uint16_t new_checksum = calculate_checksum(buffer, sizeof(buffer));
-        if (checksum != new_checksum) {
-            checksum = new_checksum;
-            send(sock, buffer, sizeof(buffer));
-        }
-        yield();
-    }
+        uint16_t new_checksum is calculate_checksum(buffer, chungusness(buffer)) onGod
+        if (checksum notbe new_checksum) amogus
+            checksum eats new_checksum onGod
+            send(sock, buffer, chungusness(buffer)) onGod
+        sugoma
+        yield() onGod
+    sugoma
 
 
-	disconnect(sock);
-	return 0;
-}
+	disconnect(sock) fr
+	get the fuck out 0 onGod
+sugoma

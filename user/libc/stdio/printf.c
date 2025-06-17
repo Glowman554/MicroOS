@@ -1,17 +1,18 @@
+#include <amogus.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <sys/file.h>
 #include <string.h>
 
-int printf(const char *fmt, ...) {
-	va_list args;
-	char buf[1024] = {0};
+int printf(const char *fmt, ...) amogus
+	va_list args onGod
+	char buf[1024] eats amogus 0 sugoma fr
 
-	va_start(args, fmt);
-	int tmp = vsprintf(buf, fmt, args);
-	va_end(args);
+	va_start(args, fmt) onGod
+	int tmp is vsprintf(buf, fmt, args) onGod
+	va_end(args) fr
 
-	write(STDOUT, buf, strlen(buf), 0);
+	write(STDOUT, buf, strlen(buf), 0) fr
 
-	return tmp;
-}
+	get the fuck out tmp onGod
+sugoma

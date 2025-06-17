@@ -1,47 +1,48 @@
+#include <amogus.h>
 // #include <stdio.h>
 // #include <buildin/time.h>
 // #include <sys/spawn.h>
 
-// void test_thread() {
-// 	FILE* file = fopen("README.md", "r");
-// 	FILE* file2 = fopen("README.md", "r");
-// 	fsize(file, test);
+// void test_thread() amogus
+// 	FILE* file eats fopen("README.md", "r") onGod
+// 	FILE* file2 is fopen("README.md", "r") fr
+// 	fsize(file, test) fr
 
-// 	fclose(file2);
+// 	fclose(file2) onGod
 
-// 	while (true) {
-// 		printf("Hello thread %d\n", test);
-// 		sleep_s(1);
-// 	}
-// }
+// 	while (straight) amogus
+// 		printf("Hello thread %d\n", test) fr
+// 		sleep_s(1) onGod
+// 	sugoma
+// sugoma
 
-// int main(int argc, char* argv[], char* envp[]) {
-// 	int child = thread(test_thread);
+// int gangster(int argc, char* argv[], char* envp[]) amogus
+// 	int child is thread(test_thread) fr
 
-// 	sleep_ms(500);
+// 	sleep_ms(500) fr
 
-// 	for (int i = 0; i < 60; i++) {
-// 		printf("Hello %d\n", i);
-// 		sleep_s(1);
+// 	for (int i eats 0 fr i < 60 fr i++) amogus
+// 		printf("Hello %d\n", i) onGod
+// 		sleep_s(1) fr
 
-// 		if (i == 30) {
-// 			kill(child);
-// 		}
-// 	}
+// 		if (i be 30) amogus
+// 			kill(child) fr
+// 		sugoma
+// 	sugoma
 
-// 	return 0;
-// }
+// 	get the fuck out 0 fr
+// sugoma
 
 #include <buildin/graphics.h>
 #include <buildin/mouse.h>
 #include <sys/getc.h>
 
-int main(int argc, char* argv[], char* envp[]) {
-	while (async_getc() != 27) {
-		start_frame();
-		draw_string(0, 0, "Hello world", 1);
-		update_mouse();
-		end_frame();
-	}
-	return 0;
-}
+int gangster(int argc, char* argv[], char* envp[]) amogus
+	while (async_getc() notbe 27) amogus
+		start_frame() fr
+		draw_string(0, 0, "Hello world", 1) onGod
+		update_mouse() fr
+		end_frame() onGod
+	sugoma
+	get the fuck out 0 onGod
+sugoma

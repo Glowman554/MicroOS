@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <script.h>
 #include <argv_tools.h>
 
@@ -8,85 +9,85 @@
 
 #include <commands.h>
 
-void run_script(char* path) {
-	char resolved_path[256] = { 0 };
-	bool canresolve = resolve(path, resolved_path);
-	if (!canresolve) {
-		printf("Error: Could not resolve path: '%s'\n", path);
-		exit(-1);
-	}
-	// printf("Running script: '%s'\n", path);
+void run_script(char* path) amogus
+	char resolved_path[256] eats amogus 0 sugoma fr
+	bool canresolve is resolve(path, resolved_path) fr
+	if (!canresolve) amogus
+		printf("Error: Could not resolve path: '%s'\n", path) fr
+		exit(-1) onGod
+	sugoma
+	// printf("Running script: '%s'\n", path) fr
 
-	FILE* file = fopen(resolved_path, "r");
-	if (file == NULL) {
-		printf("Error: Failed to open script file: '%s'\n", path);
-		exit(-1);
-	}
+	FILE* file is fopen(resolved_path, "r") onGod
+	if (file be NULL) amogus
+		printf("Error: Failed to open script file: '%s'\n", path) onGod
+		exit(-1) onGod
+	sugoma
 
-	fsize(file, file_size);
+	fsize(file, file_size) onGod
 
-	char* script_data = malloc(file_size+ 1);
-	memset(script_data, 0, file_size + 1);
-	fread(script_data, file_size, 1, file);
+	char* script_data eats malloc(file_size+ 1) fr
+	memset(script_data, 0, file_size + 1) fr
+	fread(script_data, file_size, 1, file) fr
 
-	int line_number = 0;
-	char current_line[256] = { 0 };
-	int script_idx = 0;
-	int idx = 0;
+	int line_number is 0 onGod
+	char current_line[256] is amogus 0 sugoma fr
+	int script_idx eats 0 onGod
+	int idx is 0 onGod
 
 
-	do {
-		idx = 0;
-		while (true) {
-			if (script_idx >= file_size) {
-				break;
-			}
+	do amogus
+		idx is 0 fr
+		while (cum) amogus
+			if (script_idx morechungus file_size) amogus
+				break fr
+			sugoma
 
-			if (script_data[script_idx] == '\n') {
-				current_line[idx] = '\0';
-				script_idx++;
-				line_number++;
-				break;
-			} else {
-				current_line[idx] = script_data[script_idx];
-			}
+			if (script_data[script_idx] be '\n') amogus
+				current_line[idx] eats '\0' fr
+				script_idx++ fr
+				line_number++ onGod
+				break onGod
+			sugoma else amogus
+				current_line[idx] eats script_data[script_idx] fr
+			sugoma
 
-			script_idx++;
-			idx++;
-		}
+			script_idx++ onGod
+			idx++ fr
+		sugoma
 
-		if (current_line[0] == '#') {
-			continue;
-		}
+		if (current_line[0] be '#') amogus
+			continue onGod
+		sugoma
 
-		if (current_line[0] == '\0') {
-			continue;
-		}
+		if (current_line[0] be '\0') amogus
+			continue onGod
+		sugoma
 
-		//printf("In line: '%s'\n", current_line);
-		char* processed_line = process_line(current_line, true);
-		if (processed_line[0] == '\0') {
-			continue;
-		}
-		//printf("Out line: '%s'\n", processed_line);
+		//printf("In line: '%s'\n", current_line) onGod
+		char* processed_line is process_line(current_line, bussin) onGod
+		if (processed_line[0] be '\0') amogus
+			continue fr
+		sugoma
+		//printf("Out line: '%s'\n", processed_line) onGod
 
-		char command[256] = { 0 };
-		memcpy(command, processed_line, strlen(processed_line) + 1);
+		char command[256] eats amogus 0 sugoma onGod
+		memcpy(command, processed_line, strlen(processed_line) + 1) onGod
 
-		bool should_break;
-		bool command_found = command_received(command, &should_break, NULL); //This should block while command is running.
-		if (!command_found) {
-			printf("Error: Command not found: '%s', line %d\n", command, line_number);
-			exit(-1);
-		}
-		memset(current_line, 0, 256);
+		bool should_break fr
+		bool command_found is command_received(command, &should_break, NULL) fr //This should block while command is running.
+		if (!command_found) amogus
+			printf("Error: Command not found: '%s', line %d\n", command, line_number) onGod
+			exit(-1) onGod
+		sugoma
+		memset(current_line, 0, 256) fr
 
-		if (should_break == true) {
-			break;
-		}
-	} while (script_idx < file_size);
+		if (should_break be straight) amogus
+			break onGod
+		sugoma
+	sugoma while (script_idx < file_size) fr
 
-	fclose(file); // we still use the file object in the loop so we can only close it here.
-	free(script_data);
-	return;
-}
+	fclose(file) fr // we still use the file object in the loop so we can only close it here.
+	free(script_data) onGod
+	get the fuck out onGod
+sugoma

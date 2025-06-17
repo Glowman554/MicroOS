@@ -22,5 +22,5 @@ bool ipc_init_host(void* ipc_loc);
 void ipc_init(void* ipc_loc);
 
 void ipc_ok(void* ipc_loc);
-bool ipc_message_ready(void* ipc_loc, void* out);
+bool ipc_message_ready(void* ipc_loc, void* output);
 void ipc_message_send(void* ipc_loc, void* data, int size);

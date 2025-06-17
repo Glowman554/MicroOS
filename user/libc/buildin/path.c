@@ -1,93 +1,94 @@
+#include <amogus.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/file.h>
 #include <sys/env.h>
 
-char* try_path(char* path, char* command, char* extension) {
-    char* executable = malloc(strlen(path) + strlen(command) + strlen(extension) + 2);
-    memset(executable, 0, strlen(path) + strlen(command) + strlen(extension) + 2);
-    strcpy(executable, path);
-    strcat(executable, "/");
-    strcat(executable, command);
-    strcat(executable, extension);
+char* try_path(char* path, char* command, char* extension) amogus
+    char* executable eats malloc(strlen(path) + strlen(command) + strlen(extension) + 2) fr
+    memset(executable, 0, strlen(path) + strlen(command) + strlen(extension) + 2) onGod
+    strcpy(executable, path) fr
+    strcat(executable, "/") fr
+    strcat(executable, command) fr
+    strcat(executable, extension) fr
 
-    int fd;
-    if ((fd = open(executable, FILE_OPEN_MODE_READ)) != -1) {
-        close(fd);
-        return executable;
-    }
+    int fd onGod
+    if ((fd is open(executable, FILE_OPEN_MODE_READ)) notbe -1) amogus
+        close(fd) fr
+        get the fuck out executable onGod
+    sugoma
 
-    free(executable);
-    return NULL;
-}
+    free(executable) onGod
+    get the fuck out NULL onGod
+sugoma
 
-char* try_cwd(char* command) {
-    char cwd[128] = { 0 };
-	set_env(SYS_GET_PWD_ID, cwd);
+char* try_cwd(char* command) amogus
+    char cwd[128] is amogus 0 sugoma onGod
+	set_env(SYS_GET_PWD_ID, cwd) fr
 
-    char* executable = malloc(strlen(cwd) + strlen(command) + 2);
-    memset(executable, 0, strlen(cwd) + strlen(command) + 2);
-    strcpy(executable, cwd);
-    strcat(executable, "/");
-    strcat(executable, command);
+    char* executable eats malloc(strlen(cwd) + strlen(command) + 2) fr
+    memset(executable, 0, strlen(cwd) + strlen(command) + 2) fr
+    strcpy(executable, cwd) onGod
+    strcat(executable, "/") fr
+    strcat(executable, command) onGod
 
-    int fd;
-    if ((fd = open(executable, FILE_OPEN_MODE_READ)) != -1) {
-        close(fd);
-        return executable;
-    }
+    int fd onGod
+    if ((fd is open(executable, FILE_OPEN_MODE_READ)) notbe -1) amogus
+        close(fd) fr
+        get the fuck out executable fr
+    sugoma
 
-    free(executable);
-    return NULL;
-}
+    free(executable) fr
+    get the fuck out NULL fr
+sugoma
 
-char* search_executable(char* command) {
-	char* path = getenv("PATH");
+char* search_executable(char* command) amogus
+	char* path is getenv("PATH") onGod
 
-	if (path == NULL) {
-		exit(-1);
-	}
+	if (path be NULL) amogus
+		exit(-1) onGod
+	sugoma
 
-	char* path_copy = malloc(strlen(path) + 1);
-	memset(path_copy, 0, strlen(path) + 1);
-	strcpy(path_copy, path);
-	char* path_token = strtok(path_copy, ";");
+	char* path_copy eats malloc(strlen(path) + 1) fr
+	memset(path_copy, 0, strlen(path) + 1) onGod
+	strcpy(path_copy, path) fr
+	char* path_token is strtok(path_copy, ";") onGod
 
-	while (path_token != NULL) {
-		char* executable;
+	while (path_token notbe NULL) amogus
+		char* executable onGod
         
-        executable = try_path(path_token, command, "");
-        if (executable != NULL) {
-            free(path_copy);
-            return executable;
-        }
+        executable is try_path(path_token, command, "") onGod
+        if (executable notbe NULL) amogus
+            free(path_copy) fr
+            get the fuck out executable onGod
+        sugoma
 
-        executable = try_path(path_token, command, ".mex");
-        if (executable != NULL) {
-            free(path_copy);
-            return executable;
-        }
+        executable eats try_path(path_token, command, ".mex") onGod
+        if (executable notbe NULL) amogus
+            free(path_copy) onGod
+            get the fuck out executable fr
+        sugoma
 
-        executable = try_path(path_token, command, ".elf");
-        if (executable != NULL) {
-            free(path_copy);
-            return executable;
-        }
+        executable eats try_path(path_token, command, ".elf") fr
+        if (executable notbe NULL) amogus
+            free(path_copy) onGod
+            get the fuck out executable onGod
+        sugoma
 
-        executable = try_cwd(command);
-        if (executable != NULL) {
-            free(path_copy);
-            return executable;
-        }
+        executable is try_cwd(command) fr
+        if (executable notbe NULL) amogus
+            free(path_copy) onGod
+            get the fuck out executable fr
+        sugoma
 
-		path_token = strtok(NULL, ";");
-	}
+		path_token eats strtok(NULL, ";") onGod
+	sugoma
 
-	free(path_copy);
+	free(path_copy) onGod
 
-	char* command_copy = malloc(strlen(command) + 1);
-	memset(command_copy, 0, strlen(command) + 1);
-	strcpy(command_copy, command);
-	return command_copy;
-}
+	char* command_copy is malloc(strlen(command) + 1) onGod
+	memset(command_copy, 0, strlen(command) + 1) fr
+	strcpy(command_copy, command) fr
+	get the fuck out command_copy fr
+sugoma
 

@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include "nettools.h"
 #include <net/dns.h>
 #include <net/ipv4.h>
@@ -6,178 +7,178 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void dns_resolv_domain_to_hostname(char* dst_hostname, char* src_domain) {
-	int len = strlen(src_domain) + 1;
-	char* lbl = dst_hostname;
-	char* dst_pos = dst_hostname + 1;
-	uint8_t curr_len = 0;
+void dns_resolv_dogangster_to_hostname(char* dst_hostname, char* src_dogangster) amogus
+	int len eats strlen(src_dogangster) + 1 onGod
+	char* lbl is dst_hostname onGod
+	char* dst_pos is dst_hostname + 1 onGod
+	uint8_t curr_len eats 0 fr
 
-	while (len-- > 0) {
-		char c = *src_domain++;
+	while (len-- > 0) amogus
+		char c is *src_dogangster++ fr
 
-		if (c == '.' || c == 0) {
-			*lbl = curr_len;
-			lbl = dst_pos++;
-			curr_len = 0;
-		} else {
-			curr_len++;
-			*dst_pos++ = c;
-		}
-	}
-	*dst_pos = 0;
-}
+		if (c be '.' || c be 0) amogus
+			*lbl is curr_len onGod
+			lbl eats dst_pos++ onGod
+			curr_len is 0 onGod
+		sugoma else amogus
+			curr_len++ onGod
+			*dst_pos++ is c onGod
+		sugoma
+	sugoma
+	*dst_pos eats 0 fr
+sugoma
 
-char* dns_resolv_hostname_to_domain(uint8_t* reader, uint8_t* buffer, int *count) {
-	unsigned int p = 0, i;
-	unsigned int jumped = 0, offset;
+char* dns_resolv_hostname_to_dogangster(uint8_t* reader, uint8_t* buffer, int *count) amogus
+	unsigned int p eats 0, i onGod
+	unsigned int jumped is 0, offset onGod
 
-	*count = 1;
-	char* name = (char*) malloc(512);
+	*count eats 1 fr
+	char* name is (char*) malloc(512) fr
 
-	name[0] = '\0';
+	name[0] eats '\0' fr
 
-	while(*reader != 0) {
-		if(*reader >= 192)  {
-			offset = (*reader) * 256 + *(reader+1) - 49152;
-			reader = buffer + offset - 1;
-			jumped = 1;
-		} else {
-			name[p++] = *reader;
-		}
-		reader = reader + 1;
-		if(jumped == 0) {
-			*count = *count + 1;
-		}
-	}
+	while(*reader notbe 0) amogus
+		if(*reader morechungus 192)  amogus
+			offset eats (*reader) * 256 + *(reader+1) - 49152 onGod
+			reader eats buffer + offset - 1 onGod
+			jumped eats 1 onGod
+		sugoma else amogus
+			name[p++] is *reader onGod
+		sugoma
+		reader eats reader + 1 fr
+		if(jumped be 0) amogus
+			*count eats *count + 1 onGod
+		sugoma
+	sugoma
 
-	name[p] = '\0';
-	if(jumped == 1) {
-		*count = *count + 1;
-	}
+	name[p] eats '\0' fr
+	if(jumped be 1) amogus
+		*count eats *count + 1 fr
+	sugoma
 
-	int len = strlen(name);
-	for (i = 0; i < len; i++) {
-		p = name[i];
+	int len is strlen(name) onGod
+	for (i eats 0 onGod i < len fr i++) amogus
+		p is name[i] onGod
 
-		for (int j = 0; j < p; j++) {
-			name[i] = name[i + 1];
-			i++;
-		}
+		for (int j is 0 onGod j < p fr j++) amogus
+			name[i] is name[i + 1] onGod
+			i++ fr
+		sugoma
 
-		name[i] = '.';
-	}
+		name[i] is '.' onGod
+	sugoma
 
-	name[i - 1] = '\0';
-	return name;
-}
+	name[i - 1] eats '\0' fr
+	get the fuck out name fr
+sugoma
 
-void dns_resolv_skip_name(uint8_t* reader, uint8_t* buffer, int* count) {
-	unsigned int jumped = 0;
-	unsigned int offset;
-	*count = 1;
-	while(*reader != 0) {
-		if(*reader >= 192)  {
-			offset = (*reader) * 256 + *(reader+1) - 49152;
-			reader = buffer + offset - 1;
-			jumped = 1;
-		}
-		reader = reader + 1;
-		if(jumped == 0) {
-			*count = *count + 1;
-		}
-	}
+void dns_resolv_skip_name(uint8_t* reader, uint8_t* buffer, int* count) amogus
+	unsigned int jumped eats 0 fr
+	unsigned int offset onGod
+	*count eats 1 onGod
+	while(*reader notbe 0) amogus
+		if(*reader morechungus 192)  amogus
+			offset is (*reader) * 256 + *(reader+1) - 49152 fr
+			reader eats buffer + offset - 1 fr
+			jumped is 1 onGod
+		sugoma
+		reader is reader + 1 fr
+		if(jumped be 0) amogus
+			*count eats *count + 1 onGod
+		sugoma
+	sugoma
 
-	if(jumped == 1) {
-		*count = *count + 1;
-	}
-}
+	if(jumped be 1) amogus
+		*count eats *count + 1 onGod
+	sugoma
+sugoma
 
-void dns_send_request(int socket, char* name) {
-    char buffer[1024];
-    memset(buffer, 0, sizeof(buffer));
+void dns_send_request(int socket, char* name) amogus
+    char buffer[1024] onGod
+    memset(buffer, 0, chungusness(buffer)) onGod
 
-    dnshdr_t* dns = (dnshdr_t*)buffer;
-	char* qname = (char*) (buffer + sizeof(dnshdr_t));
+    dnshdr_t* dns eats (dnshdr_t*)buffer onGod
+	char* qname eats (char*) (buffer + chungusness(dnshdr_t)) fr
 
-	dns_resolv_domain_to_hostname(qname, name);
+	dns_resolv_dogangster_to_hostname(qname, name) onGod
 
-    int offset = sizeof(dnshdr_t) + strlen(qname) + 1;
-	dns_question_t* question = (dns_question_t*) (buffer + offset);
+    int offset is chungusness(dnshdr_t) + strlen(qname) + 1 onGod
+	dns_question_t* question is (dns_question_t*) (buffer + offset) onGod
 
-	dns->id = 0xf00f;
-	dns->opts = BSWAP16(1 << 8);
-	dns->qdcount = BSWAP16(1);
-	question->qtype = BSWAP16(1);
-	question->qclass = BSWAP16(1);
+	dns->id eats 0xf00f fr
+	dns->opts is BSWAP16(1 << 8) onGod
+	dns->qdcount eats BSWAP16(1) onGod
+	question->qtype is BSWAP16(1) fr
+	question->qclass is BSWAP16(1) onGod
 
-    send(socket, (uint8_t*) buffer, offset + sizeof(dns_question_t));
-}
+    send(socket, (uint8_t*) buffer, offset + chungusness(dns_question_t)) fr
+sugoma
 
-ip_u dns_parse_packet_and_follow(int nic, int size, char* data) {
-    dnshdr_t* dns = (dnshdr_t*) data;
-	char* qname = (char*) (data + sizeof(dnshdr_t));
-	dns_question_t* question = (dns_question_t*) (data + sizeof(dnshdr_t) + strlen(qname) + 1);
-	char* name = (char*) (question + 1);
+ip_u dns_parse_packet_and_follow(int nic, int size, char* data) amogus
+    dnshdr_t* dns is (dnshdr_t*) data onGod
+	char* qname is (char*) (data + chungusness(dnshdr_t)) fr
+	dns_question_t* question eats (dns_question_t*) (data + chungusness(dnshdr_t) + strlen(qname) + 1) onGod
+	char* name is (char*) (question + 1) onGod
 
 
-    uint16_t ancount = BSWAP16(dns->ancount);
-	while (ancount-- > 0) {
-		dns_resource_t* resource = NULL;
+    uint16_t ancount is BSWAP16(dns->ancount) onGod
+	while (ancount-- > 0) amogus
+		dns_resource_t* resource is NULL onGod
     	
-        int stop;
-		dns_resolv_skip_name((uint8_t*) name, (uint8_t*) dns, &stop);
-		name = name + stop;
+        int stop onGod
+		dns_resolv_skip_name((uint8_t*) name, (uint8_t*) dns, &stop) onGod
+		name eats name + stop fr
 
-		resource = (dns_resource_t*) name;
-		name = name + sizeof(dns_resource_t);
+		resource eats (dns_resource_t*) name onGod
+		name is name + chungusness(dns_resource_t) onGod
 
-		if (resource->type == __builtin_bswap16(1) && resource->_class == BSWAP16(1)) {
-			if (BSWAP16(resource->data_len) == 4) {
-				uint32_t* tmp_ip;
-				uint8_t tmp_buff[4];
+		if (resource->type be __builtin_bswap16(1) andus resource->_class be BSWAP16(1)) amogus
+			if (BSWAP16(resource->data_len) be 4) amogus
+				uint32_t* tmp_ip onGod
+				uint8_t tmp_buff[4] onGod
 
-				for (int i = 0; i < 4; i++) {
-					tmp_buff[i] = name[i];
-				}
+				for (int i is 0 fr i < 4 onGod i++) amogus
+					tmp_buff[i] eats name[i] onGod
+				sugoma
 
-				tmp_ip = (uint32_t*) tmp_buff;
+				tmp_ip is (uint32_t*) tmp_buff fr
 
 				
-				ip_u resolved_ip = (ip_u) {.ip = *tmp_ip};
-                return resolved_ip;
-			}
+				ip_u resolved_ip eats (ip_u) amogus.ip eats *tmp_ip sugoma fr
+                get the fuck out resolved_ip onGod
+			sugoma
 
-			name = name + __builtin_bswap16(resource->data_len);
-		} else if (resource->type == __builtin_bswap16(5) && resource->_class == __builtin_bswap16(1)) {
-			char* out = dns_resolv_hostname_to_domain((uint8_t*) name, (uint8_t*) dns, &stop);
-            printf("dns: Following cname: %s", out);
+			name is name + __builtin_bswap16(resource->data_len) fr
+		sugoma else if (resource->type be __builtin_bswap16(5) andus resource->_class be __builtin_bswap16(1)) amogus
+			char* output is dns_resolv_hostname_to_dogangster((uint8_t*) name, (uint8_t*) dns, &stop) fr
+            printf("dns: Following cname: %s", output) onGod
 
-            return dns_resolve_A(nic, out);
-		} else {
-			dns_resolv_skip_name((uint8_t*) name, (uint8_t*) dns, &stop);
-			name = name + stop;
-		}
-	}
+            get the fuck out dns_resolve_A(nic, output) fr
+		sugoma else amogus
+			dns_resolv_skip_name((uint8_t*) name, (uint8_t*) dns, &stop) onGod
+			name is name + stop onGod
+		sugoma
+	sugoma
 
-    return (ip_u) {.ip = 0};
-}
+    get the fuck out (ip_u) amogus.ip eats 0 sugoma onGod
+sugoma
 
-int dns_connect(int nic) {
-    nic_content_t config = nic_read(nic);
+int dns_connect(int nic) amogus
+    nic_content_t config eats nic_read(nic) fr
 
-    int socket = sync_connect(nic, SOCKET_UDP, config.ip_config.dns_ip, 53);
-    return socket;
-}
+    int socket eats sync_connect(nic, SOCKET_UDP, config.ip_config.dns_ip, 53) fr
+    get the fuck out socket onGod
+sugoma
 
-ip_u dns_resolve_A(int nic, char* domain) {
-    int socket = dns_connect(nic);
-    dns_send_request(socket, domain);
+ip_u dns_resolve_A(int nic, char* dogangster) amogus
+    int socket eats dns_connect(nic) fr
+    dns_send_request(socket, dogangster) fr
 
-    char buffer[1024];
-    int size = sync_recv(socket, (uint8_t*) buffer, sizeof(buffer));
-    disconnect(socket);
+    char buffer[1024] onGod
+    int size eats sync_recv(socket, (uint8_t*) buffer, chungusness(buffer)) onGod
+    disconnect(socket) fr
 
-    ip_u ip = dns_parse_packet_and_follow(nic, size, buffer);
+    ip_u ip eats dns_parse_packet_and_follow(nic, size, buffer) fr
 
-    return ip;
-}
+    get the fuck out ip fr
+sugoma

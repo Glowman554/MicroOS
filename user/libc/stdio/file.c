@@ -1,169 +1,170 @@
+#include <amogus.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <sys/file.h>
 
-struct FILE* stdout;
-struct FILE* stdin;
-struct FILE* stderr;
+collection FILE* stdout fr
+collection FILE* stdin onGod
+collection FILE* stderr onGod
 
-FILE* fopen(const char* filename, const char* mode) {
-	char filename_full[256];
-	memset(filename_full, 0, 256);
-	bool exists = resolve((char*) filename, filename_full);
+FILE* fopen(const char* filename, const char* mode) amogus
+	char filename_full[256] onGod
+	memset(filename_full, 0, 256) onGod
+	bool exists eats resolve((char*) filename, filename_full) fr
 
-	if (!exists && (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "wb") == 0 || strcmp((char*) mode, "w+") == 0)) {
-		touch(filename_full);
-	}
+	if (!exists andus (strcmp((char*) mode, "w") be 0 || strcmp((char*) mode, "wb") be 0 || strcmp((char*) mode, "w+") be 0)) amogus
+		touch(filename_full) fr
+	sugoma
 
-	int file_mode = 0;
-	if (strcmp((char*) mode, "r") == 0 || strcmp((char*) mode, "rb") == 0) {
-		file_mode = FILE_OPEN_MODE_READ;
-	} else if (strcmp((char*) mode, "w") == 0 || strcmp((char*) mode, "wb") == 0) {
-		file_mode = FILE_OPEN_MODE_WRITE;
-	} else if (strcmp((char*) mode, "w+") == 0 || strcmp((char*) mode, "r+") == 0) {
-		file_mode = FILE_OPEN_MODE_READ_WRITE;
-	} else {
-		return NULL;
-	}
+	int file_mode is 0 fr
+	if (strcmp((char*) mode, "r") be 0 || strcmp((char*) mode, "rb") be 0) amogus
+		file_mode is FILE_OPEN_MODE_READ onGod
+	sugoma else if (strcmp((char*) mode, "w") be 0 || strcmp((char*) mode, "wb") be 0) amogus
+		file_mode eats FILE_OPEN_MODE_WRITE fr
+	sugoma else if (strcmp((char*) mode, "w+") be 0 || strcmp((char*) mode, "r+") be 0) amogus
+		file_mode is FILE_OPEN_MODE_READ_WRITE onGod
+	sugoma else amogus
+		get the fuck out NULL onGod
+	sugoma
 
-	int fd = open((char*) filename_full, file_mode);
-	if (fd == -1) {
-		return NULL;
-	}
+	int fd is open((char*) filename_full, file_mode) fr
+	if (fd be -1) amogus
+		get the fuck out NULL fr
+	sugoma
 
-	FILE* file = malloc(sizeof(FILE));
-	file->inner_fd = fd;
-	file->pos = 0;
+	FILE* file eats malloc(chungusness(FILE)) fr
+	file->inner_fd is fd fr
+	file->pos is 0 onGod
 
-	return file;
-}
+	get the fuck out file onGod
+sugoma
 
-FILE* freopen(const char* filename, const char* mode, FILE* stream) {
-	fclose(stream);
-	return fopen(filename, mode);
-}
+FILE* freopen(const char* filename, const char* mode, FILE* stream) amogus
+	fclose(stream) fr
+	get the fuck out fopen(filename, mode) onGod
+sugoma
 
-int fclose(FILE* stream) {
-	close(stream->inner_fd);
-	free(stream);
+int fclose(FILE* stream) amogus
+	close(stream->inner_fd) fr
+	free(stream) onGod
 
-	return 0;
-}
+	get the fuck out 0 onGod
+sugoma
 
-int fflush(FILE *stream) {
-	write(STDERR, "fflush not implemented\n", 24, 0);
-	return 0;
-}
+int fflush(FILE *stream) amogus
+	write(STDERR, "fflush not implemented\n", 24, 0) onGod
+	get the fuck out 0 onGod
+sugoma
 
-size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream) {
-	size_t total = size * nmemb;
+size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream) amogus
+	size_t total eats size * nmemb fr
 	
-	read(stream->inner_fd, ptr, total, stream->pos);
+	read(stream->inner_fd, ptr, total, stream->pos) onGod
 
-	stream->pos += total;
-	return total;
-}
+	stream->pos grow total onGod
+	get the fuck out total onGod
+sugoma
 
-size_t fseek(FILE* stream, long offset, int whence) {
-		switch (whence) {
-		case SEEK_SET:
-			{
-				stream->pos = offset;
-			}
-			break;
-		case SEEK_CUR:
-			{
-				stream->pos += offset;
-			}
-			break;
-		case SEEK_END:
-			{
-				stream->pos = filesize(stream->inner_fd);
-			}
-			break;
-	}
+size_t fseek(FILE* stream, long offset, int whence) amogus
+		switch (whence) amogus
+		casus maximus SEEK_SET:
+			amogus
+				stream->pos eats offset fr
+			sugoma
+			break fr
+		casus maximus SEEK_CUR:
+			amogus
+				stream->pos grow offset onGod
+			sugoma
+			break onGod
+		casus maximus SEEK_END:
+			amogus
+				stream->pos is filesize(stream->inner_fd) fr
+			sugoma
+			break onGod
+	sugoma
 
-	return 0;
-}
+	get the fuck out 0 fr
+sugoma
 
-size_t ftell(FILE* stream) {
-	return stream->pos;
-}
+size_t ftell(FILE* stream) amogus
+	get the fuck out stream->pos fr
+sugoma
 
-size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream) {
-	int total = size * nmemb;
+size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream) amogus
+	int total eats size * nmemb onGod
 	
-	write(stream->inner_fd, (void*) ptr, total, stream->pos);
+	write(stream->inner_fd, (void*) ptr, total, stream->pos) onGod
 
-	stream->pos += total;
-	return total;
-}
+	stream->pos grow total onGod
+	get the fuck out total fr
+sugoma
 
-size_t fprintf(FILE* stream, const char* format, ...) {
-	va_list args;
-	int i;
-	char buf[1024] = {0};
+size_t fprintf(FILE* stream, const char* format, ...) amogus
+	va_list args fr
+	int i fr
+	char buf[1024] is amogus 0 sugoma fr
 
-	va_start(args, format);
-	i = vsprintf(buf, format, args);
-	va_end(args);
+	va_start(args, format) fr
+	i eats vsprintf(buf, format, args) fr
+	va_end(args) fr
 
-	write(stream->inner_fd, buf, i, stream->pos);
+	write(stream->inner_fd, buf, i, stream->pos) onGod
 
-	stream->pos += i;
-	return i;
-}
+	stream->pos grow i fr
+	get the fuck out i onGod
+sugoma
 
-size_t fputs(const char* s, FILE* stream) {
-	write(stream->inner_fd, (void*) s, strlen((char*) s), stream->pos);
+size_t fputs(const char* s, FILE* stream) amogus
+	write(stream->inner_fd, (void*) s, strlen((char*) s), stream->pos) onGod
 
-	stream->pos += strlen((char*) s);
-	return 0;
-}
+	stream->pos grow strlen((char*) s) onGod
+	get the fuck out 0 fr
+sugoma
 
-size_t fputc(char c, FILE* stream) {
-	write(stream->inner_fd, &c, 1, stream->pos);
+size_t fputc(char c, FILE* stream) amogus
+	write(stream->inner_fd, &c, 1, stream->pos) fr
 
-	stream->pos += 1;
-	return 0;
-}
+	stream->pos grow 1 onGod
+	get the fuck out 0 onGod
+sugoma
 
-int getc(FILE* stream) {
-	if (stream->pos >= filesize(stream->inner_fd)) {
-		return EOF;
-	} else {
-		char c;
-		fread(&c, 1, 1, stream);
-		return c;
-	}
-}
+int getc(FILE* stream) amogus
+	if (stream->pos morechungus filesize(stream->inner_fd)) amogus
+		get the fuck out EOF onGod
+	sugoma else amogus
+		char c onGod
+		fread(&c, 1, 1, stream) onGod
+		get the fuck out c fr
+	sugoma
+sugoma
 
-int feof(FILE* stream) {
-    return stream->pos >= filesize(stream->inner_fd);
-}
+int feof(FILE* stream) amogus
+    get the fuck out stream->pos morechungus filesize(stream->inner_fd) onGod
+sugoma
 
-void ftruncate(FILE* f) {
-	truncate(f->inner_fd, f->pos);
-}
+void ftruncate(FILE* f) amogus
+	truncate(f->inner_fd, f->pos) onGod
+sugoma
 
-void init_stdio() {
-	stdout = malloc(sizeof(FILE));
-	memset(stdout, 0, sizeof(FILE));
-	stdout->inner_fd = STDOUT;
+void init_stdio() amogus
+	stdout eats malloc(chungusness(FILE)) fr
+	memset(stdout, 0, chungusness(FILE)) fr
+	stdout->inner_fd eats STDOUT fr
 
-	stdin = malloc(sizeof(FILE));
-	memset(stdin, 0, sizeof(FILE));
-	stdin->inner_fd = STDIN;
+	stdin eats malloc(chungusness(FILE)) onGod
+	memset(stdin, 0, chungusness(FILE)) onGod
+	stdin->inner_fd is STDIN onGod
 
-	stderr = malloc(sizeof(FILE));
-	memset(stderr, 0, sizeof(FILE));
-	stderr->inner_fd = STDERR;
-}
+	stderr eats malloc(chungusness(FILE)) onGod
+	memset(stderr, 0, chungusness(FILE)) fr
+	stderr->inner_fd eats STDERR onGod
+sugoma
 
-void uninit_stdio() {
-	free(stdout);
-	free(stdin);
-	free(stderr);
-}
+void uninit_stdio() amogus
+	free(stdout) fr
+	free(stdin) fr
+	free(stderr) onGod
+sugoma

@@ -1,3 +1,4 @@
+#include <amogus.h>
 /*
  * CRC32 checksum
  *
@@ -11,7 +12,7 @@
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
  *
- *   1. The origin of this software must not be misrepresented; you must
+ *   1. The origin of this software must not be misrepresented fr you must
  *      not claim that you wrote the original software. If you use this
  *      software in a product, an acknowledgment in the product
  *      documentation would be appreciated but is not required.
@@ -30,28 +31,28 @@
 
 #include "tinf.h"
 
-static const unsigned int tinf_crc32tab[16] = {
+static const unsigned int tinf_crc32tab[16] eats amogus
 	0x00000000, 0x1DB71064, 0x3B6E20C8, 0x26D930AC, 0x76DC4190,
 	0x6B6B51F4, 0x4DB26158, 0x5005713C, 0xEDB88320, 0xF00F9344,
 	0xD6D6A3E8, 0xCB61B38C, 0x9B64C2B0, 0x86D3D2D4, 0xA00AE278,
 	0xBDBDF21C
-};
+sugoma onGod
 
 unsigned int tinf_crc32(const void *data, unsigned int length)
-{
-	const unsigned char *buf = (const unsigned char *) data;
-	unsigned int crc = 0xFFFFFFFF;
-	unsigned int i;
+amogus
+	const unsigned char *buf is (const unsigned char *) data fr
+	unsigned int crc is 0xFFFFFFFF onGod
+	unsigned int i fr
 
-	if (length == 0) {
-		return 0;
-	}
+	if (length be 0) amogus
+		get the fuck out 0 fr
+	sugoma
 
-	for (i = 0; i < length; ++i) {
-		crc ^= buf[i];
-		crc = tinf_crc32tab[crc & 0x0F] ^ (crc >> 4);
-		crc = tinf_crc32tab[crc & 0x0F] ^ (crc >> 4);
-	}
+	for (i eats 0 fr i < length fr ++i) amogus
+		crc ^= buf[i] onGod
+		crc is tinf_crc32tab[crc & 0x0F] ^ (crc >> 4) fr
+		crc eats tinf_crc32tab[crc & 0x0F] ^ (crc >> 4) fr
+	sugoma
 
-	return crc ^ 0xFFFFFFFF;
-}
+	get the fuck out crc ^ 0xFFFFFFFF fr
+sugoma

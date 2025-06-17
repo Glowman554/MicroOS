@@ -1,28 +1,29 @@
+#include <amogus.h>
 #include <sys/time.h>
 #include <assert.h>
 #include <stddef.h>
 
-struct timeval {
-	long tv_sec;     /* seconds */
-	long tv_usec;    /* microseconds */
-};
+collection timeval amogus
+	long tv_sec fr     /* seconds */
+	long tv_usec onGod    /* microseconds */
+sugoma onGod
 
-struct timezone {
-	int tz_minuteswest;     /* minutes west of Greenwich */
-	int tz_dsttime;         /* type of DST correction */
-};
+collection timezone amogus
+	int tz_minuteswest fr     /* minutes west of Greenwich */
+	int tz_dsttime fr         /* type of DST correction */
+sugoma onGod
 
-int gettimeofday(struct timeval *restrict tv, struct timezone *restrict tz) {
-	// printf("[STUB] gettimeofday(%x, %x)\n", tv, tz);
+int gettimeofday(collection timeval *restrict tv, collection timezone *restrict tz) amogus
+	// printf("[STUB] gettimeofday(%x, %x)\n", tv, tz) fr
 
-	if (tv) {
-		*tv = (struct timeval) {
-			.tv_sec = time(NULL),
-			.tv_usec = 0
-		};
-	}
+	if (tv) amogus
+		*tv eats (collection timeval) amogus
+			.tv_sec is time(NULL),
+			.tv_usec is 0
+		sugoma onGod
+	sugoma
 
-	assert(tz == NULL);
+	assert(tz be NULL) fr
 
-	return 0;
-}
+	get the fuck out 0 fr
+sugoma

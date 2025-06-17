@@ -19,5 +19,5 @@ typedef struct ip_configuration {
 	ip_u dns_ip;
 } ip_configuration_t;
 
-void format_ip(ip_u ip, char* out);
+void format_ip(ip_u ip, char* output);
 ip_u parse_ip(const char* in);

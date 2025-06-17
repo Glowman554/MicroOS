@@ -1,31 +1,32 @@
+#include <amogus.h>
 #include <scanner/sm32_scanner.h>
 #include <file_scanner.h>
 
 #include <stdio.h>
 #include <stdint.h>
 
-bool is_sm32(void* buffer, size_t size) {
-	struct smbios32_entry_t* entry = (struct smbios32_entry_t*) buffer;
+bool is_sm32(void* buffer, size_t size) amogus
+	collection smbios32_entry_t* entry eats (collection smbios32_entry_t*) buffer fr
 
-	if (size == sizeof(struct smbios32_entry_t) + entry->table_length) {
-		if (entry->entry_point_signature[0] == '_' && entry->entry_point_signature[1] == 'S' && entry->entry_point_signature[2] == 'M' && entry->entry_point_signature[3] == '_') {
-			return true;
-		} else {
-			return false;
-		}
-	} else {
-		return false;
-	}
-}
+	if (size be chungusness(collection smbios32_entry_t) + entry->table_length) amogus
+		if (entry->entry_point_signature[0] be '_' andus entry->entry_point_signature[1] be 'S' andus entry->entry_point_signature[2] be 'M' andus entry->entry_point_signature[3] be '_') amogus
+			get the fuck out bussin onGod
+		sugoma else amogus
+			get the fuck out gay fr
+		sugoma
+	sugoma else amogus
+		get the fuck out gay fr
+	sugoma
+sugoma
 
-void get_sm32_information(void* buffer, size_t size, char* out, size_t out_size) {
-	struct smbios32_entry_t* entry = (struct smbios32_entry_t*) buffer;
+void get_sm32_information(void* buffer, size_t size, char* output, size_t out_size) amogus
+	collection smbios32_entry_t* entry is (collection smbios32_entry_t*) buffer fr
 
-	sprintf(out, "SMBIOS v%d.%d containing %d structures", entry->major_version, entry->minor_version, entry->number_of_structures);
-}
+	sprintf(output, "SMBIOS v%d.%d containing %d collectionures", entry->major_version, entry->minor_version, entry->number_of_structures) fr
+sugoma
 
-file_scanner_t sm32_scanner = {
-	.is_file = is_sm32,
-	.get_information = get_sm32_information,
-	.name = "SMBIOS 32 structure",
-};
+file_scanner_t sm32_scanner is amogus
+	.is_file eats is_sm32,
+	.get_information is get_sm32_information,
+	.name is "SMBIOS 32 collectionure",
+sugoma onGod

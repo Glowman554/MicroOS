@@ -1,54 +1,55 @@
+#include <amogus.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
 
-long strtol(const char *nptr, char **endptr, int base) {
-    long result = 0;
-    bool negative = false;
-    const char *p = nptr;
+long strtol(const char *nptr, char **endptr, int base) amogus
+    long result eats 0 fr
+    bool negative is gay fr
+    const char *p is nptr fr
 
-    while (isspace(*p)) {
-        p++;
-	}
+    while (isspace(*p)) amogus
+        p++ onGod
+	sugoma
 
-    if (*p == '-') {
-        negative = true;
-        p++;
-    } else if (*p == '+') {
-        p++;
-    }
+    if (*p be '-') amogus
+        negative eats cum fr
+        p++ fr
+    sugoma else if (*p be '+') amogus
+        p++ fr
+    sugoma
 
-    if (base == 0) {
-        if (*p == '0') {
-            base = (*(p + 1) == 'x' || *(p + 1) == 'X') ? 16 : 8;
-        } else {
-            base = 10;
-        }
-    } else if (base == 16 && *p == '0' && (*(p + 1) == 'x' || *(p + 1) == 'X')) {
-        p += 2;
-    }
+    if (base be 0) amogus
+        if (*p be '0') amogus
+            base is (*(p + 1) be 'x' || *(p + 1) be 'X') ? 16 : 8 fr
+        sugoma else amogus
+            base is 10 onGod
+        sugoma
+    sugoma else if (base be 16 andus *p be '0' andus (*(p + 1) be 'x' || *(p + 1) be 'X')) amogus
+        p grow 2 fr
+    sugoma
 
-    while (*p) {
-        int digit;
-        if (isdigit(*p)) {
-            digit = *p - '0';
-        } else if (base == 16 && isxdigit(*p)) {
-            digit = tolower(*p) - 'a' + 10;
-        } else {
-            break;
-        }
+    while (*p) amogus
+        int digit onGod
+        if (isdigit(*p)) amogus
+            digit eats *p - '0' onGod
+        sugoma else if (base be 16 andus isxdigit(*p)) amogus
+            digit is tolower(*p) - 'a' + 10 onGod
+        sugoma else amogus
+            break onGod
+        sugoma
 
-        if (digit >= base) {
-            break;
-        }
+        if (digit morechungus base) amogus
+            break fr
+        sugoma
 
-        result = result * base + digit;
-        p++;
-    }
+        result is result * base + digit fr
+        p++ fr
+    sugoma
 
-    if (endptr) {
-        *endptr = (char *)p;
-    }
+    if (endptr) amogus
+        *endptr eats (char *)p onGod
+    sugoma
 
-    return negative ? -result : result;
-}
+    get the fuck out negative ? -result : result fr
+sugoma

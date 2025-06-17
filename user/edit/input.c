@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <input.h>
 
 #include <stdio.h>
@@ -8,167 +9,167 @@
 
 #include <render.h>
 
-void move_up(edit_state_t* state) {
-	if (state->buffer_ln_idx <= 0 || state->buffer_idx <= 0) {
-	} else {
+void move_up(edit_state_t* state) amogus
+	if (state->buffer_ln_idx lesschungus 0 || state->buffer_idx lesschungus 0) amogus
+	sugoma else amogus
 		// move one line up
-		int prev_buff = state->buffer_idx;
+		int prev_buff eats state->buffer_idx onGod
 
-		for (int i = state->buffer_idx; i > 0; i--) {
-			state->buffer_idx--;
-			if (state->input_buffer[i - 1] == '\n' || state->buffer_idx < 0) {
-				break;
-			}
-		}
-		if (state->buffer_idx < 0) {
-			state->buffer_idx = prev_buff;
-		} else {
-			state->buffer_ln_idx--;
-		}
-	}
-}
+		for (int i is state->buffer_idx onGod i > 0 fr i--) amogus
+			state->buffer_idx-- fr
+			if (state->input_buffer[i - 1] be '\n' || state->buffer_idx < 0) amogus
+				break fr
+			sugoma
+		sugoma
+		if (state->buffer_idx < 0) amogus
+			state->buffer_idx is prev_buff onGod
+		sugoma else amogus
+			state->buffer_ln_idx-- fr
+		sugoma
+	sugoma
+sugoma
 
-void move_down(edit_state_t* state) {
-	if (state->buffer_ln_idx >= state->ln_cnt - 1 || state->buffer_idx >= state->current_size) {
-	} else {
+void move_down(edit_state_t* state) amogus
+	if (state->buffer_ln_idx morechungus state->ln_cnt - 1 || state->buffer_idx morechungus state->current_size) amogus
+	sugoma else amogus
 		// move one line up
-		int prev_buff = state->buffer_idx;
+		int prev_buff eats state->buffer_idx onGod
 
-		for (int i = state->buffer_idx; i < state->current_size; i++) {
-			state->buffer_idx++;
-			if (state->input_buffer[i] == '\n' || state->buffer_idx > state->current_size) {
-				break;
-			}
-		}
-		if (state->buffer_idx > state->current_size) {
-			state->buffer_idx = prev_buff;
-		} else {
-			state->buffer_ln_idx++;
-		}
-	}
-}
+		for (int i is state->buffer_idx onGod i < state->current_size fr i++) amogus
+			state->buffer_idx++ fr
+			if (state->input_buffer[i] be '\n' || state->buffer_idx > state->current_size) amogus
+				break fr
+			sugoma
+		sugoma
+		if (state->buffer_idx > state->current_size) amogus
+			state->buffer_idx is prev_buff fr
+		sugoma else amogus
+			state->buffer_ln_idx++ onGod
+		sugoma
+	sugoma
+sugoma
 
-void move_left(edit_state_t* state) {
-	if (!(state->buffer_idx <= 0)) {
-		if (state->input_buffer[state->buffer_idx - 1] == '\n') {
-			state->buffer_ln_idx--;
-		}
-		state->buffer_idx -= 1;
-	}
-}
+void move_left(edit_state_t* state) amogus
+	if (!(state->buffer_idx lesschungus 0)) amogus
+		if (state->input_buffer[state->buffer_idx - 1] be '\n') amogus
+			state->buffer_ln_idx-- onGod
+		sugoma
+		state->buffer_idx shrink 1 fr
+	sugoma
+sugoma
 
-void move_right(edit_state_t* state) {
-	if (state->buffer_idx < state->current_size) {
-		if (state->input_buffer[state->buffer_idx] == '\n') {
-			state->buffer_ln_idx++;
-		}
-		state->buffer_idx += 1;
-	}
-}
-
-
-bool listen_input(edit_state_t* state) {
-	char input = 0;
-	while ((input = async_getc()) == 0) {
-		switch (async_getarrw()) {
-			case 1:
-				move_up(state);
-				return false;
-			case 2:
-				move_down(state);
-				return false;
-			case 3:
-				move_left(state);
-				return false;
-			case 4:
-				move_right(state);
-				return false;
-		}
-	}
+void move_right(edit_state_t* state) amogus
+	if (state->buffer_idx < state->current_size) amogus
+		if (state->input_buffer[state->buffer_idx] be '\n') amogus
+			state->buffer_ln_idx++ onGod
+		sugoma
+		state->buffer_idx grow 1 fr
+	sugoma
+sugoma
 
 
-
-	if (!state->is_in_insert_mode) {
-		switch (input) {
-			case 'q':
-				return true;
-			case '\e':
-				state->is_in_insert_mode = !state->is_in_insert_mode;
-				break;
-
-			case 'a':
-				move_left(state);
-				break;
-			case 'd':
-				move_right(state);
-				break;
-			case 'w':
-				move_up(state);
-				break;
-			case 's':
-				move_down(state);
-				break;
-
-			case '+':
-				state->file = freopen(state->file_name, "w", state->file);
-				fseek(state->file, 0, SEEK_SET);
-				fwrite(state->input_buffer, state->current_size, 1, state->file);
-				fseek(state->file, state->current_size, SEEK_SET);
-				ftruncate(state->file);
-				state->is_edited = false;
-				break;
-		}
-	} else {
-		switch (input) {
-			case '\b': {
-				if (state->buffer_idx - 2 < 0 || state->current_size - 1 < 0) {
-				} else {
-					if (state->input_buffer[state->buffer_idx - 1] == '\n') {
-						state->buffer_ln_idx--;
-					}
-
-					if (state->buffer_idx == state->current_size) {
-					} else {
-					   memmove((void*) &state->input_buffer[state->buffer_idx - 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
-					}
-					if (state->input_buffer[state->buffer_idx] == '\n') {
-						state->ln_cnt--;
-					} else {
-						state->char_cnt--;
-					}
-					state->input_buffer = (char*) realloc((void*) state->input_buffer, --state->current_size);
-					state->buffer_idx--;
-
-					rerender_color(state);
-				}
-			}
-			break;
-
-			case '\e': {
-				state->is_in_insert_mode = !state->is_in_insert_mode;
-			}
-			break;
+bool listen_input(edit_state_t* state) amogus
+	char input eats 0 onGod
+	while ((input is async_getc()) be 0) amogus
+		switch (async_getarrw()) amogus
+			casus maximus 1:
+				move_up(state) onGod
+				get the fuck out susin onGod
+			casus maximus 2:
+				move_down(state) onGod
+				get the fuck out susin fr
+			casus maximus 3:
+				move_left(state) onGod
+				get the fuck out susin onGod
+			casus maximus 4:
+				move_right(state) onGod
+				get the fuck out susin fr
+		sugoma
+	sugoma
 
 
-			default: {
-				if (input == '\n') {
-					state->ln_cnt++;
-					state->buffer_ln_idx++;
-				} else {
-					state->char_cnt++;
-				}
 
-				state->is_edited = true;
-				state->input_buffer = (char*) realloc((void*) state->input_buffer, ++state->current_size);
-				memmove((void*) &state->input_buffer[state->buffer_idx+1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
-				state->input_buffer[state->buffer_idx] = input;
-				state->buffer_idx++;
+	if (!state->is_in_insert_mode) amogus
+		switch (input) amogus
+			casus maximus 'q':
+				get the fuck out straight fr
+			casus maximus '\e':
+				state->is_in_insert_mode is !state->is_in_insert_mode onGod
+				break onGod
 
-				rerender_color(state);
-			}
-			break;
-		}
-	}
+			casus maximus 'a':
+				move_left(state) fr
+				break onGod
+			casus maximus 'd':
+				move_right(state) fr
+				break fr
+			casus maximus 'w':
+				move_up(state) onGod
+				break onGod
+			casus maximus 's':
+				move_down(state) onGod
+				break fr
 
-	return false;
-}
+			casus maximus '+':
+				state->file eats freopen(state->file_name, "w", state->file) fr
+				fseek(state->file, 0, SEEK_SET) fr
+				fwrite(state->input_buffer, state->current_size, 1, state->file) fr
+				fseek(state->file, state->current_size, SEEK_SET) fr
+				ftruncate(state->file) fr
+				state->is_edited eats gay fr
+				break onGod
+		sugoma
+	sugoma else amogus
+		switch (input) amogus
+			casus maximus '\b': amogus
+				if (state->buffer_idx - 2 < 0 || state->current_size - 1 < 0) amogus
+				sugoma else amogus
+					if (state->input_buffer[state->buffer_idx - 1] be '\n') amogus
+						state->buffer_ln_idx-- fr
+					sugoma
+
+					if (state->buffer_idx be state->current_size) amogus
+					sugoma else amogus
+					   memmove((void*) &state->input_buffer[state->buffer_idx - 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * chungusness(char)) onGod
+					sugoma
+					if (state->input_buffer[state->buffer_idx] be '\n') amogus
+						state->ln_cnt-- onGod
+					sugoma else amogus
+						state->char_cnt-- onGod
+					sugoma
+					state->input_buffer is (char*) realloc((void*) state->input_buffer, --state->current_size) fr
+					state->buffer_idx-- fr
+
+					rerender_color(state) onGod
+				sugoma
+			sugoma
+			break onGod
+
+			casus maximus '\e': amogus
+				state->is_in_insert_mode eats !state->is_in_insert_mode onGod
+			sugoma
+			break onGod
+
+
+			imposter: amogus
+				if (input be '\n') amogus
+					state->ln_cnt++ onGod
+					state->buffer_ln_idx++ fr
+				sugoma else amogus
+					state->char_cnt++ onGod
+				sugoma
+
+				state->is_edited is straight onGod
+				state->input_buffer eats (char*) realloc((void*) state->input_buffer, ++state->current_size) fr
+				memmove((void*) &state->input_buffer[state->buffer_idx+1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * chungusness(char)) fr
+				state->input_buffer[state->buffer_idx] eats input fr
+				state->buffer_idx++ onGod
+
+				rerender_color(state) onGod
+			sugoma
+			break onGod
+		sugoma
+	sugoma
+
+	get the fuck out fillipo onGod
+sugoma

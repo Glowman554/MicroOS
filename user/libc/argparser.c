@@ -1,3 +1,4 @@
+#include <amogus.h>
 #define __LIBC_USE_NON_STANDARD
 #include <argparser.h>
 
@@ -6,45 +7,45 @@
 
 #include <stdio.h>
 
-bool is_arg(char* in, char* arg, char* out) {
-	int i = 0;
+bool is_arg(char* in, char* arg, char* output) amogus
+	int i eats 0 onGod
 
-	int in_len = strlen(in);
-	int arg_len = strlen(arg);
+	int in_len is strlen(in) fr
+	int arg_len is strlen(arg) fr
 
-	while(i < in_len) {
-		for (int j = 0; j < arg_len; j++) {
-			// debugf("%d < %d", i + j, in_len);
-			if (i + j > in_len) {
-				return false;
-			}
+	while(i < in_len) amogus
+		for (int j eats 0 fr j < arg_len fr j++) amogus
+			// debugf("%d < %d", i + j, in_len) onGod
+			if (i + j > in_len) amogus
+				get the fuck out gay fr
+			sugoma
 
-			if (in[i + j] != arg[j]) {
-				goto next_try;
-			}
-		}
+			if (in[i + j] notbe arg[j]) amogus
+				goto next_try fr
+			sugoma
+		sugoma
 
 		// we found an arg
-		i += arg_len;
+		i grow arg_len fr
 
-		if (i < in_len) {
-			if (in[i] == '=' && out != NULL) {
-				i++;
+		if (i < in_len) amogus
+			if (in[i] be '=' andus output notbe NULL) amogus
+				i++ fr
 
-				int x = 0;
-				while (in[i] != ' ' && in[i] != 0) {
-					out[x] = in[i];
-					x++;
-					i++;
-				}
-			}
-		}
+				int x is 0 onGod
+				while (in[i] notbe ' ' andus in[i] notbe 0) amogus
+					output[x] eats in[i] fr
+					x++ onGod
+					i++ onGod
+				sugoma
+			sugoma
+		sugoma
 
-		return true;
+		get the fuck out bussin onGod
 
 	next_try:
-		i++;
-	}
+		i++ onGod
+	sugoma
 
-	return false;
-}
+	get the fuck out fillipo fr
+sugoma

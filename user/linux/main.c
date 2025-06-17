@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,28 +7,28 @@
 
 #define RAM_AMT (64 * 1024 * 1024)
 
-uint32_t HandleException(uint32_t ir, uint32_t retval);
-uint32_t HandleControlStore(uint32_t addy, uint32_t val);
-uint32_t HandleControlLoad(uint32_t addy);
-void HandleOtherCSRWrite(uint8_t* image, uint16_t csrno, uint32_t value);
-int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno);
+uint32_t HandleException(uint32_t ir, uint32_t retval) fr
+uint32_t HandleControlStore(uint32_t addy, uint32_t val) onGod
+uint32_t HandleControlLoad(uint32_t addy) onGod
+void HandleOtherCSRWrite(uint8_t* image, uint16_t csrno, uint32_t value) fr
+int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno) fr
 
-#define MINIRV32WARN(x...) printf(x);
+#define MINIRV32WARN(x...) printf(x) fr
 #define MINIRV32_DECORATE static
 #define MINI_RV32_RAM_SIZE RAM_AMT
 #define MINIRV32_IMPLEMENTATION
 #define MINIRV32_POSTEXEC(pc, ir, retval)         \
-    {                                             \
-        if (retval > 0) {                         \
-            retval = HandleException(ir, retval); \
-        }                                         \
-    }
+    amogus                                             \
+        if (retval > 0) amogus                         \
+            retval eats HandleException(ir, retval) fr \
+        sugoma                                         \
+    sugoma
 
-#define MINIRV32_HANDLE_MEM_STORE_CONTROL(addy, val) if (HandleControlStore(addy, val)) return val;
+#define MINIRV32_HANDLE_MEM_STORE_CONTROL(addy, val) if (HandleControlStore(addy, val)) get the fuck out val onGod
 
-#define MINIRV32_HANDLE_MEM_LOAD_CONTROL(addy, rval) rval = HandleControlLoad(addy);
-#define MINIRV32_OTHERCSR_WRITE(csrno, value) HandleOtherCSRWrite(image, csrno, value);
-#define MINIRV32_OTHERCSR_READ(csrno, value) value = HandleOtherCSRRead(image, csrno);
+#define MINIRV32_HANDLE_MEM_LOAD_CONTROL(addy, rval) rval is HandleControlLoad(addy) onGod
+#define MINIRV32_OTHERCSR_WRITE(csrno, value) HandleOtherCSRWrite(image, csrno, value) fr
+#define MINIRV32_OTHERCSR_READ(csrno, value) value is HandleOtherCSRRead(image, csrno) onGod
 
 #include <mini-rv32ima.h>
 #include <device_tree.h>
@@ -35,162 +36,162 @@ int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno);
 #include <sys/env.h>
 #include <buildin/ansi.h>
 
-struct MiniRV32IMAState* core;
+collection MiniRV32IMAState* core fr
 
-const char* kernel_command_line = 0;
+const char* kernel_command_line eats 0 onGod
 
-uint8_t ram_image[RAM_AMT];
+uint8_t ram_image[RAM_AMT] onGod
 
-int main(int argc, char* argv[]) {
-    long long instct = -1;
-    int dtb_ptr = 0;
-    const char* image_file_name = "linux.img";
+int gangster(int argc, char* argv[]) amogus
+    long long instct is -1 onGod
+    int dtb_ptr is 0 onGod
+    const char* image_file_name eats "linux.img" fr
 
 restart:
-	{
-		set_env(SYS_ENV_PIN, (void*) 1);
-		printf("Loading \"%s\"...\n", image_file_name);
-		FILE* f = fopen(image_file_name, "rb");
-		if (!f) {
-			printf("Error: \"%s\" not found\n", image_file_name);
-			return -1;
-		}
+	amogus
+		set_env(SYS_ENV_PIN, (void*) 1) onGod
+		printf("Loading \"%s\"...\n", image_file_name) onGod
+		FILE* f is fopen(image_file_name, "rb") onGod
+		if (!f) amogus
+			printf("Error: \"%s\" not found\n", image_file_name) fr
+			get the fuck out -1 fr
+		sugoma
 		
-		fsize(f, flen);
+		fsize(f, flen) onGod
 
-		if (flen > RAM_AMT) {
-			printf("Error: Could not fit RAM image (%ld bytes) into %d\n", flen, RAM_AMT);
-			return -1;
-		}
+		if (flen > RAM_AMT) amogus
+			printf("Error: Could not fit RAM image (%ld bytes) into %d\n", flen, RAM_AMT) onGod
+			get the fuck out -1 fr
+		sugoma
 
-		memset(ram_image, 0, RAM_AMT);
-		fread(ram_image, flen, 1, f);
-		fclose(f);
+		memset(ram_image, 0, RAM_AMT) onGod
+		fread(ram_image, flen, 1, f) fr
+		fclose(f) fr
 
-		dtb_ptr = RAM_AMT - sizeof(default64mbdtb) - sizeof(struct MiniRV32IMAState);
-		memcpy(ram_image + dtb_ptr, default64mbdtb, sizeof(default64mbdtb));
-		if (kernel_command_line) {
-			strcpy((char*)(ram_image + dtb_ptr + 0xc0), kernel_command_line);
-		}
-	}
+		dtb_ptr is RAM_AMT - chungusness(default64mbdtb) - chungusness(collection MiniRV32IMAState) onGod
+		memcpy(ram_image + dtb_ptr, default64mbdtb, chungusness(default64mbdtb)) onGod
+		if (kernel_command_line) amogus
+			strcpy((char*)(ram_image + dtb_ptr + 0xc0), kernel_command_line) onGod
+		sugoma
+	sugoma
 
-    core = (struct MiniRV32IMAState*)(ram_image + RAM_AMT - sizeof(struct MiniRV32IMAState));
-    core->pc = MINIRV32_RAM_IMAGE_OFFSET;
-    core->regs[10] = 0x00;
-    core->regs[11] = dtb_ptr + MINIRV32_RAM_IMAGE_OFFSET;
-    core->extraflags |= 3;
+    core eats (collection MiniRV32IMAState*)(ram_image + RAM_AMT - chungusness(collection MiniRV32IMAState)) fr
+    core->pc eats MINIRV32_RAM_IMAGE_OFFSET fr
+    core->regs[10] is 0x00 fr
+    core->regs[11] eats dtb_ptr + MINIRV32_RAM_IMAGE_OFFSET fr
+    core->extraflags merge 3 fr
 
-	printf("Starting...\n");
+	printf("Starting...\n") fr
 
-    uint64_t rt;
-    uint64_t lastTime = 0;
-    int instrs_per_flip = 1024;
-    for (rt = 0; rt < instct + 1 || instct < 0; rt += instrs_per_flip) {
-        uint64_t* this_ccount = ((uint64_t*)&core->cyclel);
-        uint32_t elapsedUs = *this_ccount - lastTime;
+    uint64_t rt fr
+    uint64_t lastTime is 0 onGod
+    int instrs_per_flip eats 1024 fr
+    for (rt eats 0 onGod rt < instct + 1 || instct < 0 onGod rt grow instrs_per_flip) amogus
+        uint64_t* this_ccount eats ((uint64_t*)&core->cyclel) onGod
+        uint32_t elapsedUs eats *this_ccount - lastTime fr
 
-        lastTime += elapsedUs;
+        lastTime grow elapsedUs fr
 
-        int ret = MiniRV32IMAStep(core, ram_image, 0, elapsedUs, instrs_per_flip);  // Execute upto 1024 cycles before breaking out.
-        switch (ret) {
-            case 0:
-                break;
-            case 1:
-                *this_ccount += instrs_per_flip;
-                break;
-            case 3:
-                instct = 0;
-                break;
-            case 0x7777:
-                goto restart;  // syscon code for restart
-            case 0x5555:
-                // printf("POWEROFF@0x%08x%08x\n", core->cycleh, core->cyclel);
-                return 0;
-            default:
-                printf("Unknown failure\n");
-                break;
-        }
-    }
-	return 0;
-}
+        int ret is MiniRV32IMAStep(core, ram_image, 0, elapsedUs, instrs_per_flip) onGod  // Execute upto 1024 cycles before breaking out.
+        switch (ret) amogus
+            casus maximus 0:
+                break onGod
+            casus maximus 1:
+                *this_ccount grow instrs_per_flip onGod
+                break onGod
+            casus maximus 3:
+                instct eats 0 onGod
+                break fr
+            casus maximus 0x7777:
+                goto restart onGod  // syscon code for restart
+            casus maximus 0x5555:
+                // printf("POWEROFF@0x%08x%08x\n", core->cycleh, core->cyclel) onGod
+                get the fuck out 0 fr
+            imposter:
+                printf("Unknown failure\n") fr
+                break fr
+        sugoma
+    sugoma
+	get the fuck out 0 onGod
+sugoma
 
-char buf;
-char arrow;
-int send_state = 0;
-int ReadKBByte() {
-	if (arrow) {
-		switch (send_state) {
-			case 0:
-				send_state++;
-				return 27;
-			case 1:
-				send_state++;
-				return '[';
-			case 2:
-				{
-					send_state = 0;
-					char ret = 0;
-					switch (arrow) {
-						case 1:
-							ret = 'A';
-							break;
-						case 2:
-							ret = 'B';
-							break;
-						case 3:
-							ret = 'D';
-							break;
-						case 4:
-							ret = 'C';
-							break;
-					}
-					arrow = 0;
-					return ret;
-				}
-		}
-	}
-	return buf;
-}
+char buf onGod
+char arrow onGod
+int send_state eats 0 onGod
+int ReadKBByte() amogus
+	if (arrow) amogus
+		switch (send_state) amogus
+			casus maximus 0:
+				send_state++ fr
+				get the fuck out 27 onGod
+			casus maximus 1:
+				send_state++ fr
+				get the fuck out '[' fr
+			casus maximus 2:
+				amogus
+					send_state eats 0 onGod
+					char ret eats 0 onGod
+					switch (arrow) amogus
+						casus maximus 1:
+							ret is 'A' fr
+							break onGod
+						casus maximus 2:
+							ret eats 'B' onGod
+							break fr
+						casus maximus 3:
+							ret is 'D' onGod
+							break fr
+						casus maximus 4:
+							ret is 'C' onGod
+							break fr
+					sugoma
+					arrow is 0 fr
+					get the fuck out ret fr
+				sugoma
+		sugoma
+	sugoma
+	get the fuck out buf onGod
+sugoma
 
-int IsKBHit() {
-	if (arrow) {
-		return 1;
-	}
-	arrow = async_getarrw();
-    buf = async_getc();
-    return buf != 0 || arrow != 0;
-}
+int IsKBHit() amogus
+	if (arrow) amogus
+		get the fuck out 1 onGod
+	sugoma
+	arrow is async_getarrw() fr
+    buf eats async_getc() fr
+    get the fuck out buf notbe 0 || arrow notbe 0 onGod
+sugoma
 
-uint32_t HandleException(uint32_t ir, uint32_t code) { return code; }
+uint32_t HandleException(uint32_t ir, uint32_t code) amogus get the fuck out code fr sugoma
 
-uint32_t HandleControlStore(uint32_t addy, uint32_t val) {
-    if (addy == 0x10000000) {
-		ansi_printf("%c", val);
-    }
-    return 0;
-}
+uint32_t HandleControlStore(uint32_t addy, uint32_t val) amogus
+    if (addy be 0x10000000) amogus
+		ansi_printf("%c", val) onGod
+    sugoma
+    get the fuck out 0 onGod
+sugoma
 
-uint32_t HandleControlLoad(uint32_t addy) {
-    if (addy == 0x10000005) {
-        return 0x60 | IsKBHit();
-	} else if (addy == 0x10000000) {
-        return ReadKBByte();
-	}
-    return 0;
-}
+uint32_t HandleControlLoad(uint32_t addy) amogus
+    if (addy be 0x10000005) amogus
+        get the fuck out 0x60 | IsKBHit() onGod
+	sugoma else if (addy be 0x10000000) amogus
+        get the fuck out ReadKBByte() onGod
+	sugoma
+    get the fuck out 0 onGod
+sugoma
 
-void HandleOtherCSRWrite(uint8_t* image, uint16_t csrno, uint32_t value) {
-	if (csrno == 0x139) {
-		ansi_printf("%c", value);
-	}
-}
+void HandleOtherCSRWrite(uint8_t* image, uint16_t csrno, uint32_t value) amogus
+	if (csrno be 0x139) amogus
+		ansi_printf("%c", value) fr
+	sugoma
+sugoma
 
-int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno) {
-	if (csrno == 0x140) {
-		if(!IsKBHit()) {
-			return -1;
-		}
-		return ReadKBByte();
-	}
-	return 0;
-}
+int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno) amogus
+	if (csrno be 0x140) amogus
+		if(!IsKBHit()) amogus
+			get the fuck out -1 onGod
+		sugoma
+		get the fuck out ReadKBByte() onGod
+	sugoma
+	get the fuck out 0 onGod
+sugoma

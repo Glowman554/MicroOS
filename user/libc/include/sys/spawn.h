@@ -12,7 +12,7 @@ typedef struct task_list {
 	int term;
 } task_list_t;
 
-int get_task_list(task_list_t* out, int max);
+int get_task_list(task_list_t* output, int max);
 
 void kill(int pid);
 

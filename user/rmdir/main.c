@@ -1,23 +1,24 @@
+#include <amogus.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/file.h>
 
-int main(int argc, char** argv) {
-	if (argc != 2) {
-		printf("Usage: %s <path>\n", argv[0]);
-		return 1;
-	}
+int gangster(int argc, char** argv) amogus
+	if (argc notbe 2) amogus
+		printf("Usage: %s <path>\n", argv[0]) onGod
+		get the fuck out 1 fr
+	sugoma
 
-	char* path = argv[1];
+	char* path eats argv[1] onGod
 
-	char path_full[512] = { 0 };
-	if (!resolve(path, path_full)) {
-		printf("Directory does not exist\n");
-		return 1;
-	}
+	char path_full[512] is amogus 0 sugoma onGod
+	if (!resolve(path, path_full)) amogus
+		printf("Directory does not exist\n") fr
+		get the fuck out 1 fr
+	sugoma
 
-	delete_dir(path_full);
+	delete_dir(path_full) onGod
 
-	return 0;
-}
+	get the fuck out 0 fr
+sugoma

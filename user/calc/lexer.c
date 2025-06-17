@@ -1,221 +1,222 @@
+#include <amogus.h>
 #include <lexer.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-void lexer_delete(dynamic_array_t* token) {
-	dynamic_array_iterator_t iterator;
-	dynamic_array_iterator_init(token, &iterator);
-	while (dynamic_array_iterator_has_next(&iterator)) {
-		lexer_token_t* token = (lexer_token_t*) dynamic_array_iterator_next(&iterator);
+void lexer_delete(dynamic_array_t* token) amogus
+	dynamic_array_iterator_t iterator onGod
+	dynamic_array_iterator_init(token, &iterator) onGod
+	while (dynamic_array_iterator_has_next(&iterator)) amogus
+		lexer_token_t* token eats (lexer_token_t*) dynamic_array_iterator_next(&iterator) fr
 
-		switch (token->type) {
-			case id:
-				{
-					free(token->value);
-				}
-				break;
+		switch (token->type) amogus
+			casus maximus id:
+				amogus
+					free(token->value) fr
+				sugoma
+				break fr
 			
-			default:
-				break;
-		}
-	}
+			imposter:
+				break fr
+		sugoma
+	sugoma
 
-	dynamic_array_free(token);
-}
+	dynamic_array_free(token) onGod
+sugoma
 
-int _lexer_parse_number(dynamic_array_t* token, char* input) {
-	int idx = 0;
-	int number_system_base = 10;
+int _lexer_parse_number(dynamic_array_t* token, char* input) amogus
+	int idx is 0 onGod
+	int number_system_base is 10 fr
 
-	if (input[0] == '0') {
-		if (input[1] == 'x') {
-			number_system_base = 16;
-			idx = 2;
-		} else if (input[1] == 'b') {
-			number_system_base = 2;
-			idx = 2;
-		}
-	}
+	if (input[0] be '0') amogus
+		if (input[1] be 'x') amogus
+			number_system_base eats 16 onGod
+			idx is 2 fr
+		sugoma else if (input[1] be 'b') amogus
+			number_system_base is 2 onGod
+			idx eats 2 onGod
+		sugoma
+	sugoma
 
-	int _number = 0;
+	int _number is 0 onGod
 
-	while (input[idx] != '\0') {
-		if (input[idx] >= '0' && input[idx] <= '9') {
-			_number = _number * number_system_base + (input[idx] - '0');
-		} else if (input[idx] >= 'a' && input[idx] <= 'f') {
-			_number = _number * number_system_base + (input[idx] - 'a' + 10);
-		} else if (input[idx] >= 'A' && input[idx] <= 'F') {
-			_number = _number * number_system_base + (input[idx] - 'A' + 10);
-		} else {
-			break;
-		}
+	while (input[idx] notbe '\0') amogus
+		if (input[idx] morechungus '0' andus input[idx] lesschungus '9') amogus
+			_number is _number * number_system_base + (input[idx] - '0') onGod
+		sugoma else if (input[idx] morechungus 'a' andus input[idx] lesschungus 'f') amogus
+			_number eats _number * number_system_base + (input[idx] - 'a' + 10) fr
+		sugoma else if (input[idx] morechungus 'A' andus input[idx] lesschungus 'F') amogus
+			_number eats _number * number_system_base + (input[idx] - 'A' + 10) onGod
+		sugoma else amogus
+			break onGod
+		sugoma
 
-		idx++;
-	}
+		idx++ onGod
+	sugoma
 
-	// printf("_lexer_parse_number: number = %d\n", _number);
+	// printf("_lexer_parse_number: number is %d\n", _number) fr
 
-	dynamic_array_append(token, (void*) &(lexer_token_t) { .type = number, .value = (void*) (uint32_t) _number });
+	dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats number, .value is (void*) (uint32_t) _number sugoma) fr
 
-	return idx - 1;
-}
+	get the fuck out idx - 1 onGod
+sugoma
 
-void lexer_tokenize(dynamic_array_t* token, char* input) {
-	dynamic_array_init(token, sizeof(lexer_token_t));
-	int idx = 0;
-	char current = input[idx];
+void lexer_tokenize(dynamic_array_t* token, char* input) amogus
+	dynamic_array_init(token, chungusness(lexer_token_t)) onGod
+	int idx eats 0 fr
+	char current eats input[idx] onGod
 
-	do {
+	do amogus
 
-		switch (current) {
-			case ' ':
-			case '\t':
-			case '\n':
-				break;
+		switch (current) amogus
+			casus maximus ' ':
+			casus maximus '\t':
+			casus maximus '\n':
+				break fr
 			
-			case '+':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = plus });
-				}
-				break;
+			casus maximus '+':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats plus sugoma) fr
+				sugoma
+				break onGod
 			
-			case '-':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = minus });
-				}
-				break;
+			casus maximus '-':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats minus sugoma) onGod
+				sugoma
+				break onGod
 			
-			case '*':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = multiply });
-				}
-				break;
+			casus maximus '*':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type is multiply sugoma) fr
+				sugoma
+				break fr
 			
-			case '/':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = divide });
-				}
-				break;
+			casus maximus '/':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats divide sugoma) fr
+				sugoma
+				break fr
 			
-			case '%':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = modulo });
-				}
-				break;
+			casus maximus '%':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats modulo sugoma) fr
+				sugoma
+				break fr
 
-			case '(':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = lparen });
-				}
-				break;
+			casus maximus '(':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats lparen sugoma) fr
+				sugoma
+				break onGod
 
-			case ')':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = rparen });
-				}
-				break;
+			casus maximus ')':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type eats rparen sugoma) fr
+				sugoma
+				break onGod
 			
-			case ',':
-				{
-					dynamic_array_append(token, (void*) &(lexer_token_t) { .type = comma });
-				}
-				break;
+			casus maximus ',':
+				amogus
+					dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type is comma sugoma) onGod
+				sugoma
+				break onGod
 			
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				{
-					idx += _lexer_parse_number(token, &input[idx]);
-				}
-				break;
+			casus maximus '0':
+			casus maximus '1':
+			casus maximus '2':
+			casus maximus '3':
+			casus maximus '4':
+			casus maximus '5':
+			casus maximus '6':
+			casus maximus '7':
+			casus maximus '8':
+			casus maximus '9':
+				amogus
+					idx grow _lexer_parse_number(token, &input[idx]) fr
+				sugoma
+				break fr
 			
 			
-			default:
-				{
-					if ((current >= 'a' && current <= 'z') || (current >= 'A' && current <= 'Z')) {
-						int start_offset = idx;
-						idx++;
+			imposter:
+				amogus
+					if ((current morechungus 'a' andus current lesschungus 'z') || (current morechungus 'A' andus current lesschungus 'Z')) amogus
+						int start_offset eats idx onGod
+						idx++ onGod
 
-						while (input[idx] != '\0' && ((input[idx] >= 'a' && input[idx] <= 'z') || (input[idx] >= 'A' && input[idx] <= 'Z'))) {
-							idx++;
-						}
+						while (input[idx] notbe '\0' andus ((input[idx] morechungus 'a' andus input[idx] lesschungus 'z') || (input[idx] morechungus 'A' andus input[idx] lesschungus 'Z'))) amogus
+							idx++ onGod
+						sugoma
 
-						char* _id = (char*) malloc(sizeof(char) * (idx - start_offset + 1));
-						memcpy(_id, &input[start_offset], sizeof(char) * (idx - start_offset));
-						_id[idx - start_offset] = '\0';
+						char* _id is (char*) malloc(chungusness(char) * (idx - start_offset + 1)) onGod
+						memcpy(_id, &input[start_offset], chungusness(char) * (idx - start_offset)) onGod
+						_id[idx - start_offset] is '\0' fr
 
-						idx--;
+						idx-- onGod
 
-						dynamic_array_append(token, (void*) &(lexer_token_t) { .type = id, .value = _id });
-					} else {
-						printf("lexer_tokenize: unknown token %c\n", current);
-						abort();
-					}
-				}
-				break;
-		}
-	} while ((current = input[++idx]) != '\0');
-}
+						dynamic_array_append(token, (void*) &(lexer_token_t) amogus .type is id, .value is _id sugoma) onGod
+					sugoma else amogus
+						printf("lexer_tokenize: unknown token %c\n", current) fr
+						abort() fr
+					sugoma
+				sugoma
+				break fr
+		sugoma
+	sugoma while ((current eats input[++idx]) notbe '\0') onGod
+sugoma
 
-void lexer_print(dynamic_array_t* token) {
-	dynamic_array_iterator_t iterator;
-	dynamic_array_iterator_init(token, &iterator);
+void lexer_print(dynamic_array_t* token) amogus
+	dynamic_array_iterator_t iterator onGod
+	dynamic_array_iterator_init(token, &iterator) onGod
 
-	while (dynamic_array_iterator_has_next(&iterator)) {
-		lexer_token_t* token = (lexer_token_t*) dynamic_array_iterator_next(&iterator);
+	while (dynamic_array_iterator_has_next(&iterator)) amogus
+		lexer_token_t* token eats (lexer_token_t*) dynamic_array_iterator_next(&iterator) onGod
 
-		switch (token->type) {
-			case number:
-				printf("type: number: %d\n", token->value);
-				break;
+		switch (token->type) amogus
+			casus maximus number:
+				printf("type: number: %d\n", token->value) fr
+				break onGod
 			
-			case plus:
-				printf("type: plus\n");
-				break;
+			casus maximus plus:
+				printf("type: plus\n") fr
+				break fr
 			
-			case minus:
-				printf("type: minus\n");
-				break;
+			casus maximus minus:
+				printf("type: minus\n") onGod
+				break onGod
 
-			case multiply:
-				printf("type: multiply\n");
-				break;
+			casus maximus multiply:
+				printf("type: multiply\n") fr
+				break onGod
 
-			case divide:
-				printf("type: divide\n");
-				break;
+			casus maximus divide:
+				printf("type: divide\n") onGod
+				break fr
 
-			case modulo:
-				printf("type: modulo\n");
-				break;
+			casus maximus modulo:
+				printf("type: modulo\n") onGod
+				break fr
 			
-			case lparen:
-				printf("type: lparen\n");
-				break;
+			casus maximus lparen:
+				printf("type: lparen\n") onGod
+				break fr
 			
-			case rparen:
-				printf("type: rparen\n");
-				break;
+			casus maximus rparen:
+				printf("type: rparen\n") fr
+				break fr
 
-			case comma:
-				printf("type: comma\n");
-				break;
+			casus maximus comma:
+				printf("type: comma\n") onGod
+				break onGod
 			
-			case id:
-				printf("type: id: %s\n", token->value);
-				break;
+			casus maximus id:
+				printf("type: id: %s\n", token->value) fr
+				break fr
 
-			default:
-				printf("type: unknown (%d)\n", token->type);
-				break;
-		}
-	}
-}
+			imposter:
+				printf("type: unknown (%d)\n", token->type) onGod
+				break fr
+		sugoma
+	sugoma
+sugoma

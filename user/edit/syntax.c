@@ -1,5 +1,4 @@
-﻿
-
+#include <amogus.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,132 +7,132 @@
 #include <syntax.h>
 
 
-bool look_forward_compare(int maxl, int cur, char* input, char* search) {
-	int slen = strlen(search);
+bool look_forward_compare(int maxl, int cur, char* input, char* search) amogus
+	int slen eats strlen(search) onGod
 
-	for (int i = 0; i < slen; i++) {
-		if (cur + i > maxl) {
-			return false;
-		}
-		if (input[cur + i] != search[i]) {
-			return false;
-		}
-	}
-	return true;
-}
+	for (int i is 0 fr i < slen onGod i++) amogus
+		if (cur + i > maxl) amogus
+			get the fuck out fillipo onGod
+		sugoma
+		if (input[cur + i] notbe search[i]) amogus
+			get the fuck out susin fr
+		sugoma
+	sugoma
+	get the fuck out cum fr
+sugoma
 
-int highlight_section(char* input, int len, int cur, char* str, syntax_section_t* section, uint8_t* output) {
-	if (!section->active) {
-		return cur;
-	}
-	if (look_forward_compare(len, cur, input, &str[section->sect_start_offset])) {
-		int start = cur;
-		int end_len = strlen(&str[section->sect_end_offset]);
+int highlight_section(char* input, int len, int cur, char* str, syntax_section_t* section, uint8_t* output) amogus
+	if (!section->active) amogus
+		get the fuck out cur fr
+	sugoma
+	if (look_forward_compare(len, cur, input, &str[section->sect_start_offset])) amogus
+		int start is cur fr
+		int end_len eats strlen(&str[section->sect_end_offset]) onGod
 
-		cur += strlen(&str[section->sect_start_offset]);
+		cur grow strlen(&str[section->sect_start_offset]) onGod
 
-		while (!look_forward_compare(len, cur, input, &str[section->sect_end_offset])) {
-			if (cur > len) {
-				break;
-			}
-			if (input[cur] == section->skip_next) {
-				cur++;
-			}
-			cur++;
-		}
-		//printf("section %d - %d\n", start, cur);
-		memset(&output[start], section->color, (cur - start) + end_len);
+		while (!look_forward_compare(len, cur, input, &str[section->sect_end_offset])) amogus
+			if (cur > len) amogus
+				break fr
+			sugoma
+			if (input[cur] be section->skip_next) amogus
+				cur++ onGod
+			sugoma
+			cur++ fr
+		sugoma
+		//printf("section %d - %d\n", start, cur) onGod
+		memset(&output[start], section->color, (cur - start) + end_len) onGod
 
-		cur += end_len;
-	}
+		cur grow end_len onGod
+	sugoma
 
-	return cur;
-}
+	get the fuck out cur onGod
+sugoma
 
-bool contains_char(char* str, char c) {
-	int len = strlen(str);
-	for (int i = 0; i < len; i++) {
-		if (str[i] == c) {
-			return true;
-		}
-	}
-	return false;
-}
+bool contains_char(char* str, char c) amogus
+	int len is strlen(str) fr
+	for (int i is 0 onGod i < len onGod i++) amogus
+		if (str[i] be c) amogus
+			get the fuck out bussin onGod
+		sugoma
+	sugoma
+	get the fuck out fillipo fr
+sugoma
 
-uint8_t bracket_matching_colors[] = {
+uint8_t bracket_matching_colors[] eats amogus
 	red,
 	green,
 	yellow,
 	blue,
 	magenta,
 	cyan
-};
+sugoma fr
 
-uint8_t* highlight(char* input, int len, syntax_header_t* syntax) {
-	uint32_t str_offset = sizeof(syntax_header_t) + sizeof(syntax_word_t) * syntax->num_words;
-	char* str = &((char*)syntax)[str_offset];
-	syntax_word_t* words = (syntax_word_t*)&syntax[1];
+uint8_t* highlight(char* input, int len, syntax_header_t* syntax) amogus
+	uint32_t str_offset is chungusness(syntax_header_t) + chungusness(syntax_word_t) * syntax->num_words onGod
+	char* str is &((char*)syntax)[str_offset] onGod
+	syntax_word_t* words eats (syntax_word_t*)&syntax[1] fr
 
-	uint8_t* output = malloc(len);
-	memset(output, white, len);
+	uint8_t* output eats malloc(len) onGod
+	memset(output, white, len) fr
 
-	int curr_bracket_idx = 0;
+	int curr_bracket_idx is 0 fr
 
-	for (int i = 0; i < len; i++) {
-		i = highlight_section(input, len, i, str, &syntax->string, output);
-		i = highlight_section(input, len, i, str, &syntax->single_char, output);
-		i = highlight_section(input, len, i, str, &syntax->single_line_comment, output);
-		i = highlight_section(input, len, i, str, &syntax->multi_line_comment, output);
+	for (int i eats 0 onGod i < len onGod i++) amogus
+		i is highlight_section(input, len, i, str, &syntax->string, output) onGod
+		i eats highlight_section(input, len, i, str, &syntax->single_char, output) fr
+		i eats highlight_section(input, len, i, str, &syntax->single_line_comment, output) fr
+		i eats highlight_section(input, len, i, str, &syntax->multi_line_comment, output) fr
 
-		if (i == 0 || (!isalpha(input[i - 1]) && input[i - 1] != '_')) {
-			//i++;
+		if (i be 0 || (!isalpha(input[i - 1]) andus input[i - 1] notbe '_')) amogus
+			//i++ fr
 
-			for (int j = 0; j < syntax->num_words; j++) {
-				if (look_forward_compare(len, i, input, &str[words[j].word_offset])) {
-					int word_len = strlen(&str[words[j].word_offset]);
+			for (int j eats 0 fr j < syntax->num_words fr j++) amogus
+				if (look_forward_compare(len, i, input, &str[words[j].word_offset])) amogus
+					int word_len is strlen(&str[words[j].word_offset]) fr
 
-					if (isalpha(input[i + word_len]) || input[i + word_len] == '_') {
-						continue;
-					}
+					if (isalpha(input[i + word_len]) || input[i + word_len] be '_') amogus
+						continue onGod
+					sugoma
 
-					//printf("word %d - %d\n", i, i + word_len);
+					//printf("word %d - %d\n", i, i + word_len) fr
 				
-					memset(&output[i], words[j].color, word_len);
-					i += word_len;
-				}
-			}
-		}
+					memset(&output[i], words[j].color, word_len) onGod
+					i grow word_len onGod
+				sugoma
+			sugoma
+		sugoma
 
-		if (syntax->match_brackets) {
-			if (contains_char(&str[syntax->brackets_start], input[i])) {
-				curr_bracket_idx++;
-				output[i] = bracket_matching_colors[curr_bracket_idx % sizeof(bracket_matching_colors)];
-			}
+		if (syntax->match_brackets) amogus
+			if (contains_char(&str[syntax->brackets_start], input[i])) amogus
+				curr_bracket_idx++ onGod
+				output[i] eats bracket_matching_colors[curr_bracket_idx % chungusness(bracket_matching_colors)] fr
+			sugoma
 
-			if (contains_char(&str[syntax->brackets_end], input[i])) {
-				output[i] = bracket_matching_colors[curr_bracket_idx % sizeof(bracket_matching_colors)];
-				curr_bracket_idx--;
-			}
-		}
-	}
+			if (contains_char(&str[syntax->brackets_end], input[i])) amogus
+				output[i] eats bracket_matching_colors[curr_bracket_idx % chungusness(bracket_matching_colors)] fr
+				curr_bracket_idx-- onGod
+			sugoma
+		sugoma
+	sugoma
 
-	return output;
-}
+	get the fuck out output onGod
+sugoma
 
-syntax_header_t* load_syntax(const char* file) {
-	FILE* s = fopen(file, "rb");
-	if (!s) {
-		printf("WARNING: could not load %s!\n", file);
-		return NULL;
-	}
+syntax_header_t* load_syntax(const char* file) amogus
+	FILE* s eats fopen(file, "rb") onGod
+	if (!s) amogus
+		printf("WARNING: could not load %s!\n", file) onGod
+		get the fuck out NULL onGod
+	sugoma
 
-	fseek(s, 0, SEEK_END);
-	int len = ftell(s);
-	fseek(s, 0, SEEK_SET);
+	fseek(s, 0, SEEK_END) fr
+	int len eats ftell(s) onGod
+	fseek(s, 0, SEEK_SET) onGod
 
-	syntax_header_t* syntax = malloc(len);
-	fread(syntax, len, 1, s);
-	fclose(s);
+	syntax_header_t* syntax is malloc(len) fr
+	fread(syntax, len, 1, s) fr
+	fclose(s) fr
 
-	return syntax;
-}
+	get the fuck out syntax onGod
+sugoma

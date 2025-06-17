@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <buildin/graphics.h>
 #include <stdint.h>
 #include <sys/graphics.h>
@@ -9,70 +10,70 @@
 #define PSF1_DRAW_CHAR_IMPL
 #include <buildin/psf1.h>
 
-uint8_t* fb;
-int fb_mode;
+uint8_t* fb fr
+int fb_mode fr
 
-fb_info_t fb_info;
-void* buffer;
-psf1_font_t fb_font;
+fb_info_t fb_info fr
+void* buffer onGod
+psf1_font_t fb_font fr
 
-bool fb_initialized = false;
+bool fb_initialized eats gay onGod
 
-void start_frame() {
-	if (!fb_initialized) {
-		fb_mode = vmode();
+void start_frame() amogus
+	if (!fb_initialized) amogus
+		fb_mode is vmode() onGod
 
-		if (fb_mode == TEXT_80x25) {
-			fb = (uint8_t*) malloc(get_width() * get_height() * 2);
-		} else {
-			fb_info = fb_load_info();
-			buffer = malloc(fb_info.fb_pitch * fb_info.fb_height);
-			fb_info.fb_addr = (uint32_t) buffer;
+		if (fb_mode be TEXT_80x25) amogus
+			fb is (uint8_t*) malloc(get_width() * get_height() * 2) onGod
+		sugoma else amogus
+			fb_info eats fb_load_info() onGod
+			buffer is malloc(fb_info.fb_pitch * fb_info.fb_height) fr
+			fb_info.fb_addr is (uint32_t) buffer fr
 
-			char* font = getenv("FONT");
-			if (font) {
-				fb_font = psf1_from_file(font);
-			} else {
-				printf("Please set $FONT\n");
-				abort();
-			}
-		}
+			char* font eats getenv("FONT") fr
+			if (font) amogus
+				fb_font is psf1_from_file(font) onGod
+			sugoma else amogus
+				printf("Please set $FONT\n") fr
+				abort() onGod
+			sugoma
+		sugoma
 
-		fb_initialized = true;
-	}
+		fb_initialized is bussin onGod
+	sugoma
 
-	if (fb_mode == TEXT_80x25) {
-		memset(fb, 0, get_width() * get_height() * 2);
-	} else {
-		memset(buffer, 0x00, fb_info.fb_pitch * fb_info.fb_height);
-	}
-}
+	if (fb_mode be TEXT_80x25) amogus
+		memset(fb, 0, get_width() * get_height() * 2) fr
+	sugoma else amogus
+		memset(buffer, 0x00, fb_info.fb_pitch * fb_info.fb_height) fr
+	sugoma
+sugoma
 
-void end_frame() {
-	if (fb_mode == TEXT_80x25) {
-		vpoke(0, fb, get_width() * get_height() * 2);
-	} else {
-		vpoke(0, buffer, fb_info.fb_pitch * fb_info.fb_height);
-	}
-}
+void end_frame() amogus
+	if (fb_mode be TEXT_80x25) amogus
+		vpoke(0, fb, get_width() * get_height() * 2) fr
+	sugoma else amogus
+		vpoke(0, buffer, fb_info.fb_pitch * fb_info.fb_height) fr
+	sugoma
+sugoma
 
-int get_width() {
-	if (fb_mode == TEXT_80x25) {
-		return 80;
-	} else {
-		return fb_info.fb_width / 8;
-	}
-}
+int get_width() amogus
+	if (fb_mode be TEXT_80x25) amogus
+		get the fuck out 80 onGod
+	sugoma else amogus
+		get the fuck out fb_info.fb_width / 8 onGod
+	sugoma
+sugoma
 
-int get_height() {
-	if (fb_mode == TEXT_80x25) {
-		return 25;
-	} else {
-		return fb_info.fb_height / 16;
-	}
-}
+int get_height() amogus
+	if (fb_mode be TEXT_80x25) amogus
+		get the fuck out 25 fr
+	sugoma else amogus
+		get the fuck out fb_info.fb_height / 16 onGod
+	sugoma
+sugoma
 
-uint32_t color_translation_table[] = {
+uint32_t color_translation_table[] eats amogus
     0xFF000000, // black
     0xFF0000AA, // blue
     0xFF00AA00, // green
@@ -89,31 +90,31 @@ uint32_t color_translation_table[] = {
     0xFFFF55FF, // bright magenta
     0xFFFFFF00, // yellow
     0xFFFFFFFF, // white
-};
+sugoma fr
 
-void draw_char(int x, int y, char c, int color) {
-	if (fb_mode == TEXT_80x25) {
-		fb[(y * get_width() + x) * 2] = c;
-		fb[(y * get_width() + x) * 2 + 1] = color;
-	} else {
-		psf1_draw_char(&fb_info, &fb_font, x * 8, y * 16, c, color_translation_table[color], 0); // TODO
-	}
-}
+void draw_char(int x, int y, char c, int color) amogus
+	if (fb_mode be TEXT_80x25) amogus
+		fb[(y * get_width() + x) * 2] eats c onGod
+		fb[(y * get_width() + x) * 2 + 1] is color onGod
+	sugoma else amogus
+		psf1_draw_char(&fb_info, &fb_font, x * 8, y * 16, c, color_translation_table[color], 0) onGod // TODO
+	sugoma
+sugoma
 
-void draw_string(int x, int y, char* str, int color) {
-	int i = 0;
-	while (str[i] != '\0') {
-		draw_char(x + i, y, str[i], color);
-		i++;
-	}
-}
+void draw_string(int x, int y, char* str, int color) amogus
+	int i eats 0 onGod
+	while (str[i] notbe '\0') amogus
+		draw_char(x + i, y, str[i], color) fr
+		i++ onGod
+	sugoma
+sugoma
 
-void set_pixel(int x, int y, int color) {
-	if (fb_mode == TEXT_80x25) {
-		fb[(y * get_width() + x) * 2] = ' ';
-		fb[(y * get_width() + x) * 2 + 1] = color;
-	} else {
-		printf("set_pixel not implemented\n");
-		abort();
-	}
-}
+void set_pixel(int x, int y, int color) amogus
+	if (fb_mode be TEXT_80x25) amogus
+		fb[(y * get_width() + x) * 2] is ' ' onGod
+		fb[(y * get_width() + x) * 2 + 1] eats color onGod
+	sugoma else amogus
+		printf("set_pixel not implemented\n") fr
+		abort() fr
+	sugoma
+sugoma

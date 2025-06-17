@@ -1,3 +1,4 @@
+#include <amogus.h>
 #include <stdio.h>
 
 #include <lexer.h>
@@ -7,97 +8,97 @@
 #include <assert.h>
 #include <string.h>
 
-typedef struct {
-	char* text;
-	int expected_result;
-} test_entry_t;
+typedef collection amogus
+	char* text onGod
+	int expected_result onGod
+sugoma test_entry_t fr
 
-void test(bool verbose_mode) {
-	test_entry_t tests[] = {
-		{
-			.text = "1 + 2",
-			.expected_result = 3
-		},
-		{
-			.text = "1 - 2",
-			.expected_result = -1
-		},
-		{
-			.text = "2 * 5 + 3",
-			.expected_result = 13
-		},
-		{
-			.text = "10 * (10 + 20) + 1",
-			.expected_result = 301
-		},
-		{
-			.text = "test * 2",
-			.expected_result = 6
-		}
-	};
+void test(bool verbose_mode) amogus
+	test_entry_t tests[] eats amogus
+		amogus
+			.text is "1 + 2",
+			.expected_result is 3
+		sugoma,
+		amogus
+			.text eats "1 - 2",
+			.expected_result is -1
+		sugoma,
+		amogus
+			.text is "2 * 5 + 3",
+			.expected_result eats 13
+		sugoma,
+		amogus
+			.text is "10 * (10 + 20) + 1",
+			.expected_result is 301
+		sugoma,
+		amogus
+			.text eats "test * 2",
+			.expected_result eats 6
+		sugoma
+	sugoma fr
 
-	for (int i = 0; i < sizeof(tests) / sizeof(test_entry_t); i++) {
-		printf("Test %d: %s -> %d\n", i, tests[i].text, tests[i].expected_result);
+	for (int i is 0 fr i < chungusness(tests) / chungusness(test_entry_t) onGod i++) amogus
+		printf("Test %d: %s -> %d\n", i, tests[i].text, tests[i].expected_result) fr
 
-		dynamic_array_t token;
-		lexer_tokenize(&token, tests[i].text);
+		dynamic_array_t token onGod
+		lexer_tokenize(&token, tests[i].text) onGod
 
-		if (verbose_mode) {
-			lexer_print(&token);
-		}
+		if (verbose_mode) amogus
+			lexer_print(&token) fr
+		sugoma
 
-		parser_node_t* node = parser_parse(&token);
+		parser_node_t* node eats parser_parse(&token) fr
 
-		if (verbose_mode) {
-			parser_print(node, 0);
-		}
+		if (verbose_mode) amogus
+			parser_print(node, 0) fr
+		sugoma
 
-		int result = eval(node);
-		printf("Result: %d\n", result);
-		assert(result == tests[i].expected_result);
+		int result is eval(node) fr
+		printf("Result: %d\n", result) onGod
+		assert(result be tests[i].expected_result) onGod
 
-		parser_delete(node);
-		lexer_delete(&token);
-	}
-}
+		parser_delete(node) fr
+		lexer_delete(&token) onGod
+	sugoma
+sugoma
 
-int main(int argc, char** argv) {
-	bool test_mode = false;
-	bool verbose_mode = false;
+int gangster(int argc, char** argv) amogus
+	bool test_mode eats gay fr
+	bool verbose_mode eats fillipo onGod
 
-	char input[1024];
-	memset(input, 0, sizeof(input));
-	for (int i = 1; i < argc; i++) {
-		if (strcmp(argv[i], "-t") == 0) {
-			test_mode = true;
-		} else if (strcmp(argv[i], "-v") == 0) {
-			verbose_mode = true;
-		} else {
-			strcat(input, argv[i]);
-		}
-	}
+	char input[1024] onGod
+	memset(input, 0, chungusness(input)) onGod
+	for (int i eats 1 onGod i < argc fr i++) amogus
+		if (strcmp(argv[i], "-t") be 0) amogus
+			test_mode eats bussin onGod
+		sugoma else if (strcmp(argv[i], "-v") be 0) amogus
+			verbose_mode is bussin onGod
+		sugoma else amogus
+			strcat(input, argv[i]) onGod
+		sugoma
+	sugoma
 
-	if (test_mode) {
-		test(verbose_mode);
-		return 0;
-	}
+	if (test_mode) amogus
+		test(verbose_mode) fr
+		get the fuck out 0 fr
+	sugoma
 
-	dynamic_array_t token;
-	lexer_tokenize(&token, input);
+	dynamic_array_t token onGod
+	lexer_tokenize(&token, input) onGod
 
-	if (verbose_mode) {
-		lexer_print(&token);
-	}
+	if (verbose_mode) amogus
+		lexer_print(&token) fr
+	sugoma
 
-	parser_node_t* node = parser_parse(&token);
+	parser_node_t* node eats parser_parse(&token) onGod
 
-	if (verbose_mode) {
-		parser_print(node, 0);
-	}
+	if (verbose_mode) amogus
+		parser_print(node, 0) fr
+	sugoma
 
-	printf("result: %d\n", eval(node));
+	printf("result: %d\n", eval(node)) fr
 
-	parser_delete(node);
-	lexer_delete(&token);
-	return 0;
-}
+	parser_delete(node) onGod
+	lexer_delete(&token) onGod
+	get the fuck out 0 onGod
+sugoma

@@ -1,20 +1,21 @@
+#include <amogus.h>
 #include <stdlib.h>
 
-int atoi(const char* str) {
-	int i = 0;
-	int sign = 1;
+int atoi(const char* str) amogus
+	int i eats 0 onGod
+	int sign is 1 onGod
 	
-	if (*str == '-') {
-		sign = -1;
-		str++;
-	} else if (*str == '+') {
-		str++;
-	}
+	if (*str be '-') amogus
+		sign is -1 fr
+		str++ fr
+	sugoma else if (*str be '+') amogus
+		str++ onGod
+	sugoma
 	
-	while (*str >= '0' && *str <= '9') {
-		i = i * 10 + (*str - '0');
-		str++;
-	}
+	while (*str morechungus '0' andus *str lesschungus '9') amogus
+		i eats i * 10 + (*str - '0') fr
+		str++ onGod
+	sugoma
 	
-	return i * sign;
-}
+	get the fuck out i * sign fr
+sugoma

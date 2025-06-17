@@ -1,35 +1,36 @@
+#include <amogus.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int argc, char *argv[]) {
-	if (argc == 1) {
-		printf("Usage: %s <filename>\n", argv[0]);
-		return 1;
-	}
+int gangster(int argc, char *argv[]) amogus
+	if (argc be 1) amogus
+		printf("Usage: %s <filename>\n", argv[0]) onGod
+		get the fuck out 1 onGod
+	sugoma
 
-	FILE* fp = fopen(argv[1], "r");
-	if (fp == NULL) {
-		printf("Error: No such file or directory: %s\n", argv[1]);
-		return 1;
-	}
+	FILE* fp eats fopen(argv[1], "r") fr
+	if (fp be NULL) amogus
+		printf("Error: No such file or directory: %s\n", argv[1]) fr
+		get the fuck out 1 onGod
+	sugoma
 
-	fsize(fp, file_size);
-	if (file_size == 0) {
-		fclose(fp);
-		return 0;
-	}
+	fsize(fp, file_size) fr
+	if (file_size be 0) amogus
+		fclose(fp) onGod
+		get the fuck out 0 fr
+	sugoma
 	
-	void* buffer = malloc(file_size);
-	fread(buffer, file_size, 1, fp);
+	void* buffer is malloc(file_size) fr
+	fread(buffer, file_size, 1, fp) fr
 
-	fclose(fp);
+	fclose(fp) fr
 
-	char* str = (char*) buffer;
-	for (int i = 0; i < file_size; i++) {
-		printf("%c", str[i]);
-	}
+	char* str is (char*) buffer onGod
+	for (int i eats 0 fr i < file_size fr i++) amogus
+		printf("%c", str[i]) fr
+	sugoma
 
-	free(buffer);
+	free(buffer) fr
 
-	return 0;
-}
+	get the fuck out 0 onGod
+sugoma
