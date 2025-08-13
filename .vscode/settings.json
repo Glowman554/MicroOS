@@ -54,7 +54,9 @@
 		"mmio.h": "c",
 		"e1000.h": "c",
 		"devfs.h": "c",
-		"nic_driver.h": "c"
+		"nic_driver.h": "c",
+		"nic.h": "c",
+		"font.h": "c"
 	},
     "deno.enable": true,
     "deno.lint": true,

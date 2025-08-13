@@ -77,6 +77,7 @@
 // };
 
 extern uint8_t default_font[];
+extern int default_font_size;
 extern uint8_t default_keymap[];
 
 multiboot_module_t* find_multiboot_module(char* name) {
@@ -126,13 +127,19 @@ void _main(multiboot_info_t* mb_info) {
 
 #ifdef TEXT_MODE_EMULATION
     char font_module[64] = { 0 };
-    multiboot_module_t* font = NULL;
+
+	int font_size;
+	void* font_pointer;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--font", font_module)) {
-	    font = find_multiboot_module(font_module);
-		init_text_mode_emulation(psf1_buffer_to_font((void*) font->mod_start));
+	    multiboot_module_t* font = find_multiboot_module(font_module);
+		font_pointer = (void*) font->mod_start;
+		font_size = font->mod_end - font->mod_start;
 	} else {
-		init_text_mode_emulation(psf1_buffer_to_font((void*) default_font));
+		font_pointer = default_font;
+		font_size = default_font_size;
 	}
+	init_text_mode_emulation(psf1_buffer_to_font(font_pointer));
+
 #endif
 	text_console_early();
 	text_console_clrscr(NULL, 1);
@@ -218,7 +225,7 @@ void _main(multiboot_info_t* mb_info) {
 #endif
 #ifdef FULL_SCREEN_TERMINAL
 	devfs_register_file(&global_devfs, &fst_file);
-	devfs_register_file(&global_devfs, get_font_file(font));
+	devfs_register_file(&global_devfs, get_font_file(font_size, font_pointer));
 #endif
 	devfs_register_file(&global_devfs, &pci_file);
 
