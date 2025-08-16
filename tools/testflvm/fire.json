@@ -5,6 +5,6 @@
 		"includes": [],
 		"target": "bytecode",
 		"input": "main.fl",
-		"output": "main.flb"
+		"output": "main.flbb"
 	}
 }
