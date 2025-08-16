@@ -1,0 +1,23 @@
+$use <stdlib@1.0.6>
+
+$include <std.fl>
+
+str output_file = "firestorm.txt";
+
+function spark(int argc, str[] argv) -> int {
+    str output = "Hello world from FireStorm on MicroOS!";   
+    int length = string_length(output);
+
+    ptr file = fopen(output_file, "w");
+    if !file {
+        puts("Failed to open file!");
+        return 1;
+    }
+
+    fwrite(output, length, 1, file);
+    fclose(file);
+
+    puts("Successfully wrote file!");
+
+    return 0;
+}

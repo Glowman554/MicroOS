@@ -3,6 +3,7 @@ all:
 	mkdir -p lib
 	make -C libc library
 	make -C libtinf library
+	make -C libflvm library
 
 	make -C init prog
 	make -C terminal prog
@@ -39,10 +40,12 @@ all:
 	make -C dhcp prog
 	make -C ip prog
 	make -C pciinfo prog
+	make -C flvm prog
 
 clean:
 	make -C libc clean
 	make -C libtinf clean
+	make -C libflvm clean
 	
 	make -C init clean
 	make -C terminal clean
@@ -79,10 +82,12 @@ clean:
 	make -C dhcp clean
 	make -C ip clean
 	make -C pciinfo clean
+	make -C flvm clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
 	make -C libtinf compile_flags.txt
+	make -C libflvm compile_flags.txt
 
 	make -C init compile_flags.txt
 	make -C terminal compile_flags.txt
@@ -119,3 +124,4 @@ compile_flags.txt:
 	make -C dhcp compile_flags.txt
 	make -C ip compile_flags.txt
 	make -C pciinfo compile_flags.txt
+	make -C flvm compile_flags.txt

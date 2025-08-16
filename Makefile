@@ -92,6 +92,7 @@ libs.zip: all
 	cp user/lib/* res/libs/. -rf
 	cp user/libc/include/* res/libs/include/. -rf
 	cp user/libtinf/include/* res/libs/include/. -rf
+	cp user/libflvm/include/* res/libs/include/. -rf
 
 	zip -r libs.zip res/libs/
 

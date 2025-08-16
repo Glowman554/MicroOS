@@ -45,6 +45,8 @@ int feof(FILE* stream);
 int gets(char* buffer);
 int getc(FILE* stream);
 
+int puts(const char* s);
+
 #define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
 
 void init_stdio();

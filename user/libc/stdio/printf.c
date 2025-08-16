@@ -15,3 +15,11 @@ int printf(const char *fmt, ...) {
 
 	return tmp;
 }
+
+int puts(const char* s) {
+	int l = strlen(s);
+
+	write(STDOUT, (char*) s, l, 0);
+
+	return l;
+}
