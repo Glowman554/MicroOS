@@ -1,5 +1,6 @@
 #include "../user/edit/include/syntax.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -243,7 +244,84 @@ void write_asm_syntax() {
     save_syx(&header, words, len, buf, "asm.syx");
 }
 
+void write_fl_syntax() {
+	char* buf = NULL;
+	int len = 0;
+
+    syntax_word_t words[] = {
+		NEW_WORD("void", blue),
+		NEW_WORD("int", blue),
+		NEW_WORD("str", blue),
+		NEW_WORD("chr", blue),
+		NEW_WORD("ptr", blue),
+		NEW_WORD("i32", blue),
+		NEW_WORD("i64", blue),
+
+		NEW_WORD("const", cyan),
+		NEW_WORD("extern", cyan),
+		NEW_WORD("register", cyan),
+		NEW_WORD("signed", cyan),
+		NEW_WORD("unsigned", cyan),
+		NEW_WORD("volatile", cyan),
+		NEW_WORD("static", cyan),
+
+		NEW_WORD("if", magenta),
+		NEW_WORD("else", magenta),
+		NEW_WORD("while", magenta),
+		NEW_WORD("loop", magenta),
+		NEW_WORD("for", magenta),
+		NEW_WORD("return", magenta),
+		NEW_WORD("do", magenta),
+		NEW_WORD("function", magenta),
+		NEW_WORD("end", magenta),
+		NEW_WORD("offset", magenta),
+		NEW_WORD("range", magenta),
+		NEW_WORD("up", magenta),
+		NEW_WORD("down", magenta),
+
+		NEW_WORD("$include", red),
+		NEW_WORD("$define", red),
+		NEW_WORD("$use", red),
+		NEW_WORD("$native", red),
+	};
+
+	syntax_header_t header = {
+		.magic = 0xff << 24 | 'S' << 0 | 'Y' << 8 | 'X' << 16, // TODO,
+		.single_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "//"),
+			.sect_end_offset = write_string(&len, &buf, "\n"),
+			.color = green
+		},
+		.multi_line_comment = {
+			.active = false,
+		},
+		.string = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "\""),
+			.sect_end_offset = write_string(&len, &buf, "\""),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.single_char = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "'"),
+			.sect_end_offset = write_string(&len, &buf, "'"),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.brackets_start = write_string(&len, &buf, "({["),
+		.brackets_end = write_string(&len, &buf, "]})"),
+		.match_brackets = true,
+		.num_words = sizeof(words) / sizeof(words[0])
+	};
+
+    save_syx(&header, words, len, buf, "fl.syx");
+}
+
+
 int main(int argc, char** argv) {
 	write_c_syntax();
     write_asm_syntax();
+	write_fl_syntax();
 }
