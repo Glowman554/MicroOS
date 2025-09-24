@@ -1,5 +1,7 @@
 #include <flvm.h>
 
+#include <native.h>
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -9,6 +11,9 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
+    native_tinf();
+    native_vm();
+
     struct vm_instance* vm = vm_load(argv[1]);
     
     stack_push(vm, argc - 1);
@@ -16,4 +21,6 @@ int main(int argc, char* argv[]) {
     invoke(vm, vm->spark);
 
     vm_destroy(vm);
+
+    return 0;
 }
