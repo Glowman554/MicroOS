@@ -1,3 +1,4 @@
+#include "driver/driver.h"
 #include <net/stack.h>
 #include <memory/vmm.h>
 #include <string.h>
@@ -34,6 +35,15 @@ void load_network_stack(nic_driver_t* nic) {
 		.gateway_ip = (ip_u) { .ip = NOIP },
 		.dns_ip = (ip_u) { .ip = NOIP }
 	};
+
+	if (strcmp(nic->driver.get_device_name((driver_t*) nic), "loopback") == 0) {
+		nic->ip_config = (ip_configuration_t) {
+			.ip = (ip_u) { .ip = 0x0100007f },
+			.subnet_mask = (ip_u) { .ip = 0x000000ff },
+			.gateway_ip = (ip_u) { .ip = NOIP },
+			.dns_ip = (ip_u) { .ip = NOIP }
+		};
+	}
 
 	etherframe_init(stack);
 	arp_init(stack);

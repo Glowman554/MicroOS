@@ -32,6 +32,7 @@
 #include <driver/network/am79C973.h>
 #include <driver/network/e1000.h>
 #include <driver/network/ne2k.h>
+#include <driver/network/loopback.h>
 #include <driver/sound/pc_speaker.h>
 
 #include <fs/initrd.h>
@@ -206,6 +207,8 @@ void _main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
 	register_driver((driver_t*) &pc_speaker_driver);
+
+	register_driver((driver_t*) &loopback_driver);
 
 	activate_drivers();
 
