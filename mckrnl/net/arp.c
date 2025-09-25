@@ -7,7 +7,7 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-void arp_etherframe_recv(ether_frame_handler_t* handler, uint8_t* payload, uint32_t size) {
+void arp_etherframe_recv(ether_frame_handler_t* handler, mac_u src_mac, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(arp_message_t)) {
 		return;
 	}

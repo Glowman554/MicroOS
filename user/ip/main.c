@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
         printf("\tgateway: %d.%d.%d.%d\n", nic_config.ip_config.gateway_ip.ip_p[0], nic_config.ip_config.gateway_ip.ip_p[1], nic_config.ip_config.gateway_ip.ip_p[2], nic_config.ip_config.gateway_ip.ip_p[3]);
         printf("\tdns: %d.%d.%d.%d\n", nic_config.ip_config.dns_ip.ip_p[0], nic_config.ip_config.dns_ip.ip_p[1], nic_config.ip_config.dns_ip.ip_p[2], nic_config.ip_config.dns_ip.ip_p[3]);
         printf("\tmac: %x:%x:%x:%x:%x:%x\n", nic_config.mac.mac_p[0], nic_config.mac.mac_p[1], nic_config.mac.mac_p[2], nic_config.mac.mac_p[3], nic_config.mac.mac_p[4], nic_config.mac.mac_p[5]);
+        printf("\tdevice: %s\n",nic_config.name);
     } else {
         assert(ipStr != NULL);
         ip_u ip = parse_ip(ipStr);

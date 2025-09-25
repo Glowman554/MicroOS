@@ -15,6 +15,10 @@ void register_nic_driver(nic_driver_t* driver) {
 	num_nic_drivers++;
 }
 
+nic_driver_t* get_nic_driver(int i) {
+	return nic_drivers[i];
+}
+
 void load_network_stacks() {
 	for (int i = 0; i < num_nic_drivers; i++) {
 	#ifdef NETWORK_STACK

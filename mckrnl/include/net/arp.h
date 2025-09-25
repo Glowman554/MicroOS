@@ -30,7 +30,7 @@ typedef struct arp_provider
 	ether_frame_handler_t handler;
 } arp_provider_t;
 
-void arp_etherframe_recv(ether_frame_handler_t *handler, uint8_t *payload, uint32_t size);
+void arp_etherframe_recv(ether_frame_handler_t *handler, mac_u src_mac, uint8_t *payload, uint32_t size);
 
 void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip);
 void arp_request_mac(network_stack_t *stack, ip_u ip);

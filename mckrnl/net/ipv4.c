@@ -55,7 +55,7 @@ void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, ma
 	vmm_free(buffer, (size + sizeof(ipv4_message_t)) / 0x1000 + 1);
 }
 
-void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size) {
+void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(ipv4_message_t)) {
 		return;
 	}

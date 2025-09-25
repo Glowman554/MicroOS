@@ -13,6 +13,7 @@ typedef struct network_stack {
 #ifdef TCP
 	struct tcp_provider* tcp;
 #endif
+	struct vlan_provider* vlan;
 	struct dns_provider* dns;
 	nic_driver_t* driver;
 } network_stack_t;

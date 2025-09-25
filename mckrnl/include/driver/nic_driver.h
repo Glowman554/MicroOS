@@ -24,11 +24,14 @@ typedef struct ip_configuration {
 #define NOMAC 0xFFFFFFFFFFFF
 #define NOIP 0xFFFFFFFF
 
+
 typedef struct nic_driver {
 	driver_t driver; // the driver_specific_data is reserved for a poniter to a network_stack_t ptr!
 
 	void (*send)(struct nic_driver* driver, uint8_t* data, uint32_t len);
 	void (*recv)(struct nic_driver* driver, uint8_t* data, uint32_t len); // this is a callback function CALLED BY THE DRIVER!
+
+	void (*stack)(struct nic_driver* driver, void* stack);
 
 	ip_configuration_t ip_config;
 	mac_u mac;
@@ -38,5 +41,6 @@ extern nic_driver_t** nic_drivers;
 extern int num_nic_drivers;
 
 void register_nic_driver(nic_driver_t* driver);
+nic_driver_t* get_nic_driver(int i);
 
 void load_network_stacks();

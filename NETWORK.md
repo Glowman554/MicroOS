@@ -24,6 +24,10 @@ ip show
 
 You can use the `dhcp` command to automatically configure an ip address. You can use the `-i <nic>` flag to set the target nic. The default target nic is nic0. You can use the `-n <hostname>` to set the hostname. The default hostname is `MicroOS`
 
+# IEEE802.1Q VLANS
+
+You can create VLAN interfaces if you pass the following parameter to the kernel: --vlan=<vlanid>.<parent_nic>[,<vlanid>.<parent_nic>...]
+
 # Testing internet access
 
 You can test the internet access using `date -n`. This will test the dns and ip settings.

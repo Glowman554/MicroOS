@@ -14,7 +14,7 @@ typedef uint32_t ether_frame_footer_t;
 
 typedef struct ether_frame_handler {
 	uint16_t ether_type_be;
-	void (*recv)(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size);
+	void (*recv)(struct ether_frame_handler* handler, mac_u src_mac, uint8_t* payload, uint32_t size);
 	network_stack_t* stack;
 } ether_frame_handler_t;
 

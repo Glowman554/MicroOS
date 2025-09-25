@@ -6,6 +6,7 @@
 typedef struct nic_content {
     mac_u mac;
     ip_configuration_t ip_config;
+    char name[32];
 } nic_content_t;
 
 nic_content_t nic_read(int nic);

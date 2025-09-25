@@ -16,7 +16,8 @@ nic_driver_t* get_am79C973_driver(pci_device_header_t header, uint16_t bus, uint
 				.is_device_present = am79C973_is_device_present,
 				.init = am79C973_init
 			},
-			.send = am79C973_send
+			.send = am79C973_send,
+			.stack = am79C973_stack
 		},
 		.header = {
 			.header = header,
@@ -140,6 +141,9 @@ void am79C973_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
 	outw(register_address_port, 0x0);
 	outw(register_data_port, 0x48);
 }
+
+void am79C973_stack(nic_driver_t* driver, void* stack) {}
+
 
 cpu_registers_t* am79C973_interrupt(cpu_registers_t* regs, void* data) {
 	am79C973_driver_t* am_driver = (am79C973_driver_t*) data;

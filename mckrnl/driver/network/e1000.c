@@ -17,7 +17,8 @@ nic_driver_t* get_e1000_driver(pci_device_header_t header, uint16_t bus, uint16_
 				.is_device_present = e1000_is_device_present,
 				.init = e1000_init
 			},
-			.send = e1000_send
+			.send = e1000_send,
+			.stack = e1000_stack
 		},
 		.header = {
 			.header = header,
@@ -121,6 +122,9 @@ void e1000_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
 
 	while(!(e1000_driver->tx_descs[old_cur]->status & 0xff));
 }
+
+void e1000_stack(nic_driver_t* driver, void* stack) {}
+
 
 cpu_registers_t* e1000_interrupt(cpu_registers_t* regs, void* data) {
 	e1000_driver_t* driver = (e1000_driver_t*) data;

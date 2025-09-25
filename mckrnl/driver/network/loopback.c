@@ -19,11 +19,15 @@ void loopback_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
     driver->recv(driver, data, size);
 }
 
+void loopback_stack(nic_driver_t* driver, void* stack) {}
+
+
 nic_driver_t loopback_driver = {
     .driver = {
         .get_device_name = loopback_get_device_name,
         .is_device_present = loopback_is_device_present,
         .init = loopback_init
     },
-    .send = loopback_send
+    .send = loopback_send,
+    .stack = loopback_stack
 };

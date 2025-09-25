@@ -53,5 +53,7 @@ void load_network_stack(nic_driver_t* nic) {
 #ifdef TCP
 	tcp_init(stack);
 #endif
+
+	stack->driver->stack(stack->driver, stack);
 }
 #endif

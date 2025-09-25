@@ -8,7 +8,7 @@
 typedef struct nic_file {
     devfs_file_t file;
     nic_driver_t* nic;
-    char name[32];    
+    char name[32];
 } nic_file_t;
 
 void debug_ip(char* name, char* field, ip_u ip) {
@@ -37,10 +37,12 @@ void nic_file_read(struct devfs_file* dfile, file_t* file, void* buf, size_t siz
     nic_file_t* nic_file = (nic_file_t*) dfile;
 
     assert(sizeof(nic_content_t) == size && offset == 0);
+    memset(buf, 0, size);
     
     nic_content_t* content = (nic_content_t*) buf;
     content->mac = nic_file->nic->mac;
     content->ip_config = nic_file->nic->ip_config;
+    strcpy(content->name, nic_file->nic->driver.get_device_name(&nic_file->nic->driver));
 }
 
 void nic_file_prepare(struct devfs_file* dfile, file_t* file) {

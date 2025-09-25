@@ -62,6 +62,7 @@ char* ne2k_get_device_name(driver_t* driver);
 void ne2k_init(driver_t* driver);
 
 void ne2k_send(nic_driver_t* driver, uint8_t* data, uint32_t size);
+void ne2k_stack(nic_driver_t* driver, void* stack);
 
 cpu_registers_t* ne2k_interrupt(cpu_registers_t* regs, void* data);
 void ne2k_receive(ne2k_driver_t* driver);

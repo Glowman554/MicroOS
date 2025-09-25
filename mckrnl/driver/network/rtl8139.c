@@ -18,7 +18,8 @@ nic_driver_t* get_rtl8139_driver(pci_device_header_t header, uint16_t bus, uint1
 				.is_device_present = rtl8139_is_device_present,
 				.init = rtl8139_init
 			},
-			.send = rtl8139_send
+			.send = rtl8139_send,
+			.stack = rtl8139_stack
 		},
 		.header = {
 			.header = header,
@@ -90,6 +91,9 @@ void rtl8139_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
 	}
 	asm volatile("sti");
 }
+
+void rtl8139_stack(nic_driver_t* driver, void* stack) {}
+
 
 cpu_registers_t* rtl8139_interrupt(cpu_registers_t* regs, void* data) {
 	rtl8139_driver_t* rtl_driver = (rtl8139_driver_t*) data;

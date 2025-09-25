@@ -18,7 +18,8 @@ nic_driver_t* get_ne2k_driver(pci_device_header_t header, uint16_t bus, uint16_t
 				.is_device_present = ne2k_is_device_present,
 				.init = ne2k_init
 			},
-			.send = ne2k_send
+			.send = ne2k_send,
+            .stack = ne2k_stack
 		},
 		.header = {
 			.header = header,
@@ -158,6 +159,8 @@ void ne2k_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
 
     asm volatile("sti");
 }
+
+void ne2k_stack(nic_driver_t* driver, void* stack) {}
 
 cpu_registers_t* ne2k_interrupt(cpu_registers_t* regs, void* data) {
     ne2k_driver_t* ne_driver = (ne2k_driver_t*) data;

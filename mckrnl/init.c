@@ -33,6 +33,7 @@
 #include <driver/network/e1000.h>
 #include <driver/network/ne2k.h>
 #include <driver/network/loopback.h>
+#include <driver/network/vlan.h>
 #include <driver/sound/pc_speaker.h>
 
 #include <fs/initrd.h>
@@ -209,6 +210,11 @@ void _main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &pc_speaker_driver);
 
 	register_driver((driver_t*) &loopback_driver);
+
+	char vlan_config[128] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--vlan", vlan_config)) {
+		configure_vlan(vlan_config);
+	}
 
 	activate_drivers();
 

@@ -42,6 +42,6 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler);
 
 uint16_t ipv4_checksum(uint16_t* data, uint32_t size);
 
-void ipv4_etherframe_recv(struct ether_frame_handler* handler, uint8_t* payload, uint32_t size);
+void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, uint8_t* payload, uint32_t size);
 
 void ipv4_init(network_stack_t* stack);
