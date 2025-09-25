@@ -6,6 +6,8 @@
 
 #define isdigit(c) (c >= '0' && c <= '9')
 
+#ifdef NETWORK_STACK
+
 bool vlan_is_device_present(driver_t* driver) {
     return true;
 }
@@ -139,3 +141,4 @@ void configure_vlan(const char* cfg) {
         }
     }
 }
+#endif

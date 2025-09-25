@@ -211,10 +211,12 @@ void _main(multiboot_info_t* mb_info) {
 
 	register_driver((driver_t*) &loopback_driver);
 
+#ifdef NETWORK_STACK
 	char vlan_config[128] = { 0 };
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--vlan", vlan_config)) {
 		configure_vlan(vlan_config);
 	}
+#endif
 
 	activate_drivers();
 
