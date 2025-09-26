@@ -26,7 +26,7 @@ You can use the `dhcp` command to automatically configure an ip address. You can
 
 # IEEE802.1Q VLANS
 
-You can create VLAN interfaces if you pass the following parameter to the kernel: --vlan=<vlanid>.<parent_nic>[,<vlanid>.<parent_nic>...]
+You can create VLAN interfaces if you pass the following parameter to the kernel: `--vlan=<vlanid>.<parent_nic>[,<vlanid>.<parent_nic>...]`
 
 # Testing internet access
 
