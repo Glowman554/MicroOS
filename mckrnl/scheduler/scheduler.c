@@ -325,6 +325,8 @@ void exit_task(task_t* task) {
 	if (task == self) {
 		asm volatile("sti");
 		asm volatile("hlt");
+	} else {
+		vmm_activate_context(self->context);
 	}
 }
 
