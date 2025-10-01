@@ -8,25 +8,25 @@ void native_tinf_init(struct vm_instance* vm) {
 
 void native_tinf_uncompress(struct vm_instance* vm) {
     unsigned int sourceLen = (unsigned int) stack_pop(vm);
-    const void* source = (const void*) stack_pop(vm);
-    unsigned int* destLen = (unsigned int*) stack_pop(vm);
-    void* dest = (void*) stack_pop(vm);
+    const void* source = (const void*) (uint32_t) stack_pop(vm);
+    unsigned int* destLen = (unsigned int*) (uint32_t) stack_pop(vm);
+    void* dest = (void*) (uint32_t) stack_pop(vm);
     stack_push(vm, tinf_uncompress(dest, destLen, source, sourceLen));
 }
 
 void native_tinf_gzip_uncompress(struct vm_instance* vm) {
     unsigned int sourceLen = (unsigned int) stack_pop(vm);
-    const void* source = (const void*) stack_pop(vm);
-    unsigned int* destLen = (unsigned int*) stack_pop(vm);
-    void* dest = (void*) stack_pop(vm);
+    const void* source = (const void*) (uint32_t) stack_pop(vm);
+    unsigned int* destLen = (unsigned int*) (uint32_t) stack_pop(vm);
+    void* dest = (void*) (uint32_t) stack_pop(vm);
     stack_push(vm, tinf_gzip_uncompress(dest, destLen, source, sourceLen));
 }
 
 void native_tinf_zlib_uncompress(struct vm_instance* vm) {
     unsigned int sourceLen = (unsigned int) stack_pop(vm);
-    const void* source = (const void*) stack_pop(vm);
-    unsigned int* destLen = (unsigned int*) stack_pop(vm);
-    void* dest = (void*) stack_pop(vm);
+    const void* source = (const void*) (uint32_t) stack_pop(vm);
+    unsigned int* destLen = (unsigned int*) (uint32_t) stack_pop(vm);
+    void* dest = (void*) (uint32_t) stack_pop(vm);
     stack_push(vm, tinf_zlib_uncompress(dest, destLen, source, sourceLen));
 }
 
