@@ -7,6 +7,24 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
+void arp_add_to_cache(network_stack_t* stack, mac_u mac, ip_u ip) {
+	for (int i = 0; i < CACHE_SIZE; i++) {
+		if (stack->arp->ip_cache[i].ip == ip.ip) {
+			return; // do not add again if it is already added
+		}
+	} 
+
+	if (!(stack->arp->num_cache_entry < 128)) {
+		stack->arp->num_cache_entry = 0;
+	}
+
+	debugf("%d.%d.%d.%d is at %x:%x:%x:%x:%x:%x", ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[2], mac.mac_p[0], mac.mac_p[1], mac.mac_p[2], mac.mac_p[3], mac.mac_p[4], mac.mac_p[5]);
+
+	stack->arp->ip_cache[stack->arp->num_cache_entry] = ip;
+	stack->arp->mac_cache[stack->arp->num_cache_entry] = mac;
+	stack->arp->num_cache_entry++;
+}
+
 void arp_etherframe_recv(ether_frame_handler_t* handler, mac_u src_mac, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(arp_message_t)) {
 		return;
@@ -28,11 +46,7 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, mac_u src_mac, uint8_t*
 					break;
 				case 0x0200: // response
 					{
-						if (handler->stack->arp->num_cache_entry < 128) {
-							handler->stack->arp->ip_cache[handler->stack->arp->num_cache_entry] = (ip_u) { .ip = arp->src_ip };
-							handler->stack->arp->mac_cache[handler->stack->arp->num_cache_entry] = (mac_u) { .mac = arp->src_mac };
-							handler->stack->arp->num_cache_entry++;
-						}
+						arp_add_to_cache(handler->stack, (mac_u) { .mac = arp->src_mac }, (ip_u) { .ip = arp->src_ip });
 					}
 					break;
 			}
@@ -61,7 +75,7 @@ void arp_broadcast_mac(network_stack_t *stack, async_t* async, ip_u ip) {
 }
 
 void arp_request_mac(network_stack_t* stack, ip_u ip) {
-		arp_message_t arp = {
+	arp_message_t arp = {
 		.hardware_type = 0x0100,
 		.protocol = 0x0008,
 		.hardware_address_size = 6,
@@ -77,7 +91,7 @@ void arp_request_mac(network_stack_t* stack, ip_u ip) {
 }
 
 mac_u arp_get_mac_from_cache(network_stack_t* stack, ip_u ip) {
-	for (int i = 0; i < stack->arp->num_cache_entry; i++) {
+	for (int i = 0; i < CACHE_SIZE; i++) {
 		if (stack->arp->ip_cache[i].ip == ip.ip) {
 			return stack->arp->mac_cache[i];
 		}
@@ -137,6 +151,9 @@ mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) {
 void arp_init(network_stack_t* stack) {
 	stack->arp = vmm_alloc(PAGES_OF(arp_provider_t));
 	memset(stack->arp, 0, sizeof(arp_provider_t));
+
+	memset(stack->arp->ip_cache, 0xff, sizeof(stack->arp->ip_cache));
+	memset(stack->arp->mac_cache, 0xff, sizeof(stack->arp->ip_cache));
 
 	stack->arp->handler.ether_type_be = BSWAP16(0x806);
 	stack->arp->handler.stack = stack;

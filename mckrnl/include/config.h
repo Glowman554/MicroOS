@@ -27,7 +27,7 @@
 // #define PARSE_MADT
 // #define THREADS
 // #define AHCI_DRIVER
-#define NETWORK_STACK
+// #define NETWORK_STACK
 // End Experimental
 
 // Input
