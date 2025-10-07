@@ -1,0 +1,24 @@
+{
+    "file": "config.mk",
+    "configuration": {
+        "title": "Build configuration",
+        "items": [
+            {
+                "name": "Experimental",
+                "value": {
+                    "title": "Desktop",
+                    "items": [
+                        {
+                            "name": "DESKTOP",
+                            "value": false
+                        },
+                        {
+                            "name": "FIRESTORM",
+                            "value": false
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

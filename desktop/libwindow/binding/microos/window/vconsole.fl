@@ -1,0 +1,17 @@
+$native <vconsole_init 789041>
+function(external) vconsole_init(ptr font) -> void;
+
+$native <vconsole_clear 789042>
+function(external) vconsole_clear() -> void;
+
+$native <vconsole_ansi_process 789043>
+function(external) vconsole_ansi_process(chr c) -> int;
+
+$native <vconsole_putc 789044>
+function(external) vconsole_putc(chr c) -> void;
+
+$native <vconsole_puts 789045>
+function(external) vconsole_puts(str s) -> void;
+
+$native <vconsole_set_color 789046>
+function(external) vconsole_set_color(int color, int background) -> void;

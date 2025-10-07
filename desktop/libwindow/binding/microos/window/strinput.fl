@@ -1,0 +1,25 @@
+function string_input(ptr font, chr[] buffer, int[] index, int x, int y, int fgcolor, int bgcolor) -> int {
+    draw_string_window(font, x, y, buffer, fgcolor, bgcolor);
+
+    chr c = window_async_getc();
+    if c {
+        if c == '\b' {
+            // back
+            if index[0] != 0 {
+                index[0] = index[0] - 1;
+                buffer[index[0]] = 0;
+                draw_char_window(font, x + 8 * index[0], y, 32, fgcolor, bgcolor);
+            }
+        } else {
+            if (c == '\n') | (c == '\r') {
+                return 0;
+            } else {
+                buffer[index[0]] = c;
+                index[0] = index[0] + 1;
+            }
+        }
+    }
+
+    return 1;
+}
+

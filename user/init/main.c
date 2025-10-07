@@ -9,7 +9,6 @@
 #include <config.h>
 
 // #define ROOT_FS "initrd:/"
-#define TERMINAL "bin/terminal.mex"
 
 // char* envp[] = {
 // 	"ROOT=initrd:",
@@ -76,7 +75,7 @@ int main(int argc, char* argv[]) {
 
 	char terminal[128] = { 0 };
 	strcat(terminal, cwd);
-	strcat(terminal, TERMINAL);
+	strcat(terminal, INIT_PROCESS);
 	printf("got terminal %s\n", terminal);
 
 	char path[128] = { 0 };

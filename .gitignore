@@ -4,8 +4,10 @@
 *.iso
 *.saf
 *.syms
+*.flbb
 res
 mckrnl/target
+.fire
 dump.dat
 dump.pcap
 Cargo.lock

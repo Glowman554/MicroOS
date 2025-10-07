@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        preset: [ default, full_screen_terminal, network, network_full_screen_terminal, smp, smp_full_screen_terminal ]
+        preset: [ default, full_screen_terminal, network, network_full_screen_terminal, smp, smp_full_screen_terminal, desktop ]
 
     runs-on: ubuntu-latest
 
@@ -20,8 +20,16 @@ jobs:
     - uses: denoland/setup-deno@v1
       with:
         deno-version: v1.x
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
     - name: install tools
       run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl nasm -y
+    - name: install fire
+      run: |
+        git clone https://github.com/Glowman554/FireStorm
+        cd FireStorm/fire && go install -v
     - name: setup github
       run: |
         git config --global user.email "vossjanick62@gmail.com"

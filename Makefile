@@ -1,6 +1,11 @@
+include config.mk
+
 all: res
 	make -C mckrnl
 	make -C user
+ifeq ($(DESKTOP),1)
+	make -C desktop
+endif
 
 NETDEV = e1000
 
@@ -22,6 +27,13 @@ endif
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
+ifeq ($(DESKTOP),1)
+	cp -r ./desktop/bin/*.mex ./res/initrd/bin/ -v
+	mkdir -p ./res/initrd/opt/desktop
+	cp -r ./desktop/resources/* ./res/initrd/opt/desktop
+	mkdir -p ./res/initrd/opt/desktop/bin
+	cp -r ./desktop/bin/*.flbb ./res/initrd/opt/desktop/bin/ -v
+endif
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	mkdir -p ./res/initrd/docs
@@ -56,7 +68,6 @@ res:
 
 	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
 
-
 format_disk:
 	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
 	mkfs.vfat -F 32 res/foxos.img
@@ -82,6 +93,9 @@ debug:
 clean: iso
 	make -C mckrnl clean
 	make -C user clean
+ifeq ($(DESKTOP),1)
+	make -C desktop clean
+endif
 
 deepclean:
 	rm -rfv res
@@ -94,16 +108,25 @@ libs.zip: all
 	cp user/libtinf/include/* res/libs/include/. -rf
 	cp user/libflvm/include/* res/libs/include/. -rf
 
+ifeq ($(DESKTOP),1)
+	cp desktop/lib/* res/libs/. -rf
+	cp desktop/libwindow/include/* res/libs/include/. -rf
+endif
+
 	zip -r libs.zip res/libs/
 
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt
+ifeq ($(DESKTOP),1)
+	make -C desktop compile_flags.txt
+endif
 
 pre_commit:
 	deno run -A config/write_syscalls_md.ts
 	deno run -A config/config.ts --clean --auto config/libc.json
 	deno run -A config/config.ts --clean --auto config/kernel.json
+	deno run -A config/config.ts --clean --auto --mode makefile config/build.json
 	cd pkgs; bash clean.sh
 
 
@@ -112,3 +135,6 @@ config_libc:
 
 config_kernel:
 	deno run -A config/config.ts config/kernel.json
+
+config_build:
+	deno run -A config/config.ts --mode makefile config/build.json

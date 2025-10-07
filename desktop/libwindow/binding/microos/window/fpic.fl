@@ -1,0 +1,11 @@
+$native <load_fpic_window 789037>
+function(external) load_fpic_window(str file) -> ptr;
+
+$native <get_pixel_fpic_window 789038>
+function(external) get_pixel_fpic_window(ptr pic, int x, int y) -> int;
+
+$native <draw_fpic_window 789039>
+function(external) draw_fpic_window(ptr pic, int x, int y) -> void;
+
+$native <draw_fpic_scaled_window 789040>
+function(external) draw_fpic_scaled_window(ptr pic, int x, int y, int scale) -> void;

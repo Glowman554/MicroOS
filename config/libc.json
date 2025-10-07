@@ -14,6 +14,18 @@
                         }
                     ]
                 }
+            },
+            {
+                "name": "Init",
+                "value": {
+                    "title": "Init process",
+                    "items": [
+                        {
+                            "name": "INIT_PROCESS",
+                            "value": "bin/terminal.mex"
+                        }
+                    ]
+                }
             }
         ]
     }

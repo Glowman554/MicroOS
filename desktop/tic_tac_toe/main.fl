@@ -1,0 +1,153 @@
+$use <stdlib@1.0.8>
+$use <microos@1.0.0>
+
+$include <std.fl>
+$include <microos/window.fl>
+
+$define ASSET_SIZE 8 * 10
+$define ASSET_SCALE 10
+
+ptr x_pic;
+ptr o_pic;
+ptr empty_pic;
+
+chr[] game_field;
+int current_player = 'x';
+
+function game_field_get(int x, int y) -> chr {
+    return game_field[x + y * 3];
+}
+
+function game_field_set(int x, int y, chr tile) -> void {
+    game_field[x + y * 3] = tile;
+}
+
+function game_field_draw() -> void {
+    for int x = 0; x < 3; x++ {
+        for int y = 0; y < 3; y++ {
+            chr tile = game_field_get(x, y);
+            if tile == 'o' {
+                draw_fpic_scaled_window(o_pic, x * ASSET_SIZE, y * ASSET_SIZE, ASSET_SCALE);
+            } else if tile == 'x' {
+                draw_fpic_scaled_window(x_pic, x * ASSET_SIZE, y * ASSET_SIZE, ASSET_SCALE);
+            } else {
+                draw_fpic_scaled_window(empty_pic, x * ASSET_SIZE, y * ASSET_SIZE, ASSET_SCALE);
+            }
+        }
+    }
+}
+
+function check_input(int[] info) -> void {
+    for int x = 0; x < 3; x++ {
+        for int y = 0; y < 3; y++ {
+            if check_click_area_window(x * ASSET_SIZE, y * ASSET_SIZE, ASSET_SIZE, ASSET_SIZE, info) {
+                if game_field_get(x, y) == 0 {
+                    game_field_set(x, y, current_player);
+
+                    if current_player == 'x' {
+                        current_player = 'o';
+                    } else {
+                        current_player = 'x';
+                    }
+
+                    game_field_draw();
+                }
+            }
+        }
+    }
+}
+
+function check_winner() -> chr {
+    for int i = 0; i < 3; i++ {
+        if (game_field_get(i, 0) == game_field_get(i, 1)) &
+            (game_field_get(i, 1) == game_field_get(i, 2)) &
+            (game_field_get(i, 0) != 0) {
+            return game_field_get(i, 0);
+        }
+
+        if (game_field_get(0, i) == game_field_get(1, i)) &
+            (game_field_get(1, i) == game_field_get(2, i)) &
+            (game_field_get(0, i) != 0) {
+            return game_field_get(0, i);
+        }
+    }
+
+    if (game_field_get(0, 0) == game_field_get(1, 1)) &
+        (game_field_get(1, 1) == game_field_get(2, 2)) &
+        (game_field_get(0, 0) != 0) {
+        return game_field_get(0, 0);
+    }
+
+    if (game_field_get(0, 2) == game_field_get(1, 1)) &
+        (game_field_get(1, 1) == game_field_get(2, 0)) &
+        (game_field_get(0, 2) != 0) {
+        return game_field_get(0, 2);
+    }
+
+    for int x = 0; x < 3; x++ {
+        for int y = 0; y < 3; y++ {
+            if game_field_get(x, y) == 0 {
+                return 0;
+            }
+        }
+    }
+
+    return '-';
+}
+
+function reset_game() -> void {
+    memory_area_set_8(game_field, 0, 3 * 3);
+    current_player = 'x';
+}
+
+function spark(int argc, str[] argv) -> int {
+    int window_size = ASSET_SIZE * 3;
+    window_init(window_size, window_size, 50, 50, "Tic Tac Toe!");
+
+    x_pic = load_fpic_window("icons/programs/tic_tac_toe/x.fpic");
+    o_pic = load_fpic_window("icons/programs/tic_tac_toe/o.fpic");
+    empty_pic = load_fpic_window("icons/programs/tic_tac_toe/empty.fpic");
+    int font = load_psf1_font("dev:font"); 
+
+    game_field = allocate(3 * 3);
+    reset_game();
+
+    int[] info = window_mouse_info_new();
+
+    loop {
+        window_optimize();
+
+        if window_redrawn() {
+            window_clear(0);
+            game_field_draw();
+        }
+
+        window_mouse_info(info);
+        check_input(info);
+        
+        chr winner = check_winner();
+        if winner {
+            chr[] winner_str = string_duplicate("The winner is -");
+            winner_str[14] = winner;
+            
+            int initial = 1;
+
+            while window_async_getc() != ' ' {
+                window_optimize();
+
+                if window_redrawn() | initial {
+                    window_clear(0);
+                    draw_string_window(font, 0, 0, winner_str, window_color_encode(255, 255, 255), 0);
+                    draw_string_window(font, 0, 16, "<space> to start new game", window_color_encode(255, 255, 255), 0);
+
+                    initial = 0;
+                }
+            }
+
+            string_delete(winner_str);
+
+            reset_game();
+            game_field_draw();
+        }
+    }
+}

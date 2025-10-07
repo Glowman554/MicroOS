@@ -1,0 +1,63 @@
+$native <set_pixel_window 789023>
+function(external) set_pixel_window(int x, int y, int color) -> void;
+
+$native <get_pixel_window 789024>
+function(external) get_pixel_window(int x, int y) -> int;
+
+$native <draw_char_window 789025>
+function(external) draw_char_window(int font, int x, int y, chr c, int color, int bgcolor) -> void;
+
+$native <draw_string_window 789026>
+function(external) draw_string_window(int font, int x, int y, str s, int color, int bgcolor) -> void;
+
+$native <draw_line_window 789027>
+function(external) draw_line_window(int x1, int y1, int x2, int y2, int color) -> void;
+
+$native <window_init 789028>
+function(external) window_init(int height, int width, int x, int y, str name) -> void;
+
+$native <window_async_getc 789029>
+function(external) window_async_getc() -> chr;
+
+$native <window_async_getarrw 789030>
+function(external) window_async_getarrw() -> chr;
+
+$define mouse_info_X 0
+$define mouse_info_Y 1
+$define mouse_info_BL 2
+$define mouse_info_BR 3
+$define mouse_info_BM 4
+
+$native <window_mouse_info 789031>
+function(external) window_mouse_info(int[] mouse_info) -> void;
+
+function window_mouse_info_new() -> int[] {
+    return allocate(8 * 5);
+}
+
+function window_mouse_info_delete(int[] info) -> void {
+    deallocate(info);
+}
+
+$native <window_optimize 789032>
+function(external) window_optimize() -> void;
+
+$native <window_redrawn 789033>
+function(external) window_redrawn() -> int;
+
+$native <window_open_prog_request 789034>
+function(external) window_open_prog_request(str file) -> void;
+
+$native <window_clear 789035>
+function(external) window_clear(int color) -> void;
+
+
+function window_color_encode(int r, int g, int b) -> int {
+    return b | (g << 8) | (r << 16) | (255 << 24);
+}
+
+$include <microos/window/clickarea.fl>
+$include <microos/window/font.fl>
+$include <microos/window/fpic.fl>
+$include <microos/window/strinput.fl>
+$include <microos/window/vconsole.fl>

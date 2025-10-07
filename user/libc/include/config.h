@@ -5,6 +5,10 @@
 // #define ALLOC_DEBUG
 // End Debug
 
+// Init process
+#define INIT_PROCESS "bin/terminal.mex"
+// End Init process
+
 // Syscalls
 #define SYS_OPEN_ID 1
 #define SYS_CLOSE_ID 2

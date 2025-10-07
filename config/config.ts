@@ -95,7 +95,7 @@ async function configurePragmaOnce(configMenu: ConfigMenu): Promise<void> {
     await configurePragmaOnce(configMenu);
 }
 
-function generateConfiguration(
+function generateCConfiguration(
     configMenu: ConfigMenu,
     preset: Preset | undefined,
 ): string {
@@ -116,7 +116,7 @@ function generateConfiguration(
         } else if (typeof (configItem.value) == "string") {
             config += `#define ${configItem.name} "${configItem.value}"\n`;
         } else if (typeof (configItem.value) == "object") {
-            config += generateConfiguration(
+            config += generateCConfiguration(
                 configItem.value as ConfigMenu,
                 preset,
             );
@@ -128,6 +128,41 @@ function generateConfiguration(
     config += `// End ${configMenu.title}\n\n`;
     return config;
 }
+
+function generateMakefileConfig(
+    configMenu: ConfigMenu,
+    preset: Preset | undefined,
+): string {
+    let config = `# ${configMenu.title}\n`;
+
+    for (let i = 0; i < configMenu.items.length; i++) {
+        const configItem = configMenu.items[i];
+        if (preset && configItem.name in preset) {
+            configItem.value = preset[configItem.name];
+        }
+
+        if (typeof configItem.value === "boolean") {
+            if (configItem.value) {
+                config += `${configItem.name} = 1\n`;
+            } else {
+                config += `# ${configItem.name} = 0\n`;
+            }
+        } else if (typeof configItem.value === "string") {
+            config += `${configItem.name} = ${configItem.value}\n`;
+        } else if (typeof configItem.value === "object") {
+            config += generateMakefileConfig(
+                configItem.value as ConfigMenu,
+                preset,
+            );
+        } else {
+            config += `${configItem.name} = ${configItem.value}\n`;
+        }
+    }
+
+    config += `# End ${configMenu.title}\n\n`;
+    return config;
+}
+
 
 const has = (o: any, k: any) => Object.prototype.hasOwnProperty.call(o, k);
 function mergeDefault(def: any, given: any): any {
@@ -148,6 +183,7 @@ async function main() {
     let auto = false;
     let clean = false;
     let load = undefined;
+    let mode = "c";
 
     let idx = 0;
     while (idx < Deno.args.length) {
@@ -159,6 +195,13 @@ async function main() {
             if (load == undefined && !(Deno.args.length < idx + 1)) {
                 idx++;
                 load = Deno.args[idx];
+            } else {
+                throw new Error("Too many arguments!");
+            }
+        } else if (Deno.args[idx] == "--mode") {
+            if (!(Deno.args.length < idx + 1)) {
+                idx++;
+                mode = Deno.args[idx];
             } else {
                 throw new Error("Too many arguments!");
             }
@@ -230,10 +273,22 @@ async function main() {
         await configurePragmaOnce(configMenu);
     }
 
+    let generated = "";
+    switch (mode) {
+        case "c":
+            generated = "#pragma once\n\n" + generateCConfiguration(configMenu, preset);
+            break;
+        case "makefile":
+            generated = generateMakefileConfig(configMenu, preset);
+            break;
+        default:
+            throw new Error("Invalid mode");
+    }
+
     console.log(`Writing ${configuration.file}...`);
     Deno.writeTextFileSync(
         configuration.file,
-        "#pragma once\n\n" + generateConfiguration(configMenu, preset),
+        generated,
     );
 
     if (!clean) {
