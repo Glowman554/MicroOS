@@ -26,7 +26,7 @@ build_dir nextfs
 build_dir mcc
 build_dir desktop
 build_dir vdoom
-
+	
 (
 	cd pkgs
 	echo export ACCEPT_ALL=1 > all.msh
