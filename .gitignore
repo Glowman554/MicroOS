@@ -24,3 +24,5 @@ config/*.user
 limine-hdd.h
 
 microos.jpg
+
+initrd/*.wav

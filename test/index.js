@@ -79,4 +79,5 @@ setInterval(() => {
       process.exit(0);
     }
   }
+  console.log(screen_to_text(screen));
 }, 1000);

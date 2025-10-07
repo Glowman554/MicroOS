@@ -7,3 +7,5 @@ export COPYRIGHT_YEAR=2022-2025
 
 echo
 echo MicroOS Copyright (C) $COPYRIGHT_YEAR $COPYRIGHT_HOLDER
+free
+file bad-apple.wav
