@@ -1,0 +1,13 @@
+{
+	"directories": [
+		"vdoom"
+	],
+	"mappings": {
+		"src/vdoom.mex": "bin/vdoom.mex",
+		"doom_src/doom1.wad": "vdoom/doom1.wad",
+		"vdoom.fpic": "desktop/icons/programs/vdoom.fpic"
+	},
+	"name": "DOOM",
+	"license": "src/DOOM/DOOMLIC.TXT",
+	"command": "cfggen program vdoom icons/programs/vdoom.fpic"
+}

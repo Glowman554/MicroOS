@@ -1,0 +1,57 @@
+From 217dbb299a97b840e80c810cafea1395b808c469 Mon Sep 17 00:00:00 2001
+From: Glowman554 <glowman434@gmail.com>
+Date: Tue, 6 Aug 2024 16:57:02 +0200
+Subject: [PATCH 1/2] fix backspace and enter keys
+
+---
+ src/DOOM/DOOM.h    | 4 ++--
+ src/DOOM/doomdef.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/DOOM/DOOM.h b/src/DOOM/DOOM.h
+index 47228be..f267f19 100644
+--- a/src/DOOM/DOOM.h
++++ b/src/DOOM/DOOM.h
+@@ -82,7 +82,7 @@ typedef enum
+ {
+     DOOM_KEY_UNKNOWN = -1,
+     DOOM_KEY_TAB = 9,
+-    DOOM_KEY_ENTER = 13,
++    DOOM_KEY_ENTER = '\n',
+     DOOM_KEY_ESCAPE = 27,
+     DOOM_KEY_SPACE = 32,
+     DOOM_KEY_APOSTROPHE = '\'',
+@@ -131,7 +131,7 @@ typedef enum
+     DOOM_KEY_X = 'x',
+     DOOM_KEY_Y = 'y',
+     DOOM_KEY_Z = 'z',
+-    DOOM_KEY_BACKSPACE = 127,
++    DOOM_KEY_BACKSPACE = '\b',
+     DOOM_KEY_CTRL = (0x80 + 0x1d), // Both left and right
+     DOOM_KEY_LEFT_ARROW = 0xac,
+     DOOM_KEY_UP_ARROW = 0xad,
+diff --git a/src/DOOM/doomdef.h b/src/DOOM/doomdef.h
+index 43b7fc2..eb48f6f 100644
+--- a/src/DOOM/doomdef.h
++++ b/src/DOOM/doomdef.h
+@@ -227,7 +227,7 @@ typedef enum
+ #define KEY_UPARROW     0xad
+ #define KEY_DOWNARROW   0xaf
+ #define KEY_ESCAPE      27
+-#define KEY_ENTER       13
++#define KEY_ENTER       '\n'
+ #define KEY_TAB         9
+ #define KEY_F1          (0x80+0x3b)
+ #define KEY_F2          (0x80+0x3c)
+@@ -242,7 +242,7 @@ typedef enum
+ #define KEY_F11         (0x80+0x57)
+ #define KEY_F12         (0x80+0x58)
+ 
+-#define KEY_BACKSPACE   127
++#define KEY_BACKSPACE   '\b'
+ #define KEY_PAUSE       0xff
+ 
+ #define KEY_EQUALS      0x3d
+-- 
+2.43.0
+

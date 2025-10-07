@@ -1,0 +1,43 @@
+cfggen
+
+cfggen program vflvm icons/programs/vflvm.fpic
+cfggen program vterminal icons/programs/vterminal.fpic
+cfggen program explorer icons/programs/explorer/explorer.fpic
+cfggen program imgview icons/programs/imgview.fpic
+cfggen program vedit icons/programs/vedit.fpic
+cfggen program taskmgr icons/programs/taskmgr.fpic
+cfggen program vlinux icons/programs/vlinux.fpic
+cfggen program sysctl icons/programs/sysctl/sysctl.fpic
+cfggen program netinfo icons/programs/netinfo.fpic
+
+cfggen extension flbb vflvm
+
+cfggen extension fpic imgview
+cfggen extension mbif imgview
+cfggen extension bmp imgview
+
+cfggen extension md vedit
+cfggen extension txt vedit
+cfggen extension cfg vedit
+cfggen extension msh vedit
+cfggen extension c vedit
+cfggen extension asm vedit
+
+cfggen extension img vlinux
+
+cfggen shortcut bin/tic_tac_toe.flbb icons/programs/tic_tac_toe/tic_tac_toe.fpic
+
+echo Welcome to MicroGUI!
+echo
+echo This desktop works a little bit different than for example the Windows Desktop.
+echo The most important thing to get started is that you understand how focus works.
+echo
+echo You can tell if a window has focus by looking at it's border color. If the border color is cyan then the window is focused.
+echo To focus a window either press on the title bar or on the icon in the task bar.
+echo
+echo To launch programs using the icons on the desktop, the desktop needs to be focused.
+echo To focus the desktop you need to press on the left icon in the task bar.
+echo You can tell if the desktop is focused or not by looking at the color of the task bar.
+echo If the task bar color is cyan then the desktop is focused and the icons can be used.
+echo Just use the mouse to click the icon you want to launch.
+echo
