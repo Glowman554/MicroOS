@@ -1,7 +1,7 @@
 {
     "TEXT_MODE_EMULATION": true,
     "STATUS_BAR": false,
-    "RAW_FRAMEBUFFER_ACCESS": false,
+    "RAW_FRAMEBUFFER_ACCESS": true,
     "FULL_SCREEN_TERMINAL": true,
     "SMP": true,
     "PARSE_MADT": true
