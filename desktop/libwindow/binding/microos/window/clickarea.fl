@@ -19,3 +19,18 @@ function check_click_area_window(int x, int y, int width, int height, int[] mous
         }
     }
 }
+
+function check_click_area_continuos_window(int x, int y, int width, int height, int[] mouse_info) -> int {
+    // draw_line_window(x, y, x + width, y + height, window_color_encode(255, 0, 0));
+
+    if mouse_info[mouse_info_BL] &
+        (mouse_info[mouse_info_X] >= x) &
+        (mouse_info[mouse_info_X] <= (x + width)) &
+        (mouse_info[mouse_info_Y] >= y) &
+        (mouse_info[mouse_info_Y] <= (y + height)) {
+            
+        return 1;
+    }
+
+    return 0;
+}

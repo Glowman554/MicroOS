@@ -26,6 +26,7 @@ cfggen extension asm vedit
 cfggen extension img vlinux
 
 cfggen shortcut bin/tic_tac_toe.flbb icons/programs/tic_tac_toe/tic_tac_toe.fpic
+cfggen shortcut bin/paint.flbb icons/programs/paint.fpic
 
 echo Welcome to MicroGUI!
 echo

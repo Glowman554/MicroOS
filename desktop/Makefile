@@ -18,6 +18,7 @@ all:
 	make -C netinfo prog
 
 	make -C tic_tac_toe prog
+	make -C paint prog
 
 clean:
 	make -C libwindow clean
@@ -36,6 +37,7 @@ clean:
 	make -C netinfo clean
 
 	make -C tic_tac_toe clean
+	make -C paint clean
 
 
 compile_flags.txt:
@@ -55,3 +57,4 @@ compile_flags.txt:
 	make -C netinfo compile_flags.txt
 
 	make -C tic_tac_toe compile_flags.txt
+	make -C paint compile_flags.txt

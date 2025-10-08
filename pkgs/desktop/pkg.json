@@ -22,6 +22,7 @@
         "../../desktop/bin/netinfo.mex": "bin/netinfo.mex",
 
         "../../desktop/bin/tic_tac_toe.flbb": "desktop/bin/tic_tac_toe.flbb",
+        "../../desktop/bin/paint.flbb": "desktop/bin/paint.flbb",
 
         "../../desktop/bin/cfggen.mex": "bin/cfggen.mex",
 		"finish.msh": "desktop/finish.msh",
@@ -38,6 +39,7 @@
 		"../../desktop/resources/icons/programs/vedit.fpic": "desktop/icons/programs/vedit.fpic",
 		"../../desktop/resources/icons/programs/taskmgr.fpic": "desktop/icons/programs/taskmgr.fpic",
 		"../../desktop/resources/icons/programs/vlinux.fpic": "desktop/icons/programs/vlinux.fpic",
+		"../../desktop/resources/icons/programs/paint.fpic": "desktop/icons/programs/paint.fpic",
 
 		"../../desktop/resources/icons/programs/explorer/explorer.fpic": "desktop/icons/programs/explorer/explorer.fpic",
 		"../../desktop/resources/icons/programs/explorer/back.fpic": "desktop/icons/programs/explorer/back.fpic",

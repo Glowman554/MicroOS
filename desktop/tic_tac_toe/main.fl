@@ -1,5 +1,5 @@
 $use <stdlib@1.0.8>
-$use <microos@1.0.0>
+$use <microos@1.0.1>
 
 $include <std.fl>
 $include <microos/window.fl>
