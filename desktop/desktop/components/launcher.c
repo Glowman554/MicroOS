@@ -169,3 +169,17 @@ void launch_program_for_file_extension(const char* file) {
         }
     }
 }
+
+void launch_program(char* file) {
+    char* path = search_executable(file);
+
+    for (int i = 0; i < max_launchables; i++) {
+        if (launchables[i].icon) {
+            if (strcmp(launchables[i].executable, path) == 0) {
+                launch_child(launchables[i].executable, launchables[i].env, launchables[i].icon_path, NULL);
+            }
+        }
+    }
+
+    free(path);
+}

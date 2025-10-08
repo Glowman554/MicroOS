@@ -39,6 +39,7 @@ void write(int fd, void* buf, int count, int offset) {
 			}
 
 			if (count > 0x800) {
+				#warning TODO: split message
 				abort();
 			}
 

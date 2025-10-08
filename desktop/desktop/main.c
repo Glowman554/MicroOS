@@ -161,13 +161,17 @@ void check_icon_clicks() {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     init();
 
     redraw_all();
 
     // launch_child("initrd:/bin/explorer.elf", "initrd:/envs/explorer.env", "initrd:/icons/logo.fpic", NULL);
     // launch_child("initrd:/bin/doom.elf", "initrd:/envs/doom.env", "initrd:/icons/doom.fpic", NULL);
+
+    for (int i = 1; i < argc; i++) {
+        launch_program(argv[i]);
+    }
 
     while (true) {
         cleanup_tasks();
