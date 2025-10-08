@@ -62,11 +62,11 @@
                         },
                         {
                             "name": "USER_STACK_SIZE_PAGES",
-                            "value": 4
+                            "value": 16
                         },
                         {
                             "name": "KERNEL_STACK_SIZE_PAGES",
-                            "value": 4
+                            "value": 16
                         },
                         {
                             "name": "MAX_CPU",

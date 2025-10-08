@@ -17,8 +17,8 @@
 
 // Scheduler
 #define MAX_TASKS 32
-#define USER_STACK_SIZE_PAGES 4
-#define KERNEL_STACK_SIZE_PAGES 4
+#define USER_STACK_SIZE_PAGES 16
+#define KERNEL_STACK_SIZE_PAGES 16
 #define MAX_CPU 4
 // End Scheduler
 
