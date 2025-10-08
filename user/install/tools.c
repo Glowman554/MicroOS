@@ -19,7 +19,22 @@ void copy_dir_across_fs(char* src_fs, char* dest_fs, char* path) {
 	dir_t dir;
     dir_at(current_path, 0, &dir);
 	while (!dir.is_none) {
-		copy_file_across_fs(src_fs, dest_fs, path, dir.name);
+		if (dir.type == ENTRY_FILE) {
+			copy_file_across_fs(src_fs, dest_fs, path, dir.name);
+		} else {
+			char new_path[512] = { 0 };
+			strcpy(new_path, path);
+			strcat(new_path, "/");
+			strcat(new_path, dir.name);
+
+			char new_dir[512] = { 0 };
+			strcpy(new_dir, dest_fs);
+			strcat(new_dir, new_path);
+			mkdir(new_dir);
+
+			copy_dir_across_fs(src_fs, dest_fs, new_path);
+		}
+
         dir_at(current_path, dir.idx + 1, &dir);
     }
 }

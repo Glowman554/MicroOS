@@ -56,6 +56,7 @@ int main(int argc, char* argv[]) {
 	create_directory(partition_path, "/fonts");
 	create_directory(partition_path, "/syntax");
 	create_directory(partition_path, "/docs");
+	create_directory(partition_path, "/opt");
 	create_directory(partition_path, "/EFI");
 	create_directory(partition_path, "/EFI/BOOT");
 
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]) {
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/fonts");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/syntax");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/docs");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/opt");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/EFI/BOOT");
 
 	// copy_file_across_fs(getenv("ROOT_FS"), partition_path, "/", "keymap.mkm");
