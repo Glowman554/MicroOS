@@ -35,6 +35,8 @@ void socket_disconnect(socket_t* socket);
 void socket_send(socket_t* socket, uint8_t* data, uint32_t size);
 int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size);
 
+void socket_set_local_port(socket_t* socket, uint16_t port);
+
 void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size);
 
 int socket_manager_alloc();

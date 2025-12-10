@@ -1,3 +1,4 @@
+#include "net/stack.h"
 #include <net/udp.h>
 
 #include <memory/vmm.h>
@@ -71,6 +72,11 @@ udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 		return socket;
 	}
 	return NULL;
+}
+
+void udp_set_local_port(udp_socket_t* socket, uint16_t port) {
+	debugf("Setting local port to %d", port);
+	socket->local_port = BSWAP16(port);
 }
 
 #if 0

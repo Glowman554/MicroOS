@@ -46,6 +46,8 @@ void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size);
 udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint16_t port);
 udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port);
 
+void udp_set_local_port(udp_socket_t* socket, uint16_t port);
+
 void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);
 
 void udp_init(network_stack_t* stack);

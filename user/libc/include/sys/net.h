@@ -17,6 +17,7 @@ int connect(int nic, async_t* async, int type, ip_u ip, uint16_t port);
 void disconnect(int sock);
 void send(int sock, uint8_t* data, int size);
 int recv(int sock, async_t* async, uint8_t* data, int size);
+void set_local_port(int sock, uint16_t port);
 
 mac_u ipv4_resolve_route(int nic, async_t* async, ip_u dest_ip);
 

@@ -75,6 +75,7 @@ void init_syscalls() {
 #endif
 #ifdef NETWORK_STACK
 	register_syscall(SYS_IPV4_RESOLVE_ROUTE_ID, sys_ipv4_resolve_route);
+	register_syscall(SYS_SOCK_SET_LOCAL_PORT_ID, sys_sock_set_local_port);
 #endif
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);

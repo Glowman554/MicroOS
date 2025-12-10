@@ -33,4 +33,9 @@ mac_u ipv4_resolve_route(int nic, async_t* async, ip_u dest_ip) {
 	asm volatile("int $0x30" :: "a"(SYS_IPV4_RESOLVE_ROUTE_ID), "b"(nic), "c"(async), "d"(dest_ip), "S"(&ret));
 	return ret;
 }
+
+void set_local_port(int sock, uint16_t port) {
+	asm volatile("int $0x30" :: "a"(SYS_SOCK_SET_LOCAL_PORT_ID), "b"(sock), "c"(port));
+}
+
 #pragma GCC pop_options

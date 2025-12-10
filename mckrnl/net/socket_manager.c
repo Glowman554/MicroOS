@@ -153,6 +153,21 @@ int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size) 
 	return 0;
 }
 
+void socket_set_local_port(socket_t* socket, uint16_t port) {
+	switch (socket->socket_type) {
+		case SOCKET_UDP:
+			udp_set_local_port(socket->udp_socket, port);
+			break;
+		#ifdef TCP
+		case SOCKET_TCP:
+			udp_set_local_port(socket->tcp_socket, port);
+			break;
+		#endif
+		default:
+			invalid();
+	}
+}
+
 int socket_manager_alloc() {
 	return ++global_socket_manager->curr_socket;
 }

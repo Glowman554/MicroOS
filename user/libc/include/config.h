@@ -52,6 +52,7 @@
 #define SYS_THREAD_ID 42
 #define SYS_SET_TERM_ID 43
 #define SYS_IPV4_RESOLVE_ROUTE_ID 44
+#define SYS_SOCK_SET_LOCAL_PORT_ID 45
 // End Syscalls
 
 // End LibC configuration

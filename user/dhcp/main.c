@@ -193,6 +193,7 @@ int main(int argc, char* argv[]) {
 	printf("dhcp: MAC: %x:%x:%x:%x:%x:%x\n", config.mac.mac_p[0], config.mac.mac_p[1], config.mac.mac_p[2], config.mac.mac_p[3], config.mac.mac_p[4], config.mac.mac_p[5]);
 
     int socket = sync_connect(nic_id, SOCKET_UDP, (ip_u) {.ip = 0xffffffff}, 67);
+	set_local_port(socket, 68);
     ip_u ip = dhcp_request(socket, transaction_identifier, hostname, config.mac);
     ip_configuration_t ipconfig = dhcp_request_ip(socket, ip, transaction_identifier, hostname, config.mac);
     disconnect(socket);

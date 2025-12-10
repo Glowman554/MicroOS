@@ -342,6 +342,14 @@
 				"ip",
 				"&mac (return)"
 			]
+		},
+		{
+			"name": "SYS_SOCK_SET_LOCAL_PORT",
+			"arguments": [
+				"0x2d",
+				"socket_id",
+				"port"
+			]
 		}
 	]
 }

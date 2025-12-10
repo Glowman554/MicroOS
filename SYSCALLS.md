@@ -44,3 +44,4 @@
 | SYS_THREAD | 0x2a | entry | pid (return) | - | - | - |
 | SYS_SET_TERM | 0x2b | pid | term | - | - | - |
 | SYS_IPV4_RESOLVE_ROUTE | 0x2c | nic | &async | ip | &mac (return) | - |
+| SYS_SOCK_SET_LOCAL_PORT | 0x2d | socket_id | port | - | - | - |
