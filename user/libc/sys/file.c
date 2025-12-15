@@ -4,6 +4,7 @@
 
 #include <ipc.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 int open(char* path, int flags) {
 	int fd = -1;
@@ -23,30 +24,41 @@ void read(int fd, void* buf, int count, int offset) {
 				buffer[i] = async_getc();
 			}
 		}
-	} else {
-	asm volatile("int $0x30" : : "a"(SYS_READ_ID), "b"(fd), "c"(buf), "d"(count), "S"(offset));
+		return;
 	}
+	
+	asm volatile("int $0x30" : : "a"(SYS_READ_ID), "b"(fd), "c"(buf), "d"(count), "S"(offset));
 }
 
 bool voutput_ipc_initialised = false;
 
+#define VOUTPUT_MAX_CHUNK 0x800
+void write_vterm(void* buf, int count) {
+	if (!voutput_ipc_initialised) {
+		ipc_init(IPC_CONNECTION_VOUTPUT);
+		voutput_ipc_initialised = true;
+	}
+
+	uint8_t* p = (uint8_t*) buf;
+
+	while (count > 0) {
+		int chunk = count > VOUTPUT_MAX_CHUNK ? VOUTPUT_MAX_CHUNK : count;
+
+		ipc_message_send(IPC_CONNECTION_VOUTPUT, p, chunk);
+
+		p += chunk;
+		count -= chunk;
+	}
+}
+
 void write(int fd, void* buf, int count, int offset) {
 	if (fd == 1 || fd == 2) {
 		if (getenv("VTERM") && *getenv("VTERM") == '1') {
-			if (!voutput_ipc_initialised) {
-				ipc_init(IPC_CONNECTION_VOUTPUT);
-				voutput_ipc_initialised = true;
-			}
-
-			if (count > 0x800) {
-				#warning TODO: split message
-				abort();
-			}
-
-			ipc_message_send(IPC_CONNECTION_VOUTPUT, buf, count);
+			write_vterm(buf, count);
 			return;
 		}
 	}
+	
 	asm volatile("int $0x30" : : "a"(SYS_WRITE_ID), "b"(fd), "c"(buf), "d"(count), "S"(offset));
 }
 
