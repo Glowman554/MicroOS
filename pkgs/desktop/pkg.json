@@ -7,7 +7,8 @@
 		"desktop/icons/programs",
 		"desktop/icons/programs/explorer",
 		"desktop/icons/programs/sysctl",
-		"desktop/icons/programs/tic_tac_toe"
+		"desktop/icons/programs/tic_tac_toe",
+		"desktop/icons/programs/netinfo"
 	],
 	"mappings": {
         "../../desktop/bin/desktop.mex": "bin/desktop.mex",
@@ -50,7 +51,8 @@
 		"../../desktop/resources/icons/programs/sysctl/reboot.fpic": "desktop/icons/programs/sysctl/reboot.fpic",
 		"../../desktop/resources/icons/programs/sysctl/shutdown.fpic": "desktop/icons/programs/sysctl/shutdown.fpic",
 
-		"../../desktop/resources/icons/programs/netinfo.fpic": "desktop/icons/programs/netinfo.fpic",
+		"../../desktop/resources/icons/programs/netinfo/netinfo.fpic": "desktop/icons/programs/netinfo/netinfo.fpic",
+		"../../desktop/resources/icons/programs/netinfo/dhcp.fpic": "desktop/icons/programs/netinfo/dhcp.fpic",
 
 		"../../desktop/resources/icons/programs/tic_tac_toe/empty.fpic": "desktop/icons/programs/tic_tac_toe/empty.fpic",
 		"../../desktop/resources/icons/programs/tic_tac_toe/o.fpic": "desktop/icons/programs/tic_tac_toe/o.fpic",

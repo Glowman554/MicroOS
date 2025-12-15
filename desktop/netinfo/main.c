@@ -3,7 +3,10 @@
 #include <window/fpic.h>
 #include <window/clickarea.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/file.h>
+#include <sys/spawn.h>
+#include <buildin/path.h>
 #include <net/ipv4.h>
 
 #define BGCOLOR 0x0
@@ -14,6 +17,9 @@ fpic_image_t* up_arrow;
 click_area_t up_arrow_area;
 fpic_image_t* down_arrow;
 click_area_t down_arrow_area;
+
+fpic_image_t* dhcp_button;
+click_area_t dhcp_button_area;
 
 int interface = 0;
 
@@ -35,6 +41,12 @@ void draw() {
     down_arrow_area.width = 16;
     down_arrow_area.height = 16;
     draw_fpic_window(down_arrow, down_arrow_area.x, down_arrow_area.y);
+
+    dhcp_button_area.x = window->window_width - 16;
+    dhcp_button_area.y = 32;
+    dhcp_button_area.width = 16;
+    dhcp_button_area.height = 16;
+    draw_fpic_window(dhcp_button, dhcp_button_area.x, dhcp_button_area.y);
 
     char buffer[128] = { 0 };
     sprintf(buffer, "dev:nic%d", interface);
@@ -79,13 +91,14 @@ void draw() {
     line += 1;
 }
 
-int main() {
+int main(int argc, char* argv[], const char* envp[]) {
     window_init(200, 400, 50, 50, "Network info");
 
     font = load_psf1_font("dev:font");
 
     up_arrow = load_fpic_window("icons/programs/explorer/up_arrow.fpic");
     down_arrow = load_fpic_window("icons/programs/explorer/down_arrow.fpic");
+    dhcp_button = load_fpic_window("icons/programs/netinfo/dhcp.fpic");
 
     while (true) {
         window_optimize();
@@ -105,6 +118,33 @@ int main() {
         if (check_click_area_window(&down_arrow_area, &info)) {
             interface++;
             draw();
+        }
+
+        if (check_click_area_window(&dhcp_button_area, &info)) {
+            char interface_str[8] = { 0 };
+            sprintf(interface_str, "%d", interface);
+
+            char* exec = search_executable("dhcp");
+            if (exec == NULL) {
+                printf("Could not find dhcp in PATH!\n");
+                return -1;
+            }
+        
+            const char* dhcp_argv[] = {
+                "dhcp",
+                "-i",
+                interface_str,
+                NULL
+            };
+
+            int pid = spawn(exec, dhcp_argv, envp);
+            while (get_proc_info(pid)) {
+                yield();
+            }
+
+    	    free(exec);
+
+            window->dirty = true;
         }
     }
 }

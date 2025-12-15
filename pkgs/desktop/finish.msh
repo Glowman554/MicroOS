@@ -8,7 +8,7 @@ cfggen program vedit icons/programs/vedit.fpic
 cfggen program taskmgr icons/programs/taskmgr.fpic
 cfggen program vlinux icons/programs/vlinux.fpic
 cfggen program sysctl icons/programs/sysctl/sysctl.fpic
-cfggen program netinfo icons/programs/netinfo.fpic
+cfggen program netinfo icons/programs/netinfo/netinfo.fpic
 
 cfggen extension flbb vflvm
 
