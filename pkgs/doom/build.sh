@@ -9,6 +9,7 @@ else
 		cd doom_src
 		git am < ../0001-fix-backspace-and-enter-keys.patch
 		git am < ../0002-allow-ROOT_FS-instead-of-HOME-and-DOOMWADDIR.patch
+		git am < ../0001-Fixing-bool-type-for-new-gcc-g-versions.patch
 	)
     cp doom_src/src/DOOM src/ -rfv
 fi

@@ -1,0 +1,37 @@
+From 1814f70ec5d662ad5a4e41e8e6ab1e7346efa379 Mon Sep 17 00:00:00 2001
+From: Glowman554 <vossjanick62@gmail.com>
+Date: Mon, 15 Dec 2025 13:32:58 +0100
+Subject: [PATCH] Fixing bool type for new gcc/g++ versions
+
+---
+ src/DOOM/doomtype.h | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/src/DOOM/doomtype.h b/src/DOOM/doomtype.h
+index f398dc3..4b51dcd 100644
+--- a/src/DOOM/doomtype.h
++++ b/src/DOOM/doomtype.h
+@@ -29,13 +29,14 @@
+ typedef bool doom_boolean;
+ #else
+ #if !defined(false) && !defined(true)
+-typedef enum
+-{
+-    false, true
+-} doom_boolean;
+-#else
+-typedef int doom_boolean;
++//typedef enum
++//{
++//    false, true
++//} doom_boolean;
++#define false 0
++#define true 1
+ #endif
++typedef int doom_boolean;
+ #endif
+ 
+ 
+-- 
+2.51.0
+
