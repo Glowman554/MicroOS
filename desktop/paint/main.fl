@@ -113,6 +113,8 @@ function check_input(int[] mouse_info) -> void {
             }
 
             write_fpic(canvas, CANVAS_SIZE_X, CANVAS_SIZE_Y, path);
+            window_open_prog_request(path);
+
             draw();
         } else if key == 'c' {
             // clear
