@@ -18,6 +18,12 @@ typedef struct icmp_provider {
 	ipv4_handler_t handler;
 } icmp_provider_t;
 
+typedef struct icmp_async_answer {
+	struct ipv4_handler* handler;
+	ip_u srcIP;
+	icmp_message_t icmp;	
+} icmp_async_answer_t;
+
 void icmp_send_echo_request(network_stack_t* stack, ip_u ip, mac_u route);
 void icmp_send_echo_request_and_wait(network_stack_t* stack, async_t* async, ip_u ip, mac_u route);
 

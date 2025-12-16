@@ -25,28 +25,37 @@ void vlan_init(driver_t* driver) {
     register_nic_driver(&vlan->driver);
 }
 
-void vlan_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
+void vlan_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size) {
     vlan_driver_t* vlan = (vlan_driver_t*) driver;
 
-    uint8_t* newData = vmm_alloc(TO_PAGES(size + 4));
+    switch (async->state) {
+        case STATE_INIT:
+        {
+            uint8_t* newData = vmm_alloc(TO_PAGES(size + 4));
 
-    ether_frame_header_t* oldFrame = (ether_frame_header_t*) data;
-    ether_frame_header_vlan_t* newFrame = (ether_frame_header_vlan_t*) newData;
+            ether_frame_header_t* oldFrame = (ether_frame_header_t*) data;
+            ether_frame_header_vlan_t* newFrame = (ether_frame_header_vlan_t*) newData;
 
-    memcpy(newData, data, 12);
+            memcpy(newData, data, 12);
 
-    newFrame->dest_mac_be = oldFrame->dest_mac_be;
-    newFrame->src_mac_be = oldFrame->src_mac_be;
-    newFrame->ether_type_be = oldFrame->ether_type_be;
-    newFrame->tpid_be = BSWAP16(0x8100);
-    newFrame->tci_be = BSWAP16(vlan->vlanid & 0x0FFF);
+            newFrame->dest_mac_be = oldFrame->dest_mac_be;
+            newFrame->src_mac_be = oldFrame->src_mac_be;
+            newFrame->ether_type_be = oldFrame->ether_type_be;
+            newFrame->tpid_be = BSWAP16(0x8100);
+            newFrame->tci_be = BSWAP16(vlan->vlanid & 0x0FFF);
 
-    memcpy(newData + 16, data + 12, size - 12);
+            memcpy(newData + 16, data + 12, size - 12);
 
-    nic_driver_t* p = get_nic_driver(vlan->parent);
-    p->send(p, newData, size + 4);
+            nic_driver_t* p = get_nic_driver(vlan->parent);
+            send_packet(p, newData, size + 4);
 
-    vmm_free(newData, TO_PAGES(size + 4));
+            vmm_free(newData, TO_PAGES(size + 4));
+            async->state = STATE_DONE;
+        }
+        break;
+    }
+
+ 
 }
 
 void vlan_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, uint8_t* payload, uint32_t size) {

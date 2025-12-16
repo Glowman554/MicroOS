@@ -117,29 +117,37 @@ void am79C973_init(driver_t* driver) {
 	register_nic_driver((nic_driver_t*) am_driver);
 }
 
-void am79C973_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
+void am79C973_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size) {
 	am79C973_driver_t* am_driver = (am79C973_driver_t*) driver;
-	am_driver->init_block->logical_address = driver->ip_config.ip.ip;
 
-	uint16_t register_data_port = am_driver->base_port + 0x10;
-	uint16_t register_address_port = am_driver->base_port + 0x12;
+	switch (async->state) {
+		case STATE_INIT:
+			{
+				am_driver->init_block->logical_address = driver->ip_config.ip.ip;
 
-	int send_descriptor = am_driver->current_send_buffer;
-	am_driver->current_send_buffer = (am_driver->current_send_buffer + 1) % 8;
+				uint16_t register_data_port = am_driver->base_port + 0x10;
+				uint16_t register_address_port = am_driver->base_port + 0x12;
 
-	if (size > 1518) {
-		debugf("am79C973: packet too long");
-		size = 1518;
+				int send_descriptor = am_driver->current_send_buffer;
+				am_driver->current_send_buffer = (am_driver->current_send_buffer + 1) % 8;
+
+				if (size > 1518) {
+					debugf("am79C973: packet too long");
+					size = 1518;
+				}
+
+				memcpy((uint8_t*) am_driver->send_buffer_descr[send_descriptor].address, data, size);
+				
+				am_driver->send_buffer_descr[send_descriptor].avail = 0;
+				am_driver->send_buffer_descr[send_descriptor].flags2 = 0;
+				am_driver->send_buffer_descr[send_descriptor].flags = 0x8300F000 | ((uint16_t)((-size) & 0xFFF));
+
+				outw(register_address_port, 0x0);
+				outw(register_data_port, 0x48);
+				async->state = STATE_DONE;
+			}
+			break;
 	}
-
-	memcpy((uint8_t*) am_driver->send_buffer_descr[send_descriptor].address, data, size);
-	
-	am_driver->send_buffer_descr[send_descriptor].avail = 0;
-	am_driver->send_buffer_descr[send_descriptor].flags2 = 0;
-	am_driver->send_buffer_descr[send_descriptor].flags = 0x8300F000 | ((uint16_t)((-size) & 0xFFF));
-
-	outw(register_address_port, 0x0);
-	outw(register_data_port, 0x48);
 }
 
 void am79C973_stack(nic_driver_t* driver, void* stack) {}

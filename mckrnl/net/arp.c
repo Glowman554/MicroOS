@@ -41,6 +41,10 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, mac_u src_mac, uint8_t*
 						arp->dest_mac = arp->src_mac;
 						arp->src_ip = handler->stack->driver->ip_config.ip.ip;
 						arp->src_mac = handler->stack->driver->mac.mac;
+
+						ip_u dest_ip = { .ip = arp->dest_ip };
+						debugf("Sending ARP response to %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
+						
 						etherframe_send(&handler->stack->arp->handler, handler->stack, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
 					}
 					break;

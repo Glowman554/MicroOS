@@ -108,19 +108,29 @@ void e1000_init(driver_t* driver) {
 	register_nic_driver((nic_driver_t*) e1000_driver);
 }
 
-void e1000_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
+void e1000_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size) {
 	e1000_driver_t* e1000_driver = (e1000_driver_t*) driver;
+	send_data_t* send_data = (send_data_t*) async->data;
 
-	e1000_driver->tx_descs[e1000_driver->tx_cur]->addr = (uint32_t) data;
-	e1000_driver->tx_descs[e1000_driver->tx_cur]->length = size;
-	e1000_driver->tx_descs[e1000_driver->tx_cur]->cmd = CMD_EOP | CMD_IFCS | CMD_RS;
-	e1000_driver->tx_descs[e1000_driver->tx_cur]->status = 0;
+	switch (async->state) {
+		case STATE_INIT:
+			e1000_driver->tx_descs[e1000_driver->tx_cur]->addr = (uint32_t) data;
+			e1000_driver->tx_descs[e1000_driver->tx_cur]->length = size;
+			e1000_driver->tx_descs[e1000_driver->tx_cur]->cmd = CMD_EOP | CMD_IFCS | CMD_RS;
+			e1000_driver->tx_descs[e1000_driver->tx_cur]->status = 0;
 
-	uint8_t old_cur = e1000_driver->tx_cur;
-	e1000_driver->tx_cur = (e1000_driver->tx_cur + 1) % e1000_NUM_TX_DESC;
-	e1000_write_command(e1000_driver, REG_TXDESCTAIL, e1000_driver->tx_cur);
-
-	while(!(e1000_driver->tx_descs[old_cur]->status & 0xff));
+			send_data->driver_specific = e1000_driver->tx_cur;
+			e1000_driver->tx_cur = (e1000_driver->tx_cur + 1) % e1000_NUM_TX_DESC;
+			e1000_write_command(e1000_driver, REG_TXDESCTAIL, e1000_driver->tx_cur);
+			async->state = STATE_WAIT;
+			break;
+			
+		case STATE_WAIT:
+			if (e1000_driver->tx_descs[send_data->driver_specific]->status & 0xff) {
+				async->state = STATE_DONE;
+			}
+			break;	
+	}
 }
 
 void e1000_stack(nic_driver_t* driver, void* stack) {}

@@ -114,50 +114,56 @@ mac_u ne2k_get_mac(ne2k_driver_t* driver) {
     return mac;
 }
 
-void ne2k_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
+void ne2k_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size) {
     ne2k_driver_t* ne_driver = (ne2k_driver_t*) driver;
 
+    switch (async->state) {
+        case STATE_INIT:
+            if (size > 0x700) {
+                debugf("ne2k: packet too long");
+                size = 0x700;
+            }
 
-    if (size > 0x700) {
-		debugf("ne2k: packet too long");
-        size = 0x700;
+
+            outb(ne_driver->io_base + NE_RSAR0, 0);
+            outb(ne_driver->io_base + NE_RSAR1, PAGE_TX);
+
+            outb(ne_driver->io_base + NE_RBCR0, (size > 64) ? (size & 0xff) : 64);
+            outb(ne_driver->io_base + NE_RBCR1, size >> 8);
+
+            outb(ne_driver->io_base + NE_CMD, 0x12);
+
+            uint16_t* p = (uint16_t*) data;
+            int i;
+            for (i = 0; i < size; i += 2) {
+                outw(ne_driver->io_base + NE_DATA, p[i / 2]);
+            }
+
+            if (size & 1) {
+                outb(ne_driver->io_base + NE_DATA, p[size / 2]);
+            }
+
+            for (; i < 64; i += 2) {
+                outw(ne_driver->io_base + NE_DATA, 0);
+            }
+            async->state = STATE_WAIT;
+            break;
+            
+        case STATE_WAIT:
+            if (inb(ne_driver->io_base + NE_ISR) & 0x40) {
+                outb(ne_driver->io_base + NE_ISR, 0x40);
+
+                outb(ne_driver->io_base + NE_TBCR0, (size > 64) ? (size & 0xff) : 64);
+                outb(ne_driver->io_base + NE_TBCR1, size >> 8);
+
+                outb(ne_driver->io_base + NE_TPSR, PAGE_TX);
+
+                outb(ne_driver->io_base + NE_CMD, 0x26);
+                
+                async->state = STATE_DONE;
+            }
+            break;
     }
-
-    asm volatile("cli");
-
-    outb(ne_driver->io_base + NE_RSAR0, 0);
-    outb(ne_driver->io_base + NE_RSAR1, PAGE_TX);
-
-    outb(ne_driver->io_base + NE_RBCR0, (size > 64) ? (size & 0xff) : 64);
-    outb(ne_driver->io_base + NE_RBCR1, size >> 8);
-
-    outb(ne_driver->io_base + NE_CMD, 0x12);
-
-    uint16_t* p = (uint16_t*) data;
-    int i;
-    for (i = 0; i < size; i += 2) {
-        outw(ne_driver->io_base + NE_DATA, p[i / 2]);
-    }
-
-    if (size & 1) {
-        outb(ne_driver->io_base + NE_DATA, p[size / 2]);
-    }
-
-    for (; i < 64; i += 2) {
-        outw(ne_driver->io_base + NE_DATA, 0);
-    }
-
-    while (!(inb(ne_driver->io_base + NE_ISR) & 0x40));
-    outb(ne_driver->io_base + NE_ISR, 0x40);
-
-    outb(ne_driver->io_base + NE_TBCR0, (size > 64) ? (size & 0xff) : 64);
-    outb(ne_driver->io_base + NE_TBCR1, size >> 8);
-
-    outb(ne_driver->io_base + NE_TPSR, PAGE_TX);
-
-    outb(ne_driver->io_base + NE_CMD, 0x26);
-
-    asm volatile("sti");
 }
 
 void ne2k_stack(nic_driver_t* driver, void* stack) {}

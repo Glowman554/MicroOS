@@ -17,8 +17,16 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 
 mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 	ip_u route = dest_ip;
-	if((dest_ip.ip & stack->driver->ip_config.ip.ip) != (stack->driver->ip_config.ip.ip & stack->driver->ip_config.subnet_mask.ip)) {
+	if((dest_ip.ip & stack->driver->ip_config.subnet_mask.ip) != (stack->driver->ip_config.ip.ip & stack->driver->ip_config.subnet_mask.ip)) {
 		route = stack->driver->ip_config.gateway_ip;
+
+		if (async->state == STATE_INIT) {
+			debugf("IPv4: Resolving route for %d.%d.%d.%d via gateway %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3], route.ip_p[0], route.ip_p[1], route.ip_p[2], route.ip_p[3]);
+		}
+	} else {
+		if (async->state == STATE_INIT) {
+			debugf("IPv4: Resolving route for %d.%d.%d.%d directly", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
+		}
 	}
 
 	return arp_resolve(stack, async, route);

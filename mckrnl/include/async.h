@@ -9,6 +9,7 @@
 
 typedef struct async {
     uint8_t state;
+    void* data;
 } async_t;
 
 #define is_resolved(a) ((a)->state == STATE_DONE)

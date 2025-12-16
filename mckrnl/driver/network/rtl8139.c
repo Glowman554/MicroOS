@@ -78,18 +78,20 @@ void rtl8139_init(driver_t* driver) {
 	register_nic_driver((nic_driver_t*) rtl_driver);
 }
 
-void rtl8139_send(nic_driver_t* driver, uint8_t* data, uint32_t size) {
+void rtl8139_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size) {
 	rtl8139_driver_t* rtl_driver = (rtl8139_driver_t*) driver;
 
-	asm volatile("cli");
+	switch (async->state) {
+		case STATE_INIT:
+			outl(rtl_driver->io_base + TSAD_array[rtl_driver->tx_cur], (uint32_t) data);
+			outl(rtl_driver->io_base + TSD_array[rtl_driver->tx_cur++], size);
 
-	outl(rtl_driver->io_base + TSAD_array[rtl_driver->tx_cur], (uint32_t) data);
-	outl(rtl_driver->io_base + TSD_array[rtl_driver->tx_cur++], size);
-	
-	if(rtl_driver->tx_cur > 3) {
-		rtl_driver->tx_cur = 0;
+			if(rtl_driver->tx_cur > 3) {
+				rtl_driver->tx_cur = 0;
+			}
+			async->state = STATE_DONE;
+			break;	
 	}
-	asm volatile("sti");
 }
 
 void rtl8139_stack(nic_driver_t* driver, void* stack) {}

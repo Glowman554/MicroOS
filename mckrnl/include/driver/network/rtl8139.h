@@ -34,7 +34,7 @@ bool rtl8139_is_device_present(driver_t* driver);
 char* rtl8139_get_device_name(driver_t* driver);
 void rtl8139_init(driver_t* driver);
 
-void rtl8139_send(nic_driver_t* driver, uint8_t* data, uint32_t size);
+void rtl8139_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t size);
 void rtl8139_stack(nic_driver_t* driver, void* stack);
 
 cpu_registers_t* rtl8139_interrupt(cpu_registers_t* regs, void* data);

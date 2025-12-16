@@ -1,8 +1,8 @@
-#include "driver/apic/lapic.h"
 #include <driver/timer/pit.h>
 
 #include <interrupts/interrupts.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/async.h>
 #include <utils/io.h>
 #include <stdio.h>
 
@@ -40,6 +40,8 @@ cpu_registers_t* pit_interrupt_handler(cpu_registers_t* registers, void* data) {
 #endif
 	draw_status_bar();
 #endif
+
+	process_async_tasks();
 
 	return schedule(registers, data);	
 }

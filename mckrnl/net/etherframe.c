@@ -24,7 +24,7 @@ void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uin
 	frame->ether_type_be = handler->ether_type_be;
 
 	memcpy(buffer + sizeof(ether_frame_header_t), payload, size);
-	stack->driver->send(stack->driver, buffer, size + sizeof(ether_frame_header_t));
+	send_packet(stack->driver, buffer, size + sizeof(ether_frame_header_t));
 
 	vmm_free(buffer, (sizeof(ether_frame_header_t) + size) / 4096 + 1);
 }
