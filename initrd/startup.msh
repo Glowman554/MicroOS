@@ -1,3 +1,5 @@
+background 2 terminal -e scheduler
+
 clear
 
 figl fonts/speed.figl MicroOS

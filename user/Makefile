@@ -41,6 +41,8 @@ all:
 	make -C ip prog
 	make -C pciinfo prog
 	make -C flvm prog
+	make -C scheduler prog
+	make -C if prog
 
 clean:
 	make -C libc clean
@@ -83,6 +85,8 @@ clean:
 	make -C ip clean
 	make -C pciinfo clean
 	make -C flvm clean
+	make -C scheduler clean
+	make -C if clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -125,3 +129,5 @@ compile_flags.txt:
 	make -C ip compile_flags.txt
 	make -C pciinfo compile_flags.txt
 	make -C flvm compile_flags.txt
+	make -C scheduler compile_flags.txt
+	make -C if compile_flags.txt
