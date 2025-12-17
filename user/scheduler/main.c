@@ -11,7 +11,7 @@
 #define MINUTE 60
 #define HOUR   3600
 
-// #define DEBUG
+#define DEBUG_SCHEDULER
 
 typedef enum {
     JOB_EVERY_MINUTES,
@@ -72,8 +72,8 @@ void run_command(const char* cmd) {
 }
 
 void parse_config(const char* file) {
-#ifdef DEBUG
-    printf("[scheduler] Parsing config file: %s\n", file);
+#ifdef DEBUG_SCHEDULER
+    printf("scheduler: Parsing config file: %s\n", file);
 #endif
 
     FILE* f = fopen(file, "rb");
@@ -119,8 +119,8 @@ void parse_config(const char* file) {
             j->type = JOB_REBOOT;
             read_rest(line + 7, j->command, CMD_LEN);
         
-        #ifdef DEBUG
-            printf("[scheduler] Added reboot job: %s\n", j->command);
+        #ifdef DEBUG_SCHEDULER
+            printf("scheduler: Added reboot job: %s\n", j->command);
         #endif
         } else if (!strncmp(line, "every", 5)) {
             char unit[16] = { 0 };
@@ -134,8 +134,8 @@ void parse_config(const char* file) {
 
             read_rest(q, j->command, CMD_LEN);
 
-        #ifdef DEBUG
-            printf("[scheduler] Added every %d %s job: %s\n", j->value, unit,  j->command);
+        #ifdef DEBUG_SCHEDULER
+            printf("scheduler: Added every %d %s job: %s\n", j->value, unit,  j->command);
         #endif
         } else {
             continue;
@@ -170,6 +170,10 @@ int main(int argc, char* argv[]) {
                 if (now - j->last_run >= j->value * MINUTE) {
                     run_command(j->command);
                     j->last_run = now;
+                } else {
+                #ifdef DEBUG_SCHEDULER
+                    printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * MINUTE - (now - j->last_run));
+                #endif
                 }
                 break;
 
@@ -177,6 +181,10 @@ int main(int argc, char* argv[]) {
                 if (now - j->last_run >= j->value * HOUR) {
                     run_command(j->command);
                     j->last_run = now;
+                } else {
+                #ifdef DEBUG_SCHEDULER
+                    printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * HOUR - (now - j->last_run));
+                #endif
                 }
                 break;
 
