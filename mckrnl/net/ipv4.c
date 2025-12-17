@@ -17,7 +17,7 @@ void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
 
 mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 	ip_u route = dest_ip;
-	if((dest_ip.ip & stack->driver->ip_config.subnet_mask.ip) != (stack->driver->ip_config.ip.ip & stack->driver->ip_config.subnet_mask.ip)) {
+	if((dest_ip.ip & stack->driver->ip_config.subnet_mask.ip) != (stack->driver->ip_config.ip.ip & stack->driver->ip_config.subnet_mask.ip) && dest_ip.ip != 0xffffffff) {
 		route = stack->driver->ip_config.gateway_ip;
 
 		if (async->state == STATE_INIT) {
