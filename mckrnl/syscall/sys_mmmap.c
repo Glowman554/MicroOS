@@ -21,12 +21,9 @@ cpu_registers_t* sys_mmmap(cpu_registers_t* regs) {
 
 	void* old_phys_ptr = vmm_lookup(ptr, get_self()->context);
 	if (old_phys_ptr != NULL) {
-		// Manually register resource since we might be leaking the pointer otherwise
+		// We might be leaking the page
 		// (this might happen since it is not guaranteed that its mapped in both processes)
-		resource_register_self((resource_t) {
-			.dealloc = sys_mmmap_dealloc,
-			.resource = old_phys_ptr
-		});
+		debugf("WARNING: Possible leaked page %x", old_phys_ptr);
 	}
 
 	void* phys_ptr = pmm_alloc();
