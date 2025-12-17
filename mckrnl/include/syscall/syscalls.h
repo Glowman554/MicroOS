@@ -73,3 +73,6 @@ cpu_registers_t* sys_set_term(cpu_registers_t* regs);
 cpu_registers_t* sys_ipv4_resolve_route(cpu_registers_t* regs);
 
 cpu_registers_t* sys_sock_set_local_port(cpu_registers_t* regs);
+
+cpu_registers_t* sys_mmap_mapped(cpu_registers_t* regs);
+

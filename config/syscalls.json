@@ -350,6 +350,14 @@
 				"socket_id",
 				"port"
 			]
+		},
+		{
+			"name": "SYS_MMAP_MAPPED",
+			"arguments": [
+				"0x2e",
+				"addr",
+				"mapped"
+			]
 		}
 	]
 }

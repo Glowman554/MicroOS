@@ -9,3 +9,9 @@ void mmap(void *addr) {
 void mmmap(void* addr, void* addr_rem, int pid) {
 	asm volatile("int $0x30" :: "a"(SYS_MMMAP_ID), "b"(addr), "c"(addr_rem), "d"(pid));
 }
+
+bool mmap_mapped(void* address) {
+	bool mapped;
+	asm volatile("int $0x30" : "=c"(mapped) : "a"(SYS_MMAP_MAPPED_ID), "b"(address));
+	return mapped;
+}

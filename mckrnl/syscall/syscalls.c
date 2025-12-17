@@ -77,6 +77,7 @@ void init_syscalls() {
 	register_syscall(SYS_IPV4_RESOLVE_ROUTE_ID, sys_ipv4_resolve_route);
 	register_syscall(SYS_SOCK_SET_LOCAL_PORT_ID, sys_sock_set_local_port);
 #endif
+	register_syscall(SYS_MMAP_MAPPED_ID, sys_mmap_mapped);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

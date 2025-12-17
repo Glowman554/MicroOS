@@ -5,6 +5,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // #define dbg(...) printf(__VA_ARGS__)
 #define dbg(...)
@@ -29,7 +30,20 @@ bool ipc_init_host(void* ipc_loc) {
 	}
 }
 
+void ipc_wait_for_tunnel(void* ipc_loc) {
+	int timeout = 100;
+	while (!mmap_mapped(ipc_loc)) {
+		timeout--;
+		if (timeout == 0) {
+			printf("IPC connection failed (tunnel did not get mapped)");
+			abort();
+		}
+		yield();
+	}
+}
+
 void ipc_init(void* ipc_loc) {
+	ipc_wait_for_tunnel(ipc_loc);
 	ipc_communication_tunnel_t* tunnel = (ipc_communication_tunnel_t*) ipc_loc;
 
 	while (tunnel->state != IPC_HANDSHAKE_START) {

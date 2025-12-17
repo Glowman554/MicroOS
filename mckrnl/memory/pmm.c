@@ -200,3 +200,8 @@ void pmm_free_range(void* page, int count) {
 
     pmm_usage_unuse(count);
 }
+
+int pmm_is_used(void* page) {
+    uintptr_t index = (uintptr_t)page / 0x1000;
+    return bitmap_test(bitmap, index);
+}
