@@ -12,8 +12,15 @@
 #define TCP_RETRANSMIT_TIMEOUT_MS 50
 #define TCP_RETRANSMIT_MAX_RETRIES 8
 
+#define TCP_CTL_TIMEOUT_MS 300
+#define TCP_CTL_MAX_RETRIES 8
+
 uint32_t tcp_now_ms(void) {
     return global_timer_driver->time_ms(global_timer_driver);
+}
+
+bool tcp_seq_after_eq(uint32_t a, uint32_t b) {
+    return (int32_t)(a - b) >= 0;
 }
 
 void tcp_tx_clear_unacked(tcp_socket_t* socket) {
@@ -104,10 +111,12 @@ const char* tcp_socket_state_str[] = {
 };
 
 void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uint16_t flags) {
+    uint32_t seq_consume = ((flags & (SYN | FIN)) != 0) ? 1u : 0u;
+
     uint32_t seq_at_send = socket->sequence_number;
 
-    uint16_t total_length = size + sizeof(tcp_header_t);
-    uint16_t length_phdr = total_length + sizeof(tcp_pseudo_header_t);
+    uint16_t total_length = (uint16_t)(size + (int)sizeof(tcp_header_t));
+    uint16_t length_phdr = (uint16_t)(total_length + sizeof(tcp_pseudo_header_t));
 
     uint8_t* packet = (uint8_t*) vmm_alloc(TO_PAGES(length_phdr));
 
@@ -118,36 +127,38 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     header->header_size_32 = sizeof(tcp_header_t) / 4;
     header->src_port = socket->local_port;
     header->dst_port = socket->remote_port;
-    
+
     header->ack_number = BSWAP32(socket->ack_number);
     header->sequence_number = BSWAP32(socket->sequence_number);
     header->reserved = 0;
-    header->flags = flags;
+    header->flags = (uint8_t)flags;
     header->window_size = 0xFFFF;
     header->urgent_ptr = 0;
-    
-    header->options = ((flags & SYN) != 0) ? 0xB4050402 : 0;
-    
-    socket->sequence_number += size;
 
-    for(int i = 0; i < size; i++) {
-        buffer2[i] = data[i];
+    header->options = ((flags & SYN) != 0) ? 0xB4050402 : 0;
+
+    if (data != NULL && size > 0) {
+        memcpy(buffer2, data, (size_t)size);
+    } else {
+        size = 0;
     }
 
     if (data != NULL && size > 0) {
         tcp_tx_track_unacked(socket, data, (uint32_t)size, flags, seq_at_send);
     }
-    
+
     pheader->src_ip = socket->local_ip.ip;
     pheader->dst_ip = socket->remote_ip.ip;
     pheader->protocol = 0x0600;
-    pheader->total_length = ((total_length & 0x00FF) << 8) | ((total_length & 0xFF00) >> 8);    
-    
+    pheader->total_length = ((total_length & 0x00FF) << 8) | ((total_length & 0xFF00) >> 8);
+
     header->checksum = 0;
     header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
-    
+
     ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
-	vmm_free(packet, TO_PAGES(length_phdr));
+    vmm_free(packet, TO_PAGES(length_phdr));
+
+    socket->sequence_number += (uint32_t)size + seq_consume;
 }
 
 void tcp_socket_disconnect(tcp_socket_t* socket, async_t* async) {
@@ -258,169 +269,152 @@ tcp_socket_t* tcp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 tcp_socket_t* tcp_listen(network_stack_t* stack, uint16_t port);
 
 void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
-    if (size < 20) {
-		return;
-	}
+    tcp_header_t* tcp = (tcp_header_t*) payload;
 
-	tcp_header_t* tcp = (tcp_header_t*) payload;
+    uint32_t header_bytes = (uint32_t)tcp->header_size_32 * 4;
+    if (header_bytes < 20 || header_bytes > size) {
+        return;
+    }
 
-	tcp_socket_t* socket = NULL;
+    tcp_socket_t* socket = NULL;
 
-	for (int i = 0; i < handler->stack->tcp->num_binds; i++) {
-		if (handler->stack->tcp->binds[i].socket != NULL) {
-		tcp_bind_t bind = handler->stack->tcp->binds[i];
-			if (bind.socket->local_port == tcp->dst_port && bind.socket->local_ip.ip == dstIP.ip && bind.socket->listening) {
-				bind.socket->listening = false;
-				bind.socket->remote_port = tcp->src_port;
-				bind.socket->remote_ip = srcIP;
-				socket = bind.socket;
-				break;
-			}
+    for (int i = 0; i < handler->stack->tcp->num_binds; i++) {
+        if (handler->stack->tcp->binds[i].socket != NULL) {
+            tcp_bind_t bind = handler->stack->tcp->binds[i];
+            if (bind.socket->local_port == tcp->dst_port && bind.socket->local_ip.ip == dstIP.ip && bind.socket->listening) {
+                bind.socket->listening = false;
+                bind.socket->remote_port = tcp->src_port;
+                bind.socket->remote_ip = srcIP;
+                socket = bind.socket;
+                break;
+            }
 
-			if (bind.socket->remote_port == tcp->src_port && bind.socket->remote_ip.ip == srcIP.ip) {
-				socket = bind.socket;
-				break;
-			}
-		}
-	}
-
-    if (socket == NULL) {
-		debugf("TCP message cannot be routed to valid socket!");
-	} else {
-        int prev_state = socket->state;
-        bool reset = false;
-
-        uint32_t header_bytes = (uint32_t)tcp->header_size_32 * 4;
-        if (header_bytes < 20 || header_bytes > size) {
-            return;
-        }
-
-        uint32_t payload_bytes = size - header_bytes;
-        uint8_t* payload_data = payload + header_bytes;
-        uint32_t recv_seq = BSWAP32(tcp->sequence_number);
-        uint32_t recv_ack = BSWAP32(tcp->ack_number);
-
-        if ((tcp->flags & ACK) != 0 && socket->tx_unacked_len != 0) {
-            uint32_t end_seq = socket->tx_unacked_seq + socket->tx_unacked_len;
-            if (recv_ack >= end_seq) {
-                tcp_tx_clear_unacked(socket);
+            if (bind.socket->remote_port == tcp->src_port && bind.socket->remote_ip.ip == srcIP.ip) {
+                socket = bind.socket;
+                break;
             }
         }
+    }
 
-        if ((tcp->flags & RST) != 0) {
-            socket->state = CLOSED;
+    if (socket == NULL) {
+        debugf("TCP message cannot be routed to valid socket!");
+        return;
+    }
+
+    int prev_state = socket->state;
+    bool reset = false;
+
+    uint32_t payload_bytes = size - header_bytes;
+    uint8_t* payload_data = payload + header_bytes;
+    uint32_t recv_seq = BSWAP32(tcp->sequence_number);
+    uint32_t recv_ack = BSWAP32(tcp->ack_number);
+
+    if ((tcp->flags & ACK) != 0 && socket->tx_unacked_len != 0) {
+        uint32_t end_seq = socket->tx_unacked_seq + socket->tx_unacked_len;
+        if (!tcp_seq_after_eq(recv_ack, socket->tx_unacked_seq) || tcp_seq_after_eq(recv_ack, socket->sequence_number + 1)) {
+        } else if (tcp_seq_after_eq(recv_ack, end_seq)) {
+            tcp_tx_clear_unacked(socket);
         }
+    }
 
-        if (socket->state != CLOSED) {
-            switch((tcp->flags) & (SYN | ACK | FIN)) {
-                case SYN:
-                    if(socket -> state == LISTEN) {
-                        here();
-                        todo();
-                    } else {
-                        reset = true;
-                    }
-                    break;
+    if ((tcp->flags & RST) != 0) {
+        socket->state = CLOSED;
+    }
 
-                case SYN | ACK:
-                    if(socket->state == SYN_SENT) {
-                        socket->state = ESTABLISHED;
-                        socket->ack_number = recv_seq + 1;
-                        socket->sequence_number++;
-                        tcp_socket_send_internal(socket, NULL, 0, ACK);
-                    } else {
-                        reset = true;
-                    }
-                    break;
+    if (socket->state != CLOSED) {
+        switch((tcp->flags) & (SYN | ACK | FIN)) {
+            case SYN:
+                reset = true;
+                break;
 
-                case SYN | FIN:
-                case SYN | FIN | ACK:
-                    reset = true;
-                    break;
-
-                case FIN:
-                case FIN | ACK:
-				if (recv_seq != socket->ack_number) {
-					tcp_socket_send_internal(socket, NULL, 0, ACK);
-					break;
-				}
-
-				socket->ack_number = recv_seq + payload_bytes + 1;
-				if(socket->state == ESTABLISHED) {
-					socket->state = CLOSE_WAIT;
-					tcp_socket_send_internal(socket, NULL, 0, ACK);
-					tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
-					socket->sequence_number++;
-				} else if(socket->state == CLOSE_WAIT) {
-					socket->state = CLOSED;
-				} else if(socket->state == FIN_WAIT1 || socket->state == FIN_WAIT2) {
-					socket->state = CLOSED;
-					tcp_socket_send_internal(socket, NULL, 0, ACK);
+            case SYN | ACK:
+                if(socket->state == SYN_SENT) {
+                    socket->state = ESTABLISHED;
+                    socket->ack_number = recv_seq + 1;
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
                 } else {
                     reset = true;
                 }
                 break;
 
-                case ACK:
-                    if(socket->state == SYN_RECEIVED) {
-                        socket->state = ESTABLISHED;
-                    } else if(socket->state == FIN_WAIT1) {
-                        if (recv_ack == socket->sequence_number) {
-                            socket->state = FIN_WAIT2;
-                        }
-                    } else if(socket->state == CLOSE_WAIT) {
-                        socket->state = CLOSED;
-                        break;
-                    }
-                    // Fallthrough since ACK can also carry data
+            case SYN | FIN:
+            case SYN | FIN | ACK:
+                reset = true;
+                break;
 
-                default:
-                    if (payload_bytes == 0) {
-                        break;
-                    }
-
-                    if(recv_seq == socket->ack_number) {
-                        socket->recv(socket, payload_data, (int)payload_bytes);
-                        socket->ack_number += payload_bytes;
-                        tcp_socket_send_internal(socket, NULL, 0, ACK);
-                    } else {
-                        debugf("data in wrong order");
-                        tcp_socket_send_internal(socket, NULL, 0, ACK);
-                    }
-            }
-        }
-        if (prev_state != socket->state) {
-            debugf("tcp: state %s -> %s", tcp_socket_state_str[prev_state], tcp_socket_state_str[socket->state]);
-        }
-
-        if (prev_state != CLOSED && socket->state == CLOSED) {
-            debugf("--- WARNING --- TCP socket transitioned to CLOSED. Ensure socket_disconnect() is called to free resources.");
-        }
-
-        if(reset) {
-            tcp_socket_send_internal(socket, NULL, 0, RST);
-            socket->state = CLOSED;
-        }
-
-        if (socket->state == CLOSED) {
-            tcp_tx_clear_unacked(socket);
-            debugf("socket closed");
-            for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
-                if (socket->stack->tcp->binds[i].socket == socket) {
-                    socket->stack->tcp->binds[i].socket = NULL;
+            case FIN:
+            case FIN | ACK:
+                if (recv_seq != socket->ack_number) {
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
                     break;
                 }
-            }
-            return;
+
+                socket->ack_number = recv_seq + payload_bytes + 1;
+                if(socket->state == ESTABLISHED) {
+                    socket->state = CLOSE_WAIT;
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
+                    tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
+                } else if(socket->state == CLOSE_WAIT) {
+                    socket->state = CLOSED;
+                } else if(socket->state == FIN_WAIT1 || socket->state == FIN_WAIT2) {
+                    socket->state = CLOSED;
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
+                } else {
+                    reset = true;
+                }
+                break;
+
+            case ACK:
+                if(socket->state == SYN_RECEIVED) {
+                    socket->state = ESTABLISHED;
+                } else if(socket->state == FIN_WAIT1) {
+                    if (recv_ack == socket->sequence_number) {
+                        socket->state = FIN_WAIT2;
+                    }
+                } else if(socket->state == CLOSE_WAIT) {
+                    socket->state = CLOSED;
+                    break;
+                }
+                // Fallthrough since ACK can also carry data
+
+            default:
+                if (payload_bytes == 0) {
+                    break;
+                }
+
+                if(recv_seq == socket->ack_number) {
+                    socket->recv(socket, payload_data, (int)payload_bytes);
+                    socket->ack_number += payload_bytes;
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
+                } else {
+                    tcp_socket_send_internal(socket, NULL, 0, ACK);
+                }
         }
+    }
+
+    if (prev_state != socket->state) {
+        debugf("tcp: state %s -> %s", tcp_socket_state_str[prev_state], tcp_socket_state_str[socket->state]);
+    }
+
+    if(reset) {
+        tcp_socket_send_internal(socket, NULL, 0, RST);
+        socket->state = CLOSED;
+    }
+
+    if (socket->state == CLOSED) {
+        tcp_tx_clear_unacked(socket);
+        debugf("socket closed");
+        for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
+            if (socket->stack->tcp->binds[i].socket == socket) {
+                socket->stack->tcp->binds[i].socket = NULL;
+                break;
+            }
+        }
+        return;
     }
 }
 
 void tcp_poll(network_stack_t* stack) {
-    if (stack == NULL || stack->tcp == NULL) {
-        return;
-    }
-
     uint32_t now = tcp_now_ms();
 
     for (int i = 0; i < stack->tcp->num_binds; i++) {
@@ -433,6 +427,24 @@ void tcp_poll(network_stack_t* stack) {
             continue;
         }
 
+        if (s->state == SYN_SENT) {
+            if (s->tx_last_send_ms == 0) {
+                s->tx_last_send_ms = now;
+            }
+            if ((now - s->tx_last_send_ms) >= TCP_CTL_TIMEOUT_MS) {
+                if (s->tx_retries >= TCP_CTL_MAX_RETRIES) {
+                    debugf("tcp: SYN retry limit reached, closing socket");
+                    s->state = CLOSED;
+                    tcp_tx_clear_unacked(s);
+                    continue;
+                }
+                s->tx_last_send_ms = now;
+                s->tx_retries++;
+                tcp_socket_send_internal(s, NULL, 0, SYN);
+            }
+            continue;
+        }
+
         if (s->tx_unacked_len == 0 || s->tx_unacked_data == NULL) {
             continue;
         }
@@ -442,8 +454,15 @@ void tcp_poll(network_stack_t* stack) {
             continue;
         }
 
-        if ((now - s->tx_last_send_ms) >= TCP_RETRANSMIT_TIMEOUT_MS) {
-            if (s->tx_retries >= (s->tx_max_retries ? s->tx_max_retries : TCP_RETRANSMIT_MAX_RETRIES)) {
+        uint32_t timeout = TCP_RETRANSMIT_TIMEOUT_MS;
+        if (s->tx_retries > 0) {
+            uint32_t mul = 1u << (s->tx_retries > 4 ? 4 : s->tx_retries);
+            timeout *= mul;
+        }
+
+        if ((now - s->tx_last_send_ms) >= timeout) {
+            uint8_t maxr = (s->tx_max_retries ? s->tx_max_retries : TCP_RETRANSMIT_MAX_RETRIES);
+            if (s->tx_retries >= maxr) {
                 debugf("tcp: retransmit limit reached, closing socket");
                 s->state = CLOSED;
                 tcp_tx_clear_unacked(s);
@@ -456,12 +475,10 @@ void tcp_poll(network_stack_t* stack) {
     }
 }
 
-
 void tcp_poll_task(async_t* async) {
     network_stack_t* stack = (network_stack_t*) async->data;
     tcp_poll(stack);
 }
-
 
 void tcp_init(network_stack_t* stack) {
 	stack->tcp = vmm_alloc(PAGES_OF(tcp_provider_t));
