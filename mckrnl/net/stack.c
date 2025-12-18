@@ -1,4 +1,3 @@
-#include "driver/driver.h"
 #include <net/stack.h>
 #include <memory/vmm.h>
 #include <string.h>
@@ -50,7 +49,9 @@ void load_network_stack(nic_driver_t* nic) {
 	ipv4_init(stack);
 	icmp_init(stack);
 	udp_init(stack);
+#ifdef TCP
 	tcp_init(stack);
+#endif
 
 	stack->driver->stack(stack->driver, stack);
 }

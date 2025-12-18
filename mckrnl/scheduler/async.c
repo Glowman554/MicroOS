@@ -1,4 +1,5 @@
 #include <scheduler/async.h>
+#include <config.h>
 
 async_task_t async_tasks[MAX_ASYNC_TASKS] = {0};
 

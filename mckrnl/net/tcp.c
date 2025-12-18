@@ -7,13 +7,9 @@
 #include <driver/timer_driver.h>
 #include <scheduler/async.h>
 #include <config.h>
+#include <utils/random.h>
 #ifdef NETWORK_STACK
-
-#define TCP_RETRANSMIT_TIMEOUT_MS 50
-#define TCP_RETRANSMIT_MAX_RETRIES 8
-
-#define TCP_CTL_TIMEOUT_MS 300
-#define TCP_CTL_MAX_RETRIES 8
+#ifdef TCP
 
 uint32_t tcp_now_ms(void) {
     return global_timer_driver->time_ms(global_timer_driver);
@@ -90,7 +86,16 @@ void tcp_socket_resend_unacked(tcp_socket_t* socket) {
     header->checksum = 0;
     header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
 
-    ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
+#if TCP_SIMULATED_DROP_PERCENT > 0
+    if (rng_chance(TCP_SIMULATED_DROP_PERCENT)) {
+        debugf("tcp: dropped outgoing packet (retransmit), %d bytes, flags=0x%x, drop=%d%%", socket->tx_unacked_len, socket->tx_unacked_flags, TCP_SIMULATED_DROP_PERCENT);
+    } else {
+#endif
+        ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
+#if TCP_SIMULATED_DROP_PERCENT > 0
+    }
+#endif
+
     vmm_free(packet, TO_PAGES(length_phdr));
 
     socket->tx_last_send_ms = tcp_now_ms();
@@ -155,7 +160,16 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     header->checksum = 0;
     header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
 
-    ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
+#if TCP_SIMULATED_DROP_PERCENT > 0
+    if (rng_chance(TCP_SIMULATED_DROP_PERCENT)) {
+        debugf("tcp: dropped outgoing packet, %d bytes, flags=0x%x, drop=%d%%", size, flags, TCP_SIMULATED_DROP_PERCENT);
+    } else {
+#endif
+        ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
+#if TCP_SIMULATED_DROP_PERCENT > 0
+    }
+#endif
+
     vmm_free(packet, TO_PAGES(length_phdr));
 
     socket->sequence_number += (uint32_t)size + seq_consume;
@@ -497,4 +511,5 @@ void tcp_init(network_stack_t* stack) {
     };
     add_async_task(tcp_poll_task, async, false);
 }
+#endif
 #endif

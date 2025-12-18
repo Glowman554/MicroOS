@@ -10,7 +10,5 @@ typedef struct async_task {
     bool taken;
 } async_task_t;
 
-#define MAX_ASYNC_TASKS 16
-
 void add_async_task(void (*run)(async_t* async), async_t async, bool blocking);
 void process_async_tasks();

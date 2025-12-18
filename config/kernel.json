@@ -47,6 +47,26 @@
                         {
                             "name": "SOCK_OFFSET",
                             "value": 5
+                        },
+                        {
+                            "name": "TCP_SIMULATED_DROP_PERCENT",
+                            "value": 0
+                        },
+                        {
+                            "name": "TCP_RETRANSMIT_TIMEOUT_MS",
+                            "value": 100
+                        },
+                        {
+                            "name": "TCP_RETRANSMIT_MAX_RETRIES",
+                            "value": 8
+                        },
+                        {
+                            "name": "TCP_CTL_TIMEOUT_MS",
+                            "value": 300
+                        },
+                        {
+                            "name": "TCP_CTL_MAX_RETRIES",
+                            "value": 8
                         }
                     ]
                 }
@@ -71,6 +91,10 @@
                         {
                             "name": "MAX_CPU",
                             "value": 4
+                        },
+                        {
+                            "name": "MAX_ASYNC_TASKS",
+                            "value": 16
                         }
                     ]
                 }
@@ -98,6 +122,10 @@
                         },
                         {
                             "name": "NETWORK_STACK",
+                            "value": false
+                        },
+                        {
+                            "name": "TCP",
                             "value": false
                         }
                     ]

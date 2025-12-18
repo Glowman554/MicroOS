@@ -13,6 +13,11 @@
 
 // Network
 #define SOCK_OFFSET 5
+#define TCP_SIMULATED_DROP_PERCENT 0
+#define TCP_RETRANSMIT_TIMEOUT_MS 100
+#define TCP_RETRANSMIT_MAX_RETRIES 8
+#define TCP_CTL_TIMEOUT_MS 300
+#define TCP_CTL_MAX_RETRIES 8
 // End Network
 
 // Scheduler
@@ -20,6 +25,7 @@
 #define USER_STACK_SIZE_PAGES 16
 #define KERNEL_STACK_SIZE_PAGES 16
 #define MAX_CPU 4
+#define MAX_ASYNC_TASKS 16
 // End Scheduler
 
 // Experimental
@@ -28,6 +34,7 @@
 // #define THREADS
 // #define AHCI_DRIVER
 // #define NETWORK_STACK
+// #define TCP
 // End Experimental
 
 // Input

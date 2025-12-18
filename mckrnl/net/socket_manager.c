@@ -28,6 +28,7 @@ void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	_socket->num_bytes_received += size;
 }
 
+#ifdef TCP
 void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	socket_t* _socket = socket->data;
 	debugf("socket_tcp_recv(): %d bytes", size);
@@ -44,6 +45,7 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
 	_socket->num_bytes_received += size;
 }
+#endif
 
 socket_t* socket_create(int socket_type) {
 	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
@@ -70,6 +72,7 @@ socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type
 				}
 			}
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			{
 				tcp_socket_t* tcp_socket = tcp_connect(stack, async, ip, port);
@@ -82,6 +85,7 @@ socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type
 				}
 			}
 			break;
+		#endif
 		default:
 			invalid();
 	}
@@ -94,9 +98,11 @@ void socket_disconnect(socket_t* socket, async_t* async) {
 		case SOCKET_UDP:
 			udp_socket_disconnect(socket->udp_socket, async);
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			tcp_socket_disconnect(socket->tcp_socket, async);
 			break;
+		#endif
 		default:
 			invalid();
 	}
@@ -113,9 +119,11 @@ void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
 		case SOCKET_UDP:
 			udp_socket_send(socket->udp_socket, data, size);
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			tcp_socket_send(socket->tcp_socket, data, size);
 			break;
+		#endif
 		default:
 			invalid();
 	}
@@ -159,9 +167,11 @@ void socket_set_local_port(socket_t* socket, uint16_t port) {
 		case SOCKET_UDP:
 			udp_set_local_port(socket->udp_socket, port);
 			break;
+		#ifdef TCP
 		case SOCKET_TCP:
 			tcp_set_local_port(socket->tcp_socket, port);
 			break;
+		#endif
 		default:
 			invalid();
 	}
