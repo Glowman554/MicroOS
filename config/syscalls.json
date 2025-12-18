@@ -201,7 +201,8 @@
 			"name": "SYS_SOCK_DISCONNECT",
 			"arguments": [
 				"0x1b",
-				"socket_id"
+				"socket_id",
+				"&async"
 			]
 		},
 		{

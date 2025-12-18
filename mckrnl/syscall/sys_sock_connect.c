@@ -1,17 +1,24 @@
+#include "async.h"
 #include <syscall/syscalls.h>
 
 #include <net/stack.h>
 #include <net/socket_manager.h>
 #include <assert.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/async.h>
 #include <stdio.h>
 #include <config.h>
 #ifdef NETWORK_STACK
 
+void sys_connect_dealloc_async(async_t* async) {
+	socket_disconnect((socket_t*) async->data, async);
+}
 
 void sys_connect_dealloc(void* resource) {
 	debugf("Freeing resource %x", resource);
-	socket_disconnect((socket_t*) resource);
+	
+	async_t async = { .state = STATE_INIT, .data = resource };
+	add_async_task(sys_connect_dealloc_async, async);
 }
 
 cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) {
@@ -24,7 +31,7 @@ cpu_registers_t* sys_sock_connect(cpu_registers_t* regs) {
 
 		resource_register_self((resource_t) {
 			.dealloc = sys_connect_dealloc,
-			.resource = socket_manager_find(regs->esi)
+			.resource = socket_manager_find(regs->edi)
 		});
 	}
 

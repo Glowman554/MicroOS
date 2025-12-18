@@ -85,6 +85,6 @@ int main(int argc, char* argv[]) {
     }
 
 
-	disconnect(sock);
+	sync_disconnect(sock);
 	return 0;
 }

@@ -8,13 +8,19 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-void udp_socket_disconnect(udp_socket_t* socket) {
-	for (int i = 0; i < socket->stack->udp->num_binds; i++) {
-		if (socket->stack->udp->binds[i].socket == socket) {
-			socket->stack->udp->binds[i].socket = NULL;
-			vmm_free(socket, PAGES_OF(udp_socket_t));
-			return;
-		}
+void udp_socket_disconnect(udp_socket_t* socket, async_t* async) {
+	switch (async->state) {
+		case STATE_INIT:
+			for (int i = 0; i < socket->stack->udp->num_binds; i++) {
+				if (socket->stack->udp->binds[i].socket == socket) {
+					socket->stack->udp->binds[i].socket = NULL;
+					vmm_free(socket, PAGES_OF(udp_socket_t));
+					return;
+				}
+			}
+			
+			async->state = STATE_DONE;
+			break;
 	}
 }
 

@@ -40,7 +40,7 @@ typedef struct udp_provider {
 	ipv4_handler_t handler;
 } udp_provider_t;
 
-void udp_socket_disconnect(udp_socket_t* socket);
+void udp_socket_disconnect(udp_socket_t* socket, async_t* async);
 void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size);
 
 udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint16_t port);

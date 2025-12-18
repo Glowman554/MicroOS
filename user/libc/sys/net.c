@@ -14,8 +14,8 @@ int connect(int nic, async_t* async, int type, ip_u ip, uint16_t port) {
 	return ret;
 }
 
-void disconnect(int sock) {
-	asm volatile("int $0x30" :: "a"(SYS_SOCK_DISCONNECT_ID), "b"(sock));
+void disconnect(int sock, async_t* async) {
+	asm volatile("int $0x30" :: "a"(SYS_SOCK_DISCONNECT_ID), "b"(sock), "c"(async));
 }
 
 void send(int sock, uint8_t* data, int size) {

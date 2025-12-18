@@ -9,9 +9,11 @@
 
 cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs) {
 	socket_t* socket = socket_manager_find(regs->ebx);
-	socket_disconnect(socket);
+	socket_disconnect(socket, (async_t*) regs->ecx);
 
-	resource_unregister_self(socket);
+	if (is_resolved((async_t*) regs->ecx)) {
+		resource_unregister_self(socket);
+	}
 
 	return regs;
 }

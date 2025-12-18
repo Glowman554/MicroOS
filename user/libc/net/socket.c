@@ -41,3 +41,18 @@ int sync_recv(int sock, uint8_t* data, int size) {
     
     return bytes_received;
 }
+
+void sync_disconnect(int sock) {
+    async_t async = { .state = STATE_INIT };
+    
+    int timeout = 0;
+    while (!is_resolved(&async)) {
+        disconnect(sock, &async);
+
+        sleep_ms(1);
+        if (timeout++ > TIMEOUT) {
+            printf("socket: Timeout while disconnecting\n");
+            abort();
+        }
+    }
+}

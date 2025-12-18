@@ -175,7 +175,7 @@ ip_u dns_resolve_A(int nic, char* domain) {
 
     char buffer[1024];
     int size = sync_recv(socket, (uint8_t*) buffer, sizeof(buffer));
-    disconnect(socket);
+    sync_disconnect(socket);
 
     ip_u ip = dns_parse_packet_and_follow(nic, size, buffer);
 

@@ -196,7 +196,7 @@ int main(int argc, char* argv[]) {
 	set_local_port(socket, 68);
     ip_u ip = dhcp_request(socket, transaction_identifier, hostname, config.mac);
     ip_configuration_t ipconfig = dhcp_request_ip(socket, ip, transaction_identifier, hostname, config.mac);
-    disconnect(socket);
+    sync_disconnect(socket);
 
 	config.ip_config = ipconfig;
 	nic_write(nic_id, config);

@@ -86,23 +86,25 @@ socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type
 	return NULL;
 }
 
-void socket_disconnect(socket_t* socket) {
+void socket_disconnect(socket_t* socket, async_t* async) {
 	switch (socket->socket_type) {
 		case SOCKET_UDP:
-			udp_socket_disconnect(socket->udp_socket);
+			udp_socket_disconnect(socket->udp_socket, async);
 			break;
 		#ifdef TCP
 		case SOCKET_TCP:
-			tcp_socket_disconnect(socket->tcp_socket);
+			tcp_socket_disconnect(socket->tcp_socket, async);
 			break;
 		#endif
 		default:
 			invalid();
 	}
 
-	socket_manager_free(socket->socket_id);
-	vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
-	vmm_free(socket, PAGES_OF(socket_t));
+	if (is_resolved(async)) {
+		socket_manager_free(socket->socket_id);
+		vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
+		vmm_free(socket, PAGES_OF(socket_t));
+	}
 }
 
 void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
