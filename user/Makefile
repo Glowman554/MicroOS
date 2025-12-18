@@ -43,6 +43,7 @@ all:
 	make -C flvm prog
 	make -C scheduler prog
 	make -C if prog
+	make -C httpget prog
 
 clean:
 	make -C libc clean
@@ -87,6 +88,7 @@ clean:
 	make -C flvm clean
 	make -C scheduler clean
 	make -C if clean
+	make -C httpget clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -131,3 +133,4 @@ compile_flags.txt:
 	make -C flvm compile_flags.txt
 	make -C scheduler compile_flags.txt
 	make -C if compile_flags.txt
+	make -C httpget compile_flags.txt

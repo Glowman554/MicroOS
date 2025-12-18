@@ -101,7 +101,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 					.data = answer
 				};
 
-				add_async_task(icmp_async_answer, async);
+				add_async_task(icmp_async_answer, async, false);
 			}
 			break;
 		case 3:

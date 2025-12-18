@@ -7,7 +7,19 @@
 #include <driver/timer_driver.h>
 #include <config.h>
 #ifdef NETWORK_STACK
-#ifdef TCP
+
+const char* tcp_socket_state_str[] = {
+    [CLOSED] = "CLOSED",
+    [LISTEN] = "LISTEN",
+    [SYN_SENT] = "SYN_SENT",
+    [SYN_RECEIVED] = "SYN_RECEIVED",
+    [ESTABLISHED] = "ESTABLISHED",
+    [FIN_WAIT1] = "FIN_WAIT1",
+    [FIN_WAIT2] = "FIN_WAIT2",
+    [CLOSING] = "CLOSING",
+    [TIME_WAIT] = "TIME_WAIT",
+    [CLOSE_WAIT] = "CLOSE_WAIT"
+};
 
 void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uint16_t flags) {
     uint16_t total_length = size + sizeof(tcp_header_t);
@@ -34,8 +46,9 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     
     socket->sequence_number += size;
 
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < size; i++) {
         buffer2[i] = data[i];
+    }
     
     pheader->src_ip = socket->local_ip.ip;
     pheader->dst_ip = socket->remote_ip.ip;
@@ -45,15 +58,37 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     header->checksum = 0;
     header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
     
-	ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, (uint8_t*) header, total_length);
+    ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
 	vmm_free(packet, TO_PAGES(length_phdr));
 }
 
+void tcp_socket_disconnect(tcp_socket_t* socket, async_t* async) {
+    switch (async->state) {
+        case STATE_INIT:
+            if (socket->state == ESTABLISHED) {
+                socket->state = FIN_WAIT1;
+                tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
+                socket->sequence_number++;
+            }
+            async->state = STATE_WAIT;
+            break;
 
-void tcp_socket_disconnect(tcp_socket_t* socket) {
-    socket->state = FIN_WAIT1;
-    tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
-    socket->sequence_number++;
+        case STATE_WAIT:
+            if (socket->state != CLOSED) {
+                break;
+            }
+
+            for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
+                if (socket->stack->tcp->binds[i].socket == socket) {
+                    socket->stack->tcp->binds[i].socket = NULL;
+                    break;
+                }
+            }
+
+            vmm_free(socket, PAGES_OF(tcp_socket_t));
+            async->state = STATE_DONE;
+            break;
+    }
 }
 
 
@@ -61,57 +96,80 @@ void tcp_socket_send(tcp_socket_t* socket, uint8_t* data, int size) {
     tcp_socket_send_internal(socket, data, size, PSH | ACK);
 }
 
-void tcp_wait_established(tcp_socket_t* socket) {
-    NET_TIMEOUT(
-        if (socket->state == ESTABLISHED) {
-            return;
-        }
-    )
+void tcp_set_local_port(tcp_socket_t* socket, uint16_t port) {
+    debugf("Setting local port to %d", port);
+    socket->local_port = BSWAP16(port);
 }
 
-tcp_socket_t* tcp_connect(network_stack_t* stack, ip_u ip, uint16_t port) {
-    tcp_socket_t* socket = vmm_alloc(PAGES_OF(tcp_socket_t));
-	memset(socket, 0, sizeof(tcp_socket_t));
+tcp_socket_t* tcp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint16_t port) {
+    if (async->data == NULL) {
+        mac_u route = ipv4_resolve_route(stack, async, ip);
+        if (!is_resolved(async)) {
+            return NULL;
+        }
 
-	socket->remote_ip = ip;
-	socket->remote_port = port;
-	socket->local_port = stack->tcp->free_port++;
-	socket->local_ip = stack->driver->ip;
+        tcp_socket_t* socket = vmm_alloc(PAGES_OF(tcp_socket_t));
+        memset(socket, 0, sizeof(tcp_socket_t));
 
-	socket->local_port = BSWAP16(socket->local_port);
-	socket->remote_port = BSWAP16(socket->remote_port);
+        socket->remote_ip = ip;
+        socket->remote_port = port;
+        socket->local_port = stack->tcp->free_port++;
+        socket->local_ip = stack->driver->ip_config.ip;
+        socket->route_mac = route;
 
-	socket->stack = stack;
+        socket->local_port = BSWAP16(socket->local_port);
+        socket->remote_port = BSWAP16(socket->remote_port);
 
-    socket->state = SYN_SENT;
-    socket->sequence_number = global_timer_driver->time_ms(global_timer_driver);
+        socket->stack = stack;
+        socket->state = SYN_SENT;
+        socket->sequence_number = global_timer_driver->time_ms(global_timer_driver);
 
-	tcp_bind_t bind = {
-		.port = socket->local_port,
-		.socket = socket
-	};
+        tcp_bind_t bind = {
+            .port = socket->local_port,
+            .socket = socket
+        };
 
-	for (int i = 0; i < stack->tcp->num_binds; i++) {
-		if (stack->tcp->binds[i].socket == NULL) {
-			stack->tcp->binds[i] = bind;
-            tcp_socket_send_internal(socket, NULL, 0, SYN);
-            tcp_wait_established(socket);
-			return socket;
-		}
-	}
+        for (int i = 0; i < stack->tcp->num_binds; i++) {
+            if (stack->tcp->binds[i].socket == NULL) {
+                stack->tcp->binds[i] = bind;
+                async->data = socket;
+                async->state = STATE_WAIT;
+                tcp_socket_send_internal(socket, NULL, 0, SYN);
+                return NULL;
+            }
+        }
 
-	stack->tcp->binds = vmm_resize(sizeof(tcp_bind_t), stack->tcp->num_binds, stack->tcp->num_binds + 1, stack->tcp->binds);
-	stack->tcp->binds[stack->tcp->num_binds] = bind;
-	stack->tcp->num_binds++;
-    tcp_socket_send_internal(socket, NULL, 0, SYN);
-    tcp_wait_established(socket);
-	return socket;
+        stack->tcp->binds = vmm_resize(sizeof(tcp_bind_t), stack->tcp->num_binds, stack->tcp->num_binds + 1, stack->tcp->binds);
+        stack->tcp->binds[stack->tcp->num_binds] = bind;
+        stack->tcp->num_binds++;
+
+        async->data = socket;
+        async->state = STATE_WAIT;
+        tcp_socket_send_internal(socket, NULL, 0, SYN);
+        return NULL;
+    }
+
+    if (async->state == STATE_WAIT) {
+        tcp_socket_t* socket = (tcp_socket_t*) async->data;
+        if (socket->state == ESTABLISHED) {
+            async->state = STATE_DONE;
+            return socket;
+        }
+        return NULL;
+    }
+
+    if (async->state == STATE_DONE) {
+        return (tcp_socket_t*) async->data;
+    }
+
+    async->state = STATE_WAIT;
+    return NULL;
 }
 
 tcp_socket_t* tcp_listen(network_stack_t* stack, uint16_t port);
 
 void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
-    if (size < sizeof(tcp_header_t)) {
+    if (size < 20) {
 		return;
 	}
 
@@ -137,11 +195,26 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
 		}
 	}
 
-	if (socket == NULL) {
+    if (socket == NULL) {
 		debugf("TCP message cannot be routed to valid socket!");
 	} else {
-        debugf("state [begin] %d", socket->state);
+        int prev_state = socket->state;
         bool reset = false;
+
+        uint32_t header_bytes = (uint32_t)tcp->header_size_32 * 4;
+        if (header_bytes < 20 || header_bytes > size) {
+            return;
+        }
+
+        uint32_t payload_bytes = size - header_bytes;
+        uint8_t* payload_data = payload + header_bytes;
+        uint32_t recv_seq = BSWAP32(tcp->sequence_number);
+        uint32_t recv_ack = BSWAP32(tcp->ack_number);
+
+        if ((tcp->flags & RST) != 0) {
+            socket->state = CLOSED;
+        }
+
         if (socket->state != CLOSED) {
             switch((tcp->flags) & (SYN | ACK | FIN)) {
                 case SYN:
@@ -156,7 +229,7 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
                 case SYN | ACK:
                     if(socket->state == SYN_SENT) {
                         socket->state = ESTABLISHED;
-                        socket->ack_number = BSWAP32(tcp->sequence_number) + 1;
+                        socket->ack_number = recv_seq + 1;
                         socket->sequence_number++;
                         tcp_socket_send_internal(socket, NULL, 0, ACK);
                     } else {
@@ -171,50 +244,62 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
 
                 case FIN:
                 case FIN | ACK:
-                    if(socket->state == ESTABLISHED) {
-                        socket->state = CLOSE_WAIT;
-                        socket->ack_number++;
-                        tcp_socket_send_internal(socket, NULL, 0, ACK);
-                        tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
-                    } else if(socket->state == CLOSE_WAIT) {
-                        socket->state = CLOSED;
-                    } else if(socket->state == FIN_WAIT1 || socket->state == FIN_WAIT2) {
-                        socket->state = CLOSED;
-                        socket->ack_number++;
-                        tcp_socket_send_internal(socket, NULL, 0, ACK);
-                    } else {
-                        reset = true;
-                    }
-                    break;
+				if (recv_seq != socket->ack_number) {
+					tcp_socket_send_internal(socket, NULL, 0, ACK);
+					break;
+				}
+
+				socket->ack_number = recv_seq + payload_bytes + 1;
+				if(socket->state == ESTABLISHED) {
+					socket->state = CLOSE_WAIT;
+					tcp_socket_send_internal(socket, NULL, 0, ACK);
+					tcp_socket_send_internal(socket, NULL, 0, FIN | ACK);
+					socket->sequence_number++;
+				} else if(socket->state == CLOSE_WAIT) {
+					socket->state = CLOSED;
+				} else if(socket->state == FIN_WAIT1 || socket->state == FIN_WAIT2) {
+					socket->state = CLOSED;
+					tcp_socket_send_internal(socket, NULL, 0, ACK);
+                } else {
+                    reset = true;
+                }
+                break;
 
                 case ACK:
                     if(socket->state == SYN_RECEIVED) {
                         socket->state = ESTABLISHED;
-                        return;
                     } else if(socket->state == FIN_WAIT1) {
-                        socket->state = FIN_WAIT2;
-                        return;
+                        if (recv_ack == socket->sequence_number) {
+                            socket->state = FIN_WAIT2;
+                        }
                     } else if(socket->state == CLOSE_WAIT) {
                         socket->state = CLOSED;
                         break;
                     }
-                    
-                    if(tcp->flags == ACK) {
+                    // Fallthrough since ACK can also carry data
+
+                default:
+                    if (payload_bytes == 0) {
                         break;
                     }
 
-                default:
-                    if(BSWAP32(tcp->sequence_number) == socket->ack_number) {
-                        socket->recv(socket, payload + tcp->header_size_32 * 4, size - tcp->header_size_32 * 4);
-                        socket->ack_number += size - tcp->header_size_32 * 4;
+                    if(recv_seq == socket->ack_number) {
+                        socket->recv(socket, payload_data, (int)payload_bytes);
+                        socket->ack_number += payload_bytes;
                         tcp_socket_send_internal(socket, NULL, 0, ACK);
                     } else {
                         debugf("data in wrong order");
-                        reset = true;
+                        tcp_socket_send_internal(socket, NULL, 0, ACK);
                     }
             }
         }
-        debugf("state [end] %d", socket->state);
+        if (prev_state != socket->state) {
+            debugf("tcp: state %s -> %s", tcp_socket_state_str[prev_state], tcp_socket_state_str[socket->state]);
+        }
+
+        if (prev_state != CLOSED && socket->state == CLOSED) {
+            debugf("--- WARNING --- TCP socket transitioned to CLOSED. Ensure socket_disconnect() is called to free resources.");
+        }
 
         if(reset) {
             tcp_socket_send_internal(socket, NULL, 0, RST);
@@ -226,10 +311,10 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
             for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
                 if (socket->stack->tcp->binds[i].socket == socket) {
                     socket->stack->tcp->binds[i].socket = NULL;
-                    vmm_free(socket, PAGES_OF(tcp_socket_t));
-                    return;
+                    break;
                 }
             }
+            return;
         }
     }
 }
@@ -245,5 +330,4 @@ void tcp_init(network_stack_t* stack) {
 	stack->tcp->handler.recv = tcp_ipv4_recv;
 	ipv4_register(stack, stack->tcp->handler);
 }
-#endif
 #endif

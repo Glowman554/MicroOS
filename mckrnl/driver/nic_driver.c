@@ -61,5 +61,5 @@ void send_packet(nic_driver_t* driver, uint8_t* data, uint32_t len) {
 		.data = send_data,
 	};
 
-	add_async_task(send_async_send_packet, async);
+	add_async_task(send_async_send_packet, async, true);
 }

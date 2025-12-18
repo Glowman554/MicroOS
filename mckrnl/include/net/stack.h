@@ -10,9 +10,7 @@ typedef struct network_stack {
 	struct ipv4_provider* ipv4;
 	struct icmp_provider* icmp;
 	struct udp_provider* udp;
-#ifdef TCP
 	struct tcp_provider* tcp;
-#endif
 	struct vlan_provider* vlan;
 	struct dns_provider* dns;
 	nic_driver_t* driver;
