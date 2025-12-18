@@ -5,8 +5,90 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <driver/timer_driver.h>
+#include <scheduler/async.h>
 #include <config.h>
 #ifdef NETWORK_STACK
+
+#define TCP_RETRANSMIT_TIMEOUT_MS 50
+#define TCP_RETRANSMIT_MAX_RETRIES 8
+
+uint32_t tcp_now_ms(void) {
+    return global_timer_driver->time_ms(global_timer_driver);
+}
+
+void tcp_tx_clear_unacked(tcp_socket_t* socket) {
+    if (socket->tx_unacked_data != NULL) {
+        vmm_free(socket->tx_unacked_data, TO_PAGES(socket->tx_unacked_len));
+        socket->tx_unacked_data = NULL;
+    }
+    socket->tx_unacked_len = 0;
+    socket->tx_unacked_seq = 0;
+    socket->tx_unacked_flags = 0;
+    socket->tx_last_send_ms = 0;
+    socket->tx_retries = 0;
+}
+
+void tcp_tx_track_unacked(tcp_socket_t* socket, const uint8_t* data, uint32_t len, uint16_t flags, uint32_t seq_at_send) {
+    if (len == 0 || (flags & PSH) == 0) {
+        return;
+    }
+
+    tcp_tx_clear_unacked(socket);
+
+    socket->tx_unacked_data = vmm_alloc(TO_PAGES(len));
+    memcpy(socket->tx_unacked_data, data, len);
+    socket->tx_unacked_len = len;
+    socket->tx_unacked_seq = seq_at_send;
+    socket->tx_unacked_flags = flags;
+    socket->tx_last_send_ms = tcp_now_ms();
+    socket->tx_retries = 0;
+    if (socket->tx_max_retries == 0) {
+        socket->tx_max_retries = TCP_RETRANSMIT_MAX_RETRIES;
+    }
+}
+
+void tcp_socket_resend_unacked(tcp_socket_t* socket) {
+    if (socket->tx_unacked_data == NULL || socket->tx_unacked_len == 0) {
+        return;
+    }
+
+    uint16_t total_length = (uint16_t)(socket->tx_unacked_len + sizeof(tcp_header_t));
+    uint16_t length_phdr = (uint16_t)(total_length + sizeof(tcp_pseudo_header_t));
+
+    uint8_t* packet = (uint8_t*) vmm_alloc(TO_PAGES(length_phdr));
+
+    tcp_pseudo_header_t* pheader = (tcp_pseudo_header_t*) packet;
+    tcp_header_t* header = (tcp_header_t*) (packet + sizeof(tcp_pseudo_header_t));
+    uint8_t* buffer2 = packet + sizeof(tcp_header_t) + sizeof(tcp_pseudo_header_t);
+
+    header->header_size_32 = sizeof(tcp_header_t) / 4;
+    header->src_port = socket->local_port;
+    header->dst_port = socket->remote_port;
+
+    header->ack_number = BSWAP32(socket->ack_number);
+    header->sequence_number = BSWAP32(socket->tx_unacked_seq);
+    header->reserved = 0;
+    header->flags = (uint8_t)socket->tx_unacked_flags;
+    header->window_size = 0xFFFF;
+    header->urgent_ptr = 0;
+    header->options = 0;
+
+    memcpy(buffer2, socket->tx_unacked_data, socket->tx_unacked_len);
+
+    pheader->src_ip = socket->local_ip.ip;
+    pheader->dst_ip = socket->remote_ip.ip;
+    pheader->protocol = 0x0600;
+    pheader->total_length = ((total_length & 0x00FF) << 8) | ((total_length & 0xFF00) >> 8);
+
+    header->checksum = 0;
+    header->checksum = ipv4_checksum((uint16_t*)packet, length_phdr);
+
+    ipv4_send(&socket->stack->tcp->handler, socket->stack, socket->remote_ip, socket->route_mac, (uint8_t*) header, total_length);
+    vmm_free(packet, TO_PAGES(length_phdr));
+
+    socket->tx_last_send_ms = tcp_now_ms();
+    socket->tx_retries++;
+}
 
 const char* tcp_socket_state_str[] = {
     [CLOSED] = "CLOSED",
@@ -22,6 +104,8 @@ const char* tcp_socket_state_str[] = {
 };
 
 void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uint16_t flags) {
+    uint32_t seq_at_send = socket->sequence_number;
+
     uint16_t total_length = size + sizeof(tcp_header_t);
     uint16_t length_phdr = total_length + sizeof(tcp_pseudo_header_t);
 
@@ -48,6 +132,10 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
 
     for(int i = 0; i < size; i++) {
         buffer2[i] = data[i];
+    }
+
+    if (data != NULL && size > 0) {
+        tcp_tx_track_unacked(socket, data, (uint32_t)size, flags, seq_at_send);
     }
     
     pheader->src_ip = socket->local_ip.ip;
@@ -85,6 +173,7 @@ void tcp_socket_disconnect(tcp_socket_t* socket, async_t* async) {
                 }
             }
 
+            tcp_tx_clear_unacked(socket);
             vmm_free(socket, PAGES_OF(tcp_socket_t));
             async->state = STATE_DONE;
             break;
@@ -211,6 +300,13 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
         uint32_t recv_seq = BSWAP32(tcp->sequence_number);
         uint32_t recv_ack = BSWAP32(tcp->ack_number);
 
+        if ((tcp->flags & ACK) != 0 && socket->tx_unacked_len != 0) {
+            uint32_t end_seq = socket->tx_unacked_seq + socket->tx_unacked_len;
+            if (recv_ack >= end_seq) {
+                tcp_tx_clear_unacked(socket);
+            }
+        }
+
         if ((tcp->flags & RST) != 0) {
             socket->state = CLOSED;
         }
@@ -307,6 +403,7 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
         }
 
         if (socket->state == CLOSED) {
+            tcp_tx_clear_unacked(socket);
             debugf("socket closed");
             for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
                 if (socket->stack->tcp->binds[i].socket == socket) {
@@ -319,6 +416,53 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
     }
 }
 
+void tcp_poll(network_stack_t* stack) {
+    if (stack == NULL || stack->tcp == NULL) {
+        return;
+    }
+
+    uint32_t now = tcp_now_ms();
+
+    for (int i = 0; i < stack->tcp->num_binds; i++) {
+        tcp_socket_t* s = stack->tcp->binds[i].socket;
+        if (s == NULL) {
+            continue;
+        }
+
+        if (s->state == CLOSED) {
+            continue;
+        }
+
+        if (s->tx_unacked_len == 0 || s->tx_unacked_data == NULL) {
+            continue;
+        }
+
+        if (s->tx_last_send_ms == 0) {
+            s->tx_last_send_ms = now;
+            continue;
+        }
+
+        if ((now - s->tx_last_send_ms) >= TCP_RETRANSMIT_TIMEOUT_MS) {
+            if (s->tx_retries >= (s->tx_max_retries ? s->tx_max_retries : TCP_RETRANSMIT_MAX_RETRIES)) {
+                debugf("tcp: retransmit limit reached, closing socket");
+                s->state = CLOSED;
+                tcp_tx_clear_unacked(s);
+                continue;
+            }
+
+            debugf("tcp: retransmitting %d bytes (try %d)", (unsigned)s->tx_unacked_len, (unsigned)(s->tx_retries + 1));
+            tcp_socket_resend_unacked(s);
+        }
+    }
+}
+
+
+void tcp_poll_task(async_t* async) {
+    network_stack_t* stack = (network_stack_t*) async->data;
+    tcp_poll(stack);
+}
+
+
 void tcp_init(network_stack_t* stack) {
 	stack->tcp = vmm_alloc(PAGES_OF(tcp_provider_t));
 	memset(stack->tcp, 0, sizeof(tcp_provider_t));
@@ -329,5 +473,11 @@ void tcp_init(network_stack_t* stack) {
 	stack->tcp->handler.stack = stack;
 	stack->tcp->handler.recv = tcp_ipv4_recv;
 	ipv4_register(stack, stack->tcp->handler);
+
+    async_t async = {
+        .state = STATE_INIT,
+        .data = stack
+    };
+    add_async_task(tcp_poll_task, async, false);
 }
 #endif

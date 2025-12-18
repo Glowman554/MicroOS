@@ -48,7 +48,6 @@ int printf(const char *format, ...) {
 	return tmp;
 }
 
-define_spinlock(debugf_lock);
 int debugf_intrnl(const char *format, ...) {
 	va_list args;
 	char buf[1024] = {0};
@@ -57,7 +56,6 @@ int debugf_intrnl(const char *format, ...) {
 	int tmp = vsprintf(buf, format, args);
 	va_end(args);
 
-	atomic_acquire_spinlock(debugf_lock);
 	if (debugf_driver != NULL) {
 		int i = 0;
 		while (buf[i] != '\0') {
@@ -67,7 +65,6 @@ int debugf_intrnl(const char *format, ...) {
 	} else {
 		text_console_puts(NULL, 1, buf);
 	}
-	atomic_release_spinlock(debugf_lock);
 
 	return tmp;
 }

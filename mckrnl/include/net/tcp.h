@@ -77,6 +77,14 @@ typedef struct tcp_socket {
 	void* data;
 
 	void (*recv)(struct tcp_socket* socket, uint8_t* data, int size);
+
+    uint8_t* tx_unacked_data;
+    uint32_t tx_unacked_len;
+    uint32_t tx_unacked_seq;
+    uint16_t tx_unacked_flags;
+    uint32_t tx_last_send_ms;
+    uint8_t  tx_retries;
+    uint8_t  tx_max_retries;
 } tcp_socket_t;
 
 typedef struct tcp_bind {
@@ -100,5 +108,7 @@ tcp_socket_t* tcp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 tcp_socket_t* tcp_listen(network_stack_t* stack, uint16_t port);
 
 void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size);
+
+void tcp_poll(network_stack_t* stack);
 
 void tcp_init(network_stack_t* stack);
