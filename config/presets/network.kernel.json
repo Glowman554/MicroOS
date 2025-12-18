@@ -1,3 +1,4 @@
 {
-    "NETWORK_STACK": true   
+    "NETWORK_STACK": true,
+    "TCP": true  
 }
