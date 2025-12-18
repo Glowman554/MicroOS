@@ -70,16 +70,24 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, ui
 
 	ipv4_message_t* ipv4 = (ipv4_message_t*) payload;
 
+	if (ipv4->version != 4) {
+		debugf("ipv4_etherframe_recv(): Invalid IPv4 version %d", ipv4->version);
+		return;
+	}
+
+	uint32_t header_bytes = (uint32_t)ipv4->header_length * 4;
+
 	if (ipv4->destination_address == handler->stack->driver->ip_config.ip.ip || ipv4->destination_address == 0xFFFFFFFF || handler->stack->driver->ip_config.ip.ip == 0) {
-		int length = ipv4->total_length;
-		if (length > size) {
+		uint32_t total_length = BSWAP16(ipv4->total_length);
+		uint32_t length = total_length;
+		if (length == 0 || length > size) {
 			length = size;
 		}
 
 		bool handled = false;
 		for (int i = 0; i < handler->stack->ipv4->num_handlers; i++) {
 			if (handler->stack->ipv4->handlers[i].protocol == ipv4->protocol) {
-				handler->stack->ipv4->handlers[i].recv(&handler->stack->ipv4->handlers[i], (ip_u) { .ip = ipv4->source_address }, (ip_u) { .ip = ipv4->destination_address }, payload + 4 * ipv4->header_length, length - 4 * ipv4->header_length);
+				handler->stack->ipv4->handlers[i].recv(&handler->stack->ipv4->handlers[i], (ip_u) { .ip = ipv4->source_address }, (ip_u) { .ip = ipv4->destination_address }, payload + header_bytes, length - header_bytes);
 				handled = true;
 			}
 		}
