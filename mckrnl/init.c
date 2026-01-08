@@ -145,6 +145,9 @@ void _main(multiboot_info_t* mb_info) {
 #endif
 	text_console_early();
 	text_console_clrscr(NULL, 1);
+	text_console_puts(NULL, 1, "Booting MicroOS...\n");
+
+
 
 	bool enable_serial = false;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--serial", NULL)) {
@@ -152,6 +155,11 @@ void _main(multiboot_info_t* mb_info) {
 		serial_early_init();
 	}
 
+#ifdef EARLY_SERIAL_DEBUG
+	if (!gdb_active && enable_serial) {
+		serial_output_driver.driver.init((driver_t*) &serial_output_driver);
+	}
+#endif
 
 	init_initial_gdt();
 	init_interrupts();

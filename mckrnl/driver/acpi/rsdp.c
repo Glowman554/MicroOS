@@ -29,7 +29,7 @@ rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
 void rsdp_init() {
 	rsdp2_t* rsdp = scan_for_rsdp((char*) RSDP_SCAN_BASE_ADDR, RSDP_SCAN_LENGTH);
 	if (!rsdp) {
-		printf("RSDP not found\n");
+		debugf("RSDP not found");
 		return;
 	}
 

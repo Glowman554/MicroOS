@@ -4,8 +4,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <buildin/path.h>
+
+// #define BACKGROUND_DEBUG
 
 int main(int argc, char* argv[], char* envp[]) {
 	if (argc < 3) {
@@ -21,7 +22,9 @@ int main(int argc, char* argv[], char* envp[]) {
 		return -1;
 	}
 
+#ifdef BACKGROUND_DEBUG
 	printf("Going to run %s in the background in term %d...\n", exec, term);
+#endif
 
 	set_env(SYS_ENV_PIN, (void*) 1);
 	int child = spawn(exec, (const char**) &argv[2], (const char**) envp);

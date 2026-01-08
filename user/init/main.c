@@ -16,6 +16,8 @@
 // 	NULL
 // };
 
+// #define INIT_DEBUG
+
 char* copy_until(char until, char* src, char* dest) {
 	int i = 0;
 	while (src[i] != '\0' && src[i] != until) {
@@ -29,7 +31,9 @@ char* copy_until(char until, char* src, char* dest) {
 
 char* child_envp[32] = { NULL };
 void envp_append(char* key, char* val) {
+#ifdef INIT_DEBUG
 	printf("Appending %s=%s to envp...\n", key, val);
+#endif
 
 	int sz = strlen(key) + strlen(val) + 2;
 	char* buf = malloc(sz);
@@ -64,19 +68,29 @@ int main(int argc, char* argv[]) {
 		copy_until(':', argv[0], src);
 		strcat(src, ":/");
 
+		printf("Copying root to tmpfs please wait...\n");
+
+	#ifdef INIT_DEBUG
 		recursive_dir_copy(src, cwd, true);
+	#else
+		recursive_dir_copy(src, cwd, false);
+	#endif
 	} else {
 		copy_until(':', argv[0], cwd);
 		strcat(cwd, ":/");
 	}
+#ifdef INIT_DEBUG
 	printf("got cwd %s\n", cwd);
+#endif
 
 	set_env(SYS_SET_PWD_ID, cwd);
 
 	char terminal[128] = { 0 };
 	strcat(terminal, cwd);
 	strcat(terminal, INIT_PROCESS);
+#ifdef INIT_DEBUG
 	printf("got terminal %s\n", terminal);
+#endif
 
 	char path[128] = { 0 };
 	strcat(path, cwd);
