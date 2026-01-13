@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        preset: [ default, full_screen_terminal, network, network_full_screen_terminal, desktop ]
+        preset: [ default, full_screen_terminal, network, network_full_screen_terminal ]
 
     runs-on: ubuntu-latest
 

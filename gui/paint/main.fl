@@ -1,0 +1,173 @@
+$use <stdlib@1.0.8>
+$use <microos@1.0.2>
+$use <fpic@1.0.0>
+
+$include <std.fl>
+$include <microos/window.fl>
+$include <fpic.fl>
+
+
+$define CANVAS_PIXEL_SCALE 8
+
+int CANVAS_SIZE_X = 64;
+int CANVAS_SIZE_Y = 32;
+
+int[] canvas;
+$define canvas_size 8 * CANVAS_SIZE_X * CANVAS_SIZE_Y
+int current_color = 0;
+
+
+$define COLOR_SELECTOR_SCALE 16
+$define COLOR_SELECTOR 8
+
+int[] colors;
+
+ptr font;
+
+function draw_canvas_pixel(int x, int y, int color) -> void {
+    range 0..CANVAS_PIXEL_SCALE as i up {
+        range 0..CANVAS_PIXEL_SCALE as j up {
+            set_pixel_window(x * CANVAS_PIXEL_SCALE + i, y * CANVAS_PIXEL_SCALE + j, color);
+        }
+    }
+}
+
+function draw_canvas() -> void {
+    range 0..CANVAS_SIZE_X as i up {
+        range 0..CANVAS_SIZE_Y as j up {
+            int pixel = canvas[i + j * CANVAS_SIZE_X];
+            draw_canvas_pixel(i, j, pixel);
+        }
+    }
+}
+
+
+
+function draw_color(int y, int color) -> void {
+    int offset = CANVAS_SIZE_X * CANVAS_PIXEL_SCALE;
+    range 0..COLOR_SELECTOR_SCALE as i up {
+        range 0..COLOR_SELECTOR_SCALE as j up {
+            set_pixel_window(offset + i, y * COLOR_SELECTOR_SCALE + j, color);
+        }
+    }
+}
+
+function draw() -> void {
+    draw_canvas();
+
+    range 0..COLOR_SELECTOR as i up {
+        draw_color(i, colors[i]);
+    }
+}
+
+function text_input(ptr font, str text) -> str {
+    chr[] output = allocate(256);
+    memory_area_set_8(output, 0, 256);
+
+    int[] index = allocate(8);
+    index[0] = 0;
+    end {
+        deallocate(index);
+    }
+
+    window_clear(0);
+
+    while string_input(font, output, index, string_length(text) * 8, 0, 0xffffffff, 0) {
+        window_optimize();
+
+        if window_redrawn() {
+            window_clear(0);
+        }
+
+        draw_string_window(font, 0, 0, text, 0xffffffff, 0);
+    }
+
+    return output;
+}
+
+function check_input(int[] mouse_info) -> void {
+    range 0..CANVAS_SIZE_X as i up {
+        range 0..CANVAS_SIZE_Y as j up {
+            if check_click_area_continuos_window(i * CANVAS_PIXEL_SCALE, j * CANVAS_PIXEL_SCALE, CANVAS_PIXEL_SCALE, CANVAS_PIXEL_SCALE, mouse_info) {
+                canvas[i + j * CANVAS_SIZE_X] = current_color;
+                draw_canvas_pixel(i, j, current_color);
+            }
+        }
+    }
+
+    int offset = CANVAS_SIZE_X * CANVAS_PIXEL_SCALE;
+    range 0..COLOR_SELECTOR as i up {
+        if check_click_area_window(offset, i * COLOR_SELECTOR_SCALE, COLOR_SELECTOR_SCALE, COLOR_SELECTOR_SCALE, mouse_info) {
+            current_color = colors[i];
+            draw_canvas(); // refresh
+        }
+    }
+
+    chr key = window_async_getc();
+    if key {
+        if key == 's' {
+            // save
+            str path = text_input(font, "Save path > ");
+            end {
+                deallocate(path);
+            }
+
+            write_fpic(canvas, CANVAS_SIZE_X, CANVAS_SIZE_Y, path);
+            // window_open_prog_request(path);
+
+            draw();
+        } else if key == 'c' {
+            // clear
+            memory_area_set_64(canvas, 0xffffffff, canvas_size);
+            draw_canvas();
+        } else if key == 'r' {
+            draw_canvas();
+        }
+    }
+}
+
+function fill_colors() -> void {
+    colors[0] = window_color_encode(0, 0, 0);
+    colors[1] = window_color_encode(255, 255, 255);
+    colors[2] = window_color_encode(255, 0, 0);
+    colors[3] = window_color_encode(0, 255, 0);
+    colors[4] = window_color_encode(0, 0, 255);
+    colors[5] = window_color_encode(255, 0, 255);
+    colors[6] = window_color_encode(255, 255, 0);
+    colors[7] = window_color_encode(0, 255, 255);
+}
+
+function spark(int argc, str[] argv) -> int {
+    // ptr fpic = read_fpic("initrd:/opt/gui/icons/programs/vflvm.fpic");
+
+    // CANVAS_SIZE_X = width_fpic(fpic);
+    // CANVAS_SIZE_Y = height_fpic(fpic);
+    // canvas = canvas_from_fpic(fpic);
+
+    canvas = allocate(canvas_size);
+    memory_area_set_64(canvas, 0xffffffff, canvas_size);
+
+    int window_size_x = CANVAS_SIZE_X * CANVAS_PIXEL_SCALE + COLOR_SELECTOR_SCALE;
+    int window_size_y = CANVAS_SIZE_Y * CANVAS_PIXEL_SCALE;
+
+    window_init(window_size_y, window_size_x, 50, 50, "Paint");
+
+    colors = allocate(8 * COLOR_SELECTOR);
+    fill_colors();
+
+    font = load_psf1_font("dev:font");
+
+    int[] info = window_mouse_info_new();
+
+    loop {
+        window_optimize();
+
+        if window_redrawn() {
+            window_clear(0);
+            draw();
+        }
+
+        window_mouse_info(info);
+        check_input(info);  
+    }
+}

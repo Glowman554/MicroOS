@@ -18,5 +18,3 @@ clean_dir doom
 clean_dir saf
 clean_dir nextfs
 clean_dir mcc
-clean_dir desktop
-clean_dir vdoom

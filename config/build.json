@@ -6,10 +6,10 @@
             {
                 "name": "Experimental",
                 "value": {
-                    "title": "Desktop",
+                    "title": "Gui",
                     "items": [
                         {
-                            "name": "DESKTOP",
+                            "name": "GUI",
                             "value": false
                         },
                         {

@@ -1,8 +1,8 @@
 # Build configuration
-# Desktop
-# DESKTOP = 0
+# Gui
+# GUI = 0
 # FIRESTORM = 0
-# End Desktop
+# End Gui
 
 # Syscalls
 SYS_OPEN_ID = 1

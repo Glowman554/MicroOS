@@ -3,8 +3,8 @@ include config.mk
 all: res
 	make -C mckrnl
 	make -C user
-ifeq ($(DESKTOP),1)
-	make -C desktop
+ifeq ($(GUI),1)
+	make -C gui
 endif
 
 NETDEV = e1000
@@ -27,12 +27,10 @@ endif
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
-ifeq ($(DESKTOP),1)
-	cp -r ./desktop/bin/*.mex ./res/initrd/bin/ -v
-	mkdir -p ./res/initrd/opt/desktop
-	cp -r ./desktop/resources/* ./res/initrd/opt/desktop
-	mkdir -p ./res/initrd/opt/desktop/bin
-	cp -r ./desktop/bin/*.flbb ./res/initrd/opt/desktop/bin/ -v
+ifeq ($(GUI),1)
+	cp -r ./gui/bin/*.mex ./res/initrd/bin/ -v
+	mkdir -p ./res/initrd/opt/gui/bin
+	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
 endif
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
@@ -93,8 +91,8 @@ debug:
 clean: iso
 	make -C mckrnl clean
 	make -C user clean
-ifeq ($(DESKTOP),1)
-	make -C desktop clean
+ifeq ($(GUI),1)
+	make -C gui clean
 endif
 
 deepclean:
@@ -108,9 +106,9 @@ libs.zip: all
 	cp user/libtinf/include/* res/libs/include/. -rf
 	cp user/libflvm/include/* res/libs/include/. -rf
 
-ifeq ($(DESKTOP),1)
-	cp desktop/lib/* res/libs/. -rf
-	cp desktop/libwindow/include/* res/libs/include/. -rf
+ifeq ($(GUI),1)
+	cp gui/lib/* res/libs/. -rf
+	cp gui/libwindow/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/
@@ -118,8 +116,8 @@ endif
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt
-ifeq ($(DESKTOP),1)
-	make -C desktop compile_flags.txt
+ifeq ($(GUI),1)
+	make -C gui compile_flags.txt
 endif
 
 pre_commit:
