@@ -12,6 +12,10 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 	size_t count = regs->edx;
 	size_t offset = regs->esi;
 
+	if (buffer == NULL) {
+		abortf("sys_read: buffer is NULL");
+	}
+
 	switch (fd) {
 		case 0:
 			{
@@ -27,6 +31,9 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 		default:
 			{
 				file_t* file = fd_to_file(fd);
+				if (file == NULL) {
+					abortf("sys_read: invalid file descriptor %d", fd);
+				}
 				vfs_read(file, buffer, count, offset);
 			}
 			break;

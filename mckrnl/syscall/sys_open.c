@@ -14,6 +14,10 @@ cpu_registers_t* sys_open(cpu_registers_t* regs) {
 	char* path = (char*) regs->ebx;
 	int flags = regs->ecx;
 
+	if (path == NULL) {
+		abortf("sys_open: path is NULL");
+	}
+
 	file_t* file = vfs_open(path, flags);
 	if (file == NULL) {
 		regs->edx = -1;

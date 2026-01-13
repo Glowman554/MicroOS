@@ -10,6 +10,10 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	char** argv = (char**) regs->ecx;
 	char** envp = (char**) regs->edx;
 
+	if (path == NULL) {
+		abortf("sys_spawn: path is NULL");
+	}
+
 	file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
 	if (!file) {
 		debugf("Failed to open %s", path);
@@ -25,8 +29,15 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	vmm_free(buffer, file->size / 4096 + 1);
 	vfs_close(file);
 
-	debugf("copying pwd: %s", get_self()->pwd);
-	strcpy(get_task_by_pid(regs->esi)->pwd, get_self()->pwd);
+	task_t* spawned_task = get_task_by_pid(regs->esi);
+
+	debugf("copying pwd: %s", current->pwd);
+	size_t pwd_len = strlen(current->pwd);
+	if (pwd_len >= sizeof(spawned_task->pwd)) {
+		pwd_len = sizeof(spawned_task->pwd) - 1;
+	}
+	memcpy(spawned_task->pwd, current->pwd, pwd_len);
+	spawned_task->pwd[pwd_len] = '\0';
 
 	return regs;
 }

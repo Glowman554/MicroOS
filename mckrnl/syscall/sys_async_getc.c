@@ -3,9 +3,14 @@
 #include <driver/char_input_driver.h>
 #include <driver/char_output_driver.h>
 #include <scheduler/scheduler.h>
+#include <stdio.h>
 
 cpu_registers_t* sys_async_getc(cpu_registers_t* regs) {
 	task_t* current = get_self();
+
+	if (!global_char_output_driver || !global_char_input_driver) {
+		abortf("sys_async_getc: char input/output driver not initialized");
+	}
 
 	if (global_char_output_driver->current_term == current->term) {
 		regs->ebx = global_char_input_driver->async_getc(global_char_input_driver);

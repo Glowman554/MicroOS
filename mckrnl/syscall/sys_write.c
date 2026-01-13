@@ -5,6 +5,7 @@
 #include <fs/vfs.h>
 #include <fs/fd.h>
 #include <utils/lock.h>
+#include <stdio.h>
 
 define_spinlock(stdout_lock);
 
@@ -13,6 +14,11 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 	void* buffer = (void*) regs->ecx;
 	size_t count = regs->edx;
 	size_t offset = regs->esi;
+
+	if (buffer == NULL) {
+		abortf("sys_write: buffer is NULL");
+		return regs;
+	}
 
 	task_t* current = get_self();
 
@@ -34,6 +40,10 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 		default:
 			{
 				file_t* file = fd_to_file(fd);
+				if (file == NULL) {
+					abortf("sys_write: invalid file descriptor %d", fd);
+					break;
+				}
 				vfs_write(file, buffer, count, offset);
 			}
 			break;

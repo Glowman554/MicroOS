@@ -10,8 +10,11 @@ int num_syscall_handlers = 0;
 
 void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
 	debugf("Registering syscall %d with handler %p", syscall_id, handler);
+	if (!handler) {
+		return;
+	}
 
-	if (syscall_id > num_syscall_handlers) {
+	if (syscall_id >= num_syscall_handlers) {
 		int old_num_syscall_handlers = num_syscall_handlers;
 		num_syscall_handlers = syscall_id + 1;
 		syscall_table = vmm_resize(sizeof(syscall_handler_t), old_num_syscall_handlers, num_syscall_handlers, syscall_table);
@@ -22,6 +25,9 @@ void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
 
 cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
 	// debugf("Handling syscall %d %x", registers->eax, syscall_table[registers->eax]);
+	if (registers->eax >= num_syscall_handlers || !syscall_table[registers->eax]) {
+		abortf("Invalid syscall ID %d called!", registers->eax);
+	}
 	return syscall_table[registers->eax](registers);
 }
 
