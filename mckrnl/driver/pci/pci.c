@@ -55,7 +55,7 @@ void enumerate_pci() {
 							driver = true;
 						}
 					} else {
-						abortf("Invalid pci driver");
+						abortf(false, "Invalid pci driver");
 					}
 				}
 

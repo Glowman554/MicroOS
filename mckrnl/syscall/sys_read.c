@@ -13,13 +13,13 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 	size_t offset = regs->esi;
 
 	if (buffer == NULL) {
-		abortf("sys_read: buffer is NULL");
+		abortf(true, "sys_read: buffer is NULL");
 	}
 
 	switch (fd) {
 		case 0:
 			{
-				printf("Thats not how to use stdin on this kernel!\n");
+				abortf(true, "Thats not how to use stdin on this kernel!\n");
 			}
 			break;
 
@@ -32,7 +32,7 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 			{
 				file_t* file = fd_to_file(fd);
 				if (file == NULL) {
-					abortf("sys_read: invalid file descriptor %d", fd);
+					abortf(true, "sys_read: invalid file descriptor %d", fd);
 				}
 				vfs_read(file, buffer, count, offset);
 			}

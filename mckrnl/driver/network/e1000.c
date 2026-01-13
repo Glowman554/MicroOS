@@ -74,12 +74,12 @@ void e1000_init(driver_t* driver) {
 
 	if (e1000_driver->bar_type == 0) {
 		if (!(e1000_driver->mem_base)) {
-			abortf("e1000: an error occurred when getting the device's MMIO base address.");
+			abortf(false, "e1000: an error occurred when getting the device's MMIO base address.");
 			return;
 		}
 	} else {
 		if (!(e1000_driver->io_port)) {
-			abortf("e1000: an error occurred when getting the device's IO port.");
+			abortf(false, "e1000: an error occurred when getting the device's IO port.");
 			return;
 		}
 	}

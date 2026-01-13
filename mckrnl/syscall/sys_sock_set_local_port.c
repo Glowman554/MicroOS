@@ -11,7 +11,7 @@
 cpu_registers_t* sys_sock_set_local_port(cpu_registers_t* regs) {
 	socket_t* socket = socket_manager_find(regs->ebx);
 	if (!socket) {
-		abortf("sys_sock_set_local_port: invalid socket id %d", regs->ebx);
+		abortf(true, "sys_sock_set_local_port: invalid socket id %d", regs->ebx);
 	}
 	socket_set_local_port(socket, regs->ecx);
 

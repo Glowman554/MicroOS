@@ -89,7 +89,7 @@ multiboot_module_t* find_multiboot_module(char* name) {
 			return &modules[i];
 		}
 	}
-	abortf("Could not find multiboot module %s", name);
+	abortf(false, "Could not find multiboot module %s", name);
 	return NULL;
 }
 
@@ -112,7 +112,7 @@ void load_init() {
 		debugf("loading %s as init process...", init_exec);
 		file_t* file = vfs_open(init_exec, FILE_OPEN_MODE_READ);
 		if (file == NULL) {
-			abortf("Could not open %s", init_exec);
+			abortf(false, "Could not open %s", init_exec);
 		}
 		void* buffer = vmm_alloc(file->size / 4096 + 1);
 		vfs_read(file, buffer, file->size, 0);
@@ -120,7 +120,7 @@ void load_init() {
 		vmm_free(buffer, file->size / 4096 + 1);
 		vfs_close(file);
 	} else {
-		abortf("Please use --init to set a init process");
+		abortf(false, "Please use --init to set a init process");
 	}
 }
 
@@ -166,7 +166,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
 		if (!enable_serial) {
-			abortf("Cannot use gdb without serial");
+			abortf(false, "Cannot use gdb without serial");
 		}
 		gdb_active = true;
 		breakpoint();

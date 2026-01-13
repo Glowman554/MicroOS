@@ -11,7 +11,7 @@ cpu_registers_t* sys_truncate(cpu_registers_t* regs) {
 
 	file_t* file = fd_to_file(fd);
 	if (file == NULL) {
-		abortf("sys_truncate: invalid file descriptor %d", fd);
+		abortf(true, "sys_truncate: invalid file descriptor %d", fd);
 	}
 	vfs_truncate(file, new_size);
 

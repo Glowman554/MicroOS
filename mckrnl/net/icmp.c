@@ -112,7 +112,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 			break;
 		default:
 			{
-				abortf("ICMP type %d not implemented!", icmp->type);
+				debugf("ICMP type %d not implemented!", icmp->type);
 			}
 			break;
 	}

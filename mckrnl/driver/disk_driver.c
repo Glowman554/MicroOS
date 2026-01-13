@@ -34,7 +34,7 @@ void flush_disk(int disk_id) {
 	// assert(disk_id >= 0 && disk_id < MAX_DISKS);
 	// assert(disks[disk_id] != 0);
 	// disks[disk_id]->flush(disks[disk_id]);
-	abortf("The driver should flush when needed!");
+	abortf(false, "The driver should flush when needed!");
 }
 
 bool is_disk_physical(int disk_id) {

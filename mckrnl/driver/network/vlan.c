@@ -126,7 +126,7 @@ void configure_vlan(const char* cfg) {
         }
 
         if (*p != '.') {
-            abortf("Invalid VLAN config: expected '.' after VLAN ID\n");
+            abortf(false, "Invalid VLAN config: expected '.' after VLAN ID\n");
         }
         p++;
 
@@ -137,7 +137,7 @@ void configure_vlan(const char* cfg) {
         }
 
         if (vlan_id <= 0 || vlan_id > 4095) {
-            abortf("Invalid VLAN ID: %d\n", vlan_id);
+            abortf(false, "Invalid VLAN ID: %d\n", vlan_id);
         }
 
         debugf("VLAN: vlan%d.%d", vlan_id, parent_if);
@@ -146,7 +146,7 @@ void configure_vlan(const char* cfg) {
         if (*p == ',') {
             p++;
         } else if (*p && !isdigit((unsigned char)*p)) {
-            abortf("Invalid VLAN config: unexpected char '%c'\n", *p);
+            abortf(false, "Invalid VLAN config: unexpected char '%c'\n", *p);
         }
     }
 }

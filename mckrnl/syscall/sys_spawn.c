@@ -11,7 +11,7 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	char** envp = (char**) regs->edx;
 
 	if (path == NULL) {
-		abortf("sys_spawn: path is NULL");
+		abortf(true, "sys_spawn: path is NULL");
 	}
 
 	file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);

@@ -53,7 +53,7 @@ void ne2k_init(driver_t* driver) {
         }
     }
     if (ne_driver->io_base == 0) {
-        abortf("ne2k: no io base found");
+        abortf(false, "ne2k: no io base found");
         return;
     }
 

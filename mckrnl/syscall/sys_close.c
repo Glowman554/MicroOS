@@ -10,9 +10,9 @@ cpu_registers_t* sys_close(cpu_registers_t* regs) {
 
 	file_t* file = fd_to_file(fd);
 	if (file == NULL) {
-		abortf("sys_close: invalid file descriptor %d", fd);
+		abortf(true, "sys_close: invalid file descriptor %d", fd);
 	}
-	
+
 	vfs_close(file);
 	resource_unregister_self(file);
 	fd_free(fd);

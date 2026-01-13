@@ -80,7 +80,7 @@ task_t* find_empty_task_slot() {
 		}
 	}
 
-	abortf("Failed to find empty task slot");
+	abortf(false, "Failed to find empty task slot");
 	return NULL;
 }
 
@@ -405,7 +405,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
         return new_state;
     }
 
-	abortf("All tasks are dead lol\n");
+	abortf(false, "All tasks are dead lol\n");
 
 	return registers;
 }

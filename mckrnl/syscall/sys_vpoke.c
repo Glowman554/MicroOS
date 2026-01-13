@@ -12,7 +12,7 @@ cpu_registers_t* sys_vpoke(cpu_registers_t* regs) {
 	uint32_t range = regs->edx;
 
 	if (value == NULL || !global_char_output_driver || !global_char_output_driver->vpoke) {
-		abortf("sys_vpoke");
+		abortf(true, "sys_vpoke");
 	}
 
 	task_t* current = get_self();

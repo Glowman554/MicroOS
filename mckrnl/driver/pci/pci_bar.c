@@ -18,7 +18,7 @@ pci_bar_t pci_get_bar(uint32_t* bar0, int bar_num, uint16_t bus, uint16_t device
 		pci_read_bar(&mask, bus, device, function, bar_num * sizeof(uint32_t));
 
 		if (*bar_ptr & 0x04) { //64-bit mmio
-            abortf("What MMIO64 on 32 bit only?");
+            abortf(false, "What MMIO64 on 32 bit only?");
             bar.type = NONE;
 		} else if (*bar_ptr & 0x01) { //IO
 			bar.type = IO;

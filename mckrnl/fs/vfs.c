@@ -73,7 +73,7 @@ file_t* vfs_open(char* path, int flags) {
 	}
 
 	if (mount->open == NULL) {
-		abortf("Mount %s has no open function!", mount->name(mount));
+		abortf(true, "Mount %s has no open function!", mount->name(mount));
 	}
 
 	file_t* f = mount->open(mount, file_path, flags);
@@ -86,35 +86,35 @@ file_t* vfs_open(char* path, int flags) {
 
 void vfs_close(file_t* file) {
 	if (file->mount->close == NULL) {
-		abortf("Mount %s has no close function!", file->mount->name(file->mount));
+		abortf(true, "Mount %s has no close function!", file->mount->name(file->mount));
 	}
 	file->mount->close(file->mount, file);
 }
 
 void vfs_read(file_t* file, void* buf, size_t size, size_t offset) {
 	if (file->mount->read == NULL) {
-		abortf("Mount %s has no read function!", file->mount->name(file->mount));
+		abortf(true, "Mount %s has no read function!", file->mount->name(file->mount));
 	}
 	file->mount->read(file->mount, file, buf, size, offset);
 }
 
 void vfs_write(file_t* file, void* buf, size_t size, size_t offset) {
 	if (file->mount->write == NULL) {
-		abortf("Mount %s has no write function!", file->mount->name(file->mount));
+		abortf(true, "Mount %s has no write function!", file->mount->name(file->mount));
 	}
 	file->mount->write(file->mount, file, buf, size, offset);
 }
 
 void vfs_truncate(file_t* file, size_t new_size) {
 	if (file->mount->truncate == NULL) {
-		abortf("Mount %s has no truncate function!", file->mount->name(file->mount));
+		abortf(true, "Mount %s has no truncate function!", file->mount->name(file->mount));
 	}
 	file->mount->truncate(file->mount, file, new_size);
 }
 
 void vfs_delete(file_t* file) {
 	if (file->mount->_delete == NULL) {
-		abortf("Mount %s has no delete function!", file->mount->name(file->mount));
+		abortf(true, "Mount %s has no delete function!", file->mount->name(file->mount));
 	}
 	file->mount->_delete(file->mount, file);
 }
@@ -124,11 +124,11 @@ void vfs_mkdir(char* path) {
 	vfs_mount_t* mount = vfs_find_mount(path, file_path);
 
 	if (mount == NULL) {
-		abortf("No device found for path: %s", path);
+		abortf(true, "No device found for path: %s", path);
 	}
 
 	if (mount->mkdir == NULL) {
-		abortf("Mount %s has no mkdir function!", mount->name(mount));
+		abortf(true, "Mount %s has no mkdir function!", mount->name(mount));
 	}
 
 	mount->mkdir(mount, file_path);
@@ -139,11 +139,11 @@ void vfs_touch(char* path) {
 	vfs_mount_t* mount = vfs_find_mount(path, file_path);
 
 	if (mount == NULL) {
-		abortf("No device found for path: %s", path);
+		abortf(true, "No device found for path: %s", path);
 	}
 
 	if (mount->touch == NULL) {
-		abortf("Mount %s has no touch function!", mount->name(mount));
+		abortf(true, "Mount %s has no touch function!", mount->name(mount));
 	}
 
 	mount->touch(mount, file_path);
@@ -154,11 +154,11 @@ dir_t vfs_dir_at(int idx, char* path) {
 	vfs_mount_t* mount = vfs_find_mount(path, file_path);
 
 	if (mount == NULL) {
-		abortf("No device found for path: %s", path);
+		abortf(true, "No device found for path: %s", path);
 	}
 
 	if (mount->dir_at == NULL) {
-		abortf("Mount %s has no dir_at function!", mount->name(mount));
+		abortf(true, "Mount %s has no dir_at function!", mount->name(mount));
 	}
 
 	return mount->dir_at(mount, idx, file_path);
@@ -169,11 +169,11 @@ void vfs_delete_dir(char* path) {
 	vfs_mount_t* mount = vfs_find_mount(path, file_path);
 
 	if (mount == NULL) {
-		abortf("No device found for path: %s", path);
+		abortf(true, "No device found for path: %s", path);
 	}
 
 	if (mount->delete_dir == NULL) {
-		abortf("Mount %s has no delete_dir function!", mount->name(mount));
+		abortf(true, "Mount %s has no delete_dir function!", mount->name(mount));
 	}
 
 	mount->delete_dir(mount, file_path);

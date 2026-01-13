@@ -13,7 +13,7 @@ cpu_registers_t* sys_dir_at(cpu_registers_t* regs) {
 	dir_t* user_dir = (dir_t*) regs->edx;
 
 	if (user_dir == NULL || path == NULL) {
-		abortf("sys_dir_at: user_dir or path is NULL");
+		abortf(true, "sys_dir_at: user_dir or path is NULL");
 	}
 
 	dir_t dir = vfs_dir_at(idx, path);

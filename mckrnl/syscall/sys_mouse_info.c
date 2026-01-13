@@ -10,11 +10,11 @@
 cpu_registers_t* sys_mouse_info(cpu_registers_t* regs) {
     mouse_info_t* info = (mouse_info_t*) regs->ebx;
     if (info == NULL) {
-        abortf("sys_mouse_info: info pointer is NULL");
+        abortf(true, "sys_mouse_info: info pointer is NULL");
     }
 
     if (global_char_output_driver == NULL || global_mouse_driver == NULL) {
-        abortf("sys_mouse_info: drivers not initialized");
+        abortf(true, "sys_mouse_info: drivers not initialized");
     }
 
     task_t* current = get_self();

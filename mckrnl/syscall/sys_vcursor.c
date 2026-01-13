@@ -7,7 +7,7 @@
 
 cpu_registers_t* sys_vcursor(cpu_registers_t* regs) {
 	if (global_char_output_driver == NULL || global_char_output_driver->vcursor == NULL) {
-		abortf("sys_vcursor");
+		abortf(true, "sys_vcursor");
 	}
 	task_t* current = get_self();
 	global_char_output_driver->vcursor(global_char_output_driver, current->term, regs->ebx, regs->ecx);

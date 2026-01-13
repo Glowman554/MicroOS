@@ -7,7 +7,7 @@
 #include <config.h>
 #ifdef NETWORK_STACK
 
-#define invalid() abortf("Inalid socket type!"); while(1)
+#define invalid() abortf(true, "Inalid socket type!"); while(1)
 
 socket_manager_t* global_socket_manager = NULL;
 

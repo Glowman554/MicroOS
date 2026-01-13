@@ -12,7 +12,7 @@ cpu_registers_t* sys_vpeek(cpu_registers_t* regs) {
 	uint32_t range = regs->edx;
 
 	if (value == NULL || !global_char_output_driver || !global_char_output_driver->vpeek) {
-		abortf("sys_vpeek");
+		abortf(true, "sys_vpeek");
 	}
 
 	task_t* current = get_self();

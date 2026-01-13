@@ -133,7 +133,7 @@ void* pmm_alloc() {
 	}
 
     pmm_debug_print();
-    abortf("Allocation failed!");
+    abortf(false, "Allocation failed!");
 	return NULL;
 }
 
@@ -150,7 +150,7 @@ void* pmm_alloc_pagetable() {
 	}
 
     pmm_debug_print();
-    abortf("Allocation failed!");
+    abortf(false, "Allocation failed!");
 	return NULL;
 }
 

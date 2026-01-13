@@ -4,6 +4,8 @@
 #include <config.h>
 #include <stddef.h>
 #include <interrupts/interrupts.h>
+#include <scheduler/scheduler.h>
+#include <scheduler/killer.h>
 #include <renderer/text_console.h>
 
 #include <driver/apic/lapic.h>
@@ -89,7 +91,7 @@ void stacktrace_print(int frame_num, uint32_t eip) {
 }
 #endif
 
-int abortf_intrnl(const char* file, int line, const char* function, const char *format, ...) {
+int abortf_intrnl(const char* file, int line, const char* function, bool weak, const char *format, ...) {
 	__asm__ volatile("cli");
 	
 	va_list args;
@@ -109,27 +111,31 @@ int abortf_intrnl(const char* file, int line, const char* function, const char *
 	printf("Location: %s:%d in %s\n", file, line, function);
 #endif
 
-#ifdef ALLOW_PANIC_CONTINUE
-	debugf("KERNEL PANIC: Press <x> to continue execution or <h> to halt");
+	if (is_scheduler_running && weak) {
+		kill("Kernel Panic");
+	} else {
+	#ifdef ALLOW_PANIC_CONTINUE
+		debugf("KERNEL PANIC: Press <x> to continue execution or <h> to halt");
 
-	while (true) {
-		char c = read_serial();
+		while (true) {
+			char c = read_serial();
 
-		switch (c) {
-			case 'x':
-			debugf("Continuing...");
-				return 0;
-			case 'h':
-				goto do_halt;
+			switch (c) {
+				case 'x':
+				debugf("Continuing...");
+					return 0;
+				case 'h':
+					goto do_halt;
+			}
 		}
+	#endif
 	}
-
 do_halt:
-#endif
 	debugf("Halting...");
 	while (true) {
 		halt();
 	}
+
 }
 
 void breakpoint() {

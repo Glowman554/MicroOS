@@ -206,7 +206,7 @@ cpu_registers_t* handle_interrupt(cpu_registers_t* cpu) {
 			new_cpu = interrupt_handlers[cpu->intr](cpu, interrupt_handlers_special_data[cpu->intr]);
 			set_tss(1, (uint32_t) (new_cpu + 1));
 		} else {
-			abortf("Unhandled exception %s (0x%x)", get_exception_name(cpu->intr), cpu->intr);
+			abortf(false, "Unhandled exception %s (0x%x)", get_exception_name(cpu->intr), cpu->intr);
 		}
 	} else {
 		if (cpu->intr >= 0x20 && cpu->intr <= 0x2f) {

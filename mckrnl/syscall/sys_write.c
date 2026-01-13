@@ -16,7 +16,7 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 	size_t offset = regs->esi;
 
 	if (buffer == NULL) {
-		abortf("sys_write: buffer is NULL");
+		abortf(true, "sys_write: buffer is NULL");
 		return regs;
 	}
 
@@ -41,7 +41,7 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 			{
 				file_t* file = fd_to_file(fd);
 				if (file == NULL) {
-					abortf("sys_write: invalid file descriptor %d", fd);
+					abortf(true, "sys_write: invalid file descriptor %d", fd);
 					break;
 				}
 				vfs_write(file, buffer, count, offset);

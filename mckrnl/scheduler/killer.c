@@ -11,7 +11,7 @@ char* page_fault_get_error(uint32_t error);
 cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
 	printf("#DE (Division by zero) eip: %x\n", registers->eip);
 
-	exit_task(get_self());
+	kill("Exception");
 
 	return registers;
 }
@@ -19,7 +19,7 @@ cpu_registers_t* division_by_zero_killer(cpu_registers_t* registers, void* _) {
 cpu_registers_t* invalid_opcode_killer(cpu_registers_t* registers, void* _) {
 	printf("#UD (Invalid opcode) eip: %x\n", registers->eip);
 
-	exit_task(get_self());
+	kill("Exception");
 
 	return registers;
 }
@@ -30,7 +30,7 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 
 	printf("#PF (Page fault) %s @ 0x%x, eip: %x\n", page_fault_get_error(registers->error), cr2, registers->eip);
 
-	exit_task(get_self());
+	kill("Exception");
 
 	return registers;
 }
@@ -38,11 +38,18 @@ cpu_registers_t* page_fault_killer(cpu_registers_t* registers, void* _) {
 cpu_registers_t* general_protection_fault_killer(cpu_registers_t* registers, void* _) {
 	printf("#GP (General Protection) eip: %x\n", registers->eip);
 
-	exit_task(get_self());
+	kill("Exception");
 
 	return registers;
 }
 
+void kill(char* reason) {
+	task_t* current = get_self();
+
+	printf("Killing task %d (%s)\n", current->pid, reason);
+
+	exit_task(current);
+}
 
 void init_killer() {
 	debugf("Initialising killers!");

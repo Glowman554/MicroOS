@@ -12,7 +12,7 @@ void acpi_reset() {
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP");
 
 	if (fadt == NULL) {
-		abortf("FADT can not be found!");
+		abortf(false, "FADT can not be found!");
 	}
 
 	switch (fadt->reset_reg.address_space ) {
@@ -25,23 +25,23 @@ void acpi_reset() {
 		
 		case GENERIC_ADDRESS_SPACE_SYSTEM_MEMORY:
 			{
-				abortf("ACPI reboot: system memory\n");
+				abortf(false, "ACPI reboot: system memory\n");
 			}
 			break;
 		
 		case GENERIC_ADDRESS_SPACE_PCI_CONFIGURATION_SPACE:
 			{
-				debugf("ACPI reboot: pci configuration space\n");
+				debugf(false, "ACPI reboot: pci configuration space\n");
 				pci_writeb(0, (fadt->reset_reg.address >> 32) & 0xFFFF, (fadt->reset_reg.address >> 16) & 0xFFFF, fadt->reset_reg.address & 0xFFFF, fadt->reset_value);
 			}
 			break;
 
 		default:
-			abortf("ACPI reboot: unknown address space %d", fadt->reset_reg.address_space);
+			abortf(false, "ACPI reboot: unknown address space %d", fadt->reset_reg.address_space);
 			break;
 	}
 
-	abortf("ACPI reset failed");
+	abortf(false, "ACPI reset failed");
 }
 
 void acpi_power_off() {
@@ -49,7 +49,7 @@ void acpi_power_off() {
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP");
 
 	if (fadt == NULL) {
-		abortf("FADT can not be found!");
+		abortf(false, "FADT can not be found!");
 	}
 
 	outw(fadt->PM1a_control_block, (inw(fadt->PM1a_control_block) & 0xE3FF) | ((SLP_TYPa << 10) | 0x2000));
@@ -63,5 +63,5 @@ void acpi_power_off() {
 		outw(fadt->PM1b_control_block, SLP_TYPb | (1 << 13));
 	}
 
-	abortf("ACPI shutdown failed");
+	abortf(false, "ACPI shutdown failed");
 }

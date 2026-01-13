@@ -12,11 +12,11 @@
 cpu_registers_t* sys_sock_send(cpu_registers_t* regs) {
 	socket_t* socket = socket_manager_find(regs->ebx);
 	if (socket == NULL) {
-		abortf("sys_sock_send: invalid socket id %d", regs->ebx);
+		abortf(true, "sys_sock_send: invalid socket id %d", regs->ebx);
 	}
 	uint8_t* data = (uint8_t*) regs->ecx;
 	if (data == NULL) {
-		abortf("sys_sock_send: data pointer is NULL");
+		abortf(true, "sys_sock_send: data pointer is NULL");
 	}
 	socket_send(socket, data, regs->edx);
 

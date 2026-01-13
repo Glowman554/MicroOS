@@ -10,9 +10,9 @@ cpu_registers_t* sys_delete(cpu_registers_t* regs) {
 
 	file_t* file = fd_to_file(fd);
 	if (!file) {
-		abortf("sys_delete: invalid file descriptor %d", fd);
+		abortf(true, "sys_delete: invalid file descriptor %d", fd);
 	}
-	
+
 	vfs_delete(file);
 	resource_unregister_self(file);
 
