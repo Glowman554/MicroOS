@@ -105,6 +105,7 @@ libs.zip: all
 	cp user/libc/include/* res/libs/include/. -rf
 	cp user/libtinf/include/* res/libs/include/. -rf
 	cp user/libflvm/include/* res/libs/include/. -rf
+	cp user/libjson/include/* res/libs/include/. -rf
 
 ifeq ($(GUI),1)
 	cp gui/lib/* res/libs/. -rf
