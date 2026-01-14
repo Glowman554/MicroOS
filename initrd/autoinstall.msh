@@ -1,3 +1,4 @@
+#!initrd:/bin/terminal.mex
 export partition=fat32_0:
 export keyboard=de
 export banner=y

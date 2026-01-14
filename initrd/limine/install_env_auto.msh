@@ -1,3 +1,4 @@
+#!initrd:/bin/terminal.mex
 echo Welcome to the limine installer help script.
 
 export disk_id=1
