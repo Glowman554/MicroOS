@@ -1,0 +1,32 @@
+{
+    "file": "user/libc/include/config.h",
+    "configuration": {
+        "title": "LibC configuration",
+        "items": [
+            {
+                "name": "Debug",
+                "value": {
+                    "title": "Debug",
+                    "items": [
+                        {
+                            "name": "ALLOC_DEBUG",
+                            "value": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Init",
+                "value": {
+                    "title": "Init process",
+                    "items": [
+                        {
+                            "name": "INIT_PROCESS",
+                            "value": "bin/terminal.mex"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

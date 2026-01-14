@@ -4,6 +4,7 @@ all:
 	make -C libc library
 	make -C libtinf library
 	make -C libflvm library
+	make -C libjson library
 
 	make -C init prog
 	make -C terminal prog
@@ -44,11 +45,13 @@ all:
 	make -C scheduler prog
 	make -C if prog
 	make -C httpget prog
+	make -C jsonprint prog
 
 clean:
 	make -C libc clean
 	make -C libtinf clean
 	make -C libflvm clean
+	make -C libjson clean
 	
 	make -C init clean
 	make -C terminal clean
@@ -89,11 +92,13 @@ clean:
 	make -C scheduler clean
 	make -C if clean
 	make -C httpget clean
+	make -C jsonprint clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
 	make -C libtinf compile_flags.txt
 	make -C libflvm compile_flags.txt
+	make -C libjson compile_flags.txt
 
 	make -C init compile_flags.txt
 	make -C terminal compile_flags.txt
@@ -134,3 +139,4 @@ compile_flags.txt:
 	make -C scheduler compile_flags.txt
 	make -C if compile_flags.txt
 	make -C httpget compile_flags.txt
+	make -C jsonprint compile_flags.txt
