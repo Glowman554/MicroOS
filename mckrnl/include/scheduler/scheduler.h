@@ -39,12 +39,6 @@ typedef struct {
 	int term;
 } task_t;
 
-typedef struct mex_header {
-    char header[4]; // "MEX\0"
-    char programAuthor[64];
-    unsigned int elfSizeCompressed;
-} __attribute__((packed)) mex_header_t;
-
 // extern task_t tasks[MAX_TASKS];
 // extern int current_task;
 extern bool is_scheduler_running;
@@ -52,7 +46,6 @@ extern bool is_scheduler_running;
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
 task_t* init_task(int term, void* entry, bool thread, task_t* parent);
-int init_executable(int term, void* image, char** argv, char** envp);
 void exit_task(task_t* task);
 
 task_t* get_task_by_pid(int pid);

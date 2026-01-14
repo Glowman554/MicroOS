@@ -22,6 +22,7 @@ extern file_scanner_t gz_scanner;
 extern file_scanner_t wad_scanner;
 extern file_scanner_t mkm_scanner;
 extern file_scanner_t mex_scanner;
+extern file_scanner_t mex_v2_scanner;
 extern file_scanner_t wav_scanner;
 
 

@@ -46,6 +46,7 @@ all:
 	make -C if prog
 	make -C httpget prog
 	make -C jsonprint prog
+	make -C createmex prog
 
 clean:
 	make -C libc clean
@@ -93,6 +94,7 @@ clean:
 	make -C if clean
 	make -C httpget clean
 	make -C jsonprint clean
+	make -C createmex clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -140,3 +142,4 @@ compile_flags.txt:
 	make -C if compile_flags.txt
 	make -C httpget compile_flags.txt
 	make -C jsonprint compile_flags.txt
+	make -C createmex compile_flags.txt

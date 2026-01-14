@@ -191,6 +191,10 @@
                         {
                             "name": "FAST_MEMORY",
                             "value": true
+                        },
+                        {
+                            "name": "ABI_VERSION",
+                            "value": 1
                         }
                     ]
                 }

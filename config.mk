@@ -4,6 +4,10 @@
 # FIRESTORM = 0
 # End Gui
 
+# Other
+ABI_VERSION = 1
+# End Other
+
 # Syscalls
 SYS_OPEN_ID = 1
 SYS_CLOSE_ID = 2

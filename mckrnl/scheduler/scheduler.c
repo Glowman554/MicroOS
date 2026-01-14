@@ -8,7 +8,6 @@
 #include <memory/vmm.h>
 #include <utils/string.h>
 #include <utils/multiboot.h>
-#include <scheduler/elf.h>
 #include <fs/vfs.h>
 #include <assert.h>
 #include <driver/apic/lapic.h>
@@ -16,7 +15,6 @@
 #include <driver/timer_driver.h>
 #include <driver/acpi/madt.h>
 #include <driver/char_output_driver.h>
-#include <utils/tinf.h>
 #include <utils/lock.h>
 
 extern uint8_t idle_task[];
@@ -159,159 +157,6 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	return task;
 }
 
-int init_elf(int term, void* image, char** argv, char** envp) {
-
-	struct elf_header* header = image;
-
-	if (header->magic != ELF_MAGIC) {
-		printf("ELF magic mismatch\n");
-		return -1;
-	}
-
-	task_t* task = init_task(term, (void*) header->entry, false, NULL);
-
-	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
-	for (int i = 0; i < header->ph_entry_count; i++, ph++) {
-		void* dest = (void*) ph->virt_addr;
-		void* real_dest = (void*) ALIGN_PAGE_DOWN((uintptr_t) dest);
-
-		void* src = ((char*) image) + ph->offset;
-
-		if (ph->type != 1) {
-			continue;
-		}    
-
-		int real_size = ph->mem_size / 4096 + 1;
-		if (dest != real_dest) {
-			real_size++;
-		}
-
-		void* phys_loc = pmm_alloc_range(real_size);
-		for (int j = 0; j < real_size; j++) {
-			if (vmm_lookup((uintptr_t) real_dest + j * 4096, task->context)) {
-				pmm_free(phys_loc + j * 4096);
-			} else {
-				vmm_map_page(task->context, (uintptr_t) real_dest + j * 4096, (uintptr_t) phys_loc + j * 4096, PTE_PRESENT | PTE_WRITE | PTE_USER);
-			}
-		}
-
-		vmm_context_t old = vmm_get_current_context();
-		vmm_activate_context(task->context);
-
-		memset(dest, 0, ph->mem_size);
-		memcpy(dest, src, ph->file_size);
-
-		vmm_activate_context(&old);
-	}
-
-	int num_envp = 0;
-	for (num_envp = 0; envp[num_envp] != NULL; num_envp++);
-
-	int num_argv = 0;
-	for (num_argv = 0; argv[num_argv] != NULL; num_argv++);
-
-	debugf("copying %d arguments and %d environment variables", num_argv, num_envp);
-
-	task->argv = (char**) vmm_alloc(1);
-	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
-
-	for (int i = 0; i < num_argv; i++) {
-		task->argv[i] = (char*) vmm_alloc(1);
-		vmm_map_page(task->context, (uintptr_t) task->argv[i] + USER_SPACE_OFFSET, (uintptr_t) task->argv[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
-		memset(task->argv[i], 0, 0x1000);
-		strcpy(task->argv[i], argv[i]);
-	}
-
-	task->argv[num_argv] = NULL;
-
-	task->envp = (char**) vmm_alloc(1);
-	vmm_map_page(task->context, (uintptr_t) task->envp + USER_SPACE_OFFSET, (uintptr_t) task->envp, PTE_PRESENT | PTE_WRITE | PTE_USER);
-
-	for (int i = 0; i < num_envp; i++) {
-		task->envp[i] = (char*) vmm_alloc(1);
-		vmm_map_page(task->context, (uintptr_t) task->envp[i] + USER_SPACE_OFFSET, (uintptr_t) task->envp[i], PTE_PRESENT | PTE_WRITE | PTE_USER);
-		memset(task->envp[i], 0, 0x1000);
-		strcpy(task->envp[i], envp[i]);
-	}
-
-	task->envp[num_envp] = NULL;
-
-	for (int i = 0; i < num_argv; i++) {
-		task->argv[i] = (char*) ((uint32_t) task->argv[i] + USER_SPACE_OFFSET);
-	}
-
-	task->argv = (char**) ((uint32_t) task->argv + USER_SPACE_OFFSET);
-
-	for (int i = 0; i < num_envp; i++) {
-		task->envp[i] = (char*) ((uint32_t) task->envp[i] + USER_SPACE_OFFSET);
-	}
-
-	task->envp = (char**) ((uint32_t) task->envp + USER_SPACE_OFFSET);
-
-	task->active = true;
-
-	return task->pid;
-}
-
-static unsigned int read_le32(const unsigned char *p) {
-	return ((unsigned int) p[0]) | ((unsigned int) p[1] << 8) | ((unsigned int) p[2] << 16) | ((unsigned int) p[3] << 24);
-}
-
-int init_mex(int term, void* image, char** argv, char** envp) {
-	mex_header_t* header = image;
-	void* content = (void*) header + sizeof(mex_header_t);
-
-	if (memcmp(header->header, "MEX", 4) != 0) {
-		printf("MEX magic mismatch\n");
-		return -1;
-	}
-
-	unsigned int decompressed_size = read_le32(content + header->elfSizeCompressed - 4);
-	debugf("decompressing %dkb to %dkb", header->elfSizeCompressed / 1024, decompressed_size / 1024);
-	char* dest = (char*) vmm_alloc(TO_PAGES(decompressed_size));
-	unsigned int output_size = decompressed_size;
-	int res = tinf_gzip_uncompress(dest, &output_size, content, header->elfSizeCompressed);
-		
-	if ((res != TINF_OK) || (output_size != decompressed_size)) {
-		printf("decompression failed: ");
-		switch (res) {
-			case TINF_DATA_ERROR:
-				printf("TINF_DATA_ERROR\n");
-				break;
-			case TINF_BUF_ERROR:
-				printf("TINF_BUF_ERROR\n");
-				break;
-			default:
-				printf("Unknown error\n");
-				break;
-		}
-		vmm_free(dest, TO_PAGES(decompressed_size));
-		return -1;
-	}
-
-	int pid = init_elf(term, dest, argv, envp);
-	vmm_free(dest, TO_PAGES(decompressed_size));
-	return pid;
-}
-
-int init_executable(int term, void* image, char** argv, char** envp) {
-	debugf("Loading executable at %p", image);
-	
-	for (int i = 0; argv[i] != NULL; i++) {
-		debugf("argv[%d]: %s", i, argv[i]);
-	}
-
-	for (int i = 0; envp[i] != NULL; i++) {
-		debugf("envp[%d]: %s", i, envp[i]);
-	}
-
-	mex_header_t* header = image;
-	if (memcmp(header->header, "MEX", 4) == 0) {
-		return init_mex(term, image, argv, envp);
-	}
-
-	return init_elf(term, image, argv, envp);
-}
 
 void exit_task(task_t* task) {
 	asm volatile("cli");

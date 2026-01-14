@@ -18,6 +18,18 @@
                         }
                     ]
                 }
+            },
+            {
+                "name": "Other",
+                "value": {
+                    "title": "Other",
+                    "items": [
+                        {
+                            "name": "ABI_VERSION",
+                            "value": 1
+                        }
+                    ]
+                }
             }
         ]
     }
