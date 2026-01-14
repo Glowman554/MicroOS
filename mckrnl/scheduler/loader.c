@@ -252,12 +252,8 @@ int init_mex_v2(int term, void* image, char** argv, char** envp) {
     }
 
     unsigned int decompressed_size = read_le32(content + header->elfSizeCompressed - 4);
-    debugf("decompressing %dkb to %dkb", header->elfSizeCompressed / 1024, decompressed_size / 1024);
 
     char* dest = mex_decompress(decompressed_size, header->elfSizeCompressed, content);
-    if (dest == NULL) {
-        return -1;
-    }
 
     int pid = init_elf(term, dest, argv, envp);
     vmm_free(dest, TO_PAGES(decompressed_size));
