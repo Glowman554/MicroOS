@@ -1,0 +1,9 @@
+#!initrd:/bin/terminal.mex
+
+export TMPFILE=tmp:/asmlaunch.elf
+
+echo Compiling $1
+cp $1 tmp:/asmlaunch.asm
+fasm $1 $TMPFILE
+
+$TMPFILE

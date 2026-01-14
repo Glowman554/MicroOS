@@ -62,10 +62,7 @@ int insert_history(char* buffer, int idx) {
 int main(int argc, char* argv[], char* envp[]) {
 	terminal_envp = envp;
 
-	if (argc == 2) {
-		run_script(argv[1]);
-		return 0;
-	} else if (argc != 1) {
+	if (argc != 1) {
 		if (strcmp(argv[1], "-e") == 0) {
 			char command[MAX_BUFFER_SIZE] = { 0 };
 			strcpy(command, argv[2]);
@@ -79,11 +76,11 @@ int main(int argc, char* argv[], char* envp[]) {
 			
 			return 0;
 		} else {
-			printf("Usage: terminal [script?]\n");
-			return 1;
+			run_script(argv[1], &argv[1], argc - 1);
+			
+			return 0;
 		}
 	}
-
 
 
 	char buffer[MAX_BUFFER_SIZE + 1];

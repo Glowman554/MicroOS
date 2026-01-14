@@ -8,7 +8,7 @@
 
 #include <commands.h>
 
-void run_script(char* path) {
+void run_script(char* path, char** argv, int argc) {
 	char resolved_path[256] = { 0 };
 	bool canresolve = resolve(path, resolved_path);
 	if (!canresolve) {
@@ -16,6 +16,12 @@ void run_script(char* path) {
 		exit(-1);
 	}
 	// printf("Running script: '%s'\n", path);
+
+	for (int i = 0; i < argc; i++) {
+		char export_command[512] = { 0 };
+		sprintf(export_command, "export %d=%s", i, argv[i]);
+		export(export_command);
+	}
 
 	FILE* file = fopen(resolved_path, "r");
 	if (file == NULL) {
@@ -56,10 +62,12 @@ void run_script(char* path) {
 		}
 
 		if (current_line[0] == '#') {
+			memset(current_line, 0, sizeof(current_line));
 			continue;
 		}
 
 		if (current_line[0] == '\0') {
+			memset(current_line, 0, sizeof(current_line));
 			continue;
 		}
 
@@ -79,7 +87,7 @@ void run_script(char* path) {
 			printf("Error: Command not found: '%s', line %d\n", command, line_number);
 			exit(-1);
 		}
-		memset(current_line, 0, 256);
+		memset(current_line, 0, sizeof(current_line));
 
 		if (should_break == true) {
 			break;

@@ -295,6 +295,16 @@ int init_mex(int term, void* image, char** argv, char** envp) {
 }
 
 int init_executable(int term, void* image, char** argv, char** envp) {
+	debugf("Loading executable at %p", image);
+	
+	for (int i = 0; argv[i] != NULL; i++) {
+		debugf("argv[%d]: %s", i, argv[i]);
+	}
+
+	for (int i = 0; envp[i] != NULL; i++) {
+		debugf("envp[%d]: %s", i, envp[i]);
+	}
+
 	mex_header_t* header = image;
 	if (memcmp(header->header, "MEX", 4) == 0) {
 		return init_mex(term, image, argv, envp);
