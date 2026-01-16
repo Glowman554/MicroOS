@@ -9,6 +9,7 @@
 #include <interrupts/interrupts.h>
 #include <syscall/syscalls.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/loader.h>
 #include <scheduler/killer.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
