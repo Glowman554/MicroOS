@@ -219,9 +219,9 @@ void _main(multiboot_info_t* mb_info) {
 	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
 
-	register_driver((driver_t*) &loopback_driver);
-
 	enumerate_pci();
+
+	register_driver((driver_t*) &loopback_driver);
 
 #ifdef NETWORK_STACK
 	char vlan_config[128] = { 0 };
