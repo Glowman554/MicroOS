@@ -67,8 +67,17 @@ void pci_writew(uint16_t bus, uint16_t device, uint16_t function, uint32_t regis
 int device_has_functions(uint16_t bus, uint16_t device);
 pci_device_header_t get_device_header(uint16_t bus, uint16_t device, uint16_t function);
 
+void enable_io(uint16_t bus, uint16_t device, uint16_t function);
+void disable_io(uint16_t bus, uint16_t device, uint16_t function);
+
 void enable_mmio(uint16_t bus, uint16_t device, uint16_t function);
-void become_bus_master(uint16_t bus, uint16_t device, uint16_t function);
+void disable_mmio(uint16_t bus, uint16_t device, uint16_t function);
+
+void enable_interrupt(uint16_t bus, uint16_t device, uint16_t function);
+void disable_interrupt(uint16_t bus, uint16_t device, uint16_t function);
+
+void enable_bus_master(uint16_t bus, uint16_t device, uint16_t function);
+void disable_bus_master(uint16_t bus, uint16_t device, uint16_t function);
 
 void enumerate_pci();
 
