@@ -1,3 +1,4 @@
+#include "driver/pci/pci.h"
 #include <driver/network/ne2k.h>
 #include <stdint.h>
 #include <string.h>
@@ -57,7 +58,7 @@ void ne2k_init(driver_t* driver) {
         return;
     }
 
-    become_bus_master(ne_driver->header.bus, ne_driver->header.device, ne_driver->header.function);
+    enable_bus_master(ne_driver->header.bus, ne_driver->header.device, ne_driver->header.function);
 
     outb(ne_driver->io_base + NE_CMD, 0x21);
 

@@ -1,3 +1,4 @@
+#include "driver/pci/pci.h"
 #include <driver/network/e1000.h>
 #include <string.h>
 #include <memory/vmm.h>
@@ -70,7 +71,7 @@ void e1000_init(driver_t* driver) {
 	e1000_driver->rx_ptr = (uint8_t*) vmm_alloc(((sizeof(struct e1000_rx_desc) * e1000_NUM_RX_DESC + 16) / 0x1000) + 1);
 	e1000_driver->tx_ptr = (uint8_t*) vmm_alloc(((sizeof(struct e1000_tx_desc) * e1000_NUM_TX_DESC + 16) / 0x1000) + 1);
 
-	become_bus_master(e1000_driver->header.bus, e1000_driver->header.device, e1000_driver->header.function);
+	enable_bus_master(e1000_driver->header.bus, e1000_driver->header.device, e1000_driver->header.function);
 
 	if (e1000_driver->bar_type == 0) {
 		if (!(e1000_driver->mem_base)) {

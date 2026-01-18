@@ -11,4 +11,6 @@ void outw(uint16_t port, uint16_t data);
 uint32_t inl(unsigned short port);
 uint16_t inw(uint16_t _port);
 
+void io_wait(uint64_t us);
+
 #endif

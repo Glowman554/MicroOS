@@ -1,6 +1,7 @@
 #include <driver/pci/pci_bar.h>
 
 #include <stdio.h>
+#include <utils/io.h>
 
 void pci_read_bar(uint32_t* mask, uint16_t bus, uint16_t device, uint16_t function, uint32_t offset) {
 	uint32_t data = pci_readd(bus, device, function, offset);
@@ -51,4 +52,57 @@ uint16_t pci_get_io_port(pci_device_header_t* header, uint16_t bus, uint16_t dev
 	}
 
 	return port;
+}
+
+
+
+uint8_t pci_bar_read_byte(pci_bar_t type, uint8_t field) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		return *(uint8_t*)(type.mem_address + field);
+	} else if (type.type == IO) {
+		return inb(type.io_address + field);
+	}
+	return 0;
+}
+
+uint16_t pci_bar_read_word(pci_bar_t type, uint8_t field) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		return *(uint16_t*)(type.mem_address + field);
+	} else if (type.type == IO) {
+		return inw(type.io_address + field);
+	}
+	return 0;
+}
+
+uint32_t pci_bar_read_dword(pci_bar_t type, uint8_t field) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		return *(uint32_t*)(type.mem_address + field);
+	} else if (type.type == IO) {
+		return inl(type.io_address + field);
+	}
+	return 0;
+}
+
+void pci_bar_write_byte(pci_bar_t type, uint16_t field, uint8_t value) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		*(uint8_t*)(type.mem_address + field) = value;
+	} else if (type.type == IO) {
+		outb(type.io_address + field, value);
+	}
+}
+
+void pci_bar_write_word(pci_bar_t type, uint16_t field, uint16_t value) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		*(uint16_t*)(type.mem_address + field) = value;
+	} else if (type.type == IO) {
+		outw(type.io_address + field, value);
+	}
+}
+
+void pci_bar_write_dword(pci_bar_t type, uint16_t field, uint32_t value) {
+	if (type.type == MMIO32 || type.type == MMIO64) {
+		*(uint32_t*)(type.mem_address + field) = value;
+	} else if (type.type == IO) {
+		outl(type.io_address + field, value);
+	}
 }

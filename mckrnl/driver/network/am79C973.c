@@ -1,3 +1,4 @@
+#include "driver/pci/pci.h"
 #include <driver/network/am79C973.h>
 #include <string.h>
 #include <memory/vmm.h>
@@ -46,7 +47,7 @@ char* am79C973_get_device_name(driver_t* driver) {
 void am79C973_init(driver_t* driver) {
 	am79C973_driver_t* am_driver = (am79C973_driver_t*) driver;
 
-	become_bus_master(am_driver->header.bus, am_driver->header.device, am_driver->header.function);
+	enable_bus_master(am_driver->header.bus, am_driver->header.device, am_driver->header.function);
 
 	am_driver->base_port = pci_get_io_port(&am_driver->header.header, am_driver->header.bus, am_driver->header.device, am_driver->header.function);
 	debugf("am79C973: base_port: %d", am_driver->base_port);

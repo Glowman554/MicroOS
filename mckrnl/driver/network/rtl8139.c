@@ -1,3 +1,4 @@
+#include "driver/pci/pci.h"
 #include <driver/network/rtl8139.h>
 #include <string.h>
 #include <memory/vmm.h>
@@ -50,7 +51,7 @@ void rtl8139_init(driver_t* driver) {
 
 	debugf("rtl8139: bar_type: %d, io_base: %x, mem_base: %x", rtl_driver->bar_type, rtl_driver->io_base, rtl_driver->mem_base);
 
-	become_bus_master(rtl_driver->header.bus, rtl_driver->header.device, rtl_driver->header.function);
+	enable_bus_master(rtl_driver->header.bus, rtl_driver->header.device, rtl_driver->header.function);
 
 	
 	outb(rtl_driver->io_base + 0x52, 0x00);

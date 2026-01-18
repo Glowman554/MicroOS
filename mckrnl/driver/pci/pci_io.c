@@ -45,12 +45,39 @@ int device_has_functions(uint16_t bus, uint16_t device) {
 	return pci_readd(bus, device, 0, 0xe) & (1 << 7);
 }
 
+void enable_io(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) | (1 << 0));
+}
+
+void disable_io(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) & ~(1 << 0));
+}
+
+
 void enable_mmio(uint16_t bus, uint16_t device, uint16_t function) {
 	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) | (1 << 1));
 }
 
-void become_bus_master(uint16_t bus, uint16_t device, uint16_t function) {
+void disable_mmio(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) & ~(1 << 1));
+}
+
+
+void enable_interrupt(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) & ~(1 << 10));
+}
+
+void disable_interrupt(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) | (1 << 10));
+}
+
+
+void enable_bus_master(uint16_t bus, uint16_t device, uint16_t function) {
 	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) | (1 << 2));
+}
+
+void disable_bus_master(uint16_t bus, uint16_t device, uint16_t function) {
+	pci_writed(bus, device, function, 0x4, pci_readd(bus, device, function, 0x4) & ~(1 << 2));
 }
 
 pci_device_header_t get_device_header(uint16_t bus, uint16_t device, uint16_t function) {
