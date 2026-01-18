@@ -78,36 +78,45 @@ int16_t interpolate_sample(int16_t s1, int16_t s2, uint32_t frac) {
 }
 
 uint8_t* resample_audio(uint8_t* src_data, const wav_info_t* info, uint32_t target_rate, uint32_t* out_size) {
-    if (info->sample_rate == target_rate) {
+    if (info->sample_rate == target_rate && info->bits_per_sample == 16) {
         uint8_t* buffer = malloc(info->data_size);
         memcpy(buffer, src_data, info->data_size);
         *out_size = info->data_size;
         return buffer;
     }
 
-    uint64_t num_samples = info->data_size / (info->bits_per_sample / 8) / info->num_channels;
-    uint64_t out_samples = (num_samples * target_rate) / info->sample_rate;
     uint32_t bytes_per_sample = info->bits_per_sample / 8;
-    uint32_t out_bytes = out_samples * bytes_per_sample * info->num_channels;
+    uint64_t num_samples = info->data_size / bytes_per_sample / info->num_channels;
+    uint64_t out_samples = (num_samples * (uint64_t)target_rate + info->sample_rate - 1) / info->sample_rate;
+    
+    uint32_t out_bytes = out_samples * 2 * info->num_channels;
 
     uint8_t* buffer = malloc(out_bytes);
+    if (!buffer) {
+        return NULL;
+    }
 
-    uint32_t step = ((uint64_t)info->sample_rate << 16) / target_rate;
-    uint32_t pos = 0;
+    uint64_t step = ((uint64_t)info->sample_rate << 16) / target_rate;
+    uint64_t pos = 0;
+
+    uint64_t total_src_samples = num_samples * info->num_channels;
+    int16_t* dst = (int16_t*) buffer;
 
     if (info->bits_per_sample == 16) {
         const int16_t* src = (const int16_t*) src_data;
-        int16_t* dst = (int16_t*) buffer;
 
         for (uint64_t i = 0; i < out_samples; i++) {
-            uint32_t src_idx = pos >> 16;
+            uint64_t src_idx = pos >> 16;
             uint32_t frac = pos & 0xFFFF;
 
             for (int ch = 0; ch < info->num_channels; ch++) {
-                uint32_t idx1 = src_idx * info->num_channels + ch;
-                uint32_t idx2 = (src_idx + 1) * info->num_channels + ch;
+                uint64_t idx1 = src_idx * info->num_channels + ch;
+                uint64_t idx2 = (src_idx + 1) * info->num_channels + ch;
                 
-                if (idx2 >= num_samples * info->num_channels) {
+                if (idx1 >= total_src_samples) {
+                    idx1 = total_src_samples - info->num_channels + ch;
+                }
+                if (idx2 >= total_src_samples) {
                     idx2 = idx1;
                 }
 
@@ -117,22 +126,19 @@ uint8_t* resample_audio(uint8_t* src_data, const wav_info_t* info, uint32_t targ
         }
     } else if (info->bits_per_sample == 8) {
         const uint8_t* src = src_data;
-        int16_t* dst = (int16_t*) buffer;
-        out_bytes = out_samples * 2 * info->num_channels; // 16-bit output
-
-        free(buffer);
-        buffer = malloc(out_bytes);
-        dst = (int16_t*) buffer;
 
         for (uint64_t i = 0; i < out_samples; i++) {
-            uint32_t src_idx = pos >> 16;
+            uint64_t src_idx = pos >> 16;
             uint32_t frac = pos & 0xFFFF;
 
             for (int ch = 0; ch < info->num_channels; ch++) {
-                uint32_t idx1 = src_idx * info->num_channels + ch;
-                uint32_t idx2 = (src_idx + 1) * info->num_channels + ch;
+                uint64_t idx1 = src_idx * info->num_channels + ch;
+                uint64_t idx2 = (src_idx + 1) * info->num_channels + ch;
                 
-                if (idx2 >= num_samples * info->num_channels) {
+                if (idx1 >= total_src_samples) {
+                    idx1 = total_src_samples - info->num_channels + ch;
+                }
+                if (idx2 >= total_src_samples) {
                     idx2 = idx1;
                 }
 
