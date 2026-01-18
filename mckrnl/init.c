@@ -35,7 +35,7 @@
 #include <driver/network/ne2k.h>
 #include <driver/network/loopback.h>
 #include <driver/network/vlan.h>
-#include <driver/sound/pc_speaker.h>
+#include <driver/sound/ac97.h>
 
 #include <fs/initrd.h>
 #include <fs/devfs.h>
@@ -191,14 +191,16 @@ void _main(multiboot_info_t* mb_info) {
 #ifdef AHCI_DRIVER
 	register_pci_driver_cs(0x1, 0x6, 0x1, ahci_pci_found);
 #endif
+	register_pci_driver_cs(0x04, 0x01, 0x00, ac97_pci_found);
+	// register_pci_driver_vd(0x8086, 0x3A3E, ac97_pci_found);
+	// register_pci_driver_vd(0x8086, 0x3A6E, ac97_pci_found);
+	// register_pci_driver_vd(0x1022, 0x15E3, ac97_pci_found);
 
 	rsdp_init();
 	dsdt_init();
 #ifdef PARSE_MADT
 	parse_madt();
 #endif
-
-	enumerate_pci();
 
 	if (!gdb_active && enable_serial) {
 		register_driver((driver_t*) &serial_output_driver);
@@ -213,12 +215,13 @@ void _main(multiboot_info_t* mb_info) {
 #endif
     register_driver((driver_t*) get_ps2_driver());
     register_driver((driver_t*) get_ps2_mouse_driver());
-    register_driver((driver_t*) &pit_driver);
+  	register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
-	register_driver((driver_t*) &pc_speaker_driver);
 
 	register_driver((driver_t*) &loopback_driver);
+
+	enumerate_pci();
 
 #ifdef NETWORK_STACK
 	char vlan_config[128] = { 0 };

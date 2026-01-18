@@ -194,7 +194,7 @@
                         },
                         {
                             "name": "ABI_VERSION",
-                            "value": 1
+                            "value": 2
                         }
                     ]
                 }

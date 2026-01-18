@@ -42,8 +42,6 @@ cpu_registers_t* sys_sock_disconnect(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_send(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_recv(cpu_registers_t* regs);
 
-cpu_registers_t* sys_sound_run(cpu_registers_t* regs);
-
 cpu_registers_t* sys_time(cpu_registers_t* regs);
 
 cpu_registers_t* sys_set_color(cpu_registers_t* regs);
@@ -75,4 +73,8 @@ cpu_registers_t* sys_ipv4_resolve_route(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_set_local_port(cpu_registers_t* regs);
 
 cpu_registers_t* sys_mmap_mapped(cpu_registers_t* regs);
+
+cpu_registers_t* sys_sound_write_pcm(cpu_registers_t* regs);
+
+cpu_registers_t* sys_sound_get_sample_rate(cpu_registers_t* regs);
 

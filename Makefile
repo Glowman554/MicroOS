@@ -12,6 +12,7 @@ NETDEV = e1000
 QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -hda res/foxos.img
 QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.pcap
 # QEMU_FLAGS += -soundhw pcspk
+QEMU_FLAGS += -audio driver=pipewire,model=ac97
 QEMU_FLAGS += -smp 4
 
 ifdef REMOTE

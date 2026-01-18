@@ -63,7 +63,6 @@ void init_syscalls() {
 	register_syscall(SYS_SOCK_SEND_ID, sys_sock_send);
 	register_syscall(SYS_SOCK_RECV_ID, sys_sock_recv);
 #endif
-	register_syscall(SYS_SOUND_RUN_ID, sys_sound_run);
 	register_syscall(SYS_TIME_ID, sys_time);
 	register_syscall(SYS_SET_COLOR_ID, sys_set_color);
 	register_syscall(SYS_ASYNC_GETARRW_ID, sys_async_getarrw);
@@ -84,6 +83,8 @@ void init_syscalls() {
 	register_syscall(SYS_SOCK_SET_LOCAL_PORT_ID, sys_sock_set_local_port);
 #endif
 	register_syscall(SYS_MMAP_MAPPED_ID, sys_mmap_mapped);
+	register_syscall(SYS_SOUND_WRITE_PCM_ID, sys_sound_write_pcm);
+	register_syscall(SYS_SOUND_GET_SAMPLE_RATE_ID, sys_sound_get_sample_rate);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }
