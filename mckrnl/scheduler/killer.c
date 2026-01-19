@@ -46,7 +46,8 @@ cpu_registers_t* general_protection_fault_killer(cpu_registers_t* registers, voi
 void kill(char* reason) {
 	task_t* current = get_self();
 
-	printf("Killing task %d (%s)\n", current->pid, reason);
+	char* name = current->argv[0] ? current->argv[0] : "unnamed";
+	printf("Killing task %d (%s) for reason: %s\n", current->pid, name, reason);
 
 	exit_task(current);
 }
