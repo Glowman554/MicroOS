@@ -16,6 +16,7 @@
 #include <driver/acpi/madt.h>
 #include <driver/char_output_driver.h>
 #include <utils/lock.h>
+#include <scheduler/loader.h>
 
 extern uint8_t idle_task[];
 
@@ -274,7 +275,7 @@ void init_scheduler() {
 	for (int i = 0; i < madt_lapic_count; i++) {
 		char* argv[] = { "(idle)", NULL };
 		char* envp[] = { NULL };
-		init_elf(1, idle_task, argv, envp);
+		init_executable(1, idle_task, argv, envp);
 	}
 #endif
 

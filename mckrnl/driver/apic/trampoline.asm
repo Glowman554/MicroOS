@@ -22,6 +22,7 @@ protected_mode:
 	mov gs, ax
 
 	mov esp, [trampoline_data + ap_info.stack]
+	xor ebp, ebp
 	
 	mov eax, [trampoline_data + ap_info.entry]
 	mov [trampoline_data + ap_info.done], byte 1 ; tell bsp that we are done

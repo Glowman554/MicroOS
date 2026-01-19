@@ -34,7 +34,7 @@
                         },
                         {
                             "name": "STACK_TRACE",
-                            "value": false
+                            "value": true
                         },
                         {
                             "name": "EARLY_SERIAL_DEBUG",

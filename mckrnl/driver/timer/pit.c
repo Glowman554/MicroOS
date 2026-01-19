@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include <renderer/status_bar.h>
+#include <driver/apic/lapic.h>
 
 // OLD DIV 65535
 #define PIT_DIVISOR 5965
