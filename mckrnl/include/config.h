@@ -8,7 +8,7 @@
 #define UBSAN_IGNORE_SHIFT_OUT_OF_BOUNDS
 #define WAIT
 #define ALLOW_PANIC_CONTINUE
-// #define STACK_TRACE
+#define STACK_TRACE
 #define EARLY_SERIAL_DEBUG
 // End Debug
 
