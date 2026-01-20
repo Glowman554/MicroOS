@@ -54,7 +54,7 @@
 // Other
 #define FD_OFFSET 5
 #define FAST_MEMORY
-#define ABI_VERSION 2
+#define ABI_VERSION 3
 // End Other
 
 // Paging

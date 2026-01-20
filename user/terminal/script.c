@@ -20,7 +20,7 @@ void run_script(char* path, char** argv, int argc) {
 	for (int i = 0; i < argc; i++) {
 		char export_command[512] = { 0 };
 		sprintf(export_command, "export %d=%s", i, argv[i]);
-		export(export_command);
+		export(export_command, NULL);
 	}
 
 	FILE* file = fopen(resolved_path, "r");
