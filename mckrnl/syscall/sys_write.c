@@ -7,7 +7,7 @@
 #include <utils/lock.h>
 #include <stdio.h>
 #include <string.h>
-#include <memory/heap.h>
+#include <memory/vmm.h>
 
 define_spinlock(stdout_lock);
 
@@ -37,13 +37,15 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 					size_t new_size = current->stdout_pipe_size + count;
 					if (new_size + 1 > current->stdout_pipe_capacity) {
 						// Expand buffer (need space for null terminator)
+						size_t old_pages = TO_PAGES(current->stdout_pipe_capacity);
 						size_t new_capacity = current->stdout_pipe_capacity * 2;
 						while (new_capacity <= new_size + 1) {
 							new_capacity *= 2;
 						}
-						char* new_buffer = (char*) malloc(new_capacity);
+						size_t new_pages = TO_PAGES(new_capacity);
+						char* new_buffer = (char*) vmm_alloc(new_pages);
 						memcpy(new_buffer, current->stdout_pipe, current->stdout_pipe_size);
-						free(current->stdout_pipe);
+						vmm_free(current->stdout_pipe, old_pages);
 						current->stdout_pipe = new_buffer;
 						current->stdout_pipe_capacity = new_capacity;
 					}
