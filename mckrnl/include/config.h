@@ -107,6 +107,7 @@
 #define SYS_MMAP_MAPPED_ID 46
 #define SYS_SOUND_WRITE_PCM_ID 47
 #define SYS_SOUND_GET_SAMPLE_RATE_ID 48
+#define SYS_SET_PIPE_ID 49
 // End Syscalls
 
 // End Kernel configuration

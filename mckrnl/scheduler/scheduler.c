@@ -134,6 +134,11 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	task->wait_time = 0;
 	task->term = term;
 
+	for (int i = 0; i < 3; i++) {
+		task->pipe[i] = NULL;
+		task->pipe_source[i] = -1;
+	}
+
 	if (!thread) {
 		task->context = vmm_create_context();
 		vmm_clone_kernel_context(task->context);

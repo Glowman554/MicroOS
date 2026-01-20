@@ -357,6 +357,20 @@ void vmm_read_context(void* ptr, void* out, int sz, vmm_context_t* context) {
 	memcpy(out, buffer, sz);
 }
 
+void vmm_write_context(void* ptr, void* in, int sz, vmm_context_t* context) {
+	static uint8_t buffer[0x1000] = { 0 };
+	assert(sz <= sizeof(buffer));
+
+	memcpy(buffer, in, sz);
+
+	vmm_context_t current = vmm_get_current_context();
+
+	vmm_activate_context(context);
+	memcpy(ptr, buffer, sz);
+
+	vmm_activate_context(&current);
+}
+
 void* vmm_lookup(uintptr_t ptr, vmm_context_t* context) {
 	uint32_t page_index = ptr / 0x1000;
 

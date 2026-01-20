@@ -10,6 +10,17 @@ typedef struct resource {
 	void* resource;
 } resource_t;
 
+
+#define PIPE_STDIN 0
+#define PIPE_STDOUT 1
+#define PIPE_STDERR 2
+
+typedef struct pipe {
+    char* buffer;
+    int size;
+    int pos;
+} pipe_t;
+
 typedef struct {
 	cpu_registers_t* registers;
 	bool active;
@@ -37,6 +48,9 @@ typedef struct {
 	int parent;
 
 	int term;
+
+	pipe_t* pipe[3];
+	int pipe_source[3];
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];

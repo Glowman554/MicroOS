@@ -367,6 +367,15 @@
 				"0x30",
 				"sample_rate (return)"
 			]
+		},
+		{
+			"name": "SYS_SET_PIPE",
+			"arguments": [
+				"0x31",
+				"pid",
+				"pipe",
+				"output"
+			]
 		}
 	]
 }

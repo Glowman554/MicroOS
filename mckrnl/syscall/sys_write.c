@@ -2,6 +2,7 @@
 
 #include <driver/char_output_driver.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/pipe.h>
 #include <fs/vfs.h>
 #include <fs/fd.h>
 #include <utils/lock.h>
@@ -29,6 +30,11 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 		case 1:
 		case 2:
 			{
+				if (has_pipe(current, fd)) {
+					write_pipe(current, fd, (char*) buffer, count);
+					return regs;
+				}
+
 				atomic_acquire_spinlock(stdout_lock);
 				for (size_t i = 0; i < count; i++) {
 					global_char_output_driver->putc(global_char_output_driver, current->term, ((char*) buffer)[i]);

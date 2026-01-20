@@ -3,10 +3,20 @@
 #include <driver/char_input_driver.h>
 #include <driver/char_output_driver.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/pipe.h>
 #include <stdio.h>
+
+#define EOF_CHAR ((char) -1)
 
 cpu_registers_t* sys_async_getc(cpu_registers_t* regs) {
 	task_t* current = get_self();
+
+	if (has_pipe(current, PIPE_STDIN)) {
+		if (read_pipe(current, PIPE_STDIN, (char*) &regs->ebx, 1) == 0) {
+			regs->ebx = EOF_CHAR;
+		}
+		return regs;
+	}
 
 	if (!global_char_output_driver || !global_char_input_driver) {
 		abortf(true, "sys_async_getc: char input/output driver not initialized");

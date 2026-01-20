@@ -85,6 +85,7 @@ void init_syscalls() {
 	register_syscall(SYS_MMAP_MAPPED_ID, sys_mmap_mapped);
 	register_syscall(SYS_SOUND_WRITE_PCM_ID, sys_sound_write_pcm);
 	register_syscall(SYS_SOUND_GET_SAMPLE_RATE_ID, sys_sound_get_sample_rate);
+	register_syscall(SYS_SET_PIPE_ID, sys_set_pipe);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }
