@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 void print_help(char* argv0) {
 	printf("Usage: %s <file>\n", argv0);
@@ -9,24 +8,33 @@ void print_help(char* argv0) {
 }
 
 int main(int argc, char* argv[]) {
-	if (argc != 2) {
+	const char* name = NULL;
+	
+	char* buffer = NULL;
+	size_t size = 0;
+
+	if (argc == 1) {
+		name = "-";
+		read_all_stdin(&buffer, &size);
+	} else if (argc == 2) {
+		FILE* f = fopen(argv[1], "r");
+		name = argv[1];
+		if (!f) {
+			printf("Usage: %s <file>\n", argv[0]);
+			return 1;
+		}
+		read_all_file(f, &buffer, &size);
+	} else {
 		printf("Usage: %s <file>\n", argv[0]);
 		return 1;
 	}
 
-	FILE* f = fopen(argv[1], "r");
-	assert(f != NULL);
-	fsize(f, size);
-
-	char* buffer = malloc(size + 1);
-	memset(buffer, 0, size + 1);
-	fread(buffer, size, 1, f);
 
 	bool inword = false;
 	int lines = 0;
 	int words = 0;
 	int chars = 0;
-	for (int i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		chars++;
 		if (buffer[i] == '\n') {
 			lines++;
@@ -39,8 +47,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	printf("%d %d %d %s\n", lines, words, chars, argv[1]);
-	fclose(f);
+	printf("%d %d %d %s\n", lines, words, chars, name);
 	free(buffer);
 	return 0;
 }

@@ -69,22 +69,22 @@ void recursive_print(json_reader_t* r, json_value_t* object, int depth) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
+    char* buffer = NULL;
+    size_t size = 0;
+    if (argc == 1) {
+        read_all_stdin(&buffer, &size);
+    } else if (argc == 2) {
+        FILE* file = fopen(argv[1], "r");
+        if (!file) {
+            printf("Could not open file for read!\n");
+            return 1;
+        }
+        read_all_file(file, &buffer, &size);
+    } else {
         printf("Usage: printer <.json>\n");
         return 1;
     }
 
-    FILE* file = fopen(argv[1], "r");
-    if (!file) {
-        printf("Could not open file for read!\n");
-        return 1;
-    }
-
-    fsize(file, size);
-
-    char* buffer = malloc(size);
-    fread(buffer, size, 1, file);
-    fclose(file);
 
     json_reader_t* r = json_new_reader(buffer, size);
     json_value_t* object = json_read(r);
