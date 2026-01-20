@@ -407,13 +407,29 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
 
+	// Determine if pipes should be enabled
+	bool enable_stdout_pipe = (stdout != NULL);
+	bool enable_stdin_pipe = (stdin != NULL);
+
 	set_env(SYS_ENV_PIN, (void*) 1); // we dont want that the program executes until init_ipc is done. so just pin ourself until it is done
 	yield();
-	int pid = spawn(executable, (const char**) argv, envp);
+	
+	// Use spawn_with_pipes if any pipes are needed
+	int pid;
+	if (enable_stdout_pipe || enable_stdin_pipe) {
+		pid = spawn_with_pipes(executable, (const char**) argv, envp, enable_stdout_pipe, enable_stdin_pipe);
+	} else {
+		pid = spawn(executable, (const char**) argv, envp);
+	}
 
 	if (pid == -1) {
 		set_env(SYS_ENV_PIN, (void*) 0);
 		return -1;
+	}
+
+	// Write stdin data to child's pipe if stdin is enabled
+	if (enable_stdin_pipe && term_stdin != NULL) {
+		pipe_write_stdin(pid, term_stdin, term_stdin_size - 1);
 	}
 
 	if (already_in_ipc) {
@@ -455,6 +471,17 @@ normal_wait:
 	}
 
 done:
+	// Read stdout data from child's pipe if stdout is enabled
+	if (enable_stdout_pipe) {
+		char buffer[8192] = { 0 };
+		size_t bytes_read = pipe_read_stdout(pid, buffer, sizeof(buffer) - 1);
+		if (bytes_read > 0 && stdout != NULL) {
+			// Call the stdout callback function
+			void (*callback)(char*, uint64_t) = (void (*)(char*, uint64_t))stdout;
+			callback(buffer, bytes_read);
+		}
+	}
+
 	free(executable);
 	return pid;
 }

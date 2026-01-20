@@ -37,6 +37,15 @@ typedef struct {
 	int parent;
 
 	int term;
+
+	// Pipe support for stdout/stdin redirection
+	char* stdout_pipe;
+	size_t stdout_pipe_size;
+	size_t stdout_pipe_capacity;
+	
+	char* stdin_pipe;
+	size_t stdin_pipe_size;
+	size_t stdin_pipe_pos;
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];

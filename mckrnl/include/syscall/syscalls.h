@@ -78,3 +78,7 @@ cpu_registers_t* sys_sound_write_pcm(cpu_registers_t* regs);
 
 cpu_registers_t* sys_sound_get_sample_rate(cpu_registers_t* regs);
 
+cpu_registers_t* sys_pipe_read_stdout(cpu_registers_t* regs);
+
+cpu_registers_t* sys_pipe_write_stdin(cpu_registers_t* regs);
+

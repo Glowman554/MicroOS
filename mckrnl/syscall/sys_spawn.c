@@ -5,11 +5,14 @@
 #include <scheduler/loader.h>
 #include <stdio.h>
 #include <string.h>
+#include <memory/heap.h>
 
 cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	char* path = (char*) regs->ebx;
 	char** argv = (char**) regs->ecx;
 	char** envp = (char**) regs->edx;
+	bool enable_stdout_pipe = (bool) regs->esi;
+	bool enable_stdin_pipe = (bool) regs->edi;
 
 	if (path == NULL) {
 		abortf(true, "sys_spawn: path is NULL");
@@ -31,6 +34,29 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 	}
 	memcpy(spawned_task->pwd, current->pwd, pwd_len);
 	spawned_task->pwd[pwd_len] = '\0';
+
+	// Initialize pipe buffers if requested
+	if (enable_stdout_pipe) {
+		spawned_task->stdout_pipe = (char*) malloc(4096);
+		spawned_task->stdout_pipe[0] = '\0';
+		spawned_task->stdout_pipe_size = 0;
+		spawned_task->stdout_pipe_capacity = 4096;
+	} else {
+		spawned_task->stdout_pipe = NULL;
+		spawned_task->stdout_pipe_size = 0;
+		spawned_task->stdout_pipe_capacity = 0;
+	}
+
+	if (enable_stdin_pipe) {
+		spawned_task->stdin_pipe = (char*) malloc(4096);
+		spawned_task->stdin_pipe[0] = '\0';
+		spawned_task->stdin_pipe_size = 0;
+		spawned_task->stdin_pipe_pos = 0;
+	} else {
+		spawned_task->stdin_pipe = NULL;
+		spawned_task->stdin_pipe_size = 0;
+		spawned_task->stdin_pipe_pos = 0;
+	}
 
 	return regs;
 }

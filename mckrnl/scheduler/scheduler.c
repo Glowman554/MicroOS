@@ -176,6 +176,16 @@ void exit_task(task_t* task) {
 	debugf("Task %p (%d) exited", task, task->pid);
 	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
+	// Free pipe buffers if they exist
+	if (task->stdout_pipe != NULL) {
+		free(task->stdout_pipe);
+		task->stdout_pipe = NULL;
+	}
+	if (task->stdin_pipe != NULL) {
+		free(task->stdin_pipe);
+		task->stdin_pipe = NULL;
+	}
+
 	task->taken = false;
 
 	if (task == self) {

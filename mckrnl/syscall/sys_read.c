@@ -3,6 +3,8 @@
 #include <fs/vfs.h>
 #include <fs/fd.h>
 #include <stdio.h>
+#include <string.h>
+#include <scheduler/scheduler.h>
 
 #include <driver/char_input_driver.h>
 
@@ -16,10 +18,25 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 		abortf(true, "sys_read: buffer is NULL");
 	}
 
+	task_t* current = get_self();
+
 	switch (fd) {
 		case 0:
 			{
-				abortf(true, "Thats not how to use stdin on this kernel!\n");
+				// Check if stdin is piped
+				if (current->stdin_pipe != NULL) {
+					// Read from pipe buffer
+					size_t available = current->stdin_pipe_size - current->stdin_pipe_pos;
+					size_t to_read = (count < available) ? count : available;
+					memcpy(buffer, current->stdin_pipe + current->stdin_pipe_pos, to_read);
+					current->stdin_pipe_pos += to_read;
+					// Zero out remaining buffer if we read less than requested
+					if (to_read < count) {
+						memset((char*)buffer + to_read, 0, count - to_read);
+					}
+				} else {
+					abortf(true, "Thats not how to use stdin on this kernel!\n");
+				}
 			}
 			break;
 
