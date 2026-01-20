@@ -3,6 +3,7 @@
 #include <scheduler/scheduler.h>
 #include <stdio.h>
 #include <string.h>
+#include <memory/vmm.h>
 
 cpu_registers_t* sys_pipe_read_stdout(cpu_registers_t* regs) {
 	int pid = regs->ebx;
@@ -29,6 +30,13 @@ cpu_registers_t* sys_pipe_read_stdout(cpu_registers_t* regs) {
 	// Copy pipe contents to buffer
 	size_t to_copy = (task->stdout_pipe_size < max_size) ? task->stdout_pipe_size : max_size;
 	memcpy(buffer, task->stdout_pipe, to_copy);
+	
+	// Free the pipe buffer now that it's been read
+	size_t pages = TO_PAGES(task->stdout_pipe_capacity);
+	vmm_free(task->stdout_pipe, pages);
+	task->stdout_pipe = NULL;
+	task->stdout_pipe_size = 0;
+	task->stdout_pipe_capacity = 0;
 	
 	// Return number of bytes copied
 	regs->esi = to_copy;

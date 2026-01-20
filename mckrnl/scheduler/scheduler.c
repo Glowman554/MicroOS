@@ -94,6 +94,15 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 
 	assert(task != NULL);
 
+	// Clean up any leftover pipe buffers from previous task in this slot
+	if (task->stdout_pipe != NULL) {
+		size_t pages = TO_PAGES(task->stdout_pipe_capacity);
+		vmm_free(task->stdout_pipe, pages);
+	}
+	if (task->stdin_pipe != NULL) {
+		vmm_free(task->stdin_pipe, 1);
+	}
+
 	memset(task, 0, sizeof(task_t));
 
 	debugf("Creating task with entry point %p in task slot located at %p", entry, task);
@@ -176,16 +185,9 @@ void exit_task(task_t* task) {
 	debugf("Task %p (%d) exited", task, task->pid);
 	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
-	// Free pipe buffers if they exist (1 page = 4096 bytes)
-	if (task->stdout_pipe != NULL) {
-		size_t pages = TO_PAGES(task->stdout_pipe_capacity);
-		vmm_free(task->stdout_pipe, pages);
-		task->stdout_pipe = NULL;
-	}
-	if (task->stdin_pipe != NULL) {
-		vmm_free(task->stdin_pipe, 1);
-		task->stdin_pipe = NULL;
-	}
+	// NOTE: Do NOT free pipe buffers here - they need to remain available
+	// for the parent to read after the child exits. They will be freed
+	// in sys_pipe_read_stdout() after the parent reads them.
 
 	task->taken = false;
 
