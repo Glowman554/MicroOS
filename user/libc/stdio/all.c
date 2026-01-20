@@ -10,6 +10,9 @@ void read_all_stdin(char** out, size_t* size) {
 
 	while (1) {
         char c = async_getc();
+        if (c == 0) {
+            continue;
+        }
         if (c == EOF_CHAR) {
             break;
         }
