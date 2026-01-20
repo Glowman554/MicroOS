@@ -26,6 +26,10 @@ cpu_registers_t* sys_read(cpu_registers_t* regs) {
 				// Check if stdin is piped
 				if (current->stdin_pipe != NULL) {
 					// Read from pipe buffer
+					if (current->stdin_pipe_pos > current->stdin_pipe_size) {
+						// Invalid state, reset position
+						current->stdin_pipe_pos = current->stdin_pipe_size;
+					}
 					size_t available = current->stdin_pipe_size - current->stdin_pipe_pos;
 					size_t to_read = (count < available) ? count : available;
 					memcpy(buffer, current->stdin_pipe + current->stdin_pipe_pos, to_read);

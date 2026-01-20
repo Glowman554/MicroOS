@@ -475,10 +475,11 @@ done:
 	if (enable_stdout_pipe) {
 		char buffer[8192] = { 0 };
 		size_t bytes_read = pipe_read_stdout(pid, buffer, sizeof(buffer) - 1);
-		if (bytes_read > 0 && stdout != NULL) {
-			// Call the stdout callback function
-			void (*callback)(char*, uint64_t) = (void (*)(char*, uint64_t))stdout;
-			callback(buffer, bytes_read);
+		if (bytes_read > 0) {
+			// Directly call append_stdout since we know stdout is that function
+			if (stdout == (pipe)append_stdout) {
+				append_stdout(buffer, bytes_read);
+			}
 		}
 	}
 

@@ -35,10 +35,10 @@ cpu_registers_t* sys_write(cpu_registers_t* regs) {
 				if (current->stdout_pipe != NULL) {
 					// Write to pipe buffer
 					size_t new_size = current->stdout_pipe_size + count;
-					if (new_size >= current->stdout_pipe_capacity) {
-						// Expand buffer
+					if (new_size + 1 > current->stdout_pipe_capacity) {
+						// Expand buffer (need space for null terminator)
 						size_t new_capacity = current->stdout_pipe_capacity * 2;
-						while (new_capacity <= new_size) {
+						while (new_capacity <= new_size + 1) {
 							new_capacity *= 2;
 						}
 						char* new_buffer = (char*) malloc(new_capacity);

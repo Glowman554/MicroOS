@@ -4,13 +4,15 @@
 
 int spawn(const char *path, const char** argv, const char** envp) {
 	int pid;
-	asm volatile("int $0x30" : "=S"(pid) : "a"(SYS_SPAWN_ID), "b"(path), "c"(argv), "d"(envp), "S"(0), "D"(0));
+	int enable_stdout = 0;
+	int enable_stdin = 0;
+	asm volatile("int $0x30" : "=S"(pid) : "a"(SYS_SPAWN_ID), "b"(path), "c"(argv), "d"(envp), "S"(enable_stdout), "D"(enable_stdin));
 	return pid;
 }
 
 int spawn_with_pipes(const char *path, const char** argv, const char** envp, bool enable_stdout_pipe, bool enable_stdin_pipe) {
 	int pid;
-	asm volatile("int $0x30" : "=S"(pid) : "a"(SYS_SPAWN_ID), "b"(path), "c"(argv), "d"(envp), "S"(enable_stdout_pipe), "D"(enable_stdin_pipe));
+	asm volatile("int $0x30" : "=S"(pid) : "a"(SYS_SPAWN_ID), "b"(path), "c"(argv), "d"(envp), "S"((int)enable_stdout_pipe), "D"((int)enable_stdin_pipe));
 	return pid;
 }
 

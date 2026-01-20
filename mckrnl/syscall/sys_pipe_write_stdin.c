@@ -27,17 +27,25 @@ cpu_registers_t* sys_pipe_write_stdin(cpu_registers_t* regs) {
 	}
 
 	// Resize pipe buffer if needed
-	if (task->stdin_pipe_size + size >= 4096) {
-		// For simplicity, just use first 4096 bytes
-		size = 4096 - task->stdin_pipe_size - 1;
-		if (size == 0) {
-			return regs;
-		}
+	size_t available_space = 4096 - task->stdin_pipe_size;
+	if (available_space <= 1) {
+		// Buffer is full, cannot write more
+		return regs;
+	}
+
+	// Limit write size to available space (minus 1 for null terminator)
+	size_t write_size = size;
+	if (write_size > available_space - 1) {
+		write_size = available_space - 1;
+	}
+
+	if (write_size == 0) {
+		return regs;
 	}
 
 	// Copy data to stdin pipe
-	memcpy(task->stdin_pipe + task->stdin_pipe_size, buffer, size);
-	task->stdin_pipe_size += size;
+	memcpy(task->stdin_pipe + task->stdin_pipe_size, buffer, write_size);
+	task->stdin_pipe_size += write_size;
 	task->stdin_pipe[task->stdin_pipe_size] = '\0';
 
 	return regs;
