@@ -404,9 +404,6 @@ void set_wait_and_yield() {
 bool already_in_ipc = false;
 
 int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
-	assert(stdout == NULL);
-	assert(stdin == NULL);
-
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
 
