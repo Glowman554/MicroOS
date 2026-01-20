@@ -376,6 +376,14 @@
 				"pipe",
 				"output"
 			]
+		},
+		{
+			"name": "SYS_RGB_COLOR",
+			"arguments": [
+				"0x32",
+				"color",
+				"background"
+			]
 		}
 	]
 }

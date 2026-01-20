@@ -48,3 +48,4 @@
 | SYS_SOUND_WRITE_PCM | 0x2f | &buffer | size | bytes_written (return) | - | - |
 | SYS_SOUND_GET_SAMPLE_RATE | 0x30 | sample_rate (return) | - | - | - | - |
 | SYS_SET_PIPE | 0x31 | pid | pipe | output | - | - |
+| SYS_RGB_COLOR | 0x32 | color | background | - | - | - |

@@ -54,7 +54,7 @@
 // Other
 #define FD_OFFSET 5
 #define FAST_MEMORY
-#define ABI_VERSION 3
+#define ABI_VERSION 4
 // End Other
 
 // Paging
@@ -108,6 +108,7 @@
 #define SYS_SOUND_WRITE_PCM_ID 47
 #define SYS_SOUND_GET_SAMPLE_RATE_ID 48
 #define SYS_SET_PIPE_ID 49
+#define SYS_RGB_COLOR_ID 50
 // End Syscalls
 
 // End Kernel configuration

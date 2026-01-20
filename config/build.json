@@ -26,7 +26,7 @@
                     "items": [
                         {
                             "name": "ABI_VERSION",
-                            "value": 3
+                            "value": 4
                         }
                     ]
                 }

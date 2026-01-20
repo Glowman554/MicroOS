@@ -5,7 +5,7 @@
 # End Gui
 
 # Other
-ABI_VERSION = 3
+ABI_VERSION = 4
 # End Other
 
 # Syscalls
@@ -55,6 +55,7 @@ SYS_MMAP_MAPPED_ID = 46
 SYS_SOUND_WRITE_PCM_ID = 47
 SYS_SOUND_GET_SAMPLE_RATE_ID = 48
 SYS_SET_PIPE_ID = 49
+SYS_RGB_COLOR_ID = 50
 # End Syscalls
 
 # End Build configuration

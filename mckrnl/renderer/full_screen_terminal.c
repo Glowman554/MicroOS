@@ -194,6 +194,15 @@ void full_screen_terminal_vterm(char_output_driver_t* driver, int term) {
 	driver->current_term = term;
 }
 
+void full_screen_terminal_rgb_color(char_output_driver_t* driver, int term, uint32_t color, bool background) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	if (background) {
+		vterm->bgcolor = color;
+	} else {
+		vterm->color = color;
+	}
+}
+
 
 char_output_driver_t full_screen_terminal_driver = {
 	.driver = {
@@ -209,5 +218,6 @@ char_output_driver_t full_screen_terminal_driver = {
 	.vterm = full_screen_terminal_vterm,
 	.vcursor = full_screen_terminal_vcursor,
 	.vcursor_get = full_screen_terminal_vcursor_get,
-	.set_color = full_screen_terminal_set_color
+	.set_color = full_screen_terminal_set_color,
+	.rgb_color = full_screen_terminal_rgb_color
 };

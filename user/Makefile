@@ -47,6 +47,7 @@ all:
 	make -C httpget prog
 	make -C jsonprint prog
 	make -C createmex prog
+	make -C lolcat prog
 
 clean:
 	make -C libc clean
@@ -95,6 +96,7 @@ clean:
 	make -C httpget clean
 	make -C jsonprint clean
 	make -C createmex clean
+	make -C lolcat clean
 
 compile_flags.txt:
 	make -C libc compile_flags.txt
@@ -143,3 +145,4 @@ compile_flags.txt:
 	make -C httpget compile_flags.txt
 	make -C jsonprint compile_flags.txt
 	make -C createmex compile_flags.txt
+	make -C lolcat compile_flags.txt

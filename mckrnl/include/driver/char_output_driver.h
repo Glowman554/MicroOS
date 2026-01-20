@@ -22,6 +22,7 @@ typedef struct char_output_driver {
 	void (*vcursor_get)(struct char_output_driver*, int term, int* x, int* y);
 
 	void (*set_color)(struct char_output_driver*, int term, char* color, bool background);
+	void (*rgb_color)(struct char_output_driver*, int term, uint32_t color, bool background);
 
 	int current_term;
 } char_output_driver_t;
