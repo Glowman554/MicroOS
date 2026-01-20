@@ -140,7 +140,13 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 						global_fkey_handler(key - 0xcc, true);
 					}
 
+
+
 					char c = keymap(key, special_keys_down);
+					if ((special_keys_down->left_ctrl || special_keys_down->right_ctrl) && c == 'd') {
+						c = -1; // EOF_CHAR
+					}
+
 					((char*) ps2_keyboard->driver_specific_data)[KBD_CHAR] = c;
 				}
 				break;
