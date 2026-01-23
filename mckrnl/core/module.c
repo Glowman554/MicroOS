@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-module_t* loaded_modules[32] = { 0 };
+module_t* loaded_modules[MAX_MODULES] = { 0 };
 int loaded_module_count = 0;
 
 void* resolve_symbol_address(elf_object_context_t* ctx, const char* symbol_name) {
@@ -22,6 +22,27 @@ void* resolve_symbol_address(elf_object_context_t* ctx, const char* symbol_name)
         for (uint32_t j = 0; j < symbol_count; j++) {
             if (!strcmp(string_table + symbol_table[j].name, symbol_name)) {
                 return (uint8_t*)ctx->load_base + ctx->section_addresses[symbol_table[j].shndx] + symbol_table[j].value;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+char* resolve_symbol_name(elf_object_context_t* ctx, void* address) {
+    for (uint32_t i = 0; i < ctx->header->sh_entry_count; i++) {
+        if (ctx->section_headers[i].type != SHT_SYMTAB) {
+            continue;
+        }
+
+        struct elf_symbol* symbol_table = (struct elf_symbol*)((uint8_t*)ctx->image + ctx->section_headers[i].offset);
+        uint32_t symbol_count = ctx->section_headers[i].size / sizeof(struct elf_symbol);
+        char* string_table = (char*)ctx->image + ctx->section_headers[ctx->section_headers[i].link].offset;
+
+        for (uint32_t j = 0; j < symbol_count; j++) {
+            void* sym_addr = (uint8_t*)ctx->load_base + ctx->section_addresses[symbol_table[j].shndx] + symbol_table[j].value;
+    		if(address >= sym_addr &&  address < sym_addr + symbol_table[j].size) {
+                return string_table + symbol_table[j].name;
             }
         }
     }

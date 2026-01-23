@@ -15,6 +15,8 @@
 #include <utils/trace.h>
 #include <gdb/gdb.h>
 
+#include <module.h>
+
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
 
@@ -86,6 +88,16 @@ void stacktrace_print(int frame_num, uint32_t eip) {
 		uint32_t symbol_start = resolve_symbol_from_name(symbol);
 		printf("[ 0x%x ] <%s + %d>\n", eip, symbol, eip - symbol_start);
 	} else {
+		for (int i = 0; i < loaded_module_count; i++) {
+			module_t* module = loaded_modules[i];
+			char* mod_symbol = resolve_symbol_name(&module->ctx, (void*)eip);
+			if (mod_symbol) {
+				uint32_t symbol_start = (uint32_t) resolve_symbol_address(&module->ctx, mod_symbol);
+				printf("[ 0x%x (%s) ] <%s + %d>\n", eip, module->name, mod_symbol, eip - symbol_start);
+				return;
+			}
+		}
+
 		printf("[ 0x%x ] <unknown>\n", eip);
 	}
 }
