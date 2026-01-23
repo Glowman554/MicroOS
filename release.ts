@@ -5,6 +5,11 @@ if (!webhookUrl) {
     throw new Error("Missing MESSAGE_WEBHOOK");
 }
 
+const buildToken = Deno.env.get("MICROOS_BUILD_TOKEN");
+if (!buildToken) {
+    throw new Error("Missing MICROOS_BUILD_TOKEN");
+}
+
 const values = new Map<string, string>();
 for (const arg of Deno.args) {
     const [key, value] = arg.split("::");
@@ -31,3 +36,19 @@ await new Webhook(webhookUrl)
             .addField({ name: "initrd", value: values.get("initrd")! })
             .setImage({ url: values.get("screenshot")! }),
     ).send();
+
+fetch("https://toxicfox.de/api/v1/microos/build", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        Authentication: `${buildToken}`,
+    },
+    body: JSON.stringify({
+        preset: values.get("name"),
+        kernel: values.get("kernel"),
+        symbols: values.get("symbols"),
+        initrd: values.get("initrd"),
+    }),
+}).then(async (res) => {
+    console.log(`Build trigger response: ${res.status} ${await res.text()}`);
+});
