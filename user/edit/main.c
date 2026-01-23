@@ -65,7 +65,10 @@ int main(int argc, char* argv[], char* envp[]) {
 	memset(state.input_buffer, 0, sizeof(char) * file_size);
 	state.current_size = file_size;
 	state.buffer_idx = file_size;
-	fread(state.input_buffer, file_size, 1, state.file);
+
+	if (file_size) {
+		fread(state.input_buffer, file_size, 1, state.file);
+	}
 
 	for (int i = 0; i < state.current_size; i++) {
 		state.char_cnt++;
