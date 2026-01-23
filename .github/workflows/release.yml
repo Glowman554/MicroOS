@@ -35,7 +35,7 @@ jobs:
         git config --global user.email "vossjanick62@gmail.com"
         git config --global user.name "Glowman554"
     - name: release
-      run: MESSAGE_WEBHOOK=${{ secrets.MESSAGE_WEBHOOK }} bash release.sh ${{ matrix.preset }} "${{ github.event.head_commit.message }}"
+      run: MESSAGE_WEBHOOK=${{ secrets.MESSAGE_WEBHOOK }} MICROOS_BUILD_TOKEN=${{ secrets.MICROOS_BUILD_TOKEN }} bash release.sh ${{ matrix.preset }} "${{ github.event.head_commit.message }}"
     - uses: actions/upload-artifact@v4
       with:
         name: build-${{ matrix.preset }}
