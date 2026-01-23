@@ -40,12 +40,14 @@ endif
 	mkdir -p ./res/initrd/docs
 	cp *.md ./res/initrd/docs/. -v
 	mkdir -p ./res/initrd/EFI/BOOT
-	cp mckrnl/mckrnl.* ./res/initrd/EFI/BOOT/. -v
+	cp mckrnl/core/mckrnl.* ./res/initrd/EFI/BOOT/. -v
+	mkdir -p ./res/initrd/modules
+	cp mckrnl/modules/* ./res/initrd/modules/. -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
 iso: all initrd.saf
-	cp mckrnl/mckrnl.elf cdrom/.
-	cp mckrnl/mckrnl.syms cdrom/.
+	cp mckrnl/core/mckrnl.elf cdrom/.
+	cp mckrnl/core/mckrnl.syms cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
 	grub-mkrescue -o cdrom.iso cdrom/
@@ -86,7 +88,7 @@ run_dbg: iso
 run_vnc: iso set_kvm
 	qemu-system-i386 $(QEMU_FLAGS) -s -vnc :1
 
-EXECUTABLE = mckrnl/mckrnl.elf
+EXECUTABLE = mckrnl/core/mckrnl.elf
 
 debug:
 	gdb -ex "symbol-file $(EXECUTABLE)" -ex "target remote localhost:1234" -ex "b _main"

@@ -1,5 +1,5 @@
 {
-    "file": "mckrnl/include/config.h",
+    "file": "mckrnl/core/include/config.h",
     "configuration": {
         "title": "Kernel configuration",
         "items": [
@@ -118,10 +118,6 @@
                         },
                         {
                             "name": "THREADS",
-                            "value": false
-                        },
-                        {
-                            "name": "AHCI_DRIVER",
                             "value": false
                         },
                         {
