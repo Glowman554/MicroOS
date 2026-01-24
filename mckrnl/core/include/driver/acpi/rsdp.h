@@ -24,3 +24,5 @@ extern xsdt_t* xsdt;
 rsdp2_t* scan_for_rsdp(char* start, uint32_t length);
 void rsdp_init();
 void* find_SDT(const char *signature);
+
+void map_sdt(sdt_header_t* header);

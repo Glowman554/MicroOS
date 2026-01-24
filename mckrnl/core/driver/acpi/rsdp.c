@@ -67,7 +67,8 @@ void map_sdt(sdt_header_t* header) {
 
 void* find_SDT(const char *signature) {
 	if(xsdt != NULL) {
-		for(uint64_t i = 0; i < (xsdt->header.length - sizeof(sdt_header_t)); i++) {
+        int entries = (xsdt->header.length - sizeof(sdt_header_t)) / 8;
+		for(uint64_t i = 0; i < entries; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (uint32_t) xsdt->acpiptr[i];
 			map_sdt(acpihdr);
 			if(memcmp(acpihdr->signature, signature, 4) == 0) {
@@ -78,7 +79,8 @@ void* find_SDT(const char *signature) {
 	} 
 
 	if(rsdt != NULL) {
-		for(uint64_t i = 0; i < (rsdt->header.length - sizeof(sdt_header_t)); i++) {
+		int entries = (rsdt->header.length - sizeof(sdt_header_t)) / 4;
+		for(uint64_t i = 0; i < entries; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (rsdt->acpiptr[i]);
 			map_sdt(acpihdr);
 			if(memcmp(acpihdr->signature, signature, 4) == 0) {

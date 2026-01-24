@@ -264,13 +264,14 @@ void initrd_load_modules(void* saf_image, char* path) {
 		debugf("initrd: loading module %s (%d bytes)", child->name, file_node->size);
 		module_t* module = load_object_file(module_data);
 
+        loaded_modules[loaded_module_count++] = module;
+
         debugf("Loaded module %s", module->name);
 
 		if (module->init) {
 			module->init();
 		}
 
-		loaded_modules[loaded_module_count++] = module;
 	}
 }
 
