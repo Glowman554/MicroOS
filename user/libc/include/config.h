@@ -37,7 +37,6 @@
 #define SYS_SOCK_DISCONNECT_ID 27
 #define SYS_SOCK_SEND_ID 28
 #define SYS_SOCK_RECV_ID 29
-#define SYS_SOUND_RUN_ID 30
 #define SYS_TIME_ID 31
 #define SYS_SET_COLOR_ID 32
 #define SYS_ASYNC_GETARRW_ID 33
@@ -54,6 +53,10 @@
 #define SYS_IPV4_RESOLVE_ROUTE_ID 44
 #define SYS_SOCK_SET_LOCAL_PORT_ID 45
 #define SYS_MMAP_MAPPED_ID 46
+#define SYS_SOUND_WRITE_PCM_ID 47
+#define SYS_SOUND_GET_SAMPLE_RATE_ID 48
+#define SYS_SET_PIPE_ID 49
+#define SYS_RGB_COLOR_ID 50
 // End Syscalls
 
 // End LibC configuration

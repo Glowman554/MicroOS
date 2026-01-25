@@ -17,3 +17,4 @@ You can test it right in your browser [here](https://glowman554.de/microos)
 
 - [ImDaBigBoss](https://github.com/ImDaBigBoss) for making the [terminal](https://github.com/TheUltimateFoxOS/FoxOS-programs/tree/main/terminal)
 - ChaN for making [fatfs](http://elm-chan.org/fsw/ff/00index_e.html)
+- [Marcel](https://github.com/marceldobehere) for creating the [audio driver](https://github.com/marceldobehere/MaslOS-2/tree/main/kernel/devices/ac97)

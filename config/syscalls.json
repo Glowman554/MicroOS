@@ -226,14 +226,6 @@
 			]
 		},
 		{
-			"name": "SYS_SOUND_RUN",
-			"arguments": [
-				"0x1e",
-				"&coro",
-				"&context"
-			]
-		},
-		{
 			"name": "SYS_TIME",
 			"arguments": [
 				"0x1f",
@@ -358,6 +350,39 @@
 				"0x2e",
 				"addr",
 				"mapped"
+			]
+		},
+		{
+			"name": "SYS_SOUND_WRITE_PCM",
+			"arguments": [
+				"0x2f",
+				"&buffer",
+				"size",
+				"bytes_written (return)"
+			]
+		},
+		{
+			"name": "SYS_SOUND_GET_SAMPLE_RATE",
+			"arguments": [
+				"0x30",
+				"sample_rate (return)"
+			]
+		},
+		{
+			"name": "SYS_SET_PIPE",
+			"arguments": [
+				"0x31",
+				"pid",
+				"pipe",
+				"output"
+			]
+		},
+		{
+			"name": "SYS_RGB_COLOR",
+			"arguments": [
+				"0x32",
+				"color",
+				"background"
 			]
 		}
 	]

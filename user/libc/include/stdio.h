@@ -60,3 +60,6 @@ void putchar(char c);
 
 __attribute__((weak))
 void print_help(char* argv0);
+
+void read_all_stdin(char** out, size_t* size);
+void read_all_file(FILE* f, char** out, size_t* size);

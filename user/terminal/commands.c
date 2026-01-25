@@ -9,23 +9,23 @@
 #include <sys/env.h>
 #include <sys/file.h>
 
-#include <assert.h>
-
 #include <argv_tools.h>
 
 #include <ipc.h>
 #include <buildin/path.h>
 
 #define GET_CWD(cwd) char cwd[64] = { 0 }; set_env(SYS_GET_PWD_ID, cwd)
+#define PIPE_BUFFER_SIZE 65536
 
-char* term_stdout = NULL;
-int term_stdout_size = 1;
+static pipe_t* make_pipe(char* buffer, int size, int pos) {
+	pipe_t* p = malloc(sizeof(pipe_t));
+	p->buffer = buffer;
+	p->size = size;
+	p->pos = pos;
+	return p;
+}
 
-char* term_stdin = NULL;
-int term_stdin_size = 1;
-int stdin_pos = 0;
-
-bool command_received(char* command, bool* should_break, char* stdin) {
+bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe) {
 	*should_break = false;
 
 	int token_pos = 0;
@@ -34,10 +34,7 @@ bool command_received(char* command, bool* should_break, char* stdin) {
 
 	//printf("%d\n", cmd_type);
 
-	char** command_stdin = NULL;
-	if (stdin != NULL) {
-		command_stdin = &stdin;
-	}
+	pipe_t* command_stdin = stdin_pipe;
 
 	if (cmd_type == NORMAL) { //Normal command, just run it and send the stdin
 		int found_command = run_command(command, terminal_envp, should_break, command_stdin, NULL);
@@ -50,13 +47,13 @@ bool command_received(char* command, bool* should_break, char* stdin) {
 		current_command[token_pos - (double_pipe_symbol ? 1 : 0)] = '\0';
 		char* next_command = process_line(&current_command[token_pos + 1], false); //This could be a file name, or another command
 
-		char* stdout = NULL; //Set to NULL by default, so that stdout isn't send if it isn't needed
+		pipe_t* stdout_pipe = NULL; // pipe used for next command or file
 		if (cmd_type == PIPE_PROC || cmd_type == PIPE_FILE || cmd_type == PIPE_FILE_APPEND) { //If the command is a pipe, we need to set the stdout to a buffer
-			stdout = malloc(1);
-			memset(stdout, 0, 1);
+			stdout_pipe = make_pipe(malloc(PIPE_BUFFER_SIZE), PIPE_BUFFER_SIZE, 0);
+			memset(stdout_pipe->buffer, 0, PIPE_BUFFER_SIZE);
 		}
 
-		bool found_command = run_command(current_command, terminal_envp, should_break, command_stdin, &stdout); //Run the first command with the stdin, and stdout if there is one
+		bool found_command = run_command(current_command, terminal_envp, should_break, command_stdin, &stdout_pipe); //Run the first command with the stdin, and stdout if there is one
 		if (!found_command) {
 			printf("Error: command not found: %s\n", current_command);
 			return false;
@@ -93,16 +90,23 @@ bool command_received(char* command, bool* should_break, char* stdin) {
 				fseek(file, 0, SEEK_END);
 			}
 
-			fwrite(stdout, strlen(stdout), 1, file);
+			if (stdout_pipe != NULL) {
+				fwrite(stdout_pipe->buffer, stdout_pipe->pos > 0 ? stdout_pipe->pos : strlen(stdout_pipe->buffer), 1, file);
+			}
 			fclose(file);
 		}
 
 		if (call_next_command) { //If the command is a pipe to another command (or there is another command after the file), we need to run the next command with the stdout as the stdin
-			found_command = command_received(next_command, should_break, stdout);
+			if (stdout_pipe != NULL) { // hand off filled stdout buffer as stdin; reader should start at pos 0 and size = produced bytes
+				stdout_pipe->size = stdout_pipe->pos;
+				stdout_pipe->pos = 0;
+			}
+			found_command = command_received(next_command, should_break, stdout_pipe);
 		}
 
-		if (stdout != NULL) { //Make sure to free the stdout if it was allocated
-			free(stdout);
+		if (stdout_pipe != NULL) { //Make sure to free the stdout if it was allocated
+			free(stdout_pipe->buffer);
+			free(stdout_pipe);
 		}
 
 		return found_command;
@@ -114,40 +118,22 @@ bool command_received(char* command, bool* should_break, char* stdin) {
 }
 
 
-void append_stdout(char* str, uint64_t size) {
-	int old_size = term_stdout_size;
-	term_stdout_size += size;
+static void append_stdout_buffer(pipe_t* out, const char* str, uint64_t size) {
+	if (out == NULL) {
+		write(STDOUT, (void*) str, size, 0);
+		return;
+	}
 
-	term_stdout = realloc(term_stdout, term_stdout_size);
-	memcpy(&term_stdout[old_size - 1], str, size);
-	term_stdout[term_stdout_size - 1] = '\0';
-}
-
-void append_stdin(char* buffer, uint64_t size) {
-	int can_copy = (term_stdin_size - 1) - stdin_pos;
-	if (size > can_copy) {
-		int left_over = size - can_copy;
-		if (can_copy != 0) {
-			memcpy(buffer, &term_stdin[stdin_pos], can_copy);
-			stdin_pos += can_copy;
-		}
-
-		// env_set(ENV_PIPE_DISABLE_ENABLE, (void*) 0);
-
-		// char input[left_over];
-		// read(STDIN, input, left_over, 0);
-		// memcpy(buffer + can_copy, input, left_over);
-
-		// env_set(ENV_PIPE_DISABLE_ENABLE, (void*) 1);
-
-		memset(buffer + can_copy, 0, left_over);
-	} else {
-		memcpy(buffer, &term_stdin[stdin_pos], size);
-		stdin_pos += size;
+	int space = out->size - out->pos - 1;
+	int to_write = size < (uint64_t) space ? (int) size : space;
+	if (to_write > 0) {
+		memcpy(out->buffer + out->pos, str, to_write);
+		out->pos += to_write;
+		out->buffer[out->pos] = '\0';
 	}
 }
 
-int term_printf(const char *fmt, ...) {
+static int pipe_printf(pipe_t* out, const char *fmt, ...) {
 	char printf_buf[1024] = {0};
 	va_list args;
 	int printed;
@@ -156,108 +142,74 @@ int term_printf(const char *fmt, ...) {
 	printed = vsprintf(printf_buf, fmt, args);
 	va_end(args);
 
-	if (term_stdout == NULL) {
-		write(STDOUT, printf_buf, printed, 0);
-	} else {
-		append_stdout(printf_buf, printed);
-	}
+	append_stdout_buffer(out, printf_buf, printed);
 
 	return printed;
 }
 
-bool command_received(char* command, bool* should_break, char* stdin);
+bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe);
 void system_command_handler(char* in) {
 	bool should_break = false;
 	command_received(in, &should_break, NULL);
 }
 
-bool run_command(char* command, char** terminal_envp, bool* should_break, char** stdin, char** stdout) {
-	if (stdout != NULL) {
-		term_stdout = *stdout;
-		term_stdout_size = strlen(term_stdout) + 1;
-	}
-
-	if (stdin != NULL) {
-		term_stdin = *stdin;
-		term_stdin_size = strlen(term_stdin) + 1;
-		stdin_pos = 0;
-	}
+bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t* stdin_pipe, pipe_t** stdout_pipe) {
+	pipe_t* outgoing_stdout = stdout_pipe ? *stdout_pipe : NULL;
+	pipe_t* incoming_stdin = stdin_pipe;
 
     if (strncmp(command, (char*)"layout ", 7) == 0) {
-		set_layout(command);
+		set_layout(command, outgoing_stdout);
 
 	} else if (strncmp(command, (char*)"cd ", 3) == 0) {
 		char** argv = argv_split(command);
 		argv = argv_env_process(argv);
 
-		cd(argv);
+		cd(argv, outgoing_stdout);
 
 		free_argv(argv);
 	} else if (strncmp(command, (char*)"pwd", 3) == 0) {
-		pwd();
+		pwd(outgoing_stdout);
 	} else if (strncmp(command, (char*)"export ", 7) == 0) {
 		char* argv_str = read_env(command);
-		export(argv_str);
+		export(argv_str, outgoing_stdout);
 		free(argv_str);
 	} else if (strncmp(command, (char*)"fault ", 6) == 0) {
 		char* argv_str = read_env(command);
-		fault(argv_str);
+		fault(argv_str, outgoing_stdout);
 		free(argv_str);
 	} else if (strncmp(command, (char*)"read ", 5) == 0) {
-		read_(command);
+		read_(command, outgoing_stdout);
 	} else if (strcmp(command, (char*)"exit") == 0) {
 		*should_break = true;
 	} else {
 		char** argv = argv_split(command);
 		argv = argv_env_process(argv);
 
-		pipe stdout_pipe = NULL;
-		if (term_stdout != NULL) {
-			stdout_pipe = append_stdout;
-		}
-
-		pipe stdin_pipe = NULL;
-		if (term_stdin != NULL) {
-			stdin_pipe = append_stdin;
-		}
-
-		int pid = spawn_process(argv, terminal_envp, stdout_pipe, stdin_pipe);
+		int pid = spawn_process(argv, terminal_envp, outgoing_stdout, incoming_stdin);
 		if (pid == -1) {
+			free_argv(argv);
 			return false;
 		}
 
 		free_argv(argv);
 	}
 
-	if (stdout != NULL) {
-		*stdout = term_stdout;
-	}
-	term_stdout = NULL;
-	term_stdout_size = 1;
-
-	if (stdin != NULL) {
-		*stdin = term_stdin;
-	}
-	term_stdin = NULL;
-	term_stdin_size = 1;
-	stdin_pos = 0;
-
 	return true;
 }
 
-void set_layout(char* command) {
+void set_layout(char* command, pipe_t* out) {
     if (command[7] == 0) {
-		term_printf("No keyboard layout specified!\n");
+		pipe_printf(out, "No keyboard layout specified!\n");
 		return;
 	} else {
 		char* keymap_name = &command[7];
-		term_printf("Setting keyboard layout to %s\n", keymap_name);
+		pipe_printf(out, "Setting keyboard layout to %s\n", keymap_name);
 
 		set_env(SYS_ENV_SET_LAYOUT, keymap_name);
 	}
 }
 
-void cd(char** argv) {
+void cd(char** argv, pipe_t* out) {
 	int argc = 0;
 	while (argv[argc] != NULL) {
 		argc++;
@@ -272,24 +224,24 @@ void cd(char** argv) {
 		if (env != NULL) {
 			cancd = resolve(env, path_buf);
 		} else {
-			term_printf("No root filesystem specified!\n");
+			pipe_printf(out, "No root filesystem specified!\n");
 			return;
 		}
 	} else if (argc == 2) {
 		cancd = resolve(argv[1], path_buf);
 	} else {
-		term_printf("Too many arguments.");
+		pipe_printf(out, "Too many arguments.");
 		return;
 	}
 
 	if (!cancd) {
-		term_printf("No such file or directory: %s\n", path_buf);
+		pipe_printf(out, "No such file or directory: %s\n", path_buf);
 		return;
 	}
 
 	int fd = open(path_buf, FILE_OPEN_MODE_READ);
 	if (fd != -1) {
-		term_printf("You can only change to a folder!\n");
+		pipe_printf(out, "You can only change to a folder!\n");
 		close(fd);
 		return;
 	}
@@ -299,9 +251,9 @@ void cd(char** argv) {
 
 extern char** terminal_envp;
 
-void export(char* command) {
+void export(char* command, pipe_t* out) {
 	if (strlen(command) <= 7) {
-		term_printf("No environment variable specified! Try like this: export MYVAR=value\n");
+		pipe_printf(out, "No environment variable specified! Try like this: export MYVAR=value\n");
 		return;
 	}
 
@@ -313,7 +265,7 @@ void export(char* command) {
 	
 	char* env_name = strtok(env_name_tmp, "=");
 	if (strcmp(env_var, env_name) == 0) {
-		term_printf("No environment variable value specified! Try like this: export MYVAR=value\n");
+		pipe_printf(out, "No environment variable value specified! Try like this: export MYVAR=value\n");
 		free(env_name_tmp); //Make sure to free the memory allocated for strtok
 		return;
 	}
@@ -346,7 +298,7 @@ void export(char* command) {
 	free(env_name_tmp);
 }
 
-void fault(char* command) {
+void fault(char* command, pipe_t* out) {
 	if (strcmp("#pf", &command[6]) == 0) {
 		uint8_t* ptr = (uint8_t*) ~0;
 		*ptr = 69;
@@ -357,13 +309,13 @@ void fault(char* command) {
 	} else if (strcmp("help", &command[6]) == 0) {
 		printf("fault #pf, #de, #gp");
 	} else {
-		term_printf("Unknown fault: %s", &command[6]);
+		pipe_printf(out, "Unknown fault: %s", &command[6]);
 	}
 }
 
-void read_(char* command) {
+void read_(char* command, pipe_t* out) {
 	if (strlen(command) <= 5) {
-		term_printf("No env var specified! Try like this: read output_var_name\n");
+		pipe_printf(out, "No env var specified! Try like this: read output_var_name\n");
 		return;
 	}
 
@@ -388,12 +340,12 @@ void read_(char* command) {
 
 	char export_cmd[512] = { 0 };
 	sprintf(export_cmd, "export %s=%s", env_var, in);
-	export(export_cmd);
+	export(export_cmd, out);
 }
 
-void pwd() {
+void pwd(pipe_t* out) {
 	GET_CWD(cwd);
-	term_printf("%s\n", cwd);
+	pipe_printf(out, "%s\n", cwd);
 }
 
 void set_wait_and_yield() {
@@ -403,10 +355,7 @@ void set_wait_and_yield() {
 
 bool already_in_ipc = false;
 
-int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
-	assert(stdout == NULL);
-	assert(stdin == NULL);
-
+int spawn_process(char** argv, char** terminal_envp, pipe_t* stdout, pipe_t* stdin) {
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
 
@@ -417,6 +366,14 @@ int spawn_process(char** argv, char** terminal_envp, pipe stdout, pipe stdin) {
 	if (pid == -1) {
 		set_env(SYS_ENV_PIN, (void*) 0);
 		return -1;
+	}
+
+	if (stdout != NULL) {
+		set_pipe(pid, stdout, PIPE_STDOUT);
+	}
+
+	if (stdin != NULL) {
+		set_pipe(pid, stdin, PIPE_STDIN);
 	}
 
 	if (already_in_ipc) {

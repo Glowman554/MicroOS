@@ -32,16 +32,30 @@
 // 	return 0;
 // }
 
-#include <buildin/graphics.h>
-#include <buildin/mouse.h>
+// #include <buildin/graphics.h>
+// #include <buildin/mouse.h>
+// #include <sys/getc.h>
+
+// int main(int argc, char* argv[], char* envp[]) {
+// 	while (async_getc() != 27) {
+// 		start_frame();
+// 		draw_string(0, 0, "Hello world", 1);
+// 		update_mouse();
+// 		end_frame();
+// 	}
+// 	return 0;
+// }
+
+
+#include <stdio.h>
 #include <sys/getc.h>
 
 int main(int argc, char* argv[], char* envp[]) {
-	while (async_getc() != 27) {
-		start_frame();
-		draw_string(0, 0, "Hello world", 1);
-		update_mouse();
-		end_frame();
+	char c;
+	while ((c = async_getc()) != EOF_CHAR) {
+		if (c != 0) {
+			printf("Got char: %c\n", c);
+		}
 	}
 	return 0;
 }

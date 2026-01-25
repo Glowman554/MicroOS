@@ -6,15 +6,27 @@
             {
                 "name": "Experimental",
                 "value": {
-                    "title": "Desktop",
+                    "title": "Gui",
                     "items": [
                         {
-                            "name": "DESKTOP",
+                            "name": "GUI",
                             "value": false
                         },
                         {
                             "name": "FIRESTORM",
                             "value": false
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Other",
+                "value": {
+                    "title": "Other",
+                    "items": [
+                        {
+                            "name": "ABI_VERSION",
+                            "value": 4
                         }
                     ]
                 }

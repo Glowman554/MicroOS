@@ -1,0 +1,227 @@
+#include <net/socket_manager.h>
+
+#include <memory/vmm.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <config.h>
+#ifdef NETWORK_STACK
+
+#define invalid() abortf(true, "Inalid socket type!"); while(1)
+
+socket_manager_t* global_socket_manager = NULL;
+
+void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
+	socket_t* _socket = socket->data;
+	debugf("socket_udp_recv(): %d bytes", size);
+
+	if (_socket->received_data == NULL) {
+		_socket->received_data = vmm_alloc(TO_PAGES(size));
+	} else {
+		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
+		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
+		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
+		_socket->received_data = new_data;
+	}
+
+	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
+	_socket->num_bytes_received += size;
+}
+
+#ifdef TCP
+void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
+	socket_t* _socket = socket->data;
+	debugf("socket_tcp_recv(): %d bytes", size);
+
+	if (_socket->received_data == NULL) {
+		_socket->received_data = vmm_alloc(TO_PAGES(size));
+	} else {
+		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
+		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
+		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
+		_socket->received_data = new_data;
+	}
+
+	memcpy(_socket->received_data + _socket->num_bytes_received, data, size);
+	_socket->num_bytes_received += size;
+}
+#endif
+
+socket_t* socket_create(int socket_type) {
+	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
+	memset(socket, 0, sizeof(socket_t));
+	socket->socket_id = socket_manager_alloc();
+	socket->socket_type = socket_type;
+
+	socket_manager_register(socket);
+
+	return socket;
+}
+
+socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port) {
+	switch (socket_type) {
+		case SOCKET_UDP:
+			{
+				udp_socket_t* udp_socket = udp_connect(stack, async, ip, port);
+				if (is_resolved(async)) {
+					socket_t* socket = socket_create(SOCKET_UDP);
+					socket->udp_socket = udp_socket;
+					socket->udp_socket->data = socket;
+					socket->udp_socket->recv = socket_udp_recv;
+					return socket;
+				}
+			}
+			break;
+		#ifdef TCP
+		case SOCKET_TCP:
+			{
+				tcp_socket_t* tcp_socket = tcp_connect(stack, async, ip, port);
+				if (is_resolved(async)) {
+					socket_t* socket = socket_create(SOCKET_TCP);
+					socket->tcp_socket = tcp_socket;
+					socket->tcp_socket->data = socket;
+					socket->tcp_socket->recv = socket_tcp_recv;
+					return socket;
+				}
+			}
+			break;
+		#endif
+		default:
+			invalid();
+	}
+
+	return NULL;
+}
+
+void socket_disconnect(socket_t* socket, async_t* async) {
+	switch (socket->socket_type) {
+		case SOCKET_UDP:
+			udp_socket_disconnect(socket->udp_socket, async);
+			break;
+		#ifdef TCP
+		case SOCKET_TCP:
+			tcp_socket_disconnect(socket->tcp_socket, async);
+			break;
+		#endif
+		default:
+			invalid();
+	}
+
+	if (is_resolved(async)) {
+		socket_manager_free(socket->socket_id);
+		vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
+		vmm_free(socket, PAGES_OF(socket_t));
+	}
+}
+
+void socket_send(socket_t* socket, uint8_t* data, uint32_t size) {
+	switch (socket->socket_type) {
+		case SOCKET_UDP:
+			udp_socket_send(socket->udp_socket, data, size);
+			break;
+		#ifdef TCP
+		case SOCKET_TCP:
+			tcp_socket_send(socket->tcp_socket, data, size);
+			break;
+		#endif
+		default:
+			invalid();
+	}
+}
+
+int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size) {
+	switch (async->state) {
+		case STATE_WAIT:
+			if (socket->num_bytes_received != 0) {
+
+				int num_bytes_to_copy = socket->num_bytes_received;
+		
+				if (num_bytes_to_copy > size) {
+					num_bytes_to_copy = size;
+				}
+		
+				memcpy(data, socket->received_data, num_bytes_to_copy);
+		
+				socket->num_bytes_received -= num_bytes_to_copy;
+				memcpy(socket->received_data, socket->received_data + num_bytes_to_copy, socket->num_bytes_received);
+		
+				async->state = STATE_DONE;
+
+				return num_bytes_to_copy;
+			}
+			break;
+			
+		case STATE_DONE:
+			break;
+
+		default:
+			async->state = STATE_WAIT;
+			break;
+	}
+	
+	return 0;
+}
+
+void socket_set_local_port(socket_t* socket, uint16_t port) {
+	switch (socket->socket_type) {
+		case SOCKET_UDP:
+			udp_set_local_port(socket->udp_socket, port);
+			break;
+		#ifdef TCP
+		case SOCKET_TCP:
+			tcp_set_local_port(socket->tcp_socket, port);
+			break;
+		#endif
+		default:
+			invalid();
+	}
+}
+
+int socket_manager_alloc() {
+	return ++global_socket_manager->curr_socket;
+}
+
+void socket_manager_register(socket_t* socket) {
+	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
+		if (global_socket_manager->sockets[i] == NULL) {
+			global_socket_manager->sockets[i] = socket;
+			return;
+		}
+	}
+
+	global_socket_manager->sockets = vmm_resize(sizeof(socket_t*), global_socket_manager->num_sockets, global_socket_manager->num_sockets + 1, global_socket_manager->sockets);
+	global_socket_manager->sockets[global_socket_manager->num_sockets] = socket;
+	global_socket_manager->num_sockets++;
+}
+
+void socket_manager_free(int socket_id) {
+	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
+		if (global_socket_manager->sockets[i] != NULL) {
+			if (global_socket_manager->sockets[i]->socket_id == socket_id) {
+				global_socket_manager->sockets[i] = NULL;
+				return;
+			}
+		}
+	}
+}
+
+socket_t* socket_manager_find(int socket_id) {
+	for (int i = 0; i < global_socket_manager->num_sockets; i++) {
+		if (global_socket_manager->sockets[i] != NULL) {
+			if (global_socket_manager->sockets[i]->socket_id == socket_id) {
+				return global_socket_manager->sockets[i];
+			}
+		}
+	}
+
+	return NULL;
+}
+
+void init_socket_manager() {
+	debugf("Allocating socket manager...");
+	global_socket_manager = vmm_alloc(PAGES_OF(socket_manager_t));
+	memset(global_socket_manager, 0, sizeof(socket_manager_t));
+
+	global_socket_manager->curr_socket = SOCK_OFFSET;
+}
+#endif

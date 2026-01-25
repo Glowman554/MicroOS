@@ -13,6 +13,16 @@ typedef struct task_list {
 	int core;
 } task_list_t;
 
+#define PIPE_STDIN 0
+#define PIPE_STDOUT 1
+#define PIPE_STDERR 2
+
+typedef struct pipe {
+    char* buffer;
+    int size;
+    int pos;
+} pipe_t;
+
 int get_task_list(task_list_t* out, int max);
 
 void kill(int pid);
@@ -20,3 +30,4 @@ void kill(int pid);
 int thread(void* entry);
 
 void set_term(int pid, int term);
+void set_pipe(int pid, pipe_t* pipe, int output);

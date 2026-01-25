@@ -1,0 +1,92 @@
+#include <syscall/syscalls.h>
+
+#include <stdio.h>
+#include <stddef.h>
+#include <memory/vmm.h>
+#include <config.h>
+
+syscall_handler_t* syscall_table = { 0 };
+int num_syscall_handlers = 0;
+
+void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
+	debugf("Registering syscall %d with handler %p", syscall_id, handler);
+	if (!handler) {
+		return;
+	}
+
+	if (syscall_id >= num_syscall_handlers) {
+		int old_num_syscall_handlers = num_syscall_handlers;
+		num_syscall_handlers = syscall_id + 1;
+		syscall_table = vmm_resize(sizeof(syscall_handler_t), old_num_syscall_handlers, num_syscall_handlers, syscall_table);
+	}
+
+	syscall_table[syscall_id] = handler;
+}
+
+cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
+	// debugf("Handling syscall %d %x", registers->eax, syscall_table[registers->eax]);
+	if (registers->eax >= num_syscall_handlers || !syscall_table[registers->eax]) {
+		abortf(true, "Invalid syscall ID %d called!", registers->eax);
+	}
+	return syscall_table[registers->eax](registers);
+}
+
+void init_syscalls() {
+	debugf("Initializing syscalls");
+
+	register_syscall(SYS_OPEN_ID, sys_open);
+	register_syscall(SYS_CLOSE_ID, sys_close);
+	register_syscall(SYS_READ_ID, sys_read);
+	register_syscall(SYS_WRITE_ID, sys_write);
+	register_syscall(SYS_FILESIZE_ID, sys_filesize);
+	register_syscall(SYS_DELETE_ID, sys_delete);
+	register_syscall(SYS_MKDIR_ID, sys_mkdir);
+	register_syscall(SYS_DIR_AT_ID, sys_dir_at);
+	register_syscall(SYS_TOUCH_ID, sys_touch);
+	register_syscall(SYS_DELETE_DIR_ID, sys_delete_dir);
+	register_syscall(SYS_FS_AT_ID, sys_fs_at);
+	register_syscall(SYS_ASYNC_GETC_ID, sys_async_getc);
+	register_syscall(SYS_EXIT_ID, sys_exit);
+	register_syscall(SYS_MMAP_ID, sys_mmap);
+	register_syscall(SYS_SPAWN_ID, sys_spawn);
+	register_syscall(SYS_GET_PROC_INFO_ID, sys_get_proc_info);
+	register_syscall(SYS_YIELD_ID, sys_yield);
+	register_syscall(SYS_ENV_ID, sys_env);
+	register_syscall(SYS_MMMAP_ID, sys_mmmap);
+	register_syscall(SYS_VMODE_ID, sys_vmode);
+	register_syscall(SYS_VPOKE_ID, sys_vpoke);
+	register_syscall(SYS_VCURSOR_ID, sys_vcursor);
+#ifdef NETWORK_STACK
+	register_syscall(SYS_ICMP_ID, sys_icmp);
+	register_syscall(SYS_SOCK_CONNECT_ID, sys_sock_connect);
+	register_syscall(SYS_SOCK_DISCONNECT_ID, sys_sock_disconnect);
+	register_syscall(SYS_SOCK_SEND_ID, sys_sock_send);
+	register_syscall(SYS_SOCK_RECV_ID, sys_sock_recv);
+#endif
+	register_syscall(SYS_TIME_ID, sys_time);
+	register_syscall(SYS_SET_COLOR_ID, sys_set_color);
+	register_syscall(SYS_ASYNC_GETARRW_ID, sys_async_getarrw);
+	register_syscall(SYS_VCURSOR_GET_ID, sys_vcursor_get);
+	register_syscall(SYS_TASK_LIST_GET_ID, sys_task_list_get);
+	register_syscall(SYS_KILL_ID, sys_kill);
+	register_syscall(SYS_VPEEK_ID, sys_vpeek);
+	register_syscall(SYS_RAMINFO_ID, sys_raminfo);
+	register_syscall(SYS_MOUSE_INFO_ID, sys_mouse_info);
+	register_syscall(SYS_TRUNCATE_ID, sys_truncate);
+	register_syscall(SYS_TIME_MS_ID, sys_time_ms);
+	register_syscall(SYS_SET_TERM_ID, sys_set_term);
+#ifdef THREADS
+	register_syscall(SYS_THREAD_ID, sys_thread);
+#endif
+#ifdef NETWORK_STACK
+	register_syscall(SYS_IPV4_RESOLVE_ROUTE_ID, sys_ipv4_resolve_route);
+	register_syscall(SYS_SOCK_SET_LOCAL_PORT_ID, sys_sock_set_local_port);
+#endif
+	register_syscall(SYS_MMAP_MAPPED_ID, sys_mmap_mapped);
+	register_syscall(SYS_SOUND_WRITE_PCM_ID, sys_sound_write_pcm);
+	register_syscall(SYS_SOUND_GET_SAMPLE_RATE_ID, sys_sound_get_sample_rate);
+	register_syscall(SYS_SET_PIPE_ID, sys_set_pipe);
+	register_syscall(SYS_RGB_COLOR_ID, sys_rgb_color);
+
+	register_interrupt_handler(0x30, syscall_handler, NULL);
+}

@@ -24,8 +24,6 @@ build_dir doom
 build_dir saf
 build_dir nextfs
 build_dir mcc
-build_dir desktop
-build_dir vdoom
 	
 (
 	cd pkgs

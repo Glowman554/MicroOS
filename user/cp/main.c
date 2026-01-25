@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <assert.h>
 #include <sys/file.h>
 
 void copy_file(char* src_dir, char* dest_dir, char* file_name, bool verbose) {
@@ -99,16 +100,16 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	char real_dest[512] = { 0 };
-	resolve(dest, real_dest);
-
-	char real_src[512] = { 0 };
-	resolve(src, real_src);
-
 	if (src == NULL || dest == NULL) {
 		printf("Usage: cp [-r][-v] <src> <dest>\n");
 		return 1;
 	}
+
+	char real_dest[512] = { 0 };
+	assert(resolve(dest, real_dest));
+
+	char real_src[512] = { 0 };
+	assert(resolve(src, real_src));
 
 	if (recursive) {
 		recursive_dir_copy(real_src, real_dest, verbose);

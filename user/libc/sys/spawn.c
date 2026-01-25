@@ -37,3 +37,7 @@ int thread(void* entry) {
 void set_term(int pid, int term) {
 	asm volatile("int $0x30" : : "a"(SYS_SET_TERM_ID), "b"(pid), "c"(term));
 }
+
+void set_pipe(int pid, pipe_t* pipe, int output) {
+	asm volatile("int $0x30" : : "a"(SYS_SET_PIPE_ID), "b"(pid), "c"(pipe), "d"(output));
+}

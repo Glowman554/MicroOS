@@ -27,3 +27,7 @@ void vcursor_get(int* x, int* y) {
 void set_color(char* color, bool background) {
 	asm volatile("int $0x30" : : "a"(SYS_SET_COLOR_ID), "b"(color), "c"(background));
 }
+
+void rgb_color(uint32_t color, bool background) {
+	asm volatile("int $0x30" : : "a"(SYS_RGB_COLOR_ID), "b"(color), "c"(background));
+}

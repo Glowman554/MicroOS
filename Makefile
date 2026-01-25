@@ -3,8 +3,8 @@ include config.mk
 all: res
 	make -C mckrnl
 	make -C user
-ifeq ($(DESKTOP),1)
-	make -C desktop
+ifeq ($(GUI),1)
+	make -C gui
 endif
 
 NETDEV = e1000
@@ -12,6 +12,9 @@ NETDEV = e1000
 QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -hda res/foxos.img
 QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.pcap
 # QEMU_FLAGS += -soundhw pcspk
+ifeq ($(AUDIO),1)
+QEMU_FLAGS += -audio driver=pipewire,model=ac97
+endif
 QEMU_FLAGS += -smp 4
 
 ifdef REMOTE
@@ -27,24 +30,24 @@ endif
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
-ifeq ($(DESKTOP),1)
-	cp -r ./desktop/bin/*.mex ./res/initrd/bin/ -v
-	mkdir -p ./res/initrd/opt/desktop
-	cp -r ./desktop/resources/* ./res/initrd/opt/desktop
-	mkdir -p ./res/initrd/opt/desktop/bin
-	cp -r ./desktop/bin/*.flbb ./res/initrd/opt/desktop/bin/ -v
+ifeq ($(GUI),1)
+	cp -r ./gui/bin/*.mex ./res/initrd/bin/ -v
+	mkdir -p ./res/initrd/opt/gui/bin
+	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
 endif
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	mkdir -p ./res/initrd/docs
 	cp *.md ./res/initrd/docs/. -v
 	mkdir -p ./res/initrd/EFI/BOOT
-	cp mckrnl/mckrnl.* ./res/initrd/EFI/BOOT/. -v
+	cp mckrnl/core/mckrnl.* ./res/initrd/EFI/BOOT/. -v
+	mkdir -p ./res/initrd/modules
+	cp mckrnl/modules/* ./res/initrd/modules/. -v
 	./res/saf/saf-make ./res/initrd ./res/initrd.saf
 
 iso: all initrd.saf
-	cp mckrnl/mckrnl.elf cdrom/.
-	cp mckrnl/mckrnl.syms cdrom/.
+	cp mckrnl/core/mckrnl.elf cdrom/.
+	cp mckrnl/core/mckrnl.syms cdrom/.
 	cp res/initrd.saf cdrom/.
 	cp LICENSE cdrom/.
 	grub-mkrescue -o cdrom.iso cdrom/
@@ -85,7 +88,7 @@ run_dbg: iso
 run_vnc: iso set_kvm
 	qemu-system-i386 $(QEMU_FLAGS) -s -vnc :1
 
-EXECUTABLE = mckrnl/mckrnl.elf
+EXECUTABLE = mckrnl/core/mckrnl.elf
 
 debug:
 	gdb -ex "symbol-file $(EXECUTABLE)" -ex "target remote localhost:1234" -ex "b _main"
@@ -93,8 +96,8 @@ debug:
 clean: iso
 	make -C mckrnl clean
 	make -C user clean
-ifeq ($(DESKTOP),1)
-	make -C desktop clean
+ifeq ($(GUI),1)
+	make -C gui clean
 endif
 
 deepclean:
@@ -107,10 +110,11 @@ libs.zip: all
 	cp user/libc/include/* res/libs/include/. -rf
 	cp user/libtinf/include/* res/libs/include/. -rf
 	cp user/libflvm/include/* res/libs/include/. -rf
+	cp user/libjson/include/* res/libs/include/. -rf
 
-ifeq ($(DESKTOP),1)
-	cp desktop/lib/* res/libs/. -rf
-	cp desktop/libwindow/include/* res/libs/include/. -rf
+ifeq ($(GUI),1)
+	cp gui/lib/* res/libs/. -rf
+	cp gui/libwindow/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/
@@ -118,8 +122,8 @@ endif
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt
-ifeq ($(DESKTOP),1)
-	make -C desktop compile_flags.txt
+ifeq ($(GUI),1)
+	make -C gui compile_flags.txt
 endif
 
 pre_commit:
