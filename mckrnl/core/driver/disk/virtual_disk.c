@@ -1,6 +1,6 @@
 #include <driver/disk/virtual_disk.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 
 bool virtual_disk_is_device_present(driver_t* driver) {
@@ -30,8 +30,8 @@ void virtual_disk_flush(disk_driver_t* driver) {
 }
 
 disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset) {
-	disk_driver_t* driver = (disk_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 0x1000);
+	disk_driver_t* driver = (disk_driver_t*) kmalloc(sizeof(disk_driver_t));
+	memset(driver, 0, sizeof(disk_driver_t));
 
 	driver->driver.is_device_present = virtual_disk_is_device_present;
 	driver->driver.get_device_name = virtual_disk_get_device_name;
@@ -43,7 +43,7 @@ disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset)
 
 	driver->physical = false;
 
-	driver->driver.driver_specific_data = driver + sizeof(disk_driver_t);
+	driver->driver.driver_specific_data = kmalloc(sizeof(virtual_disk_driver_data_t));
 
 	virtual_disk_driver_data_t* data = (virtual_disk_driver_data_t*) driver->driver.driver_specific_data;
 	

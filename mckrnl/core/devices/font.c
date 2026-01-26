@@ -1,4 +1,4 @@
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <devices/font.h>
 #include <assert.h>
 #include <string.h>
@@ -26,8 +26,8 @@ char* font_file_name(struct devfs_file* dfile) {
 }
 
 devfs_file_t* get_font_file(int font_size, void* font_pointer) {
-    font_file_t* file = vmm_alloc(TO_PAGES(sizeof(font_file_t)));
-
+    font_file_t* file = kmalloc(sizeof(font_file_t));
+    
     file->file.read = font_file_read;
     file->file.prepare = font_file_prepare;
     file->file.name = font_file_name;

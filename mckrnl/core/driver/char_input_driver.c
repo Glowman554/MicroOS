@@ -5,7 +5,7 @@
 #include <fs/vfs.h>
 #include <stdio.h>
 #include <utils/string.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <assert.h>
 #include <config.h>
 
@@ -51,7 +51,7 @@ void init_keymap(char* path) {
     if (!file) {
         abortf(false, "Failed to open keymap: %s", path);
     }
-    loaded_keymap = vmm_alloc(TO_PAGES(file->size));
+    loaded_keymap = kmalloc(file->size);
     vfs_read(file, loaded_keymap, file->size, 0);
     vfs_close(file);
 

@@ -1,12 +1,13 @@
 #include <ramfs.h>
 
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
 
 char* ramfs_name(vfs_mount_t* mount) {
-	return (char*) (mount + sizeof(vfs_mount_t));
+	return (char*) (&mount[1]);
 }
 
 ramfs_node_t* ramfs_find(char* path, ramfs_node_t* current) {
@@ -50,7 +51,7 @@ file_t* ramfs_open(vfs_mount_t* mount, char* path, int flags) {
 		return NULL;
 	}
 
-	file_t* f = (file_t*) vmm_alloc(1);
+	file_t* f = (file_t*) kmalloc(sizeof(file_t));
 	f->mount = mount;
 	f->size = node->fsize;
 	f->driver_specific_data = node;
@@ -60,7 +61,7 @@ file_t* ramfs_open(vfs_mount_t* mount, char* path, int flags) {
 
 
 void ramfs_close(vfs_mount_t* mount, file_t* file) {
-	vmm_free(file, 1);
+	kfree(file);
 }
 
 void ramfs_read(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_t offset) {
@@ -197,9 +198,9 @@ void ramfs_delete_dir(vfs_mount_t* mount, char* path) { todo(); }
 
 
 vfs_mount_t* get_ramfs(char* name) {
-	assert(sizeof(ramfs_node_t) == 0x1000);
-	vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
-	memset(mount, 0, 0x1000);
+	int name_len = strlen(name);
+	vfs_mount_t* mount = (vfs_mount_t*) kmalloc(sizeof(vfs_mount_t) + name_len + 1);
+	memset(mount, 0, sizeof(vfs_mount_t) + name_len + 1);
 
 	mount->open = ramfs_open;
 	mount->close = ramfs_close;
@@ -216,7 +217,7 @@ vfs_mount_t* get_ramfs(char* name) {
 
 	mount->name = ramfs_name;
 
-	strcpy((char*) (mount + sizeof(vfs_mount_t)), name);
+	strcpy((char*) (&mount[1]), name);
 
 	ramfs_node_t* root = (ramfs_node_t*) vmm_alloc(1);
 	memset(root, 0, sizeof(ramfs_node_t));

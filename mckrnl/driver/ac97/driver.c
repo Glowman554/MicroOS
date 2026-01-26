@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <memory/vmm.h>
+#include <memory/heap.h>
 #include <utils/io.h>
 #include <interrupts/interrupts.h>
 #include <driver/timer_driver.h>
@@ -277,7 +278,7 @@ void ac97_housekeeping(async_t* async) {
 }
 
 sound_driver_t* get_ac97_driver(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
-    ac97_driver_t* driver = (ac97_driver_t*)vmm_alloc(PAGES_OF(ac97_driver_t));
+    ac97_driver_t* driver = (ac97_driver_t*)kmalloc(sizeof(ac97_driver_t));
     driver->driver.driver.init = ac97_init;
     driver->driver.driver.get_device_name = ac97_get_device_name;
     driver->driver.driver.is_device_present = ac97_is_device_present;

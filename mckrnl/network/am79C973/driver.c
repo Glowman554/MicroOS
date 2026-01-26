@@ -1,12 +1,13 @@
 #include <am79C973.h>
 #include <string.h>
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <utils/io.h>
 #include <stdio.h>
 #include <driver/pci/pci_bar.h>
 
 nic_driver_t* get_am79C973_driver(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
-	am79C973_driver_t* driver = vmm_alloc(PAGES_OF(am79C973_driver_t));
+	am79C973_driver_t* driver = kmalloc(sizeof(am79C973_driver_t));
 	memset(driver, 0, sizeof(am79C973_driver_t));
 
 	*driver = (am79C973_driver_t) {

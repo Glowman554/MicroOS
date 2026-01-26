@@ -14,6 +14,7 @@
 #include <scheduler/killer.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
+#include <memory/heap.h>
 
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
@@ -106,10 +107,10 @@ void load_init() {
 		if (file == NULL) {
 			abortf(false, "Could not open %s", init_exec);
 		}
-		void* buffer = vmm_alloc(file->size / 4096 + 1);
+		void* buffer = kmalloc(file->size);
 		vfs_read(file, buffer, file->size, 0);
 		init_executable(1, buffer, argv, envp);
-		vmm_free(buffer, file->size / 4096 + 1);
+		kfree(buffer);
 		vfs_close(file);
 	} else {
 		abortf(false, "Please use --init to set a init process");
@@ -166,6 +167,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	pmm_init();
 	vmm_init();
+	initialize_heap(MB(4) / 0x1000);
 
 	set_gdt(new_gdt());
 

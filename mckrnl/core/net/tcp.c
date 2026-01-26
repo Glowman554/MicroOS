@@ -1,6 +1,6 @@
 #include <net/tcp.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -21,7 +21,7 @@ bool tcp_seq_after_eq(uint32_t a, uint32_t b) {
 
 void tcp_tx_clear_unacked(tcp_socket_t* socket) {
     if (socket->tx_unacked_data != NULL) {
-        vmm_free(socket->tx_unacked_data, TO_PAGES(socket->tx_unacked_len));
+        kfree(socket->tx_unacked_data);
         socket->tx_unacked_data = NULL;
     }
     socket->tx_unacked_len = 0;
@@ -38,7 +38,7 @@ void tcp_tx_track_unacked(tcp_socket_t* socket, const uint8_t* data, uint32_t le
 
     tcp_tx_clear_unacked(socket);
 
-    socket->tx_unacked_data = vmm_alloc(TO_PAGES(len));
+    socket->tx_unacked_data = kmalloc(len);
     memcpy(socket->tx_unacked_data, data, len);
     socket->tx_unacked_len = len;
     socket->tx_unacked_seq = seq_at_send;
@@ -58,7 +58,7 @@ void tcp_socket_resend_unacked(tcp_socket_t* socket) {
     uint16_t total_length = (uint16_t)(socket->tx_unacked_len + sizeof(tcp_header_t));
     uint16_t length_phdr = (uint16_t)(total_length + sizeof(tcp_pseudo_header_t));
 
-    uint8_t* packet = (uint8_t*) vmm_alloc(TO_PAGES(length_phdr));
+    uint8_t* packet = (uint8_t*) kmalloc(length_phdr);
 
     tcp_pseudo_header_t* pheader = (tcp_pseudo_header_t*) packet;
     tcp_header_t* header = (tcp_header_t*) (packet + sizeof(tcp_pseudo_header_t));
@@ -96,7 +96,7 @@ void tcp_socket_resend_unacked(tcp_socket_t* socket) {
     }
 #endif
 
-    vmm_free(packet, TO_PAGES(length_phdr));
+    kfree(packet);
 
     socket->tx_last_send_ms = tcp_now_ms();
     socket->tx_retries++;
@@ -123,7 +123,7 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     uint16_t total_length = (uint16_t)(size + (int)sizeof(tcp_header_t));
     uint16_t length_phdr = (uint16_t)(total_length + sizeof(tcp_pseudo_header_t));
 
-    uint8_t* packet = (uint8_t*) vmm_alloc(TO_PAGES(length_phdr));
+    uint8_t* packet = (uint8_t*) kmalloc(length_phdr);
 
     tcp_pseudo_header_t* pheader = (tcp_pseudo_header_t*) packet;
     tcp_header_t* header = (tcp_header_t*) (packet + sizeof(tcp_pseudo_header_t));
@@ -170,7 +170,7 @@ void tcp_socket_send_internal(tcp_socket_t* socket, uint8_t* data, int size, uin
     }
 #endif
 
-    vmm_free(packet, TO_PAGES(length_phdr));
+    kfree(packet);
 
     socket->sequence_number += (uint32_t)size + seq_consume;
 }
@@ -199,7 +199,7 @@ void tcp_socket_disconnect(tcp_socket_t* socket, async_t* async) {
             }
 
             tcp_tx_clear_unacked(socket);
-            vmm_free(socket, PAGES_OF(tcp_socket_t));
+            kfree(socket);
             async->state = STATE_DONE;
             break;
     }
@@ -222,7 +222,7 @@ tcp_socket_t* tcp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
             return NULL;
         }
 
-        tcp_socket_t* socket = vmm_alloc(PAGES_OF(tcp_socket_t));
+        tcp_socket_t* socket = kmalloc(sizeof(tcp_socket_t));
         memset(socket, 0, sizeof(tcp_socket_t));
 
         socket->remote_ip = ip;
@@ -253,7 +253,7 @@ tcp_socket_t* tcp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
             }
         }
 
-        stack->tcp->binds = vmm_resize(sizeof(tcp_bind_t), stack->tcp->num_binds, stack->tcp->num_binds + 1, stack->tcp->binds);
+        stack->tcp->binds = kmalloc(sizeof(tcp_bind_t) * (stack->tcp->num_binds + 1));
         stack->tcp->binds[stack->tcp->num_binds] = bind;
         stack->tcp->num_binds++;
 
@@ -495,7 +495,7 @@ void tcp_poll_task(async_t* async) {
 }
 
 void tcp_init(network_stack_t* stack) {
-	stack->tcp = vmm_alloc(PAGES_OF(tcp_provider_t));
+	stack->tcp = kmalloc(sizeof(tcp_provider_t));
 	memset(stack->tcp, 0, sizeof(tcp_provider_t));
 
 	stack->tcp->free_port = 1024;

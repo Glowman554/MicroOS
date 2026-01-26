@@ -1,6 +1,6 @@
 #include <net/icmp.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <stdio.h>
 #include <config.h>
@@ -67,6 +67,7 @@ void icmp_async_answer(async_t* async) {
 		answer->icmp.checksum = ipv4_checksum((uint16_t*) &answer->icmp, sizeof(icmp_message_t));
 
 		ipv4_send(answer->handler, answer->handler->stack, answer->srcIP, route, (uint8_t*) &answer->icmp, sizeof(icmp_message_t));
+		kfree(answer);
 	}
 }
 
@@ -91,7 +92,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 		case 8:
 			{
 				// Echo request
-				icmp_async_answer_t* answer = vmm_alloc(TO_PAGES(sizeof(icmp_async_answer_t)));
+				icmp_async_answer_t* answer = kmalloc(sizeof(icmp_async_answer_t));
 				answer->icmp = *icmp;
 				answer->handler = handler;
 				answer->srcIP = srcIP;
@@ -141,7 +142,7 @@ char* icmp_destination_unreachable_to_str(uint8_t code) {
 }
 
 void icmp_init(network_stack_t* stack) {
-	stack->icmp = vmm_alloc(PAGES_OF(icmp_provider_t));
+	stack->icmp = kmalloc(sizeof(icmp_provider_t));
 	memset(stack->icmp, 0, sizeof(icmp_provider_t));
 
 	stack->icmp->handler.protocol = 0x01;

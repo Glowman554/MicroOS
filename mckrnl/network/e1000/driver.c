@@ -1,5 +1,6 @@
 #include <e1000.h>
 #include <string.h>
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <utils/io.h>
 #include <utils/mmio.h>
@@ -7,7 +8,7 @@
 #include <driver/pci/pci_bar.h>
 
 nic_driver_t* get_e1000_driver(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
-	e1000_driver_t* driver = vmm_alloc(PAGES_OF(e1000_driver_t));
+	e1000_driver_t* driver = kmalloc(sizeof(e1000_driver_t));
 	memset(driver, 0, sizeof(e1000_driver_t));
 
 	*driver = (e1000_driver_t) {

@@ -1,7 +1,7 @@
 #include "driver/nic_driver.h"
 #include <net/etherframe.h>
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <net/stack.h>
 #include <config.h>
@@ -9,13 +9,13 @@
 
 void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) {
 	debugf("Registering etherframe handler for %d", handler.ether_type_be);
-	stack->ether_frame->handlers = vmm_resize(sizeof(ether_frame_handler_t), stack->ether_frame->num_handlers, stack->ether_frame->num_handlers + 1, stack->ether_frame->handlers);
+	stack->ether_frame->handlers = kmalloc(sizeof(ether_frame_handler_t) * (stack->ether_frame->num_handlers + 1));
 	stack->ether_frame->handlers[stack->ether_frame->num_handlers] = handler;
 	stack->ether_frame->num_handlers++;
 }
 
 void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uint64_t dest_mac_be, uint8_t* payload, uint32_t size) {
-	uint8_t* buffer = vmm_alloc((sizeof(ether_frame_header_t) + size) / 4096 + 1);
+	uint8_t* buffer = kmalloc(sizeof(ether_frame_header_t) + size);
 
 	ether_frame_header_t* frame = (ether_frame_header_t*) buffer;
 
@@ -26,7 +26,7 @@ void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uin
 	memcpy(buffer + sizeof(ether_frame_header_t), payload, size);
 	send_packet(stack->driver, buffer, size + sizeof(ether_frame_header_t));
 
-	vmm_free(buffer, (sizeof(ether_frame_header_t) + size) / 4096 + 1);
+	kfree(buffer);
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {
@@ -51,7 +51,7 @@ void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len)
 }
 
 void etherframe_init(network_stack_t* stack) {
-	stack->ether_frame = vmm_alloc(PAGES_OF(ether_frame_provider_t));
+	stack->ether_frame = kmalloc(sizeof(ether_frame_provider_t));
 	memset(stack->ether_frame, 0, sizeof(ether_frame_provider_t));
 
 	stack->driver->recv = etherframe_nic_recv;

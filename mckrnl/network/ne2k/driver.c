@@ -1,6 +1,7 @@
 #include <ne2k.h>
 #include <stdint.h>
 #include <string.h>
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <utils/io.h>
 #include <stdio.h>
@@ -8,7 +9,7 @@
 
 
 nic_driver_t* get_ne2k_driver(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
-	ne2k_driver_t* driver = vmm_alloc(PAGES_OF(ne2k_driver_t));
+	ne2k_driver_t* driver = kmalloc(sizeof(ne2k_driver_t));
 	memset(driver, 0, sizeof(ne2k_driver_t));
 
 	*driver = (ne2k_driver_t) {

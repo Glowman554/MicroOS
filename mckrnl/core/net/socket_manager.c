@@ -1,6 +1,6 @@
 #include <net/socket_manager.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -16,11 +16,11 @@ void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	debugf("socket_udp_recv(): %d bytes", size);
 
 	if (_socket->received_data == NULL) {
-		_socket->received_data = vmm_alloc(TO_PAGES(size));
+		_socket->received_data = kmalloc(size);
 	} else {
-		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
+		uint8_t* new_data = kmalloc(size + _socket->num_bytes_received);
 		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
-		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
+		kfree(_socket->received_data);
 		_socket->received_data = new_data;
 	}
 
@@ -34,11 +34,11 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	debugf("socket_tcp_recv(): %d bytes", size);
 
 	if (_socket->received_data == NULL) {
-		_socket->received_data = vmm_alloc(TO_PAGES(size));
+		_socket->received_data = kmalloc(size);
 	} else {
-		uint8_t* new_data = vmm_alloc(TO_PAGES(size + _socket->num_bytes_received));
+		uint8_t* new_data = kmalloc(size + _socket->num_bytes_received);
 		memcpy(new_data, _socket->received_data, _socket->num_bytes_received);
-		vmm_free(_socket->received_data, TO_PAGES(_socket->num_bytes_received));
+		kfree(_socket->received_data);
 		_socket->received_data = new_data;
 	}
 
@@ -48,7 +48,7 @@ void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 #endif
 
 socket_t* socket_create(int socket_type) {
-	socket_t* socket = vmm_alloc(PAGES_OF(socket_t));
+	socket_t* socket = kmalloc(sizeof(socket_t));
 	memset(socket, 0, sizeof(socket_t));
 	socket->socket_id = socket_manager_alloc();
 	socket->socket_type = socket_type;
@@ -109,8 +109,8 @@ void socket_disconnect(socket_t* socket, async_t* async) {
 
 	if (is_resolved(async)) {
 		socket_manager_free(socket->socket_id);
-		vmm_free(socket->received_data, TO_PAGES(socket->num_bytes_received));
-		vmm_free(socket, PAGES_OF(socket_t));
+		kfree(socket->received_data);
+		kfree(socket);
 	}
 }
 
@@ -189,7 +189,7 @@ void socket_manager_register(socket_t* socket) {
 		}
 	}
 
-	global_socket_manager->sockets = vmm_resize(sizeof(socket_t*), global_socket_manager->num_sockets, global_socket_manager->num_sockets + 1, global_socket_manager->sockets);
+	global_socket_manager->sockets = kmalloc(sizeof(socket_t*) * (global_socket_manager->num_sockets + 1));
 	global_socket_manager->sockets[global_socket_manager->num_sockets] = socket;
 	global_socket_manager->num_sockets++;
 }
@@ -219,7 +219,7 @@ socket_t* socket_manager_find(int socket_id) {
 
 void init_socket_manager() {
 	debugf("Allocating socket manager...");
-	global_socket_manager = vmm_alloc(PAGES_OF(socket_manager_t));
+	global_socket_manager = kmalloc(sizeof(socket_manager_t));
 	memset(global_socket_manager, 0, sizeof(socket_manager_t));
 
 	global_socket_manager->curr_socket = SOCK_OFFSET;

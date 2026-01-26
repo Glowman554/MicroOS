@@ -1,6 +1,6 @@
 #include <acpi_vfs.h>
 #include <driver/disk_driver.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
@@ -11,7 +11,7 @@ acpi_vfs_mount_data_t create_acpi_vfs_mount_data() {
 
 	acpi_vfs_mount_data_t mount_data;
 	mount_data.table_count = entriesXSDT + entriesRSDT;
-	mount_data.tables = (sdt_header_t**) vmm_alloc(sizeof(sdt_header_t*) * mount_data.table_count);
+	mount_data.tables = (sdt_header_t**) kmalloc(sizeof(sdt_header_t*) * mount_data.table_count);
 
 	if(xsdt != NULL) {
 		for(uint64_t i = 0; i < entriesXSDT; i++) {
@@ -49,7 +49,7 @@ file_t* acpi_vfs_open(vfs_mount_t* mount, char* path, int flags) {
 		sprintf(expected_name, "%d.%c%c%c%c", i, table->signature[0], table->signature[1], table->signature[2], table->signature[3]);
 	
 		if (strcmp(file, expected_name) == 0) {
-			file_t* file = (file_t*) vmm_alloc(1);
+			file_t* file = (file_t*) kmalloc(sizeof(file_t));
             memset(file, 0, sizeof(file_t));
 
             file->mount = mount;
@@ -64,7 +64,7 @@ file_t* acpi_vfs_open(vfs_mount_t* mount, char* path, int flags) {
 }
 
 void acpi_vfs_close(vfs_mount_t* mount, file_t* f) {
-	vmm_free(f, 1);
+	kfree(f);
 }
 
 void acpi_vfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -96,10 +96,8 @@ dir_t acpi_vfs_dir_at(vfs_mount_t* mount, int idx, char* path) {
 }
 
 vfs_mount_t* acpi_vfs_mount() {
-    vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
-	memset(mount, 0, 0x1000);
-
-    assert((sizeof(vfs_mount_t) + sizeof(acpi_vfs_mount_data_t)) <= 0x1000);
+    vfs_mount_t* mount = (vfs_mount_t*) kmalloc(sizeof(vfs_mount_t) + sizeof(acpi_vfs_mount_data_t));
+	memset(mount, 0, sizeof(vfs_mount_t) + sizeof(acpi_vfs_mount_data_t));
 
 	acpi_vfs_mount_data_t* mount_data = (acpi_vfs_mount_data_t*) &mount[1];
 	mount->driver_specific_data = mount_data;

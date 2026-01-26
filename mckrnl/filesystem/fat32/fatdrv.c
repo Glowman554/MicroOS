@@ -1,6 +1,6 @@
 #include <fatdrv.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
@@ -17,7 +17,7 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 	debugf("Opening file %s", path);
 
 	FIL fil;
-	file_t* file = (file_t*) vmm_alloc(1);
+	file_t* file = (file_t*) kmalloc(sizeof(file_t));
 	memset(file, 0, sizeof(file_t));
 
 	char new_path[256] = {0};
@@ -50,14 +50,14 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 	FRESULT fr = f_open(&fil, new_path, mode);
 	if (fr != FR_OK) {
 		debugf("Error opening file %s: %d", path, fr);
-		vmm_free(file, 1);
+		kfree(file);
 		return NULL;
 	}
 
 	file->mount = mount;
 	strcpy(file->buffer, path);
 	file->size = f_size(&fil);
-	file->driver_specific_data = (void*) vmm_alloc(sizeof(FIL) / 0x1000 + 1);
+	file->driver_specific_data = (void*) kmalloc(sizeof(FIL));
 	memcpy(file->driver_specific_data, &fil, sizeof(FIL));
 
 	return file;
@@ -66,8 +66,8 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 void fatfs_close(vfs_mount_t* mount, file_t* f) {
 	FIL* fil = (FIL*) f->driver_specific_data;
 	f_close(fil);
-	vmm_free(f->driver_specific_data, sizeof(FIL) / 0x1000 + 1);
-	vmm_free(f, 1);
+	kfree(f->driver_specific_data);
+	kfree(f);
 }
 
 void fatfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -109,7 +109,7 @@ void fatfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
 
 void fatfs_delete(vfs_mount_t* mount, file_t* file) {
 	f_unlink((char*) file->buffer);
-	vmm_free(file, 1);
+	kfree(file);
 }
 
 void fatfs_mkdir(vfs_mount_t* mount, char* path) {
@@ -211,13 +211,13 @@ void fatfs_delete_dir(vfs_mount_t* mount, char* path) {
 }
 
 vfs_mount_t* fatfs_mount(int disk_id, char* name) {
-	vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
-	memset(mount, 0, 0x1000);
+	vfs_mount_t* mount = (vfs_mount_t*) kmalloc(sizeof(vfs_mount_t) + sizeof(fatfs_mount_data_t));
+	memset(mount, 0, sizeof(vfs_mount_t) + sizeof(fatfs_mount_data_t));
 
-	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) mount + sizeof(vfs_mount_t);
+	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) &mount[1];
 	mount->driver_specific_data = mount_data;
 
-	FATFS* fs = (FATFS*) vmm_alloc(1); // dont ask why but fatfs doesent like heap addresses
+	FATFS* fs = (FATFS*) kmalloc(sizeof(FATFS));
 
 	char new_path[3] = {0};
 	new_path[0] = '0' + disk_id;
@@ -245,7 +245,7 @@ vfs_mount_t* fatfs_mount(int disk_id, char* name) {
 }
 
 void fatfs_rename(vfs_mount_t* fat_mount, char* name) {
-	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) fat_mount + sizeof(vfs_mount_t);
+	fatfs_mount_data_t* mount_data = (fatfs_mount_data_t*) &fat_mount[1];
 	memset(mount_data->name, 0, sizeof(mount_data->name));
 	strcpy(mount_data->name, name);
 
@@ -338,12 +338,11 @@ bool is_fat32_bpb(BPB_t* bpb) {
 }
 
 bool is_fat32(int disk_id) {
-	BPB_t* bpb = (BPB_t*) vmm_alloc(1);
+	BPB_t* bpb = (BPB_t*) kmalloc(512);
 	read_disk(disk_id, 0, 1, bpb);
 
 	bool res = is_fat32_bpb(bpb);
-	vmm_free(bpb, 1);
-
+	kfree(bpb);
 	return res;
 }
 
