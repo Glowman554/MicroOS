@@ -3,14 +3,14 @@
 #include <config.h>
 #include <assert.h>
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stddef.h>
 
 int num_disks = 0;
 disk_driver_t** disks = NULL;
 
 int register_disk(disk_driver_t* disk) {
-	disks = vmm_resize(sizeof(disk_driver_t*), num_disks, num_disks + 1, disks);
+	disks = krealloc(disks, sizeof(disk_driver_t*) * (num_disks + 1));
 	disks[num_disks] = disk;
 	debugf("Registered disk %d", num_disks);
 	num_disks++;

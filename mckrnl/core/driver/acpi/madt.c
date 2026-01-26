@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 
 uint8_t* madt_lapic_ids = NULL;
 uint8_t madt_lapic_count = 0;
@@ -32,7 +32,7 @@ void parse_madt() {
 			case 0: // Processor local apic
 				{
 					madt_local_processor_t* processor = (madt_local_processor_t*) record;
-					madt_lapic_ids = vmm_resize(sizeof(uint8_t), madt_lapic_count, madt_lapic_count + 1, madt_lapic_ids);
+					madt_lapic_ids = krealloc(madt_lapic_ids, sizeof(uint8_t) * (madt_lapic_count + 1));
 					madt_lapic_ids[madt_lapic_count++] = processor->apic_id;
 				}
 				break;
@@ -40,8 +40,8 @@ void parse_madt() {
 			case 1: // I/O apic
 				{
 					madt_io_apic_t* ioapic = (madt_io_apic_t*) record;
-					madt_ioapic_ids = vmm_resize(sizeof(uint8_t), madt_ioapic_count, madt_ioapic_count + 1, madt_ioapic_ids);
-					madt_ioapic_base_addr = vmm_resize(sizeof(uint32_t), madt_ioapic_count, madt_ioapic_count + 1, madt_ioapic_base_addr);
+					madt_ioapic_ids = krealloc(madt_ioapic_ids, sizeof(uint8_t) * (madt_ioapic_count + 1));
+					madt_ioapic_base_addr = krealloc(madt_ioapic_base_addr, sizeof(uint32_t) * (madt_ioapic_count + 1));
 					madt_ioapic_ids[madt_ioapic_count] = ioapic->io_apic_id;
 					madt_ioapic_base_addr[madt_ioapic_count++] = ioapic->io_apic_address;
 				}

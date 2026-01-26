@@ -1,7 +1,7 @@
 #include <utils/trace.h>
 #include <stdio.h>
 #include <stddef.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 
 void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) {
@@ -25,7 +25,7 @@ void register_symbol(symbol_t sym) {
 	if (sym.name[0] == '_' && sym.name[1] == '_' && sym.name[2] == 'F') {
 		return;
 	}
-	symbols = vmm_resize(sizeof(symbol_t), symbols_count, symbols_count + 1, symbols);
+	symbols = krealloc(symbols, sizeof(symbol_t) * (symbols_count + 1));
 	symbols[symbols_count] = sym;
 	symbols_count++;
 }
