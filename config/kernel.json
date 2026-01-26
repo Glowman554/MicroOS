@@ -196,13 +196,17 @@
                 }
             },
             {
-                "name": "Paging",
+                "name": "Memory",
                 "value": {
-                    "title": "Paging",
+                    "title": "Memory",
                     "items": [
                         {
                             "name": "PAGING_DATA_PAGES",
                             "value": 512
+                        },
+                        {
+                            "name": "KERNEL_HEAP_SIZE_MB",
+                            "value": 32
                         }
                     ]
                 }

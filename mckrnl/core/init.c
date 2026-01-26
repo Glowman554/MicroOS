@@ -167,7 +167,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	pmm_init();
 	vmm_init();
-	initialize_heap(MB(4) / 0x1000);
+	initialize_heap(MB(KERNEL_HEAP_SIZE_MB) / 0x1000);
 
 	set_gdt(new_gdt());
 
