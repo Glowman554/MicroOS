@@ -1,10 +1,10 @@
 include config.mk
 
 all: res
-	make -C mckrnl
-	make -C user
+	make -C mckrnl -j $(nproc)
+	make -C user -j $(nproc)
 ifeq ($(GUI),1)
-	make -C gui
+	make -C gui -j $(nproc)
 endif
 
 NETDEV = e1000
@@ -93,7 +93,7 @@ EXECUTABLE = mckrnl/core/mckrnl.elf
 debug:
 	gdb -ex "symbol-file $(EXECUTABLE)" -ex "target remote localhost:1234" -ex "b _main"
 
-clean: iso
+clean:
 	make -C mckrnl clean
 	make -C user clean
 ifeq ($(GUI),1)
