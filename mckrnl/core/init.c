@@ -22,13 +22,13 @@
 #include <driver/timer/hpet.h>
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
-#include <driver/acpi/dsdt.h>
 #include <driver/acpi/madt.h>
 #include <driver/apic/smp.h>
 #include <driver/clock_driver.h>
 #include <driver/nic_driver.h>
 #include <driver/network/loopback.h>
 #include <driver/char_input_driver.h>
+#include <driver/acpi/simple_power.h>
 
 #include <fs/initrd.h>
 #include <fs/devfs.h>
@@ -198,7 +198,6 @@ void _main(multiboot_info_t* mb_info) {
 
 
 	rsdp_init();
-	dsdt_init();
 #ifdef PARSE_MADT
 	parse_madt();
 #endif
@@ -217,6 +216,7 @@ void _main(multiboot_info_t* mb_info) {
   	register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
+	register_driver((driver_t*) &simple_power_driver);
 
 	stage_driver();
 

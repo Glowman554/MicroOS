@@ -15,6 +15,7 @@ all:
 	make -C network/rtl8139
 
 	make -C feature/acpi_dump
+	make -C feature/lai
 
 
 clean:
@@ -33,6 +34,7 @@ clean:
 	make -C network/rtl8139 clean
 
 	make -C feature/acpi_dump clean
+	make -C feature/lai clean
 
 compile_flags.txt:
 	make -C core compile_flags.txt 
@@ -50,3 +52,4 @@ compile_flags.txt:
 	make -C network/rtl8139 compile_flags.txt
 
 	make -C feature/acpi_dump compile_flags.txt
+	make -C feature/lai compile_flags.txt

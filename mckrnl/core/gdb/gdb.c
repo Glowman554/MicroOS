@@ -6,7 +6,7 @@
 
 #include <config.h>
 
-#include <driver/acpi/power.h>
+#include <driver/power_driver.h>
 
 typedef int (*gdb_enc_func)(char *buf, int buf_len, const char *data, int data_len);
 typedef int (*gdb_dec_func)(const char *buf, int buf_len, char *data, int data_len);
@@ -359,7 +359,7 @@ int gdb_main(gdb_state_t* state) {
                 break;
 
             case 'k':
-                acpi_power_off();
+                global_power_driver->shutdown(global_power_driver);
                 break;
 
 

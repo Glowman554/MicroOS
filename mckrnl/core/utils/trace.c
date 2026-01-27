@@ -8,6 +8,10 @@ void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip)) {
 	stackframe_t* frame;
 	asm volatile ("movl %%ebp, %0" : "=r"(frame));
 
+	stack_unwind_frame(frame, max, callback);
+}
+
+void stack_unwind_frame(stackframe_t* frame, int max, void (*callback)(int frame_num, uint32_t eip)) {
 	for(int f = 0; frame && f < max; f++) {
 		callback(f, frame->eip);
 		frame = frame->ebp;
