@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <memory/vmm.h>
 
-rsdt_t* rsdt;
-xsdt_t* xsdt;
+rsdt_t* rsdt = NULL;
+xsdt_t* xsdt = NULL;
+
+rsdp2_t* rsdp = NULL;
+
 
 rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
 	debugf("Scanning for RSDP in %x to %x", start, start + length);
@@ -27,7 +30,7 @@ rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
 }
 
 void rsdp_init() {
-	rsdp2_t* rsdp = scan_for_rsdp((char*) RSDP_SCAN_BASE_ADDR, RSDP_SCAN_LENGTH);
+	rsdp = scan_for_rsdp((char*) RSDP_SCAN_BASE_ADDR, RSDP_SCAN_LENGTH);
 	if (!rsdp) {
 		debugf("RSDP not found");
 		return;
@@ -65,14 +68,14 @@ void map_sdt(sdt_header_t* header) {
 	}
 }
 
-void* find_SDT(const char *signature) {
+void* find_SDT(const char *signature, int index) {
 	if(xsdt != NULL) {
         int entries = (xsdt->header.length - sizeof(sdt_header_t)) / 8;
 		for(uint64_t i = 0; i < entries; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (uint32_t) xsdt->acpiptr[i];
 			map_sdt(acpihdr);
-			if(memcmp(acpihdr->signature, signature, 4) == 0) {
-				debugf("%s found", signature);
+			if(memcmp(acpihdr->signature, signature, 4) == 0 && index-- == 0) {
+				// debugf("%s found", signature);
 				return acpihdr;
 			}
 		}
@@ -83,14 +86,14 @@ void* find_SDT(const char *signature) {
 		for(uint64_t i = 0; i < entries; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (rsdt->acpiptr[i]);
 			map_sdt(acpihdr);
-			if(memcmp(acpihdr->signature, signature, 4) == 0) {
-				debugf("%s found", signature);
+			if(memcmp(acpihdr->signature, signature, 4) == 0 && index-- == 0) {
+				// debugf("%s found", signature);
 				return acpihdr;
 			}
 		}
 	} 
 
-	debugf("%s not found", signature);
+	// debugf("%s not found", signature);
 
 	return NULL;
 }

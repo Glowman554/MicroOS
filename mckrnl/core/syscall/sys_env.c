@@ -1,10 +1,10 @@
 #include <syscall/syscalls.h>
 
 #include <scheduler/scheduler.h>
-#include <driver/acpi/power.h>
 #include <stdio.h>
 #include <string.h>
 #include <driver/char_input_driver.h>
+#include <driver/power_driver.h>
 
 #define SYS_GET_ARGV_ID 0x00
 #define SYS_GET_ENVP_ID 0x01
@@ -53,13 +53,13 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 
 		case SYS_PWR_RESET_ID:
 			{
-				acpi_reset();
+				global_power_driver->reboot(global_power_driver);
 			}
 			break;
 
 		case SYS_PWR_SHUTDOWN_ID:
 			{
-				acpi_power_off();
+				global_power_driver->shutdown(global_power_driver);
 			}
 			break;
 
