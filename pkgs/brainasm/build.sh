@@ -10,7 +10,8 @@ if [ -d "installer" ]; then
 	rm -rvf installer
 fi
 
-make -f $1 -C src/src PROGRAM=brainasm.elf AUTHOR=glowman554 LIBS_ZIP=$2 extract_libs prog
+make -f $1 -C src/src PROGRAM=brainasm.elf AUTHOR=glowman554 LIBS_ZIP=$2 extract_libs
+make -f $1 -C src/src PROGRAM=brainasm.elf AUTHOR=glowman554 LIBS_ZIP=$2 prog -j $(nproc)
 
 bash ../run_installer.sh $1 $2 $3
 cp -v installer/install.mex ../pkgs/brainasm_install.mex

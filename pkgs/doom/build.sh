@@ -19,7 +19,8 @@ if [ -d "installer" ]; then
 	rm -rvf installer
 fi
 
-make -C src LIBS_ZIP=$2 compile_flags.txt extract_libs prog
+make -C src LIBS_ZIP=$2 compile_flags.txt extract_libs
+make -C src LIBS_ZIP=$2 prog -j $(nproc)
 
 bash ../run_installer.sh $1 $2 $3
 cp -v installer/install.mex ../pkgs/doom_install.mex
