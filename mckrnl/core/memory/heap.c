@@ -102,6 +102,7 @@ void print_allocations(const char* msg) {
 	debugf("--- End of heap allocations ---");
 }
 
+#if 0
 void expand_heap(size_t length) {
 	print_allocations("Before expanding heap");
 	if (length % 0x1000) {
@@ -114,7 +115,7 @@ void expand_heap(size_t length) {
 
 	for (size_t i = 0; i < page_count; i++) {
 		void* physical_page = pmm_alloc();
-        vmm_map_page(heap_end, (uintptr_t) heap_end, (uintptr_t) physical_page, PTE_PRESENT | PTE_WRITE);
+        vmm_map_page(kernel_context, (uintptr_t) heap_end, (uintptr_t) physical_page, PTE_PRESENT | PTE_WRITE);
 
         debugf("Mapped new heap page: virtual 0x%x to physical 0x%x\n", heap_end, physical_page);
 
@@ -129,6 +130,7 @@ void expand_heap(size_t length) {
 	new_segment->length = length - sizeof(heap_segment_header_t);
 	hsh_combine_backward(new_segment);
 }
+#endif
 
 void* kmalloc(size_t size) {
 	if (size % 0x10 > 0) { // it is not a multiple of 0x10
@@ -161,8 +163,13 @@ void* kmalloc(size_t size) {
 		current_seg = current_seg->next;
 	}
 
+#if 0
 	expand_heap(size);
 	return kmalloc(size);
+#else
+	print_allocations("Heap full");
+	abortf(false, "kernel heap full: could not allocate %d bytes", size);
+#endif
 }
 
 void* krealloc(void* ptr, size_t size) {

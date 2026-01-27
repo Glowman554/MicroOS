@@ -1,4 +1,3 @@
-#include "driver/nic_driver.h"
 #include <net/etherframe.h>
 #include <stdio.h>
 #include <memory/heap.h>
@@ -9,7 +8,7 @@
 
 void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) {
 	debugf("Registering etherframe handler for %d", handler.ether_type_be);
-	stack->ether_frame->handlers = kmalloc(sizeof(ether_frame_handler_t) * (stack->ether_frame->num_handlers + 1));
+	stack->ether_frame->handlers = krealloc(stack->ether_frame->handlers, sizeof(ether_frame_handler_t) * (stack->ether_frame->num_handlers + 1));
 	stack->ether_frame->handlers[stack->ether_frame->num_handlers] = handler;
 	stack->ether_frame->num_handlers++;
 }

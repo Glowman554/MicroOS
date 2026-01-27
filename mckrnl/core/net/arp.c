@@ -157,7 +157,7 @@ void arp_init(network_stack_t* stack) {
 	memset(stack->arp, 0, sizeof(arp_provider_t));
 
 	memset(stack->arp->ip_cache, 0xff, sizeof(stack->arp->ip_cache));
-	memset(stack->arp->mac_cache, 0xff, sizeof(stack->arp->ip_cache));
+	memset(stack->arp->mac_cache, 0xff, sizeof(stack->arp->mac_cache));
 
 	stack->arp->handler.ether_type_be = BSWAP16(0x806);
 	stack->arp->handler.stack = stack;
