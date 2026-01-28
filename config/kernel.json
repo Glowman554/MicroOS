@@ -39,6 +39,10 @@
                         {
                             "name": "EARLY_SERIAL_DEBUG",
                             "value": true
+                        },
+                        {
+                            "name": "HEAP_CANARY",
+                            "value": true
                         }
                     ]
                 }

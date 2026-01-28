@@ -10,6 +10,7 @@
 #define ALLOW_PANIC_CONTINUE
 #define STACK_TRACE
 #define EARLY_SERIAL_DEBUG
+#define HEAP_CANARY
 // End Debug
 
 // Network
