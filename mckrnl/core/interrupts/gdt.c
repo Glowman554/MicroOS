@@ -1,6 +1,6 @@
 #include <interrupts/gdt.h>
 #include <memory/pmm.h>
-#include <memory/heap.h>
+#include <memory/vmm.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -18,8 +18,8 @@ void gdt_set_entry(uint64_t* gdt, int i, unsigned int base, unsigned int limit, 
 
 uint64_t* new_gdt() {
 	debugf("Creating new gdt...");
-	uint64_t* gdt = kmalloc(sizeof(uint64_t) * GDT_ENTRIES);
-	uint32_t* tss = kmalloc(sizeof(uint32_t) * 32);
+	uint64_t* gdt = vmm_alloc(TO_PAGES(sizeof(uint64_t) * GDT_ENTRIES));
+	uint32_t* tss = vmm_alloc(TO_PAGES(sizeof(uint32_t) * 32));
 
 	tss[0] = 0;
 	tss[1] = 0;
