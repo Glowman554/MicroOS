@@ -7,6 +7,14 @@
 #include <stdio.h>
 #include <utils/trace.h>
 
+#include <config.h>
+
+#ifdef HEAP_CANARY
+#define HEAP_CANARY_VALUE 0xDEADBEEF
+typedef unsigned int heap_canary_t;
+#endif
+
+
 void* heap_start;
 void* heap_end;
 heap_segment_header_t* last_hdr;
@@ -91,7 +99,7 @@ void print_allocations(const char* msg) {
 
 	debugf("--- Heap allocations: %s ---", msg);
 	while(true) {
-		debugf("0x%x (%d bytes) free: %s", ((uint32_t) current_seg + sizeof(heap_segment_header_t)), current_seg->length, current_seg->free ? "true" : "false");
+		debugf("0x%x (%d bytes) free: %s", current_seg, current_seg->length, current_seg->free ? "true" : "false");
 
 		if (current_seg->next == NULL) {
 			break;
@@ -101,6 +109,28 @@ void print_allocations(const char* msg) {
 	}
 	debugf("--- End of heap allocations ---");
 }
+
+#ifdef HEAP_CANARY
+void check_heap_canaries() {
+	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
+
+	while(true) {
+		if (!current_seg->free) {
+			void* ptr = (void*) ((uintptr_t) current_seg + sizeof(heap_segment_header_t));
+			heap_canary_t* canary_ptr = (heap_canary_t*) ((uintptr_t) ptr + current_seg->length - sizeof(heap_canary_t));
+			if (*canary_ptr != HEAP_CANARY_VALUE) {
+				abortf(false, "heap canary corrupted at segment 0x%x. Expected 0x%x but was 0x%x. Canary location: 0x%x", current_seg, HEAP_CANARY_VALUE, *canary_ptr, canary_ptr);
+			}
+		}
+	
+		if (current_seg->next == NULL) {
+			break;
+		}
+	
+		current_seg = current_seg->next;
+	}
+}
+#endif
 
 #if 0
 void expand_heap(size_t length) {
@@ -132,14 +162,31 @@ void expand_heap(size_t length) {
 }
 #endif
 
+void* prepare_segment(heap_segment_header_t* segment) {
+	segment->free = false;
+	void* ptr = (void*) ((uintptr_t) segment + sizeof(heap_segment_header_t));
+
+#ifdef HEAP_CANARY
+	heap_canary_t* canary_ptr = (heap_canary_t*) ((uintptr_t) ptr + segment->length - sizeof(heap_canary_t));
+	*canary_ptr = HEAP_CANARY_VALUE;
+#endif
+
+	return ptr;
+}
+
 void* kmalloc(size_t size) {
+	if (size == 0) {
+		return NULL;
+	}
+
+#ifdef HEAP_CANARY
+	check_heap_canaries();
+	size += sizeof(heap_canary_t);
+#endif
+
 	if (size % 0x10 > 0) { // it is not a multiple of 0x10
 		size -= (size % 0x10);
 		size += 0x10;
-	}
-
-	if (size == 0) {
-		return NULL;
 	}
 
 	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
@@ -147,12 +194,10 @@ void* kmalloc(size_t size) {
 		if (current_seg->free) {
 			if (current_seg->length > size) {
 				hsh_split(current_seg, size);
-				current_seg->free = false;
-				return (void*) ((uint32_t) current_seg + sizeof(heap_segment_header_t));
+				return prepare_segment(current_seg);
 			}
 			if (current_seg->length == size) {
-				current_seg->free = false;
-				return (void*) ((uint32_t) current_seg + sizeof(heap_segment_header_t));
+				return prepare_segment(current_seg);
 			}
 		}
 
@@ -180,7 +225,11 @@ void* krealloc(void* ptr, size_t size) {
 		return NULL;
 	} else if (!ptr) {
 		return kmalloc(size);
+#ifdef HEAP_CANARY
+	} else if (size + sizeof(heap_canary_t) <= segment->length) {
+#else
 	} else if (size <= segment->length) {
+#endif
 		return ptr;
 	} else {
 		void* new_ptr = kmalloc(size);
@@ -196,6 +245,11 @@ void kfree(void* address) {
 	if (address == NULL) {
 		return;
 	}
+
+#ifdef HEAP_CANARY
+	check_heap_canaries();
+#endif
+
 	heap_segment_header_t* segment = (heap_segment_header_t*) address - 1;
 	segment->free = true;
 	hsh_combine_forward(segment);
