@@ -6,7 +6,7 @@
 #include <interrupts/interrupts.h>
 #include <stdio.h>
 #include <string.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 
 #define PS2_X_SIGN 0b00010000
 #define PS2_Y_SIGN 0b00100000
@@ -189,14 +189,14 @@ void ps2_mouse_init(driver_t* driver) {
 
 
 mouse_driver_t* get_ps2_mouse_driver() {
-	mouse_driver_t* driver = (mouse_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 4096);
+	mouse_driver_t* driver = (mouse_driver_t*) kmalloc(sizeof(mouse_driver_t) + sizeof(ps2_mouse_driver_data_t));
+	memset(driver, 0, sizeof(mouse_driver_t) + sizeof(ps2_mouse_driver_data_t));
 
 	driver->driver.is_device_present = ps2_mouse_is_device_present;
 	driver->driver.get_device_name = ps2_mouse_get_device_name;
 	driver->driver.init = ps2_mouse_init;
 
-	driver->driver.driver_specific_data = driver + sizeof(mouse_driver_t);
+	driver->driver.driver_specific_data = &driver[1];
 	return driver;
 }
 

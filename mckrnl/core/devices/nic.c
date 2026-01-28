@@ -1,5 +1,5 @@
 #include <devices/nic.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <driver/disk_driver.h>
 #include <stdio.h>
 #include <assert.h>
@@ -57,7 +57,7 @@ char* nic_file_name(devfs_file_t* file) {
 
 
 devfs_file_t* create_nic_file(nic_driver_t* nic, int id) {
-    nic_file_t* nic_file = vmm_alloc(TO_PAGES(sizeof(nic_file_t)));
+    nic_file_t* nic_file = kmalloc(sizeof(nic_file_t));
     memset(nic_file, 0, sizeof(nic_file_t));
 
     nic_file->nic = nic;

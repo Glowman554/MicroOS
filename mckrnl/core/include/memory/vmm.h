@@ -11,8 +11,6 @@
 
 #define ALIGN_PAGE_DOWN(x) ((x) & ~0xFFF)
 
-#define MB (1024 * 1024)
-
 typedef struct vmm_context {
 	uint32_t* pagedir;
 } vmm_context_t;

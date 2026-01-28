@@ -2,7 +2,7 @@
 #include <net/stack.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stddef.h>
 #include <string.h>
 #include <config.h>
@@ -13,7 +13,7 @@ nic_driver_t** nic_drivers = NULL;
 int num_nic_drivers = 0;
 
 void register_nic_driver(nic_driver_t* driver) {	
-	nic_drivers = vmm_resize(sizeof(nic_driver_t*), num_nic_drivers, num_nic_drivers + 1, nic_drivers);
+	nic_drivers = krealloc(nic_drivers, sizeof(nic_driver_t*) * (num_nic_drivers + 1));
 	nic_drivers[num_nic_drivers] = driver;
 	num_nic_drivers++;
 }
@@ -37,12 +37,12 @@ void send_async_send_packet(async_t* async) {
 
 	send_data->driver->send(send_data->driver, async, send_data->data, send_data->len);
 	if (is_resolved(async)) {
-		vmm_free(send_data, TO_PAGES(sizeof(send_data_t) + send_data->len));
+		kfree(send_data);
 	}
 }
 
 void send_packet(nic_driver_t* driver, uint8_t* data, uint32_t len) {
-	uint8_t* copy = vmm_alloc(TO_PAGES(sizeof(send_data_t) + len));
+	uint8_t* copy = kmalloc(sizeof(send_data_t) + len);
 
 	send_data_t* send_data = (send_data_t*) copy;
 	uint8_t* packet_data = copy + sizeof(send_data_t);

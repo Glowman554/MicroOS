@@ -18,7 +18,7 @@ typedef struct hpet {
 } __attribute__((packed)) hpet_t;
 
 bool hpet_is_device_present(driver_t* driver) {
-    hpet_table_t* hpet_table = (hpet_table_t*) find_SDT("HPET");
+    hpet_table_t* hpet_table = (hpet_table_t*) find_SDT("HPET", 0);
 	return hpet_table != NULL;
 }
 
@@ -27,7 +27,7 @@ char* hpet_get_device_name(driver_t* driver) {
 }
 
 void hpet_init(driver_t* driver) {    
-    hpet_table_t* hpet_table = (hpet_table_t*) find_SDT("HPET");
+    hpet_table_t* hpet_table = (hpet_table_t*) find_SDT("HPET", 0);
     // vmm_map_page(kernel_context, (uintptr_t) hpet_table, (uintptr_t) hpet_table, PTE_PRESENT | PTE_WRITE);
     hpet_t* hpet = (hpet_t*) (uint32_t) hpet_table->address;
     vmm_map_page(kernel_context, (uintptr_t) hpet, (uintptr_t) hpet, PTE_PRESENT | PTE_WRITE);

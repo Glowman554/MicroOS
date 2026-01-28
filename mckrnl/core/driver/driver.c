@@ -1,14 +1,14 @@
 #include <driver/driver.h>
 
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stddef.h>
 
 driver_t** drivers = NULL;
 int num_drivers = 0;
 
 void register_driver(driver_t* driver) {
-	drivers = vmm_resize(sizeof(driver_t*), num_drivers, num_drivers + 1, drivers);
+	drivers = krealloc(drivers, sizeof(driver_t*) * (num_drivers + 1));
 	drivers[num_drivers] = driver;
 	num_drivers++;
 }

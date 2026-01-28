@@ -1,7 +1,7 @@
 #include <fs/initrd.h>
 
 #include <stdio.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <utils/string.h>
 #include <assert.h>
 
@@ -52,7 +52,7 @@ file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 
 	saf_node_file_t* file_node = (saf_node_file_t*) file;
 
-	file_t* f = (file_t*) vmm_alloc(1);
+	file_t* f = (file_t*) kmalloc(sizeof(file_t));
 	f->mount = mount;
 	f->size = file_node->size;
 	f->driver_specific_data = (void*) ((uint32_t) mount->driver_specific_data + (uint32_t) file_node->addr);
@@ -61,7 +61,7 @@ file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
 }
 
 void initrd_close(vfs_mount_t* mount, file_t* f) {
-	vmm_free(f, 1);
+	kfree(f);
 }
 
 void initrd_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -120,7 +120,7 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 }
 
 vfs_mount_t* initrd_mount(void* saf_image) {
-	vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
+	vfs_mount_t* mount = (vfs_mount_t*) kmalloc(sizeof(vfs_mount_t));
 	memset(mount, 0, sizeof(vfs_mount_t));
 
 	mount->driver_specific_data = saf_image;

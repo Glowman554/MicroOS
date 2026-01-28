@@ -1,5 +1,5 @@
 #include <vlan.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stdint.h>
 #include <string.h>
 #include <net/stack.h>
@@ -29,7 +29,7 @@ void vlan_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t siz
     switch (async->state) {
         case STATE_INIT:
         {
-            uint8_t* newData = vmm_alloc(TO_PAGES(size + 4));
+            uint8_t* newData = kmalloc(size + 4);
 
             ether_frame_header_t* oldFrame = (ether_frame_header_t*) data;
             ether_frame_header_vlan_t* newFrame = (ether_frame_header_vlan_t*) newData;
@@ -47,7 +47,7 @@ void vlan_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t siz
             nic_driver_t* p = get_nic_driver(vlan->parent);
             send_packet(p, newData, size + 4);
 
-            vmm_free(newData, TO_PAGES(size + 4));
+            kfree(newData);
             async->state = STATE_DONE;
         }
         break;
@@ -64,7 +64,7 @@ void vlan_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, ui
     // debugf("VLAN ID: %d", vlan_id);
 
     uint32_t new_size = size - 4 + 14;
-    uint8_t* new_frame = vmm_alloc(TO_PAGES(new_size));
+    uint8_t* new_frame = kmalloc(new_size);
 
     ether_frame_header_t* etherframe = (ether_frame_header_t*) new_frame;
     etherframe->dest_mac_be = vlan->driver.mac.mac;
@@ -75,7 +75,7 @@ void vlan_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, ui
 
     vlan->driver.recv(&vlan->driver, new_frame, new_size);
 
-    vmm_free(new_frame, TO_PAGES(new_size));
+    kfree(new_frame);
 }
 
 void vlan_stack(nic_driver_t* driver, void* stack) {
@@ -92,7 +92,7 @@ void vlan_stack(nic_driver_t* driver, void* stack) {
 
 
 nic_driver_t* get_vlan_driver(int vlanid, int parent) {
-	vlan_driver_t* driver = vmm_alloc(PAGES_OF(vlan_driver_t));
+	vlan_driver_t* driver = kmalloc(sizeof(vlan_driver_t));
 	memset(driver, 0, sizeof(vlan_driver_t));
 
 	*driver = (vlan_driver_t) {

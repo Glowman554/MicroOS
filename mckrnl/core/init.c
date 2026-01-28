@@ -14,6 +14,7 @@
 #include <scheduler/killer.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
+#include <memory/heap.h>
 
 #include <driver/output/serial.h>
 #include <driver/clock/cmos.h>
@@ -21,13 +22,13 @@
 #include <driver/timer/hpet.h>
 #include <driver/pci/pci.h>
 #include <driver/acpi/rsdp.h>
-#include <driver/acpi/dsdt.h>
 #include <driver/acpi/madt.h>
 #include <driver/apic/smp.h>
 #include <driver/clock_driver.h>
 #include <driver/nic_driver.h>
 #include <driver/network/loopback.h>
 #include <driver/char_input_driver.h>
+#include <driver/acpi/simple_power.h>
 
 #include <fs/initrd.h>
 #include <fs/devfs.h>
@@ -106,10 +107,10 @@ void load_init() {
 		if (file == NULL) {
 			abortf(false, "Could not open %s", init_exec);
 		}
-		void* buffer = vmm_alloc(file->size / 4096 + 1);
+		void* buffer = kmalloc(file->size);
 		vfs_read(file, buffer, file->size, 0);
 		init_executable(1, buffer, argv, envp);
-		vmm_free(buffer, file->size / 4096 + 1);
+		kfree(buffer);
 		vfs_close(file);
 	} else {
 		abortf(false, "Please use --init to set a init process");
@@ -166,6 +167,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	pmm_init();
 	vmm_init();
+	initialize_heap(MB(KERNEL_HEAP_SIZE_MB) / 0x1000);
 
 	set_gdt(new_gdt());
 
@@ -196,7 +198,6 @@ void _main(multiboot_info_t* mb_info) {
 
 
 	rsdp_init();
-	dsdt_init();
 #ifdef PARSE_MADT
 	parse_madt();
 #endif
@@ -215,6 +216,7 @@ void _main(multiboot_info_t* mb_info) {
   	register_driver((driver_t*) &pit_driver);
 	register_driver((driver_t*) &hpet_driver);
 	register_driver((driver_t*) &cmos_driver);
+	register_driver((driver_t*) &simple_power_driver);
 
 	stage_driver();
 

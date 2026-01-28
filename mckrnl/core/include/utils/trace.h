@@ -8,6 +8,7 @@ typedef struct stackframe {
 } stackframe_t;
 
 void stack_unwind(int max, void (*callback)(int frame_num, uint32_t eip));
+void stack_unwind_frame(stackframe_t* frame, int max, void (*callback)(int frame_num, uint32_t eip));
 
 typedef struct symbol {
 	uint32_t address;

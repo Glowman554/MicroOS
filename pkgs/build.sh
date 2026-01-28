@@ -16,15 +16,18 @@ fi
 
 mkdir -p pkgs
 
-build_dir brainasm
-build_dir phoenix_tools
-build_dir phoenixv2_tools
-build_dir nyanmbr
-build_dir doom
-build_dir saf
-build_dir nextfs
-build_dir mcc
-	
+(
+	build_dir brainasm &
+	build_dir phoenix_tools &
+	build_dir phoenixv2_tools &
+	build_dir nyanmbr &
+	build_dir doom &
+	build_dir saf &
+	build_dir nextfs &
+	build_dir mcc &
+	wait
+)
+
 (
 	cd pkgs
 	echo export ACCEPT_ALL=1 > all.msh

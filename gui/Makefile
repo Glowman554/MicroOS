@@ -1,40 +1,26 @@
+LIBS = libwindow
+PROGRAMS = vflvm explorer imgview taskmgr sysctl netinfo paint
+
 all:
-	mkdir -p bin
+	make build_libraries -j $(nproc)
+	make build_programs -j $(nproc)
+
+build_libraries: $(addsuffix _library,$(LIBS))
+build_programs: $(addsuffix _prog,$(PROGRAMS))
+
+%_library:
 	mkdir -p lib
-	
-	make -C libwindow library
+	make -C $* library -j $(nproc)
 
-	make -C vflvm prog
-	make -C explorer prog
-	make -C imgview prog
-	make -C taskmgr prog
-	make -C sysctl prog
-	make -C netinfo prog
+%_prog:
+	mkdir -p bin
+	make -C $* prog -j $(nproc)
 
-	make -C paint prog
 
 clean:
-	make -C libwindow clean
-
-	make -C vflvm clean
-	make -C explorer clean
-	make -C imgview clean
-	make -C taskmgr clean
-	make -C sysctl clean
-	make -C netinfo clean
-
-	make -C tic_tac_toe clean
-	make -C paint clean
-
+	$(foreach lib,$(LIBS),make -C $(lib) clean;)
+	$(foreach prog,$(PROGRAMS),make -C $(prog) clean;)
 
 compile_flags.txt:
-	make -C libwindow compile_flags.txt
-	
-	make -C vflvm compile_flags.txt
-	make -C explorer compile_flags.txt
-	make -C imgview compile_flags.txt
-	make -C taskmgr compile_flags.txt
-	make -C sysctl compile_flags.txt
-	make -C netinfo compile_flags.txt
-
-	make -C paint compile_flags.txt
+	$(foreach lib,$(LIBS),make -C $(lib) compile_flags.txt;)
+	$(foreach prog,$(PROGRAMS),make -C $(prog) compile_flags.txt;)

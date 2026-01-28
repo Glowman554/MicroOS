@@ -5,7 +5,7 @@
 #include <config.h>
 #include <driver/disk_driver.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stddef.h>
 
 vfs_mount_t** vfs_mounts = NULL;
@@ -36,7 +36,7 @@ bool try_read_disk_label(char* out, vfs_mount_t* mount) {
 void vfs_mount(vfs_mount_t* mount) {
 	debugf("VFS: Mounting %s", mount->name(mount));
 
-	vfs_mounts = vmm_resize(sizeof(vfs_mount_t*), num_vfs_mounts, num_vfs_mounts + 1, vfs_mounts);
+	vfs_mounts = krealloc(vfs_mounts, sizeof(vfs_mount_t*) * (num_vfs_mounts + 1));
 	vfs_mounts[num_vfs_mounts] = mount;
 	num_vfs_mounts++;
 }
@@ -190,7 +190,7 @@ bool vfs_fs_at(int idx, char* out) {
 }
 
 void vfs_register_fs_scanner(fs_scanner scanner) {
-	vfs_scanner = vmm_resize(sizeof(fs_scanner), num_vfs_scanners, num_vfs_scanners + 1, vfs_scanner);
+	vfs_scanner = krealloc(vfs_scanner, sizeof(fs_scanner) * (num_vfs_scanners + 1));
 	vfs_scanner[num_vfs_scanners] = scanner;
 	debugf("Registered VFS scanner %d at 0x%x", num_vfs_scanners, scanner);
 	num_vfs_scanners++;

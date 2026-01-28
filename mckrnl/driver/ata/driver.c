@@ -1,6 +1,6 @@
 #include <ata.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <utils/string.h>
 #include <utils/io.h>
 
@@ -166,8 +166,8 @@ void ata_driver_write(disk_driver_t* driver, uint64_t sector, uint32_t count, vo
 }
 
 disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name) {
-	disk_driver_t* driver = (disk_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 0x1000);
+	disk_driver_t* driver = (disk_driver_t*) kmalloc(sizeof(disk_driver_t) + sizeof(ata_driver_data_t));
+	memset(driver, 0, sizeof(disk_driver_t) + sizeof(ata_driver_data_t));
 
 	driver->driver.is_device_present = ata_driver_is_device_present;
 	driver->driver.get_device_name = ata_driver_get_device_name;

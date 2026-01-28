@@ -1,7 +1,7 @@
 #include <fs/devfs.h>
 #include <stdio.h>
 #include <string.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 
 file_t* devfs_open(vfs_mount_t* mount, char* path, int flags) {
 	devfs_t* devfs = (devfs_t*) mount;
@@ -14,7 +14,7 @@ file_t* devfs_open(vfs_mount_t* mount, char* path, int flags) {
 
 	for (int i = 0; i < devfs->num_files; i++) {
 		if (strcmp(devfs->files[i]->name(devfs->files[i]), path) == 0) {
-			file_t* f = (file_t*) vmm_alloc(1);
+			file_t* f = (file_t*) kmalloc(sizeof(file_t));
 			f->mount = mount;
 			f->size = -1;
 			f->driver_specific_data = devfs->files[i];
@@ -30,7 +30,7 @@ file_t* devfs_open(vfs_mount_t* mount, char* path, int flags) {
 }
 
 void devfs_close(vfs_mount_t* mount, file_t* file) {
-	vmm_free(file, 1);
+	kfree(file);
 }
 
 void devfs_read(vfs_mount_t* mount, file_t* file, void* buf, size_t size, size_t offset) {
@@ -83,7 +83,7 @@ devfs_t global_devfs = {
 
 void devfs_register_file(devfs_t* devfs, devfs_file_t* file) {
 	debugf("Registering devfs file %s!", file->name(file));
-	devfs->files = vmm_resize(sizeof(devfs_file_t*), devfs->num_files, devfs->num_files + 1, devfs->files);
+	devfs->files = krealloc(devfs->files, sizeof(devfs_file_t*) * (devfs->num_files + 1));
 	devfs->files[devfs->num_files] = file;
 	devfs->num_files++;
 }

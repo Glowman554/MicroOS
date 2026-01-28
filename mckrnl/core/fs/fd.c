@@ -1,7 +1,7 @@
 #include <fs/fd.h>
 
 #include <config.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stddef.h>
 
 file_t** fd_table;
@@ -15,7 +15,7 @@ int file_to_fd(file_t* file) {
 		}
 	}
 
-	fd_table = vmm_resize(sizeof(file_t*), num_fd, num_fd + 1, fd_table);
+	fd_table = krealloc(fd_table, sizeof(file_t*) * (num_fd + 1));
 	fd_table[num_fd] = file;
 	num_fd++;
 

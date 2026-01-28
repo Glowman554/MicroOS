@@ -1,5 +1,6 @@
 #include <nextfs.h>
 #include <driver/disk_driver.h>
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <string.h>
 #include <assert.h>
@@ -20,7 +21,7 @@ file_t* nextfs_open(vfs_mount_t* mount, char* path, int flags) {
     for (int i = 1; i < data->header.file_header_index; i++) {
 		if(strcmp(data->file_header[i].name, file) == 0) {
 
-            file_t* file = (file_t*) vmm_alloc(1);
+            file_t* file = (file_t*) kmalloc(sizeof(file_t));
             memset(file, 0, sizeof(file_t));
 
             file->mount = mount;
@@ -38,7 +39,7 @@ file_t* nextfs_open(vfs_mount_t* mount, char* path, int flags) {
 
 void nextfs_close(vfs_mount_t* mount, file_t* f) {
     vmm_free(f->driver_specific_data, TO_PAGES(f->size));
-	vmm_free(f, 1);
+	kfree(f);
 }
 
 void nextfs_read(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_t offset) {
@@ -65,10 +66,8 @@ dir_t nextfs_dir_at(vfs_mount_t* mount, int idx, char* path) {
 }
 
 vfs_mount_t* nextfs_mount(int disk_id) {
-    vfs_mount_t* mount = (vfs_mount_t*) vmm_alloc(1);
-	memset(mount, 0, 0x1000);
-
-    assert((sizeof(vfs_mount_t) + sizeof(nextfs_mount_data_t)) <= 0x1000);
+    vfs_mount_t* mount = (vfs_mount_t*) kmalloc(sizeof(vfs_mount_t) + sizeof(nextfs_mount_data_t));
+	memset(mount, 0, sizeof(vfs_mount_t) + sizeof(nextfs_mount_data_t));
 
 	nextfs_mount_data_t* mount_data = (nextfs_mount_data_t*) &mount[1];
 	mount->driver_specific_data = mount_data;

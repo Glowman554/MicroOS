@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stddef.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <config.h>
 
 syscall_handler_t* syscall_table = { 0 };
@@ -15,9 +15,8 @@ void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
 	}
 
 	if (syscall_id >= num_syscall_handlers) {
-		int old_num_syscall_handlers = num_syscall_handlers;
 		num_syscall_handlers = syscall_id + 1;
-		syscall_table = vmm_resize(sizeof(syscall_handler_t), old_num_syscall_handlers, num_syscall_handlers, syscall_table);
+		syscall_table = krealloc(syscall_table, sizeof(syscall_handler_t) * num_syscall_handlers);
 	}
 
 	syscall_table[syscall_id] = handler;

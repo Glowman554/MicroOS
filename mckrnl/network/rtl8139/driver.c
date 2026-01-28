@@ -1,5 +1,6 @@
 #include <rtl8139.h>
 #include <string.h>
+#include <memory/heap.h>
 #include <memory/vmm.h>
 #include <utils/io.h>
 #include <stdio.h>
@@ -8,7 +9,7 @@ uint8_t TSAD_array[4] = { 0x20, 0x24, 0x28, 0x2C };
 uint8_t TSD_array[4] = { 0x10, 0x14, 0x18, 0x1C };
 
 nic_driver_t* get_rtl8139_driver(pci_device_header_t header, uint16_t bus, uint16_t device, uint16_t function) {
-	rtl8139_driver_t* driver = vmm_alloc(PAGES_OF(rtl8139_driver_t));
+	rtl8139_driver_t* driver = kmalloc(sizeof(rtl8139_driver_t));
 	memset(driver, 0, sizeof(rtl8139_driver_t));
 
 	*driver = (rtl8139_driver_t) {

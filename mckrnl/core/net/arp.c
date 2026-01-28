@@ -2,7 +2,7 @@
 #include <net/stack.h>
 #include <net/arp.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <config.h>
 #ifdef NETWORK_STACK
@@ -153,11 +153,11 @@ mac_u arp_resolve(network_stack_t* stack, async_t* async, ip_u ip) {
 }
 
 void arp_init(network_stack_t* stack) {
-	stack->arp = vmm_alloc(PAGES_OF(arp_provider_t));
+	stack->arp = kmalloc(sizeof(arp_provider_t));
 	memset(stack->arp, 0, sizeof(arp_provider_t));
 
 	memset(stack->arp->ip_cache, 0xff, sizeof(stack->arp->ip_cache));
-	memset(stack->arp->mac_cache, 0xff, sizeof(stack->arp->ip_cache));
+	memset(stack->arp->mac_cache, 0xff, sizeof(stack->arp->mac_cache));
 
 	stack->arp->handler.ether_type_be = BSWAP16(0x806);
 	stack->arp->handler.stack = stack;

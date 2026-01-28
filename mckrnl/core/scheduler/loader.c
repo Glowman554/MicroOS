@@ -3,7 +3,7 @@
 #include <scheduler/scheduler.h>
 #include <scheduler/elf.h>
 #include <memory/pmm.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <utils/tinf.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,7 +26,7 @@ int load_executable(int term, char* path, char** argv, char** envp) {
 
 	task_t* current = get_self();
 
-	void* buffer = vmm_alloc(file->size / 4096 + 1);
+	void* buffer = kmalloc(file->size);
 	vfs_read(file, buffer, file->size, 0);
 
     bool is_shebang = false;
@@ -76,7 +76,7 @@ int load_executable(int term, char* path, char** argv, char** envp) {
         pid = init_executable(current->term, buffer, argv, envp);
     }
 	
-    vmm_free(buffer, file->size / 4096 + 1);
+    kfree(buffer);
 	vfs_close(file);
 
 	return pid;
@@ -185,7 +185,7 @@ static unsigned int read_le32(const unsigned char *p) {
 char* mex_decompress(unsigned int decompressed_size, unsigned int compressed_size, void* content) {
 	debugf("decompressing %dkb to %dkb", compressed_size / 1024, decompressed_size / 1024);
 
-    char* dest = (char*) vmm_alloc(TO_PAGES(decompressed_size));
+    char* dest = (char*) kmalloc(decompressed_size);
 
 	unsigned int output_size = decompressed_size;
 	int res = tinf_gzip_uncompress(dest, &output_size, content, compressed_size);
@@ -203,7 +203,7 @@ char* mex_decompress(unsigned int decompressed_size, unsigned int compressed_siz
 				printf("Unknown error\n");
 				break;
 		}
-		vmm_free(dest, TO_PAGES(decompressed_size));
+		kfree(dest);
         abortf(true, "MEX decompression failed");
 	}
 
@@ -226,7 +226,7 @@ int init_mex(int term, void* image, char** argv, char** envp) {
 
 	int pid = init_elf(term, dest, argv, envp);
 
-	vmm_free(dest, TO_PAGES(decompressed_size));
+	kfree(dest);
 	return pid;
 }
 
@@ -256,7 +256,7 @@ int init_mex_v2(int term, void* image, char** argv, char** envp) {
     char* dest = mex_decompress(decompressed_size, header->elfSizeCompressed, content);
 
     int pid = init_elf(term, dest, argv, envp);
-    vmm_free(dest, TO_PAGES(decompressed_size));
+    kfree(dest);
     return pid;
 }
 

@@ -13,4 +13,6 @@ typedef signed char int8_t;
 
 typedef uint32_t uintptr_t;
 
+#define UINT64_C(x) x##ULL
+
 #endif

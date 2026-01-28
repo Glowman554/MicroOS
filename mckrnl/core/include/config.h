@@ -56,9 +56,10 @@
 #define ABI_VERSION 4
 // End Other
 
-// Paging
+// Memory
 #define PAGING_DATA_PAGES 512
-// End Paging
+#define KERNEL_HEAP_SIZE_MB 32
+// End Memory
 
 // Syscalls
 #define SYS_OPEN_ID 1

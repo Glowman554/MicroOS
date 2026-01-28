@@ -1,5 +1,6 @@
 #include <scheduler/scheduler.h>
 #include <stddef.h>
+#include <memory/heap.h>
 
 void resource_register_self(resource_t resource) {
 	task_t* self = get_self();
@@ -11,7 +12,7 @@ void resource_register_self(resource_t resource) {
 		}
 	}
 
-	self->resources = vmm_resize(sizeof(resource_t), self->num_resources, self->num_resources + 1, self->resources);
+	self->resources = krealloc(self->resources, sizeof(resource_t) * (self->num_resources + 1));
 	self->resources[self->num_resources] = resource;
 	self->num_resources++;
 }
@@ -36,7 +37,7 @@ void resource_dealloc_self() {
 	}
 
 	if (self->resources != NULL) {
-		vmm_free(self->resources, TO_PAGES(sizeof(resource_t) * self->num_resources));
+		kfree(self->resources);
 		self->resources = NULL;
 	}
 }
@@ -49,7 +50,7 @@ void resource_dealloc(task_t* self) {
 	}
 
 	if (self->resources != NULL) {
-		vmm_free(self->resources, TO_PAGES(sizeof(resource_t) * self->num_resources));
+		kfree(self->resources);
 		self->resources = NULL;
 	}
 }

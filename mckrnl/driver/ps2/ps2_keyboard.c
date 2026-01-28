@@ -5,15 +5,18 @@
 #include <utils/multiboot.h>
 #include <interrupts/interrupts.h>
 #include <string.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <stdio.h>
 
 
-#define KBD_CHAR 0
-#define KBD_ARRW 1
-#define KBD_SPECIAL_KEY_NEXT 2
-#define KBD_SPECIAL_CODE 3
-#define KBD_SPECIAL_KEYS 1024
+typedef struct ps2_driver_data {
+	bool special_key_next;
+	uint8_t special_code;
+	special_keys_down_t special_keys_down;
+
+	char character;
+	char arrow;
+} ps2_driver_data_t;
 
 bool ps2_keyboard_is_device_present(driver_t* driver) {
 	return true;
@@ -26,56 +29,53 @@ char* ps2_keyboard_get_device_name(driver_t* driver) {
 cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void* driver) {
 	driver_t* ps2_keyboard = (driver_t*) driver;
 
-	bool* special_key_next = (bool*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_KEY_NEXT];
-	uint8_t* special_code = (uint8_t*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_CODE];
-
-	special_keys_down_t* special_keys_down = (special_keys_down_t*) &((uint8_t*) ps2_keyboard->driver_specific_data)[KBD_SPECIAL_KEYS];
+	ps2_driver_data_t* data = (ps2_driver_data_t*) ps2_keyboard->driver_specific_data;
 
 	uint8_t key = inb(DATA_PORT);
 
-	if (*special_key_next) {
-		switch (*special_code) {
+	if (data->special_key_next) {
+		switch (data->special_code) {
 			case 0xE0:
 				switch (key) {
 					case 0x38: //Right alt down
-						special_keys_down->right_alt = true;
+						data->special_keys_down.right_alt = true;
 						break;
 					case 0xB8: //Right alt up
-						special_keys_down->right_alt = false;
+						data->special_keys_down.right_alt = false;
 						break;
 					case 0x1D: //Right ctrl down
-						special_keys_down->right_ctrl = true;
+						data->special_keys_down.right_ctrl = true;
 						break;
 					case 0x9D: //Right ctrl up
-						special_keys_down->right_ctrl = false;
+						data->special_keys_down.right_ctrl = false;
 						break;
 					case 0x48: //Up arrow down
-						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = up;
-						special_keys_down->up_arrow = true;
+						data->arrow = up;
+						data->special_keys_down.up_arrow = true;
 						break;
 					case 0xC8: //Up arrow up
-						special_keys_down->up_arrow = false;
+						data->special_keys_down.up_arrow = false;
 						break;
 					case 0x50: //Down arrow down
-						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = down;
-						special_keys_down->down_arrow = true;
+						data->arrow = down;
+						data->special_keys_down.down_arrow = true;
 						break;
 					case 0xD0: //Down arrow up
-						special_keys_down->down_arrow = false;
+						data->special_keys_down.down_arrow = false;
 						break;
 					case 0x4B: //Left arrow down
-						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = left;
-						special_keys_down->left_arrow = true;
+						data->arrow = left;
+						data->special_keys_down.left_arrow = true;
 						break;
 					case 0xCB: //Left arrow down
-						special_keys_down->left_arrow = false;
+						data->special_keys_down.left_arrow = false;
 						break;
 					case 0x4D: //Right arrow down
-						((char*) ps2_keyboard->driver_specific_data)[KBD_ARRW] = right;
-						special_keys_down->right_arrow = true;
+						data->arrow = right;
+						data->special_keys_down.right_arrow = true;
 						break;
 					case 0xCD: //Right arrow up
-						special_keys_down->right_arrow = false;
+						data->special_keys_down.right_arrow = false;
 						break;
 				}
 				break;
@@ -83,44 +83,44 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 			case 0x3A:
 				switch (key) {
 					case 0xBA: //Caps lock toggle
-						special_keys_down->caps_lock = !special_keys_down->caps_lock;
+						data->special_keys_down.caps_lock = !data->special_keys_down.caps_lock;
 						break;
 				}
 				break;
 		}
 
-		*special_key_next = false;
+		data->special_key_next = false;
 	} else {
 		switch (key) {
 			case 0xE0:
 			case 0x3A:
-				*special_key_next = true;
-				*special_code = key;
+				data->special_key_next = true;
+				data->special_code = key;
 				break;
 			
 			case 0x38: //Left alt down
-				special_keys_down->left_alt = true;
+				data->special_keys_down.left_alt = true;
 				break;
 			case 0xB8: //Left alt up
-				special_keys_down->left_alt = false;
+				data->special_keys_down.left_alt = false;
 				break;
 			case 0x1D: //Left ctrl down
-				special_keys_down->left_ctrl = true;
+				data->special_keys_down.left_ctrl = true;
 				break;
 			case 0x9D: //Left ctrl up
-				special_keys_down->left_ctrl = false;
+				data->special_keys_down.left_ctrl = false;
 				break;
 			case 0x2A: //Left shift down
-				special_keys_down->left_shift = true;
+				data->special_keys_down.left_shift = true;
 				break;
 			case 0xAA: //Left shift up
-				special_keys_down->left_shift = false;
+				data->special_keys_down.left_shift = false;
 				break;
 			case 0x36: //Right shift down
-				special_keys_down->right_shift = true;
+				data->special_keys_down.right_shift = true;
 				break; 
 			case 0xB6: //Right shift up
-				special_keys_down->right_shift = false;
+				data->special_keys_down.right_shift = false;
 				break;
 
 			
@@ -142,12 +142,12 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 
 
 
-					char c = keymap(key, special_keys_down);
-					if ((special_keys_down->left_ctrl || special_keys_down->right_ctrl) && c == 'd') {
+					char c = keymap(key, &data->special_keys_down);
+					if ((data->special_keys_down.left_ctrl || data->special_keys_down.right_ctrl) && c == 'd') {
 						c = -1; // EOF_CHAR
 					}
 
-					((char*) ps2_keyboard->driver_specific_data)[KBD_CHAR] = c;
+					data->character = c;
 				}
 				break;
 		}
@@ -175,22 +175,26 @@ void ps2_keyboard_init(driver_t* driver) {
 
 
 char ps2_keyboard_async_getc(char_input_driver_t* driver) {
-	char c = ((char*) driver->driver.driver_specific_data)[KBD_CHAR];
-	((char*) driver->driver.driver_specific_data)[KBD_CHAR] = 0;
+	ps2_driver_data_t* data = (ps2_driver_data_t*) driver->driver.driver_specific_data;
+
+	char c = data->character;
+	data->character = 0;
 
 	return c;
 }
 
 char ps2_keyboard_async_getarrw(char_input_driver_t* driver) {
-	char c = ((char*) driver->driver.driver_specific_data)[KBD_ARRW];
-	((char*) driver->driver.driver_specific_data)[KBD_ARRW] = 0;
+	ps2_driver_data_t* data = (ps2_driver_data_t*) driver->driver.driver_specific_data;
+
+	char c = data->arrow;
+	data->arrow = 0;
 
 	return c;
 }
 
 char_input_driver_t* get_ps2_driver() {
-	char_input_driver_t* driver = (char_input_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 4096);
+	char_input_driver_t* driver = (char_input_driver_t*) kmalloc(sizeof(char_input_driver_t) + sizeof(ps2_driver_data_t));
+	memset(driver, 0, sizeof(char_input_driver_t) + sizeof(ps2_driver_data_t));
 
 	driver->driver.is_device_present = ps2_keyboard_is_device_present;
 	driver->driver.get_device_name = ps2_keyboard_get_device_name;
@@ -199,6 +203,6 @@ char_input_driver_t* get_ps2_driver() {
 	driver->async_getc = ps2_keyboard_async_getc;
 	driver->async_getarrw = ps2_keyboard_async_getarrw;
 
-	driver->driver.driver_specific_data = driver + sizeof(char_input_driver_t);
+	driver->driver.driver_specific_data = &driver[1];
 	return driver;
 }

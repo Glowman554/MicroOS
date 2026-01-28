@@ -1,5 +1,10 @@
 set -ex
 
+source tools/filething.sh
+
+UPLOAD_SERVER="https://filething.toxicfox.de"
+UPLOAD_AUTH_TOKEN="$MICROOS_UPLOAD_TOKEN"
+
 function applyPreset {
 	deno run -A config/config.ts --clean --auto --load config/presets/$1.kernel.json config/kernel.json
 	deno run -A config/config.ts --clean --auto --load config/presets/$1.libc.json config/libc.json
@@ -13,13 +18,8 @@ function screenshot {
     killall qemu-system-i386
 }
 
-function uploadFile {
-    local url=$(curl -F "reqtype=fileupload" -F "fileToUpload=@$1" https://catbox.moe/user/api.php)
-    echo $url
-}
-
 function release {
-    deno run -A release.ts screenshot::$(uploadFile microos.jpg) name::$1 cdrom::$(uploadFile cdrom.iso) cdromMinimal::$(uploadFile cdrom.minimal.iso) libs::$(uploadFile libs.zip) message::"$2" kernel::$(uploadFile mckrnl/core/mckrnl.elf) symbols::$(uploadFile mckrnl/core/mckrnl.syms) initrd::$(uploadFile res/initrd.saf)
+    deno run -A release.ts screenshot::$(upload_file microos.jpg) name::$1 cdrom::$(upload_file cdrom.iso) cdromMinimal::$(upload_file cdrom.minimal.iso) libs::$(upload_file libs.zip) message::"$2" kernel::$(upload_file mckrnl/core/mckrnl.elf) symbols::$(upload_file mckrnl/core/mckrnl.syms) initrd::$(upload_file res/initrd.saf)
 }
 
 applyPreset $1

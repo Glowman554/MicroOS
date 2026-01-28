@@ -1,16 +1,15 @@
 #include <net/ipv4.h>
 #include <net/arp.h>
 #include <stdio.h>
-#include <memory/vmm.h>
 #include <string.h>
 
-#include <memory/vmm.h>
+#include <memory/heap.h>
 #include <string.h>
 #include <config.h>
 #ifdef NETWORK_STACK
 
 void ipv4_register(network_stack_t* stack, ipv4_handler_t handler) {
-	stack->ipv4->handlers = vmm_resize(sizeof(ipv4_handler_t), stack->ipv4->num_handlers, stack->ipv4->num_handlers + 1, stack->ipv4->handlers);
+	stack->ipv4->handlers = krealloc(stack->ipv4->handlers, sizeof(ipv4_handler_t) * (stack->ipv4->num_handlers + 1));
 	stack->ipv4->handlers[stack->ipv4->num_handlers] = handler;
 	stack->ipv4->num_handlers++;
 }
@@ -33,7 +32,7 @@ mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 }
 
 void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, mac_u route, uint8_t* payload, uint32_t size) {
-	uint8_t* buffer = vmm_alloc((size + sizeof(ipv4_message_t)) / 0x1000 + 1);
+	uint8_t* buffer = kmalloc(size + sizeof(ipv4_message_t));
 	memset(buffer, 0, size + sizeof(ipv4_message_t));
 	ipv4_message_t* ipv4 = (ipv4_message_t*) buffer;
 
@@ -60,7 +59,7 @@ void ipv4_send(ipv4_handler_t* handler, network_stack_t* stack, ip_u dest_ip, ma
 
 	etherframe_send(&stack->ipv4->handler, stack, route.mac, buffer, size + sizeof(ipv4_message_t));
 
-	vmm_free(buffer, (size + sizeof(ipv4_message_t)) / 0x1000 + 1);
+	kfree(buffer);
 }
 
 void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, uint8_t* payload, uint32_t size) {
@@ -117,7 +116,7 @@ uint16_t ipv4_checksum(uint16_t* data, uint32_t size) {
 }
 
 void ipv4_init(network_stack_t* stack) {
-	stack->ipv4 = vmm_alloc(PAGES_OF(ipv4_provider_t));
+	stack->ipv4 = kmalloc(sizeof(ipv4_provider_t));
 	memset(stack->ipv4, 0, sizeof(ipv4_provider_t));
 
 	stack->ipv4->handler.ether_type_be = BSWAP16(0x0800);

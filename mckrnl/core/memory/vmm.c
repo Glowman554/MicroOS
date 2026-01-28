@@ -99,8 +99,8 @@ void vmm_init(void) {
 
     debugf("Mapping multiboot structure...");
 	struct multiboot_module* modules = global_multiboot_info->mbs_mods_addr;
-    vmm_map_page(kernel_context, (uintptr_t) global_multiboot_info, (uintptr_t) global_multiboot_info, PTE_PRESENT);
-    vmm_map_page(kernel_context, (uintptr_t) modules, (uintptr_t) modules, PTE_PRESENT);
+    vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) global_multiboot_info), ALIGN_PAGE_DOWN((uintptr_t) global_multiboot_info), PTE_PRESENT);
+    vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) modules), ALIGN_PAGE_DOWN((uintptr_t) modules), PTE_PRESENT);
 
 	int i;
 	for (i = 0; i < global_multiboot_info->mbs_mods_count; i++) {

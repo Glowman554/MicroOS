@@ -4,7 +4,7 @@
 #include <config.h>
 
 #include <stddef.h>
-#include <memory/vmm.h>
+#include <memory/heap.h>
 
 pci_driver_t* pci_drivers = NULL;
 int num_pci_drivers = 0;
@@ -25,7 +25,7 @@ void apend_pci_device(pci_device_header_t header,  uint16_t bus, uint16_t device
 		.driver_loaded = driver
 	};
 
-	pci_devices = vmm_resize(sizeof(pci_device_list_entry_t), num_pci_devices, num_pci_devices + 1, pci_devices);
+	pci_devices = krealloc(pci_devices, sizeof(pci_device_list_entry_t) * (num_pci_devices + 1));
 	pci_devices[num_pci_devices++] = entry;
 }
 
@@ -74,7 +74,7 @@ void register_pci_driver_cs(uint8_t _class, uint8_t subclass, uint8_t prog_IF, v
 	driver.prog_IF = prog_IF;
 	driver.use_class_subclass_prog_IF = true;
 	driver.load_driver = load_driver;
-	pci_drivers = vmm_resize(sizeof(pci_driver_t), num_pci_drivers, num_pci_drivers + 1, pci_drivers);
+	pci_drivers = krealloc(pci_drivers, sizeof(pci_driver_t) * (num_pci_drivers + 1));
 	pci_drivers[num_pci_drivers++] = driver;
 
 	debugf("Registered PCI driver with class %d, subclass %d, prog_IF %d", _class, subclass, prog_IF);
@@ -86,7 +86,7 @@ void register_pci_driver_vd(uint16_t vendor_id, uint16_t device_id, void (*load_
 	driver.device_id = device_id;
 	driver.use_vendor_device_id = true;
 	driver.load_driver = load_driver;
-	pci_drivers = vmm_resize(sizeof(pci_driver_t), num_pci_drivers, num_pci_drivers + 1, pci_drivers);
+	pci_drivers = krealloc(pci_drivers, sizeof(pci_driver_t) * (num_pci_drivers + 1));
 	pci_drivers[num_pci_drivers++] = driver;
 
 	debugf("Registered PCI driver with vendor_id %x, device_id %x", vendor_id, device_id);
