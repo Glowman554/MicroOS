@@ -1,9 +1,12 @@
 #include <argv_tools.h>
+#include <commands.h>
+
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int get_command_type(char* command, int* token_pos, bool* double_pipe_symbol) {
 	*double_pipe_symbol = false;
@@ -66,22 +69,23 @@ char* read_env(char* in) {
 
 			i++;
 
-			while (((in[i] >= 'a' && in[i] <= 'z') || (in[i] >= 'A' && in[i] <= 'Z') || (in[i] >= '0' && in[i] <= '9') || (in[i] == '_' || in[i] == '?')) && in[i] != 0) {
-				env_var[env_var_idx] = in[i];
-				env_var_idx++;
-				i++;
+            while (((in[i] >= 'a' && in[i] <= 'z') || (in[i] >= 'A' && in[i] <= 'Z') || (in[i] >= '0' && in[i] <= '9') || (in[i] == '_' || in[i] == '?')) && in[i] != 0) {
+			    env_var[env_var_idx] = in[i];
+			    env_var_idx++;
+			    i++;
 			}
 
-			// printf("env_var: %s\n", env_var);
+		    // printf("env_var: %s\n", env_var);
 			char* env_var_value = getenv(env_var);
-			// printf("env_var_value: %s\n", env_var_value);
+	    	// printf("env_var_value: %s\n", env_var_value);
 
 			if (env_var_value != NULL) {
-				strcat(tmp, env_var_value);
-				tmp_idx += strlen(env_var_value);
-			}
+			    strcat(tmp, env_var_value);
+		    	tmp_idx += strlen(env_var_value);
+		    }
 
-			i--;
+	    	i--;
+            
 		} else {
 			tmp[tmp_idx] = in[i];
 			tmp_idx++;

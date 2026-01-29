@@ -180,7 +180,7 @@ int main(int argc, char* argv[], char* envp[]) {
 				append_to_history(buffer);
 
 				bool should_break;
-				command_received(buffer, &should_break, NULL); //This should block while command is running.
+				command_received(buffer, &should_break, NULL, NULL); //This should block while command is running.
 				if (should_break) {
 					break;
 				}

@@ -15,9 +15,8 @@
 #include <buildin/path.h>
 
 #define GET_CWD(cwd) char cwd[64] = { 0 }; set_env(SYS_GET_PWD_ID, cwd)
-#define PIPE_BUFFER_SIZE 65536
 
-static pipe_t* make_pipe(char* buffer, int size, int pos) {
+pipe_t* make_pipe(char* buffer, int size, int pos) {
 	pipe_t* p = malloc(sizeof(pipe_t));
 	p->buffer = buffer;
 	p->size = size;
@@ -25,7 +24,7 @@ static pipe_t* make_pipe(char* buffer, int size, int pos) {
 	return p;
 }
 
-bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe) {
+bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe, pipe_t* stdout_final_pipe) {
 	*should_break = false;
 
 	int token_pos = 0;
@@ -37,7 +36,7 @@ bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe) {
 	pipe_t* command_stdin = stdin_pipe;
 
 	if (cmd_type == NORMAL) { //Normal command, just run it and send the stdin
-		int found_command = run_command(command, terminal_envp, should_break, command_stdin, NULL);
+		int found_command = run_command(command, terminal_envp, should_break, command_stdin, &stdout_final_pipe);
 		if (!found_command) {
 			printf("Error: Command not found: '%s'\n", command);
 		}
@@ -101,7 +100,7 @@ bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe) {
 				stdout_pipe->size = stdout_pipe->pos;
 				stdout_pipe->pos = 0;
 			}
-			found_command = command_received(next_command, should_break, stdout_pipe);
+			found_command = command_received(next_command, should_break, stdout_pipe, stdout_final_pipe);
 		}
 
 		if (stdout_pipe != NULL) { //Make sure to free the stdout if it was allocated
@@ -147,11 +146,71 @@ static int pipe_printf(pipe_t* out, const char *fmt, ...) {
 	return printed;
 }
 
-bool command_received(char* command, bool* should_break, pipe_t* stdin_pipe);
 void system_command_handler(char* in) {
 	bool should_break = false;
-	command_received(in, &should_break, NULL);
+	command_received(in, &should_break, NULL, NULL);
 }
+
+void append_char(char** result, int* result_capacity, int* result_len, char c) {
+    if (*result_len + 1 >= *result_capacity) {
+        *result_capacity *= 2;
+        *result = realloc(*result, *result_capacity);
+    }
+    (*result)[(*result_len)++] = c;
+    (*result)[*result_len] = '\0';
+}
+
+char* execute_command_substitutions(char* command) {
+    char* result = malloc(512);
+    int result_capacity = 512;
+    int result_len = 0;
+
+    while (*command) {
+        char* substitution = malloc(65);
+        int substitution_capacity = 64;
+        int substitution_len = 0;
+
+        if (command[0] == '$' && command[1] == '(') {
+            command += 2; // Skip past '$('
+
+            char prev = '(';
+            while (*command != ')' || prev == '\\') {
+                prev = *command++;
+                if (prev == '\\') {
+                    continue;
+                }
+
+                append_char(&substitution, &substitution_capacity, &substitution_len, prev);
+            }
+
+
+            bool should_break;
+            pipe_t* stdout_final_pipe = make_pipe(malloc(PIPE_BUFFER_SIZE), PIPE_BUFFER_SIZE, 0);
+            command_received(substitution, &should_break, NULL, stdout_final_pipe);
+
+            for (int j = 0; j < stdout_final_pipe->pos; j++) {
+                append_char(&result, &result_capacity, &result_len, stdout_final_pipe->buffer[j]);
+            }
+             
+            free(stdout_final_pipe->buffer);
+            free(stdout_final_pipe);
+
+            free(substitution);
+
+            command++; // Skip past ')'
+            
+            if (result_len > 0 && result[result_len - 1] == '\n') {
+                result[result_len - 1] = '\0';
+                result_len--;
+            }            
+        } else {
+            append_char(&result, &result_capacity, &result_len, *command++);
+        }
+    }
+
+    return result;
+}
+			 
 
 bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t* stdin_pipe, pipe_t** stdout_pipe) {
 	pipe_t* outgoing_stdout = stdout_pipe ? *stdout_pipe : NULL;
@@ -170,8 +229,10 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t
 	} else if (strncmp(command, (char*)"pwd", 3) == 0) {
 		pwd(outgoing_stdout);
 	} else if (strncmp(command, (char*)"export ", 7) == 0) {
-		char* argv_str = read_env(command);
+        char* new_command = execute_command_substitutions(command);
+        char* argv_str = read_env(new_command);
 		export(argv_str, outgoing_stdout);
+        free(new_command);
 		free(argv_str);
 	} else if (strncmp(command, (char*)"fault ", 6) == 0) {
 		char* argv_str = read_env(command);
@@ -182,15 +243,18 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t
 	} else if (strcmp(command, (char*)"exit") == 0) {
 		*should_break = true;
 	} else {
-		char** argv = argv_split(command);
+        char* new_command = execute_command_substitutions(command);
+		char** argv = argv_split(new_command);
 		argv = argv_env_process(argv);
 
 		int pid = spawn_process(argv, terminal_envp, outgoing_stdout, incoming_stdin);
 		if (pid == -1) {
+            free(new_command);
 			free_argv(argv);
 			return false;
 		}
 
+        free(new_command);
 		free_argv(argv);
 	}
 
@@ -401,7 +465,7 @@ ipc_tunnel_ok:
 		char out[0x1000] = { 0 };
 		if (ipc_message_ready(IPC_CONNECTION_TERMINAL, (void*) out)) {
 			bool should_break = false;
-			command_received(out, &should_break, NULL);
+			command_received(out, &should_break, NULL, NULL);
 			ipc_ok(IPC_CONNECTION_TERMINAL);
 		}
 		set_wait_and_yield();
