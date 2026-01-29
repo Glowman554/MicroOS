@@ -30,7 +30,8 @@ mkdir -p pkgs
 
 (
 	cd pkgs
-	echo export ACCEPT_ALL=1 > all.msh
+	echo "#!initrd:/bin/terminal.mex" > all.msh
+	echo export ACCEPT_ALL=1 >> all.msh
 	ls *.elf >> all.msh
 	ls *.mex >> all.msh
 )
