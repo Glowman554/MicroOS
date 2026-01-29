@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 		parser_print(node, 0);
 	}
 
-	printf("result: %d\n", eval(node));
+	printf("%d\n", eval(node));
 
 	parser_delete(node);
 	lexer_delete(&token);
