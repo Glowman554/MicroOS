@@ -370,8 +370,12 @@ void fault(char* command, pipe_t* out) {
 		printf("%d\n", 1 / 0);
 	} else if (strcmp("#gp", &command[6]) == 0) {
 		asm volatile ("hlt");
+    } else if (strcmp("#heap", &command[6]) == 0) {
+        char* data = malloc(4);
+        memset(data, 0, 32);
+		free(data);
 	} else if (strcmp("help", &command[6]) == 0) {
-		printf("fault #pf, #de, #gp");
+		printf("fault #pf, #de, #gp, #heap");
 	} else {
 		pipe_printf(out, "Unknown fault: %s", &command[6]);
 	}

@@ -159,8 +159,9 @@ bool listen_input(edit_state_t* state) {
 				}
 
 				state->is_edited = true;
-				state->input_buffer = (char*) realloc((void*) state->input_buffer, ++state->current_size);
-				memmove((void*) &state->input_buffer[state->buffer_idx+1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
+				state->current_size++;
+				state->input_buffer = (char*) realloc((void*) state->input_buffer, state->current_size);
+				memmove((void*) &state->input_buffer[state->buffer_idx + 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx - 1) * sizeof(char));
 				state->input_buffer[state->buffer_idx] = input;
 				state->buffer_idx++;
 

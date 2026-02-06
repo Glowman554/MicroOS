@@ -11,6 +11,14 @@
                         {
                             "name": "ALLOC_DEBUG",
                             "value": false
+                        },
+                        {
+                            "name": "ALLOC_STORE_LOCATION",
+                            "value": false
+                        },
+                        {
+                            "name": "ALLOC_CANARY",
+                            "value": true
                         }
                     ]
                 }
