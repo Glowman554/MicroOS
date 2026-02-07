@@ -82,7 +82,7 @@ void run_script(char* path, char** argv, int argc) {
 		memcpy(command, processed_line, strlen(processed_line) + 1);
 
 		bool should_break;
-		bool command_found = command_received(command, &should_break, NULL); //This should block while command is running.
+		bool command_found = command_received(command, &should_break, NULL, NULL); //This should block while command is running.
 		if (!command_found) {
 			printf("Error: Command not found: '%s', line %d\n", command, line_number);
 			exit(-1);

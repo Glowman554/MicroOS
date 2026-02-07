@@ -5,6 +5,11 @@
 #include <sys/mmap.h>
 #include <stdio.h>
 
+#ifdef ALLOC_CANARY
+#define ALLOC_CANARY_VALUE 0xDEADBEEF
+typedef unsigned int heap_canary_t;
+#endif
+
 void* heap_start;
 void* heap_end;
 heap_segment_header_t* last_hdr;
@@ -89,6 +94,49 @@ void initialize_heap(void* heap_address, size_t page_count) {
 	last_hdr = start_seg;
 }
 
+void print_allocations(const char* msg) {
+	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
+
+	printf("--- Heap allocations: %s ---\n", msg);
+	while(true) {
+		printf("0x%x (%d bytes) free: %s\n", current_seg, current_seg->length, current_seg->free ? "true" : "false");
+
+		if (current_seg->next == NULL) {
+			break;
+		}
+
+		current_seg = current_seg->next;
+	}
+	printf("--- End of heap allocations ---\n");
+}
+
+#ifdef ALLOC_CANARY
+void check_heap_canaries() {
+	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
+
+	while(true) {
+		if (!current_seg->free) {
+			void* ptr = (void*) ((uintptr_t) current_seg + sizeof(heap_segment_header_t));
+			heap_canary_t* canary_ptr = (heap_canary_t*) ((uintptr_t) ptr + current_seg->length - sizeof(heap_canary_t));
+			if (*canary_ptr != ALLOC_CANARY_VALUE) {
+				printf("heap canary corrupted at segment 0x%x. Expected 0x%x but was 0x%x. Canary location: 0x%x\n", current_seg, ALLOC_CANARY_VALUE, *canary_ptr, canary_ptr);
+			#ifdef ALLOC_STORE_LOCATION
+				printf("allocation was made at %s:%s:%d\n", current_seg->file, current_seg->func, current_seg->line);
+			#endif
+                abort();
+			}
+		}
+	
+		if (current_seg->next == NULL) {
+			break;
+		}
+	
+		current_seg = current_seg->next;
+	}
+}
+#endif
+
+
 void expand_heap(size_t length) {
 	if (length % 0x1000) {
 		length -= length % 0x1000;
@@ -112,14 +160,46 @@ void expand_heap(size_t length) {
 	hsh_combine_backward(new_segment);
 }
 
-void* malloc(size_t size) {
-	if (size % 0x10 > 0) { // it is not a multiple of 0x10
-		size -= (size % 0x10);
-		size += 0x10;
-	}
+#ifdef ALLOC_STORE_LOCATION
+void* prepare_segment(heap_segment_header_t* segment, const char* file, const char* func, int line) {
+#else
+void* prepare_segment(heap_segment_header_t* segment) {
+#endif
 
+#ifdef ALLOC_STORE_LOCATION
+	segment->file = file;
+	segment->func = func;
+	segment->line = line;
+#endif
+
+	segment->free = false;
+	void* ptr = (void*) ((uintptr_t) segment + sizeof(heap_segment_header_t));
+
+#ifdef ALLOC_CANARY
+	heap_canary_t* canary_ptr = (heap_canary_t*) ((uintptr_t) ptr + segment->length - sizeof(heap_canary_t));
+	*canary_ptr = ALLOC_CANARY_VALUE;
+#endif
+
+	return ptr;
+}
+
+#ifdef ALLOC_STORE_LOCATION
+void* malloc_debug(size_t size, const char* file, const char* func, int line) {
+#else
+void* malloc(size_t size) {
+#endif
 	if (size == 0) {
 		return NULL;
+	}
+
+#ifdef ALLOC_CANARY
+	check_heap_canaries();
+	size += sizeof(heap_canary_t);
+#endif
+
+	if (size % sizeof(heap_segment_header_t) > 0) {
+		size -= (size % sizeof(heap_segment_header_t));
+		size += sizeof(heap_segment_header_t);
 	}
 
 	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
@@ -127,12 +207,18 @@ void* malloc(size_t size) {
 		if (current_seg->free) {
 			if (current_seg->length > size) {
 				hsh_split(current_seg, size);
-				current_seg->free = false;
-				return (void*) ((uint32_t) current_seg + sizeof(heap_segment_header_t));
+			#ifdef ALLOC_STORE_LOCATION
+                return prepare_segment(current_seg, file, func, line);
+			#else
+				return prepare_segment(current_seg);
+			#endif
 			}
 			if (current_seg->length == size) {
-				current_seg->free = false;
-				return (void*) ((uint32_t) current_seg + sizeof(heap_segment_header_t));
+			#ifdef ALLOC_STORE_LOCATION	
+                return prepare_segment(current_seg, file, func, line);
+			#else
+				return prepare_segment(current_seg);
+			#endif
 			}
 		}
 
@@ -147,18 +233,34 @@ void* malloc(size_t size) {
 	return malloc(size);
 }
 
+#ifdef ALLOC_STORE_LOCATION
+void* realloc_debug(void* ptr, size_t size, const char* file, const char* func, int line) {
+#else
 void* realloc(void* ptr, size_t size) {
+#endif
 	heap_segment_header_t* segment = (heap_segment_header_t*) ptr - 1;
 
 	if (size == 0) {
 		free(ptr);
 		return NULL;
 	} else if (!ptr) {
+	#ifdef ALLOC_STORE_LOCATION
+		return malloc_debug(size, file, func, line);
+	#else
 		return malloc(size);
+	#endif
+#ifdef ALLOC_CANARY
+	} else if (size + sizeof(heap_canary_t) <= segment->length) {
+#else
 	} else if (size <= segment->length) {
+#endif
 		return ptr;
 	} else {
+	#ifdef ALLOC_STORE_LOCATION
+		void* new_ptr = malloc_debug(size, file, func, line);	
+	#else
 		void* new_ptr = malloc(size);
+	#endif
 		if (new_ptr) {
 			memcpy(new_ptr, ptr, segment->length);
 			free(ptr);
@@ -168,29 +270,31 @@ void* realloc(void* ptr, size_t size) {
 }
 
 void free(void* address) {
+	if (address == NULL) {
+		return;
+	}
+
+#ifdef ALLOC_CANARY
+	check_heap_canaries();
+#endif
+
 	heap_segment_header_t* segment = (heap_segment_header_t*) address - 1;
 	segment->free = true;
 	hsh_combine_forward(segment);
 	hsh_combine_backward(segment);
 }
 
-void print_allocations(const char* msg) {
-	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
-	while(true) {
-		if (!current_seg->free) {
-			printf("%s: 0x%x (%d bytes)\n", msg, ((uint32_t) current_seg + sizeof(heap_segment_header_t)), current_seg->length);
-		}
-
-		if (current_seg->next == NULL) {
-			break;
-		}
-
-		current_seg = current_seg->next;
-	}
-}
-
+#ifdef ALLOC_STORE_LOCATION
+void* calloc_debug(size_t count, size_t size, const char* file, const char* func, int line) {
+#else
 void* calloc(size_t count, size_t size) {
+#endif
+
+#ifdef ALLOC_STORE_LOCATION
+	void* addr = malloc_debug(count * size, file, func, line);
+#else
 	void* addr = malloc(count * size);
+#endif
 	memset(addr, 0, count * size);
 	return addr;
 }
