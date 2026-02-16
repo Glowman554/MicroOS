@@ -173,14 +173,14 @@ void full_screen_terminal_vpeek(char_output_driver_t* driver, int term, uint32_t
 
 void full_screen_terminal_vcursor(char_output_driver_t* driver, int term, int x, int y) {
 	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
-	vterm->x = x * 16;
-	vterm->y = y * 8;
+	vterm->x = x * 8;
+	vterm->y = y * 16;
 }
 
 void  full_screen_terminal_vcursor_get(char_output_driver_t* driver, int term, int* x, int* y) {
 	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
-	*x = vterm->x / 16;
-	*y = vterm->y / 8;
+	*x = vterm->x / 8;
+	*y = vterm->y / 16;
 }
 
 

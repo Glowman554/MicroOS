@@ -8,3 +8,4 @@
 .endm
 
 incbin logo_txt, "./resources/logo.txt"
+incbin logo_img "./resources/logo.fpic"

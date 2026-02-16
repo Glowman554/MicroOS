@@ -1,5 +1,6 @@
 #include <logo.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -8,6 +9,11 @@
 #include <sys/raminfo.h>
 #include <sys/file.h>
 #include <buildin/disk_raw.h>
+
+#include <sys/graphics.h>
+#define FB_SET_PX_IMPL
+#include <buildin/framebuffer.h>
+
 
 
 #define is_kb(x) ((x) >= 1024)
@@ -18,7 +24,8 @@
 #define to_mb(x) ((x) / 1024 / 1024)
 #define to_gb(x) ((x) / 1024 / 1024 / 1024)
 
-void format_memory_ussage(uint32_t ussage) {
+
+void format_memory_usage(uint32_t ussage) {
 	if (is_gb(ussage)) {
 		printf("%d,%d GB", to_gb(ussage), to_mb(ussage) % 1024);
 	} else if (is_mb(ussage)) {
@@ -30,7 +37,34 @@ void format_memory_ussage(uint32_t ussage) {
 	}
 }
 
-int count_nic() {
+
+
+
+
+
+
+
+
+void print_time() {
+    long unix_time = time(NULL);
+    char date[128] = { 0 };
+    unix_time_to_string(unix_time, date);
+
+    printf("Time: %s", date);
+}
+
+void print_memory() {
+    uint32_t free;
+    uint32_t used;
+    raminfo(&free, &used);
+    printf("RAM: ");
+    format_memory_usage(used );
+    printf(" / ");
+    format_memory_usage(free + used);
+}
+
+
+void print_nic() {
     int nic_count = 0;
     while (true) {
         char nic_path[256] = { 0 };
@@ -43,26 +77,28 @@ int count_nic() {
         nic_count++;
     }
 
-    return nic_count;
+    printf("Network interfaces: %d", nic_count);
 }
 
-int count_disks(bool physical_only) {
+void print_disk() {
     int num_disks = disk_count(NULL);
 	bool physical[num_disks];
 	disk_count(physical);
 
     int count = 0;
+    int count_physical = 0; 
 
 	for (int i = 0; i < num_disks; i++) {
-		if (!physical_only || physical[i]) {
-            count++;
+		if (physical[i]) {
+            count_physical++;
 		}
+        count++;
 	}
 
-    return count;
+    printf("Disks: %d (%d physical)", count, count_physical);
 }
 
-int count_filesystems() {
+void print_filesystems() {
 	char out[512];
 	memset(out, 0, 512);
 
@@ -71,49 +107,46 @@ int count_filesystems() {
 		memset(out, 0, 512);
 	}
 
-    return idx - 1;
+    printf("Mounted filesystems: %d", idx - 1);
 }
 
+typedef void (*line)();
+line lines[] = { print_time, print_memory, print_nic, print_disk, print_filesystems };
+
 void print_logo() {
-    int linenum = 0;
-    for (int i = 0; i < logo_txt_size; i++) {
-        if (logo_txt[i] == '\n') {
-            puts("  ");
-            switch (linenum++) {
-                case 0:
-                    {
-		                long unix_time = time(NULL);
-                        char date[128] = { 0 };
-                        unix_time_to_string(unix_time, date);
 
-                        printf("Time: %s", date);
-                    }
-                    break;
-                case 1:
-                    {
-                        uint32_t free;
-                        uint32_t used;
-                        raminfo(&free, &used);
-                        printf("RAM: ");
-                        format_memory_ussage(used );
-                        printf(" / ");
-                        format_memory_ussage(free + used);
-                    }
-                    break;
-                case 2:
-                    printf("Network interfaces: %d", count_nic());
-                    break;
-                case 3:
-                    printf("Disks: %d (%d physical)", count_disks(false), count_disks(true));
-                    break;
-                case 4:
-                    printf("Mounted filesystems: %d", count_filesystems());
-                    break;
+    if (vmode() == CUSTOM) {
+        fb_info_t info = fb_load_info();
+
+        for (int i = 0; i < logo_img.width; i++) {
+            for (int j = 0; j < logo_img.height; j++) {
+                uint32_t color = logo_img.pixels[j * logo_img.width + i];
+                fb_set_pixel(&info, i, j, color);
             }
+        }
 
-            putchar('\n');
-        } else {
-            putchar(logo_txt[i]);
+
+        for (int i = 0; i < sizeof(lines) / sizeof(line); i++) {
+            vcursor(logo_img.width / 8, i);
+            lines[i]();
+        }
+
+        vcursor(0, logo_img.height / 16);
+
+    } else {
+        int linenum = 0;
+        for (int i = 0; i < logo_txt_size; i++) {
+            if (logo_txt[i] == '\n') {
+                puts("  ");
+                
+                if (linenum < sizeof(lines) / sizeof(line)) {
+                    lines[linenum++]();
+                }
+
+                putchar('\n');
+            } else {
+                putchar(logo_txt[i]);
+            }
         }
     }
 }
