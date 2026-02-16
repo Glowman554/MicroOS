@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <copy.h>
+#include <logo.h>
 #include <config.h>
 
 // #define ROOT_FS "initrd:/"
@@ -125,6 +126,8 @@ int main(int argc, char* argv[]) {
 	} else {
 		printf("Could not find autostart file: %s\n", autostart);
 	}
+
+	print_logo();
 
 	char* new_argv[] = {
 		terminal,

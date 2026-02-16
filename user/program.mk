@@ -5,6 +5,7 @@ OBJS = $(addsuffix .o,$(basename $(SRCS)))
 
 OPT_LVL = 2
 
+ASFLAGS = -m32 -g
 CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -nostdinc -ffreestanding -no-pie -I include -Wno-builtin-declaration-mismatch -fno-builtin -I../libc/include
 LDFLAGS = -m32 -ffreestanding -no-pie -nostdlib
 
@@ -19,6 +20,10 @@ $(PROGRAM): $(OBJS)
 %.o: %.c
 	@echo CC $^
 	@i686-linux-gnu-gcc $(CFLAGS) -c -o $@ $^
+
+%.o: %.S
+	@echo AS $^
+	@$(CC) $(ASFLAGS) -c -o $@ $^
 
 clean:
 	rm -f $(OBJS) $(PROGRAM) compile_flags.txt
