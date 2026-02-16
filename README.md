@@ -1,5 +1,7 @@
 # MicroOS
 
+![logo](logo.png)
+
 MicroOS is a small operating system. It's mainly made for fun, and supports ring3 execution and memory protection.
 
 You can test it right in your browser [here](https://glowman554.de/microos)
