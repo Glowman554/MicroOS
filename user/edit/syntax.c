@@ -12,7 +12,7 @@ bool look_forward_compare(int maxl, int cur, char* input, char* search) {
 	int slen = strlen(search);
 
 	for (int i = 0; i < slen; i++) {
-		if (cur + i > maxl) {
+		if (cur + i >= maxl) {
 			return false;
 		}
 		if (input[cur + i] != search[i]) {
@@ -33,7 +33,7 @@ int highlight_section(char* input, int len, int cur, char* str, syntax_section_t
 		cur += strlen(&str[section->sect_start_offset]);
 
 		while (!look_forward_compare(len, cur, input, &str[section->sect_end_offset])) {
-			if (cur > len) {
+			if (cur >= len) {
 				break;
 			}
 			if (input[cur] == section->skip_next) {
@@ -42,9 +42,16 @@ int highlight_section(char* input, int len, int cur, char* str, syntax_section_t
 			cur++;
 		}
 		//printf("section %d - %d\n", start, cur);
-		memset(&output[start], section->color, (cur - start) + end_len);
+		int fill_len = (cur - start) + end_len;
+		if (start + fill_len > len) {
+			fill_len = len - start;
+		}
+		memset(&output[start], section->color, fill_len);
 
 		cur += end_len;
+		if (cur > len) {
+			cur = len;
+		}
 	}
 
 	return cur;
@@ -85,6 +92,10 @@ uint8_t* highlight(char* input, int len, syntax_header_t* syntax) {
 		i = highlight_section(input, len, i, str, &syntax->single_line_comment, output);
 		i = highlight_section(input, len, i, str, &syntax->multi_line_comment, output);
 
+		if (i >= len) {
+			break;
+		}
+
 		if (i == 0 || (!isalpha(input[i - 1]) && input[i - 1] != '_')) {
 			//i++;
 
@@ -92,7 +103,7 @@ uint8_t* highlight(char* input, int len, syntax_header_t* syntax) {
 				if (look_forward_compare(len, i, input, &str[words[j].word_offset])) {
 					int word_len = strlen(&str[words[j].word_offset]);
 
-					if (isalpha(input[i + word_len]) || input[i + word_len] == '_') {
+					if (i + word_len < len && (isalpha(input[i + word_len]) || input[i + word_len] == '_')) {
 						continue;
 					}
 
