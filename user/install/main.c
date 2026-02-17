@@ -136,16 +136,6 @@ int main(int argc, char* argv[]) {
 		gets(keyboard_layout);
 	}
 
-    bool banner = false;
-	if (getenv("banner")) {
-		banner = getenv("banner")[0] == 'y';
-	} else {
-		printf("Do you want to print the MicroOS banner on startup? (y/n)> ");
-		char banner_in[16] = { 0 };
-		gets(banner_in);
-		banner = banner_in[0] == 'y';
-	}
-
 	int init_terms = 0;
 	if (getenv("terms")) {
 		init_terms = atoi(getenv("terms"));
@@ -157,23 +147,27 @@ int main(int argc, char* argv[]) {
 	}
 
 	create_directory(partition_path, "/bin");
+	create_directory(partition_path, "/lib");
 	create_directory(partition_path, "/fonts");
 	create_directory(partition_path, "/syntax");
 	create_directory(partition_path, "/docs");
 	create_directory(partition_path, "/opt");
 	create_directory(partition_path, "/EFI");
 	create_directory(partition_path, "/EFI/BOOT");
-	create_directory(partition_path, "modules");
+	create_directory(partition_path, "/modules");
+	create_directory(partition_path, "/scripts");
 
 	write_text_file(partition_path, "/LABEL", "MicroOS");
 
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/bin");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/lib");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/fonts");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/syntax");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/docs");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/opt");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/EFI/BOOT");
 	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/modules");
+	copy_dir_across_fs(getenv("ROOT_FS"), partition_path, "/scripts");
 
 	pack_kernel_modules(partition_path);
 
@@ -197,10 +191,7 @@ int main(int argc, char* argv[]) {
         strcat(startup_script, " terminal\n");
 	}
 
-    if (banner) {
-        strcat(startup_script, "clear\n");
-        strcat(startup_script, "figl fonts/speed.figl MicroOS\n");
-    }
+    strcat(startup_script, "clear\n");
 
 	write_text_file(partition_path, "/startup.msh", startup_script);
 

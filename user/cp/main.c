@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 	}
 
 	char real_dest[512] = { 0 };
-	assert(resolve(dest, real_dest));
+	assert(resolve_check(dest, real_dest, false));
 
 	char real_src[512] = { 0 };
 	assert(resolve(src, real_src));
