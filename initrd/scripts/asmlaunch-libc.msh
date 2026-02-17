@@ -1,0 +1,8 @@
+#!initrd:/bin/terminal.mex
+
+export TMPFILE=tmp:/asmlaunch.o
+
+echo Compiling $1
+fasm $1 $TMPFILE
+
+load initrd:/lib/libc.o $TMPFILE

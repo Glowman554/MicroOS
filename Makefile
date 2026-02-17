@@ -29,7 +29,9 @@ endif
 
 initrd.saf:
 	mkdir -p ./res/initrd/bin
+	mkdir -p ./res/initrd/lib
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
+	cp -r ./user/lib/*.o ./res/initrd/lib/ -v
 ifeq ($(GUI),1)
 	cp -r ./gui/bin/*.mex ./res/initrd/bin/ -v
 	mkdir -p ./res/initrd/opt/gui/bin
