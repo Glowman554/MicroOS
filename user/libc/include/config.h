@@ -3,7 +3,7 @@
 // LibC configuration
 // Debug
 // #define ALLOC_DEBUG
-// #define ALLOC_STORE_LOCATION
+#define ALLOC_STORE_LOCATION
 #define ALLOC_CANARY
 // End Debug
 

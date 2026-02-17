@@ -14,7 +14,7 @@
                         },
                         {
                             "name": "ALLOC_STORE_LOCATION",
-                            "value": false
+                            "value": true
                         },
                         {
                             "name": "ALLOC_CANARY",
