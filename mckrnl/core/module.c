@@ -170,7 +170,8 @@ module_t* load_object_file(void* image) {
                 } else if (symbol->shndx == SHN_UNDEF) {
                     symbol_address = resolve_symbol_from_name(symbol_name);
                     if (symbol_address == 0) {
-                        abortf(false, "Could not resolve symbol %s", symbol_name);
+                        debugf("Could not resolve symbol %s", symbol_name);
+                        goto load_failed;
                     }
                     // debugf("Resolved %s to address 0x%x", symbol_name, symbol_address);
                 } else if (symbol->shndx == SHN_ABS) {
@@ -235,6 +236,10 @@ module_t* load_object_file(void* image) {
     }
 
     return module;
+
+load_failed:
+    vmm_free(load_base, pages);
+    return NULL;
 }
 
 
@@ -263,6 +268,11 @@ void initrd_load_modules(void* saf_image, char* path) {
 
 		debugf("initrd: loading module %s (%d bytes)", child->name, file_node->size);
 		module_t* module = load_object_file(module_data);
+
+        if (module == NULL) {
+            debugf("Failed to load module %s", child->name);
+            continue;
+        }
 
         loaded_modules[loaded_module_count++] = module;
 
