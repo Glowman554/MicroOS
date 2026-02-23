@@ -144,3 +144,12 @@ config_kernel:
 
 config_build:
 	deno run -A config/config.ts --mode makefile config/build.json
+
+apply:
+ifdef PRESET
+	deno run -A config/config.ts --clean --auto --load config/presets/$(PRESET).kernel.json config/kernel.json
+	deno run -A config/config.ts --clean --auto --load config/presets/$(PRESET).libc.json config/libc.json
+	deno run -A config/config.ts --clean --auto --mode makefile --load config/presets/$(PRESET).build.json config/build.json
+else
+	$(error "No preset specified. Usage: make apply PRESET=<preset_name>")
+endif
