@@ -3,7 +3,7 @@ CORE = core
 MODULES = network/am79C973 network/e1000 network/ne2k network/rtl8139 \
           filesystem/fat32 filesystem/nextfs filesystem/ramfs \
           feature/acpi_dump feature/lai \
-		  driver/ac97 driver/ata driver/ps2
+		  driver/ac97 driver/ata driver/ps2 driver/ahci
 
 all: _core $(addsuffix _module,$(MODULES))
 

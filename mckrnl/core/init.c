@@ -286,6 +286,9 @@ void _main(multiboot_info_t* mb_info) {
 
 	load_init();
 
-	// init_killer();
+	debugf("Memory usage after init:");
+	pmm_debug_print();
+
+	init_killer();
 	init_scheduler();
 }

@@ -8,22 +8,32 @@
 #include <string.h>
 #include <stddef.h>
 #include <memory/vmm.h>
+#include <memory/heap.h>
 
 void ahci_port_stop_command(ahci_driver_data_t* data) {
 	data->hba_port->cmd_sts &= ~HBA_PxCMD_ST;
 	data->hba_port->cmd_sts &= ~HBA_PxCMD_FRE;
 
-	while (true) {
-		if (data->hba_port->cmd_sts & HBA_PxCMD_FR || data->hba_port->cmd_sts & HBA_PxCMD_CR) {
-            continue;
+	uint64_t timeout = 1000000;
+	while (timeout-- > 0) {
+		if (!(data->hba_port->cmd_sts & HBA_PxCMD_FR) && !(data->hba_port->cmd_sts & HBA_PxCMD_CR)) {
+            break;
         }
-		break;
+		__asm__ __volatile__("pause");
+	}
+	if (timeout == 0) {
+		debugf("AHCI: Timeout stopping command engine");
 	}
 }
 
 void ahci_port_start_command(ahci_driver_data_t* data) {
-	while (data->hba_port->cmd_sts & HBA_PxCMD_CR) {
+	uint64_t timeout = 1000000;
+	while ((data->hba_port->cmd_sts & HBA_PxCMD_CR) && timeout-- > 0) {
 		__asm__ __volatile__("pause");
+	}
+	if (timeout == 0) {
+		debugf("AHCI: Timeout waiting for CR bit to clear");
+		return;
 	}
 
 	data->hba_port->cmd_sts |= HBA_PxCMD_FRE;
@@ -59,14 +69,15 @@ void ahci_port_init(driver_t* driver) {
 
 	HBA_command_header_t* cmd_header = (HBA_command_header_t*) data->hba_port->command_list_base;
 
+	void* cmd_tables = vmm_alloc(2);
+	memset(cmd_tables, 0, 0x2000);
+
 	for (int i = 0; i < 32; i++){
 		cmd_header[i].prdt_length = 8;
 
-		void* cmd_table_address = vmm_alloc(1);
-		uint64_t address = (uint64_t)cmd_table_address + (i << 8);
+		uint64_t address = (uint64_t)cmd_tables + (i << 8);
 		cmd_header[i].command_table_base_address = (uint32_t) address;
 		cmd_header[i].command_table_base_address_upper = (uint32_t) (address >> 32);
-		memset(cmd_table_address, 0, 256);
 	}
 
     ahci_port_start_command(data);
@@ -139,13 +150,19 @@ void ahci_port_read(disk_driver_t* driver, uint64_t sector, uint32_t count, void
 
 	data->hba_port->command_issue = 1;
 
-	while (true) {
+	uint64_t timeout = 10000000;
+	while (timeout-- > 0) {
 		if (data->hba_port->command_issue == 0) {
             break;
         }
 		if (data->hba_port->interrupt_status & HBA_PxIS_TFES) {
+			debugf("AHCI: Task file error during read");
 			return;
 		}
+		__asm__ __volatile__("pause");
+	}
+	if (timeout == 0) {
+		debugf("AHCI: Timeout during read operation");
 	}
 }
 
@@ -206,20 +223,26 @@ void ahci_port_write(disk_driver_t* driver, uint64_t sector, uint32_t count, voi
 
 	data->hba_port->command_issue = 1;
 
-	while (true) {
+	uint64_t timeout = 10000000;
+	while (timeout-- > 0) {
 		if (data->hba_port->command_issue == 0) {
             break;
         }
 		if (data->hba_port->interrupt_status & HBA_PxIS_TFES) {
+			debugf("AHCI: Task file error during write");
 			return;
 		}
+		__asm__ __volatile__("pause");
+	}
+	if (timeout == 0) {
+		debugf("AHCI: Timeout during write operation");
 	}
 }
 
 
 disk_driver_t* get_ahci_driver(HBA_port_t* hba_port, port_type_t port_type, uint8_t port_number) {
-    disk_driver_t* driver = (disk_driver_t*) vmm_alloc(1);
-	memset(driver, 0, 0x1000);
+    disk_driver_t* driver = (disk_driver_t*) kmalloc(sizeof(disk_driver_t) + sizeof(ahci_driver_data_t));
+	memset(driver, 0, sizeof(disk_driver_t) + sizeof(ahci_driver_data_t));
 
 	driver->driver.is_device_present = ahci_port_is_device_present;
 	driver->driver.get_device_name = ahci_port_get_device_name;
@@ -234,8 +257,7 @@ disk_driver_t* get_ahci_driver(HBA_port_t* hba_port, port_type_t port_type, uint
 	driver->driver.driver_specific_data = &driver[1];
 	ahci_driver_data_t* data = (ahci_driver_data_t*) driver->driver.driver_specific_data;
 	
-    // TODO
-	strcpy(data->name, "ahci");
+	sprintf(data->name, "ahci%d", port_number);
     data->hba_port = hba_port;
     data->port_type = port_type;
     data->port_number = port_number;
