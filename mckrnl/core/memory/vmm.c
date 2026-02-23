@@ -139,26 +139,12 @@ vmm_context_t* vmm_create_context(void) {
 
 extern task_t tasks[MAX_TASKS];
 
-
-int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags) {
-	// debugf("Mapping page %x to %x (flags: %x)", virt, phys, flags);
+void vmm_map_page_unsafe(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags) {
 	uint32_t page_index = virt / 0x1000;
 	uint32_t pd_index = page_index / 1024;
 	uint32_t pt_index = page_index % 1024;
 
 	uint32_t* page_table;
-
-	if ((virt & 0xFFF) || (phys & 0xFFF)) {
-		return -1;
-	}
-
-	if (context != kernel_context) {
-		if (kernel_context->pagedir[pd_index] & PTE_PRESENT) {
-            // if (((uint32_t*) kernel_context->pagedir[pd_index])[pt_index] & PTE_PRESENT) {
-                abortf(false, "%x is overlapping with the kernel!", virt);
-            // }
-		}
-    }
 
 	if (context->pagedir[pd_index] & PTE_PRESENT) {
 		page_table = (uint32_t*) (context->pagedir[pd_index] & ~0xFFF);
@@ -180,10 +166,38 @@ int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_
 
 	page_table[pt_index] = phys | flags;
 	asm volatile("invlpg %0" : : "m" (*(char*)virt));
+}
+
+int vmm_map_page(vmm_context_t* context, uintptr_t virt, uintptr_t phys, uint32_t flags) {
+	// debugf("Mapping page %x to %x (flags: %x)", virt, phys, flags);
+	uint32_t page_index = virt / 0x1000;
+	uint32_t pd_index = page_index / 1024;
+
+	if ((virt & 0xFFF) || (phys & 0xFFF)) {
+		return -1;
+	}
+
+	if (context != kernel_context) {
+		if (kernel_context->pagedir[pd_index] & PTE_PRESENT) {
+            // if (((uint32_t*) kernel_context->pagedir[pd_index])[pt_index] & PTE_PRESENT) {
+                abortf(false, "%x is overlapping with the kernel!", virt);
+            // }
+		}
+    } else {
+		// We are in the mapping somethin into the kernel context
+		// If the current context is different map it in there too since we most likely want to use it in there too (for example when creating new tasks)
+		vmm_context_t current = vmm_get_current_context();
+		if (current.pagedir != context->pagedir) {
+			vmm_map_page_unsafe(&current, virt, phys, flags);
+		}
+	}
+
+	
+	vmm_map_page_unsafe(context, virt, phys, flags);
 
 	return 0;
-
 }
+
 
 void vmm_clone_kernel_context(vmm_context_t* context) {
 	// debugf("Mapping kernel into context %p", context);

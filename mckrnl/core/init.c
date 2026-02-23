@@ -169,6 +169,9 @@ void _main(multiboot_info_t* mb_info) {
 	vmm_init();
 	initialize_heap(MB(KERNEL_HEAP_SIZE_MB) / 0x1000);
 
+	debugf("Memory usage after heap init:");
+	pmm_debug_print();
+
 	set_gdt(new_gdt());
 
 	char symbols_module[64] = { 0 };
@@ -283,6 +286,6 @@ void _main(multiboot_info_t* mb_info) {
 
 	load_init();
 
-	init_killer();
+	// init_killer();
 	init_scheduler();
 }

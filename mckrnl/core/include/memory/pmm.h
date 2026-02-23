@@ -17,5 +17,7 @@ void pmm_mark_used(void* page);
 
 int pmm_is_used(void* page);
 
+void pmm_debug_print();
+
 extern uint32_t free_memory;
 extern uint32_t used_memory;
