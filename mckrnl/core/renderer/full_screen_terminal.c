@@ -97,8 +97,6 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, ch
 	if(vterm->x + 16 > global_multiboot_info->fb_width || c == '\n') {
 		vterm->x = 0;
 		vterm->y += 16;
-	} else {
-		vterm->x += 8;
 	}
 
 	if (c == '\r') {
@@ -128,6 +126,7 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, ch
 
 	if (c >= 20 && c <= 126) {
 		draw_char(buffer, vterm->x, vterm->y, c, vterm->color, vterm->bgcolor);
+		vterm->x += 8;
 	}
 }
 
