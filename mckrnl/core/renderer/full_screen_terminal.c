@@ -86,7 +86,7 @@ void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, ch
 	}
 
 	if(c == '\b') {
-		draw_char(buffer, vterm->x, vterm->y, ' ', vterm->color, vterm->bgcolor);
+		draw_char(buffer, vterm->x - 8, vterm->y, ' ', vterm->color, vterm->bgcolor);
 
 		if (vterm->x - 16 >= 0) {			
 			vterm->x -= 8;
