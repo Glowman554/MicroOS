@@ -2,6 +2,7 @@ LIBS = libwindow libwindow_flvm
 PROGRAMS = explorer imgview taskmgr sysctl netinfo paint
 
 all:
+	mkdir -p lib
 	$(foreach lib,$(LIBS),make -C $(lib) library;)
 	make build_programs -j $(nproc)
 
