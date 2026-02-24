@@ -207,3 +207,14 @@ void vfs_scan_fs() {
 		}
 	}
 }
+
+file_t* vfs_open_first_found(char* name, int flags) {
+	for (int i = 0; i < num_vfs_mounts; i++) {
+		debugf("Trying to open '%s' on mount %s", name, vfs_mounts[i]->name(vfs_mounts[i]));
+		file_t* f = vfs_mounts[i]->open(vfs_mounts[i], name, flags);
+		if (f) {
+			return f;
+		}
+	}
+	return NULL;
+}

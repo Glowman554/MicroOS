@@ -1,4 +1,4 @@
-;!initrd:/scripts/asmlaunch.msh
+;!/scripts/asmlaunch.msh
 format ELF executable at 0xB0000000
 entry _start
 

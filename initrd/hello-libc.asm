@@ -1,4 +1,4 @@
-;!initrd:/scripts/asmlaunch-libc.msh
+;!/scripts/asmlaunch-libc.msh
 
 format ELF
 public main

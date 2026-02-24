@@ -17,13 +17,8 @@ const char* shebangs[] = {
     ";!"
 };
 
-int load_executable(int term, char* path, char** argv, char** envp) {
-    file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
-	if (!file) {
-		debugf("Failed to open %s", path);
-		return -1;
-	}
 
+int load_executable_file(int term, file_t* file, char* path, char** argv, char** envp) {
 	task_t* current = get_self();
 
 	void* buffer = kmalloc(file->size);
@@ -45,9 +40,13 @@ int load_executable(int term, char* path, char** argv, char** envp) {
     int pid = -1;
     if (is_shebang) {
         char executor[256] = { 0 };
+		bool absolute = false;
         int j = 0;
         for (j = 0; j < sizeof(executor); j++) {
             char c = ((char*) buffer)[shebang_offset + j];
+			if (c == ':') {
+				absolute = true;
+			}
             if (c == '\n' || c == '\0') {
                 break;
             }
@@ -71,12 +70,39 @@ int load_executable(int term, char* path, char** argv, char** envp) {
         }
         new_argv[argc + 2] = NULL;
 
-        pid = load_executable(current->term, executor, new_argv, envp);
+		if (absolute) {
+        	pid = load_executable(current->term, executor, new_argv, envp);
+		} else {
+			file_t* ex = vfs_open_first_found(executor, FILE_OPEN_MODE_READ);
+			if (ex) {
+				char path[256] = { 0 };
+				sprintf(path, "%s:%s", ex->mount->name(ex->mount), executor);
+				pid = load_executable_file(current->term, ex, path, new_argv, envp);
+				vfs_close(ex);
+			} else {
+				debugf("Failed to find executor '%s' for shebang", executor);
+				return -1;
+			}
+		}
     } else {
         pid = init_executable(current->term, buffer, argv, envp);
     }
 	
     kfree(buffer);
+
+	return pid;
+}
+
+
+int load_executable(int term, char* path, char** argv, char** envp) {
+	file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
+	if (!file) {
+		debugf("Failed to open %s", path);
+		return -1;
+	}
+
+	int pid = load_executable_file(term, file, path, argv, envp);
+
 	vfs_close(file);
 
 	return pid;

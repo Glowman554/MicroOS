@@ -1,4 +1,4 @@
-#!initrd:/bin/terminal.mex
+#!/bin/terminal.mex
 
 export TMPFILE=tmp:/asmlaunch.o
 

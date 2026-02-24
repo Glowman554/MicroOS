@@ -1,4 +1,4 @@
-#!initrd:/bin/terminal.mex
+#!/bin/terminal.mex
 ls -f
 echo Please input the partition you want to install on:
 read partition

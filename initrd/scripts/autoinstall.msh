@@ -1,4 +1,4 @@
-#!initrd:/bin/terminal.mex
+#!/bin/terminal.mex
 export partition=fat32_0:
 export keyboard=de
 export terms=3
