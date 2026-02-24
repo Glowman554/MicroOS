@@ -110,8 +110,12 @@ void print_filesystems() {
     printf("Mounted filesystems: %d", idx - 1);
 }
 
+void print_help_info() {
+    printf("Use the 'help' to get help.");
+}
+
 typedef void (*line)();
-line lines[] = { print_time, print_memory, print_nic, print_disk, print_filesystems };
+line lines[] = { print_time, print_memory, print_nic, print_disk, print_filesystems, NULL, print_help_info };
 
 void print_logo() {
 
@@ -128,7 +132,9 @@ void print_logo() {
 
         for (int i = 0; i < sizeof(lines) / sizeof(line); i++) {
             vcursor(logo_img.width / 8, i);
-            lines[i]();
+            if (lines[i]) {
+                lines[i]();
+            }
         }
 
         vcursor(0, logo_img.height / 16);
@@ -139,8 +145,11 @@ void print_logo() {
             if (logo_txt[i] == '\n') {
                 puts("  ");
                 
-                if (linenum < sizeof(lines) / sizeof(line)) {
-                    lines[linenum++]();
+                if ((linenum < sizeof(lines) / sizeof(line))) {
+                    if (lines[linenum]) {
+                        lines[linenum]();
+                    }
+                    linenum++;
                 }
 
                 putchar('\n');

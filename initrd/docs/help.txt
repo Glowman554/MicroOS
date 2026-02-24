@@ -1,0 +1,101 @@
+MicroOS
+=======
+
+Welcome! This short guide helps first-time users get started with the MicroOS command line.
+
+To exit this help press ESC to switch into EDIT mode and q to quit.
+
+HOW PATHS LOOK
+--------------
+
+Paths use a simple prefix format: <mount>:/path
+Examples:
+  initrd:/bin/ls.mex      A system program that comes with the system image
+
+
+COMMON ACTIONS (EVERYDAY COMMANDS)
+----------------------------------
+
+ls        List files in a directory
+          Example: ls initrd:/bin
+                   ls
+
+cat       Show a file
+          Example: cat initrd:/docs/README.md
+
+cp        Copy a file
+          Example: cp initrd:/bin/ls.mex tmp:/ls.mex
+
+mkdir     Make a directory
+          Example: mkdir tmp:/projects
+
+rm        Remove a file
+rmdir     Remove an empty directory
+
+touch     Create an empty file
+          Example: touch tmp:/todo.txt
+
+edit      Open the simple built-in text editor
+
+clear     Clear the terminal screen
+
+
+
+ADDITIONAL HANDY COMMANDS
+-------------------------
+
+fasm      FASM assembler
+free      Show memory usage (RAM free/used)
+calc      Small calculator for quick arithmetic
+
+
+
+NETWORKING
+----------
+
+ping      Test network connectivity
+ip        Show or configure network information
+nslookup  Query DNS information
+
+
+
+WHERE PROGRAMS LIVE
+-------------------
+
+The system sets PATH so programs can run by name (ls, edit, etc.)
+Programs are normally stored in:
+
+  initrd:/bin
+  initrd:/opt/bin
+
+
+
+COMMON MOUNTS
+-------------
+
+initrd:   Read-only system image
+          Contains default programs and files
+          Files here cannot be changed
+
+tmp:      Temporary memory (RAM)
+          Files can be written during the session
+          Everything is lost after reboot
+
+dev:      Hardware and system info
+          Example: dev:pci
+
+Disk mounts
+          Attached disks appear with their own name
+          Use: ls -f  to discover them
+
+
+
+QUICK EXAMPLES
+--------------
+
+See available programs:
+  ls initrd:/bin
+
+Edit a quick RAM note:
+  touch tmp:/notes.txt
+  edit  tmp:/notes.txt
