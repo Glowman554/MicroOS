@@ -65,5 +65,5 @@ int main(int argc, char* argv[], char* envp[]) {
 		return 1;
 	}
 
-	return main_fn(argc, argv, envp);
+	return main_fn(argc - 1, argv + 1, envp);
 }
