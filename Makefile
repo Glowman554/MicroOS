@@ -34,8 +34,11 @@ initrd.saf:
 	cp -r ./user/lib/*.o ./res/initrd/lib/ -v
 ifeq ($(GUI),1)
 	cp -r ./gui/bin/*.mex ./res/initrd/bin/ -v
+	cp -r ./gui/lib/*.o ./res/initrd/lib/ -v
 	mkdir -p ./res/initrd/opt/gui/bin
+ifeq ($(FIRESTORM),1)
 	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
+endif
 endif
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v

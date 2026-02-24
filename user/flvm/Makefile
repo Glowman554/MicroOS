@@ -2,5 +2,5 @@ PROGRAM = flvm.elf
 
 include ../program.mk
 
-EXTRA_OBJS=../lib/libflvm.o ../lib/libtinf.o
-CFLAGS += -I../libflvm/include -I../libtinf/include
+EXTRA_OBJS=../lib/libflvm.o ../lib/libload.o
+CFLAGS += -I../libflvm/include -I../libload/include

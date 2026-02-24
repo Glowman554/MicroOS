@@ -9,7 +9,7 @@ LDFLAGS = -melf_i386
 library: $(LIBRARY)
 
 $(LIBRARY): $(OBJS)
-	i686-linux-gnu-ld $(LDFLAGS) -r -o ../lib/$@ $^
+	i686-linux-gnu-ld $(LDFLAGS) -r -o ../lib/$@ $^ $(EXTRA_OBJS)
 
 %.o: %.c
 	@echo CC $^

@@ -1,0 +1,2 @@
+$native <extension 70894354>
+function(external) extension(str file) -> void;

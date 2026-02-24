@@ -3,13 +3,13 @@ OBJS = $(addsuffix .o,$(basename $(SRCS)))
 
 OPT_LVL = 2
 
-CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-stack-protector -nostdinc -I include -Wno-builtin-declaration-mismatch -fno-builtin
+CFLAGS = -O$(OPT_LVL) -m32 -Wall -g -fno-pic -fno-pie -fno-stack-protector -nostdinc -I include -Wno-builtin-declaration-mismatch -fno-builtin
 LDFLAGS = -melf_i386
 
 library: $(LIBRARY)
 
 $(LIBRARY): $(OBJS)
-	i686-linux-gnu-ld $(LDFLAGS) -r -o ../lib/$@ $^
+	i686-linux-gnu-ld $(LDFLAGS) -r -o ../lib/$@ $^ $(EXTRA_OBJS)
 
 %.o: %.c
 	@echo CC $^

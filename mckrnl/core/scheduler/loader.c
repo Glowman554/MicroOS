@@ -136,7 +136,7 @@ symbols_t* collect_symbols(void* image, int* out_count) {
 		for (unsigned int j = 0; j < count; j++) {
 			struct elf_symbol* sym = (struct elf_symbol*) (((char*) symtab) + j * entsize);
 
-			if (ELF_ST_TYPE(sym->info) == STT_FUNC) {
+			if (ELF_ST_TYPE(sym->info) == STT_FUNC || ELF_ST_TYPE(sym->info) == STT_OBJECT) {
 				real_symbols++;
 			}
 		}
@@ -150,7 +150,7 @@ symbols_t* collect_symbols(void* image, int* out_count) {
 		for (unsigned int j = 0; j < count; j++) {
 			struct elf_symbol* sym = (struct elf_symbol*) (((char*) symtab) + j * entsize);
 
-			if (ELF_ST_TYPE(sym->info) == STT_FUNC) {
+			if (ELF_ST_TYPE(sym->info) == STT_FUNC || ELF_ST_TYPE(sym->info) == STT_OBJECT) {
 				char* name = strtab + sym->name;
 				if (strlen(name) >= sizeof(symbols[x].name)) {
 					debugf("Symbol name '%s' is too long, skipping", name);

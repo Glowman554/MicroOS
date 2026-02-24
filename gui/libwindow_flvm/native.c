@@ -1,4 +1,4 @@
-#include <native.h>
+#include <flvm.h>
 #include <window.h>
 #include <window/font.h>
 #include <window/fpic.h>
@@ -178,7 +178,7 @@ void native_vconsole_set_color(struct vm_instance* vm) {
 }
 
 
-void native_microos() {
+void init() {
     vm_native_register(789023, native_set_pixel_window);
     vm_native_register(789024, native_get_pixel_window);
     vm_native_register(789025, native_draw_char_window);

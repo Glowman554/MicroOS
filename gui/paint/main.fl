@@ -1,9 +1,10 @@
 $use <stdlib@1.0.8>
-$use <microos@1.0.2>
+$use <microos@1.0.3>
 $use <fpic@1.0.0>
 
 $include <std.fl>
 $include <microos/window.fl>
+$include <microos/extension.fl>
 $include <fpic.fl>
 
 
@@ -138,6 +139,7 @@ function fill_colors() -> void {
 }
 
 function spark(int argc, str[] argv) -> int {
+    extension("initrd:/lib/libwindow_flvm.o");
     // ptr fpic = read_fpic("initrd:/opt/gui/icons/programs/vflvm.fpic");
 
     // CANVAS_SIZE_X = width_fpic(fpic);

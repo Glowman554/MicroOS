@@ -182,7 +182,7 @@ loaded_object_t load(void* image, uint32_t image_size) {
 	return obj;
 }
 
-void* symbol(loaded_object_t* object, const char* name) {
+void* symbol(loaded_object_t* object, const char* symbol_name) {
 	for (uint32_t i = 0; i < object->header->sh_entry_count; i++) {
 		if (object->sec_hdrs[i].type != SHT_SYMTAB) {
 			continue;
@@ -218,7 +218,7 @@ void* symbol(loaded_object_t* object, const char* name) {
 				continue;
 			}
 
-            if (strcmp(name, name) == 0) {
+            if (strcmp(name, symbol_name) == 0) {
                 return (void*)address;
             }
 		}

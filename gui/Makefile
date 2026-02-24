@@ -1,16 +1,11 @@
-LIBS = libwindow
-PROGRAMS = vflvm explorer imgview taskmgr sysctl netinfo paint
+LIBS = libwindow libwindow_flvm
+PROGRAMS = explorer imgview taskmgr sysctl netinfo paint
 
 all:
-	make build_libraries -j $(nproc)
+	$(foreach lib,$(LIBS),make -C $(lib) library;)
 	make build_programs -j $(nproc)
 
-build_libraries: $(addsuffix _library,$(LIBS))
 build_programs: $(addsuffix _prog,$(PROGRAMS))
-
-%_library:
-	mkdir -p lib
-	make -C $* library -j $(nproc)
 
 %_prog:
 	mkdir -p bin
