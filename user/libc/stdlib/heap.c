@@ -298,3 +298,4 @@ void* calloc(size_t count, size_t size) {
 	memset(addr, 0, count * size);
 	return addr;
 }
+

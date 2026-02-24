@@ -14,6 +14,11 @@ typedef struct mex_header_v2 {
     unsigned int elfSizeCompressed;
 } __attribute__((packed)) mex_header_v2_t;
 
+typedef struct symbols {
+    char name[64];
+    void* address;
+} symbols_t;
+
 #define M_COMPRESSED_FLAG (1 << 0)
 
 int load_executable(int term, char* path, char** argv, char** envp);

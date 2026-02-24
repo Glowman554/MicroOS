@@ -207,7 +207,9 @@ void write_asm_syntax() {
 		NEW_WORD("segment", cyan),
 		NEW_WORD("entry", cyan),
 		NEW_WORD("format", cyan),
-
+		NEW_WORD("section", cyan),
+		NEW_WORD("public", cyan),
+		NEW_WORD("extrn", cyan),
 	};
 
 	syntax_header_t header = {

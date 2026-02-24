@@ -82,10 +82,68 @@ int load_executable(int term, char* path, char** argv, char** envp) {
 	return pid;
 }
 
+#ifdef SYMBOLS_FILE
+symbols_t* collect_symbols(void* image, int* out_count) {
+	struct elf_header* hdr = (struct elf_header*) image;
+	if (hdr->sh_offset == 0 || hdr->sh_entry_count == 0) {
+		debugf("no section headers present");
+		return NULL;
+	}
+
+	struct elf_section_header* sh = (struct elf_section_header*) (((char*) image) + hdr->sh_offset);
+
+	for (int i = 0; i < hdr->sh_entry_count; i++) {
+		if (sh[i].type != SHT_SYMTAB) {
+			continue;
+		}
+
+		void* symtab = (void*) (((char*) image) + sh[i].offset);
+		struct elf_section_header* strsec = &sh[sh[i].link];
+		char* strtab = (char*) image + strsec->offset;
+
+		unsigned int entsize = sh[i].entsize ? sh[i].entsize : sizeof(struct elf_symbol);
+		unsigned int count = sh[i].size / entsize;
+
+		debugf("Found symbol table in section %d: %u entries", i, count);
+
+		int real_symbols = 0;
+		for (unsigned int j = 0; j < count; j++) {
+			struct elf_symbol* sym = (struct elf_symbol*) (((char*) symtab) + j * entsize);
+
+			if (ELF_ST_TYPE(sym->info) == STT_FUNC) {
+				real_symbols++;
+			}
+		}
+
+
+		symbols_t* symbols = kmalloc(sizeof(symbols_t) * real_symbols);
+		memset(symbols, 0, sizeof(symbols_t) * real_symbols);
+		*out_count = real_symbols;
+
+		int x = 0;
+		for (unsigned int j = 0; j < count; j++) {
+			struct elf_symbol* sym = (struct elf_symbol*) (((char*) symtab) + j * entsize);
+
+			if (ELF_ST_TYPE(sym->info) == STT_FUNC) {
+				char* name = strtab + sym->name;
+				if (strlen(name) >= sizeof(symbols[x].name)) {
+					debugf("Symbol name '%s' is too long, skipping", name);
+					continue;
+				}
+				strcpy(symbols[x].name, name);
+				symbols[x].address = (void*) sym->value;
+				x++;
+			}
+		}
+		return symbols;
+	}
+
+	return NULL;
+}
+#endif
 
 
 int init_elf(int term, void* image, char** argv, char** envp) {
-
 	struct elf_header* header = image;
 
 	if (header->magic != ELF_MAGIC) {
@@ -93,7 +151,11 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 		return -1;
 	}
 
+
 	task_t* task = init_task(term, (void*) header->entry, false, NULL);
+#ifdef SYMBOLS_FILE
+	task->symbols = collect_symbols(image, &task->num_symbols);
+#endif
 
 	struct elf_program_header* ph = (struct elf_program_header*) (((char*) image) + header->ph_offset);
 	for (int i = 0; i < header->ph_entry_count; i++, ph++) {

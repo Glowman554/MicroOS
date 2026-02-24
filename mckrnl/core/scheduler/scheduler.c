@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <memory/pmm.h>
 #include <memory/vmm.h>
+#include <memory/heap.h>
 #include <utils/string.h>
 #include <utils/multiboot.h>
 #include <fs/vfs.h>
@@ -174,6 +175,11 @@ void exit_task(task_t* task) {
 
 	resource_dealloc(task);
 	if (task->parent == -1) {
+	#ifdef SYMBOLS_FILE
+		if (task->symbols) {
+			kfree(task->symbols);
+		}
+	#endif
 		vmm_activate_context(kernel_context);
 		vmm_destroy_context(task->context);
 	}

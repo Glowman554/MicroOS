@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <memory/vmm.h>
 
+#include <scheduler/loader.h>
+
 typedef struct resource {
 	void (*dealloc)(void* resource);
 	void* resource;
@@ -51,6 +53,11 @@ typedef struct {
 
 	pipe_t* pipe[3];
 	int pipe_source[3];
+
+#ifdef SYMBOLS_FILE
+	symbols_t* symbols;
+	int num_symbols;
+#endif
 } task_t;
 
 // extern task_t tasks[MAX_TASKS];

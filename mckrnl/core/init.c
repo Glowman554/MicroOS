@@ -46,6 +46,7 @@
 #include <devices/fst.h>
 #include <devices/font.h>
 #include <devices/pci.h>
+#include <devices/symbols.h>
 
 #include <gdb/gdb.h>
 
@@ -247,6 +248,9 @@ void _main(multiboot_info_t* mb_info) {
 	devfs_register_file(&global_devfs, get_font_file(font_size, font_pointer));
 #endif
 	devfs_register_file(&global_devfs, &pci_file);
+#ifdef SYMBOLS_FILE
+	devfs_register_file(&global_devfs, &symbols_file);
+#endif
 
 	stage_mount();
 
