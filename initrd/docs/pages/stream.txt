@@ -1,0 +1,13 @@
+stream (cmd)
+------------
+
+Usage: stream [-i <nic_id>] <server_ip>
+
+Streams terminal display (framebuffer) over UDP network to a remote server.
+Useful for remote display sharing and monitoring. Only works in 80x25 text mode.
+
+Flags:
+    -i -> Network interface ID to use (default: 0)
+
+Arguments:
+    <server_ip> -> Remote server IP address (connects to port 9999)

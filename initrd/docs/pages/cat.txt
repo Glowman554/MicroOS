@@ -1,0 +1,13 @@
+cat (cmd)
+---------
+
+Usage: cat <file>
+
+Displays the contents of a file to stdout.
+
+Arguments:
+    <file> -> File to display
+
+Example:
+    cat README.md
+    cat config.json

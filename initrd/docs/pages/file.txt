@@ -1,0 +1,9 @@
+file (cmd)
+----------
+
+Usage: file <file>
+
+Identifies the type of a file by examining its contents.
+
+Arguments:
+    <file> -> File to identify

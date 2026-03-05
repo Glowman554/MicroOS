@@ -1,0 +1,12 @@
+jsonprint (cmd)
+---------------
+
+Usage: jsonprint <json_file>
+
+Pretty-prints JSON files with proper indentation and formatting.
+
+Arguments:
+    <json_file> -> JSON file to format and display
+
+Example:
+    jsonprint config.json

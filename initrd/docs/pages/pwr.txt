@@ -1,0 +1,10 @@
+pwr (cmd)
+---------
+
+Usage: pwr <off|reset>
+
+Controls system power state.
+
+Arguments:
+    off   -> Shutdown the system
+    reset -> Reboot the system

@@ -1,0 +1,10 @@
+figl (cmd)
+----------
+
+Usage: figl <filename> <text>
+
+Renders text as ASCII art using figlet fonts.
+
+Arguments:
+    <filename> -> Figlet font file to use
+    <text>     -> Text to render

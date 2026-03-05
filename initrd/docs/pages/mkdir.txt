@@ -1,0 +1,12 @@
+mkdir (cmd)
+-----------
+
+Usage: mkdir <directory>
+
+Creates a new directory with the specified name.
+
+Arguments:
+    <directory> -> Path to create directory
+
+Example:
+    mkdir projects

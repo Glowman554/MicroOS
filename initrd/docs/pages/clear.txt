@@ -1,0 +1,6 @@
+clear (cmd)
+-----------
+
+Usage: clear
+
+Clears the terminal screen and resets the cursor position.

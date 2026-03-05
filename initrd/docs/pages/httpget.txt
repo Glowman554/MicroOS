@@ -1,0 +1,13 @@
+httpget (cmd)
+-------------
+
+Usage: httpget <host> <path>
+
+Makes HTTP GET requests and displays the response.
+
+Arguments:
+    <host> -> Server hostname or IP address
+    <path> -> Resource path on the server
+
+Example:
+    httpget example.com /

@@ -1,0 +1,9 @@
+flvm (cmd)
+----------
+
+Usage: flvm <file>
+
+Virtual machine for executing FLVM bytecode scripts.
+
+Arguments:
+    <file> -> Compiled FLVM script to execute

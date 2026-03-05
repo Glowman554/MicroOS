@@ -1,0 +1,14 @@
+nslookup (cmd)
+--------------
+
+Usage: nslookup [-i <nic_id>] [-s <dns_server>] [-v] <domain>
+
+Performs DNS lookups to resolve domain names to IP addresses.
+
+Flags:
+    -i -> Network interface ID to use (default: 0)
+    -s -> Specify custom DNS server IP address
+    -v -> Enable verbose debug output
+
+Arguments:
+    <domain> -> Domain name to resolve

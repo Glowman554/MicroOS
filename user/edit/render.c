@@ -41,7 +41,11 @@ void render_tui(edit_state_t* state) {
 	int height = get_height();
 
 	char buff[512] = { 0 };
-	sprintf(buff, "File: %s [%c] Mode: --%s-- Current Line: %d Line: %d", state->file_name, state->is_edited ? '*' : '-',  state->is_in_insert_mode ? "INSERT" : "EDIT", state->buffer_ln_idx, state->ln_cnt);
+	if (state->read_only) {
+		sprintf(buff, "File: %s Current Line: %d Line: %d", state->file_name, state->buffer_ln_idx, state->ln_cnt);
+	} else {
+		sprintf(buff, "File: %s [%c] Current Line: %d Line: %d", state->file_name, state->is_edited ? '*' : '-',  state->is_in_insert_mode ? "INSERT" : "EDIT", state->buffer_ln_idx, state->ln_cnt);
+	}
 
 	draw_string(0, height - 1, buff, BACKGROUND_BLACK | FOREGROUND_WHITE);
 

@@ -1,0 +1,13 @@
+cp (cmd)
+--------
+
+Usage: cp [-r] [-v] <src> <dest>
+
+Used to copy files or directories.
+
+Flags:
+    -r -> recursive copy (used for directories)
+    -v -> enable verbose logging
+
+Example:
+    cp hello.txt tmp:/hello.txt

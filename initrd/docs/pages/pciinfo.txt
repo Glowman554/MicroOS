@@ -1,0 +1,13 @@
+pciinfo (cmd)
+-------------
+
+Usage: pciinfo [-f <file>] [-v] [-l] [-h]
+
+Displays information about PCI devices present on the system,
+including device classes, IDs, vendor names, and hardware information.
+
+Flags:
+    -f -> Specify custom PCI device file (default: dev:pci)
+    -v -> Enable verbose output (shows interrupt lines, pins, and BAR addresses)
+    -l -> Less mode (show only basic device info without details)
+    -h -> Display help information

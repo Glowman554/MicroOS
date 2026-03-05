@@ -1,0 +1,29 @@
+if (cmd)
+--------
+
+Usage: if [--val1 <str>] [--val2 <str>] [--cmp <==/</>>] [--cmd <command>] [--not] [--file <path>]
+
+Conditional logic command for shell scripts. Performs comparisons or file checks and executes commands.
+
+Comparison Mode:
+    --val1 <str>  -> First value to compare
+    --val2 <str>  -> Second value to compare
+    --cmp <op>    -> Comparison operator (== for string equality, < and > for numeric)
+    --cmd <cmd>   -> Command to execute if condition is true
+    --not         -> Invert the condition
+
+File Check Mode:
+    --file <path> -> Check if file exists
+    --not         -> Invert the check (check if file does NOT exist)
+    --cmd <cmd>   -> Command to execute if file check passes
+
+Comparison Operators:
+    ==  -> String equality (or numeric equality)
+    <   -> Numeric less than
+    >   -> Numeric greater than
+
+Example:
+    if --val1 5 --val2 3 --cmp > --cmd "echo yes"
+    if --val1 test --val2 test --cmp == --cmd "echo equal"
+    if --file config.json --cmd "echo found"
+    if --file noexist.txt --not --cmd "echo missing"

@@ -17,5 +17,7 @@ typedef struct edit_state {
 
 	unsigned int current_size;
 
+	bool read_only;
+
 	FILE* file;
 } edit_state_t;

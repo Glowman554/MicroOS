@@ -1,0 +1,12 @@
+play (cmd)
+----------
+
+Usage: play <audio_file>
+
+Plays audio files.
+
+Arguments:
+    <audio_file> -> Path to audio file to play
+
+Supported formats:
+    .wav -> Waveform audio format

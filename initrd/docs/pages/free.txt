@@ -1,0 +1,6 @@
+free (cmd)
+----------
+
+Usage: free
+
+Displays memory usage information including total, used, and free memory.

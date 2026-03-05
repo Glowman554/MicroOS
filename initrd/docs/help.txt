@@ -3,8 +3,6 @@ MicroOS
 
 Welcome! This short guide helps first-time users get started with the MicroOS command line.
 
-To exit this help press ESC to switch into EDIT mode and q to quit.
-
 HOW PATHS LOOK
 --------------
 

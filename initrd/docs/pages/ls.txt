@@ -1,0 +1,14 @@
+ls (cmd)
+--------
+
+Usage: ls [-f] [-d] [-h] [path]
+
+Lists files and directories. Without arguments, lists current directory.
+
+Flags:
+    -f  -> List all filesystems (--lsfs)
+    -d  -> List all disk partitions (--lsdisk)
+    -h  -> Display help information (--help)
+
+Arguments:
+    [path] -> Directory to list (optional)

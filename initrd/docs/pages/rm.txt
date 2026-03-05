@@ -1,0 +1,12 @@
+rm (cmd)
+--------
+
+Usage: rm <file>
+
+Removes/deletes the specified file.
+
+Arguments:
+    <file> -> File to delete
+
+Example:
+    rm oldfile.txt

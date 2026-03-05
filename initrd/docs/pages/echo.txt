@@ -1,0 +1,9 @@
+echo (cmd)
+----------
+
+Usage: echo [arguments]
+
+Prints its arguments separated by spaces, followed by a newline.
+
+Arguments:
+    [arguments] -> Text to print

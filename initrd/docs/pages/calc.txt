@@ -1,0 +1,13 @@
+calc (cmd)
+----------
+
+Usage: calc [-v] [-t] <expression>
+
+Used to calcualte expressions. 
+
+Flags:
+    -v -> enable verbose logging
+    -t -> run test expressions
+
+Example:
+    calc 1 + 2 * 3

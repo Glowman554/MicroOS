@@ -1,0 +1,9 @@
+touch (cmd)
+-----------
+
+Usage: touch <filename>
+
+Creates an empty file with the specified name.
+
+Arguments:
+    <filename> -> Name of file to create

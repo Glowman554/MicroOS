@@ -1,0 +1,11 @@
+date (cmd)
+----------
+
+Usage: date [-i <nic_id>] [-n] <timesv>
+
+Used to get the current date and time.
+
+Flags:
+    -i -> Set the network interface which is used
+    -n -> Use a network time server
+    <timesv> -> Specify a time server to use (optional)

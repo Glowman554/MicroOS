@@ -1,0 +1,6 @@
+background (cmd)
+----------------
+
+Usage: background <term> <args>
+
+Used to start a Process in the background on the given terminal buffer.

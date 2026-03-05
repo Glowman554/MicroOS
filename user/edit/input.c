@@ -88,14 +88,12 @@ bool listen_input(edit_state_t* state) {
 
 
 
-	if (!state->is_in_insert_mode) {
+	if (state->read_only) {
 		switch (input) {
 			case 'q':
 				return true;
 			case '\e':
-				state->is_in_insert_mode = !state->is_in_insert_mode;
-				break;
-
+				return true;
 			case 'a':
 				move_left(state);
 				break;
@@ -108,66 +106,89 @@ bool listen_input(edit_state_t* state) {
 			case 's':
 				move_down(state);
 				break;
-
-			case '+':
-				state->file = freopen(state->file_name, "w", state->file);
-				fseek(state->file, 0, SEEK_SET);
-				fwrite(state->input_buffer, state->current_size, 1, state->file);
-				fseek(state->file, state->current_size, SEEK_SET);
-				ftruncate(state->file);
-				state->is_edited = false;
-				break;
 		}
 	} else {
-		switch (input) {
-			case '\b': {
-				if (state->buffer_idx - 2 < 0 || state->current_size - 1 < 0) {
-				} else {
-					if (state->input_buffer[state->buffer_idx - 1] == '\n') {
-						state->buffer_ln_idx--;
+		if (!state->is_in_insert_mode) {
+			switch (input) {
+				case 'q':
+					return true;
+				case '\e':
+					state->is_in_insert_mode = !state->is_in_insert_mode;
+					break;
+
+				case 'a':
+					move_left(state);
+					break;
+				case 'd':
+					move_right(state);
+					break;
+				case 'w':
+					move_up(state);
+					break;
+				case 's':
+					move_down(state);
+					break;
+
+				case '+':
+					state->file = freopen(state->file_name, "w", state->file);
+					fseek(state->file, 0, SEEK_SET);
+					fwrite(state->input_buffer, state->current_size, 1, state->file);
+					fseek(state->file, state->current_size, SEEK_SET);
+					ftruncate(state->file);
+					state->is_edited = false;
+					break;
+			}
+		} else {
+			switch (input) {
+				case '\b': {
+					if (state->buffer_idx - 2 < 0 || state->current_size - 1 < 0) {
+					} else {
+						if (state->input_buffer[state->buffer_idx - 1] == '\n') {
+							state->buffer_ln_idx--;
+						}
+
+						if (state->buffer_idx == state->current_size) {
+						} else {
+						memmove((void*) &state->input_buffer[state->buffer_idx - 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
+						}
+						if (state->input_buffer[state->buffer_idx] == '\n') {
+							state->ln_cnt--;
+						} else {
+							state->char_cnt--;
+						}
+						state->input_buffer = (char*) realloc((void*) state->input_buffer, --state->current_size);
+						state->buffer_idx--;
+
+						rerender_color(state);
+					}
+				}
+				break;
+
+				case '\e': {
+					state->is_in_insert_mode = !state->is_in_insert_mode;
+				}
+				break;
+
+
+				default: {
+					if (input == '\n') {
+						state->ln_cnt++;
+						state->buffer_ln_idx++;
+					} else {
+						state->char_cnt++;
 					}
 
-					if (state->buffer_idx == state->current_size) {
-					} else {
-					   memmove((void*) &state->input_buffer[state->buffer_idx - 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx) * sizeof(char));
-					}
-					if (state->input_buffer[state->buffer_idx] == '\n') {
-						state->ln_cnt--;
-					} else {
-						state->char_cnt--;
-					}
-					state->input_buffer = (char*) realloc((void*) state->input_buffer, --state->current_size);
-					state->buffer_idx--;
+					state->is_edited = true;
+					state->current_size++;
+					state->input_buffer = (char*) realloc((void*) state->input_buffer, state->current_size);
+					memmove((void*) &state->input_buffer[state->buffer_idx + 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx - 1) * sizeof(char));
+					state->input_buffer[state->buffer_idx] = input;
+					state->buffer_idx++;
 
 					rerender_color(state);
 				}
+				break;
 			}
-			break;
-
-			case '\e': {
-				state->is_in_insert_mode = !state->is_in_insert_mode;
-			}
-			break;
-
-
-			default: {
-				if (input == '\n') {
-					state->ln_cnt++;
-					state->buffer_ln_idx++;
-				} else {
-					state->char_cnt++;
-				}
-
-				state->is_edited = true;
-				state->current_size++;
-				state->input_buffer = (char*) realloc((void*) state->input_buffer, state->current_size);
-				memmove((void*) &state->input_buffer[state->buffer_idx + 1], (void*) &state->input_buffer[state->buffer_idx], (state->current_size - state->buffer_idx - 1) * sizeof(char));
-				state->input_buffer[state->buffer_idx] = input;
-				state->buffer_idx++;
-
-				rerender_color(state);
-			}
-			break;
 		}
 	}
 

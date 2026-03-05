@@ -1,0 +1,12 @@
+du (cmd)
+--------
+
+Usage: du [-h] <file or directory>
+
+Calculates disk usage of files or directories.
+
+Flags:
+    -h -> Show sizes in human-readable format (KB, MB, GB)
+
+Arguments:
+    <target> -> File or directory to analyze

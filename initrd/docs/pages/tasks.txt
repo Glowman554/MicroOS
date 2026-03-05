@@ -1,0 +1,12 @@
+tasks (cmd)
+-----------
+
+Usage: tasks
+
+Displays a visual list of currently running processes/tasks with their details
+such as PID and output terminal.
+
+Features:
+    - Real-time process listing
+    - Interactive terminal UI
+    - Process termination capability

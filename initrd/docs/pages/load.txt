@@ -1,0 +1,9 @@
+load (cmd)
+----------
+
+Usage: load <object_file>
+
+Loads and executes object files (.o files) with symbol resolution.
+
+Arguments:
+    <object_file> -> Object file to load and execute

@@ -1,0 +1,12 @@
+rmdir (cmd)
+-----------
+
+Usage: rmdir <directory>
+
+Removes the specified directory.
+
+Arguments:
+    <directory> -> Directory path to delete
+
+Example:
+    rmdir emptydir

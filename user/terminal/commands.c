@@ -238,8 +238,13 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t
 		char* argv_str = read_env(command);
 		fault(argv_str, outgoing_stdout);
 		free(argv_str);
+	} else if (strncmp(command, (char*)"help ", 5) == 0) {
+		char* help_name = command + 5;
+		char help_command[512] = { 0 };
+		sprintf(help_command, "edit -r $ROOT_FS/docs/pages/%s.txt", help_name);
+		command_received(help_command, should_break, NULL, NULL);
 	} else if (strncmp(command, (char*)"help", 4) == 0) {
-		command_received("edit $ROOT_FS/docs/help.txt", should_break, NULL, NULL);
+		command_received("edit -r $ROOT_FS/docs/help.txt", should_break, NULL, NULL);
 	} else if (strncmp(command, (char*)"read ", 5) == 0) {
 		read_(command, outgoing_stdout);
 	} else if (strcmp(command, (char*)"exit") == 0) {

@@ -1,0 +1,24 @@
+ip (cmd)
+--------
+
+Usage: ip [-i <nic_id>] <command> [ip_address]
+
+Configures network interface IP addresses and related settings.
+
+Flags:
+    -i -> Network interface ID (default: 0)
+
+Commands:
+    address <ip>  -> Set IP address
+    subnet <ip>   -> Set subnet mask
+    gateway <ip>  -> Set default gateway
+    dns <ip>      -> Set DNS server
+    show          -> Display current configuration
+
+Example:
+    ip show
+    ip address 192.168.1.100
+    ip subnet 255.255.255.0
+    ip gateway 192.168.1.1
+    ip dns 8.8.8.8
+    ip -i 1 address 10.0.0.50

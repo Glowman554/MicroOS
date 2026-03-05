@@ -1,0 +1,13 @@
+ping (cmd)
+----------
+
+Usage: ping [-n <count>] [-i <nic_id>] <domain/ip>
+
+Sends ICMP ping requests to test network connectivity.
+
+Flags:
+    -n -> Number of ping requests to send (default: 4)
+    -i -> Network interface ID to use (default: 0)
+
+Arguments:
+    <domain/ip> -> Hostname or IP address to ping

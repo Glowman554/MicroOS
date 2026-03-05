@@ -1,0 +1,21 @@
+edit (cmd)
+----------
+
+Usage: edit [-r] <filename>
+
+Interactive text editor for creating and modifying files.
+
+Flags:
+    -r -> Open file in read-only mode
+
+Controls:
+    w     -> Move up one line
+    a     -> Move left one character
+    s     -> Move down one line
+    d     -> Move right one character
+    esc   -> Toggle edit mode (enter/exit command mode)
+    +     -> Save changes to file
+    q     -> Quit editor
+
+Features:
+    - Syntax highlighting (disable with NOSYX environment variable)

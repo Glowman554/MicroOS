@@ -1,0 +1,9 @@
+lolcat (cmd)
+------------
+
+Usage: lolcat <file>
+
+Displays file contents with rainbow colored text output.
+
+Arguments:
+    <file> -> File to display in color

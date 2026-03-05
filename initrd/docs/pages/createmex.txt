@@ -1,0 +1,6 @@
+createmex (cmd)
+---------------
+
+Usage: createmex <input> <program_author> <abi_version> <output>
+
+Used to wrap the input elf file in a MEXv2 header.

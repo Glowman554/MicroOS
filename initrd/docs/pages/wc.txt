@@ -1,0 +1,11 @@
+wc (cmd)
+--------
+
+Usage: wc <file>
+
+Counts lines, words, and characters in a file.
+
+Arguments:
+    <file> -> File to count (or stdin if not specified)
+
+Output: lines words characters filename

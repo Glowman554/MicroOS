@@ -1,0 +1,10 @@
+dhcp (cmd)
+----------
+
+Usage: dhcp [-i <nic_id>] [-n <hostname>]
+
+Configures network interface using DHCP (Dynamic Host Configuration Protocol).
+
+Flags:
+    -i -> Network interface ID (optional)
+    -n -> Hostname to use (optional)

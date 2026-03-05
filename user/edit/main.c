@@ -8,7 +8,7 @@
 #include <buildin/ansi.h>
 
 void print_usage(char* prog) {
-	printf("Usage: %s <file-name>\n\n", prog);
+	printf("Usage: %s [-r] <file-name>\n\n", prog);
 
 	printf("Cheat sheet\n");
 	printf("w        -> move up a line\n");
@@ -33,16 +33,35 @@ char* get_file_extension(const char* filename) {
 }
 
 int main(int argc, char* argv[], char* envp[]) {
-	if (argc != 2) {
-		print_usage(argv[0]);
-		return 1;
+	bool read_only = false;
+	char* file_name = NULL;
+
+	int idx = 1;
+	while (idx < argc) {
+		if (strcmp(argv[idx], "-r") == 0) {
+			read_only = true;
+		} else if (strcmp(argv[idx], "-h") == 0) {
+			print_usage(argv[0]);
+			return 0;
+		} else {
+			if (file_name == NULL) {
+				file_name = argv[idx];
+			} else {
+				printf("Error: Too many arguments\n");
+				print_usage(argv[0]);
+				return 1;
+			}
+		}
+
+		idx++;
 	}
+
 
 	if (!getenv("NOSYX")) {
 		char syx[128] = { 0 };
 		strcat(syx, getenv("ROOT_FS"));
 		strcat(syx, "syntax/");
-		strcat(syx, get_file_extension(argv[1]));
+		strcat(syx, get_file_extension(file_name));
 		strcat(syx, ".syx");
 		syntax = load_syntax(syx);
 	}
@@ -50,13 +69,14 @@ int main(int argc, char* argv[], char* envp[]) {
 	
 	edit_state_t state  = { 0 };
 
-	state.file_name = argv[1];
+	state.file_name = file_name;
 	state.is_edited = false;
 	state.is_in_insert_mode = true;
+	state.read_only = read_only;
 
-	state.file = fopen(argv[1], "r");
+	state.file = fopen(file_name, "r");
 	if (state.file == NULL) {
-		printf("Could not open file %s\n", argv[1]);
+		printf("Could not open file %s\n", file_name);
 		return 1;
 	}
 
@@ -77,6 +97,11 @@ int main(int argc, char* argv[], char* envp[]) {
 			state.buffer_ln_idx++;
 			state.char_cnt--;
 		}
+	}
+
+	if (read_only) {
+		state.buffer_idx = 0;
+		state.buffer_ln_idx = 0;
 	}
 
 	while (true) {
