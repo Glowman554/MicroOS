@@ -1,3 +1,4 @@
+#include "nettools.h"
 #include <net/dns.h>
 #include <net/ipv4.h>
 #include <net/socket.h>
@@ -172,7 +173,8 @@ int dns_skip_name(uint8_t* reader, uint8_t* packet_end) {
 
 
 
-void dns_send_request(int socket, char* name) {
+void dns_send_request(int socket, char* name, ip_u server) {
+    DNS_LOG("requesting %s from %d.%d.%d.%d", name, server.ip_p[0], server.ip_p[1], server.ip_p[2], server.ip_p[3]);
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
 
@@ -316,7 +318,7 @@ ip_u dns_parse_packet(int nic, uint8_t* packet, int size, char* original_domain,
             int socket = sync_connect(nic, SOCKET_UDP, ns_ip, 53);
 
             char buffer[1024];
-            dns_send_request(socket, original_domain);
+            dns_send_request(socket, original_domain, ns_ip);
             int size = sync_recv(socket, (uint8_t*)buffer, sizeof(buffer));
             sync_disconnect(socket);
 
@@ -358,7 +360,7 @@ ip_u dns_resolve_A(int nic, char* domain) {
     }
 
     int socket = dns_connect(nic);
-    dns_send_request(socket, domain);
+    dns_send_request(socket, domain, dns_server);
 
     uint8_t buffer[1024];
     int size = sync_recv(socket, buffer, sizeof(buffer));
