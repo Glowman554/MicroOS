@@ -110,12 +110,19 @@ void print_filesystems() {
     printf("Mounted filesystems: %d", idx - 1);
 }
 
+void print_project_age() {
+    // git show -s --format=%ct 4c17ec1effa544e02f8789969a4d9172796e724e
+    long age = time(NULL) - 1657039898;
+    long age_days = age / (60 * 60 * 24);
+    printf("First commit: %d days ago", age_days);
+}
+
 void print_help_info() {
     printf("Use the 'help' to get help.");
 }
 
 typedef void (*line)();
-line lines[] = { print_time, print_memory, print_nic, print_disk, print_filesystems, NULL, print_help_info };
+line lines[] = { print_time, print_memory, print_nic, print_disk, print_filesystems, print_project_age, NULL, print_help_info };
 
 void print_logo() {
 
