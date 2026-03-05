@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <net/dns.h>
+#include <net/ipv4.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char* domain = NULL;
@@ -18,9 +19,19 @@ int main(int argc, char* argv[], char* envp[]) {
 				printf("Error: -i requires an argument\n");
 				abort();
 			}
+		} else if (strcmp(argv[idx], "-s") == 0) {
+			if (idx + 1 < argc) {
+				dns_server = parse_ip(argv[idx + 1]);
+				idx++;
+			} else {
+				printf("Error: -s requires an argument\n");
+				abort();
+			}
 		} else if (strcmp(argv[idx], "-h") == 0) {
-			printf("Usage: %s [-i <nic_id>] <domain>\n", argv[0]);
+			printf("Usage: %s [-i <nic_id>] [-s <dns_server>] [-v] <domain>\n", argv[0]);
 			exit(0);
+		} else if (strcmp(argv[idx], "-v") == 0) {
+			dns_debug = true;
 		} else {
 			if (domain == NULL) {
 				domain = argv[idx];

@@ -1,0 +1,8 @@
+#!/bin/terminal.mex
+
+echo DNS Full-resolver using the e.root-servers.net root server
+
+echo Domain?
+read domain
+
+nslookup -v -s 192.203.230.10 $domain

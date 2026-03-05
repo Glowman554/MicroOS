@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <nettools.h>
 
 typedef struct dnshdr {
@@ -24,4 +25,19 @@ typedef struct dns_resource {
 	uint16_t data_len;
 } __attribute__((packed)) dns_resource_t;
 
+#define DNS_MAX_NAME               255
+#define DNS_MAX_JUMPS              10
+#define DNS_MAX_CNAME_DEPTH        5
+#define DNS_MAX_DELEGATION_DEPTH   5
+#define DNS_MAX_NS                 4
+
+typedef struct dns_cache_entry {
+	char domain[DNS_MAX_NAME + 1];
+	ip_u ip;
+} dns_cache_entry_t;
+
 ip_u dns_resolve_A(int nic, char* domain);
+void dns_cache_debug_print();
+
+extern bool dns_debug;
+extern ip_u dns_server;
