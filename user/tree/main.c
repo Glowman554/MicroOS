@@ -50,8 +50,8 @@ void print_tree(char* path, const char* prefix) {
             free(new_prefix);
         }
 
-        dir_at(resolved, idx, &dir);
         idx = dir.idx + 1;
+        dir_at(resolved, idx, &dir);
     }
 
     printf("%s\n", prefix);
