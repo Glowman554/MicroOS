@@ -4,8 +4,49 @@
 #include <types.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/time.h>
 #include <buildin/unix_time.h>
+
+#define MAX_ASSOCS 16
+
+typedef struct {
+    char ext[16];
+    void (*open_fn)(const char* path);
+} file_assoc_t;
+
+static file_assoc_t s_assocs[MAX_ASSOCS];
+static int s_assoc_count = 0;
+
+void desktop_register_file_assoc(const char* ext, void (*open_fn)(const char* path)) {
+    if (s_assoc_count >= MAX_ASSOCS) {
+        return;
+    }
+    int ext_len = strnlen(ext, sizeof(s_assocs[0].ext) - 1);
+    memcpy(s_assocs[s_assoc_count].ext, ext, ext_len);
+    s_assocs[s_assoc_count].ext[ext_len] = '\0';
+    s_assocs[s_assoc_count].open_fn = open_fn;
+    s_assoc_count++;
+}
+
+void desktop_open_file(const char* path) {
+    const char* dot = NULL;
+    for (const char* p = path; *p; p++) {
+        if (*p == '.') {
+            dot = p;
+        }
+    }
+    if (!dot) {
+        return;
+    }
+    const char* ext = dot + 1;
+    for (int i = 0; i < s_assoc_count; i++) {
+        if (strcmp(s_assocs[i].ext, ext) == 0) {
+            s_assocs[i].open_fn(path);
+            return;
+        }
+    }
+}
 
 void desktop_draw_background(void) {
     for (int x = 0; x < framebuffer.fb_width; x++) {

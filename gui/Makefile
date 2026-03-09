@@ -1,5 +1,5 @@
 LIBS = libwindow libwindow_flvm
-PROGRAMS = imgview paint desktop
+PROGRAMS = paint desktop
 
 all:
 	mkdir -p lib

@@ -2,6 +2,7 @@
 #include <window.h>
 #include <window_helpers.h>
 #include <graphics.h>
+#include <desktop.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -151,6 +152,15 @@ void explorer_update(window_instance_t* w, event_t* event) {
                                 state->offset = 0;
                             }
                             w->is_dirty = true;
+                        } else if (dir.type == ENTRY_FILE) {
+                            char full_path[128] = { 0 };
+                            strcpy(full_path, state->cwd);
+                            int fp_len = strlen(full_path);
+                            if (fp_len > 0 && full_path[fp_len - 1] != '/') {
+                                strcat(full_path, "/");
+                            }
+                            strcat(full_path, dir.name);
+                            desktop_open_file(full_path);
                         }
                     }
                 }
