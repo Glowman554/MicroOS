@@ -42,9 +42,9 @@ void render_tui(edit_state_t* state) {
 
 	char buff[512] = { 0 };
 	if (state->read_only) {
-		sprintf(buff, "File: %s Current Line: %d Line: %d", state->file_name, state->buffer_ln_idx, state->ln_cnt);
+		sprintf(buff, "File: %s Current Line: %d Line: %d", state->file_name, state->buffer_ln_idx + 1, state->ln_cnt);
 	} else {
-		sprintf(buff, "File: %s [%c] Current Line: %d Line: %d", state->file_name, state->is_edited ? '*' : '-',  state->is_in_insert_mode ? "INSERT" : "EDIT", state->buffer_ln_idx, state->ln_cnt);
+		sprintf(buff, "File: %s [%c] -- %s -- Current Line: %d Line: %d", state->file_name, state->is_edited ? '*' : '-',  state->is_in_insert_mode ? "INSERT" : "EDIT", state->buffer_ln_idx + 1, state->ln_cnt);
 	}
 
 	draw_string(0, height - 1, buff, BACKGROUND_BLACK | FOREGROUND_WHITE);
@@ -54,7 +54,6 @@ void render_tui(edit_state_t* state) {
 	int cur_y = 0;
 	int already_drawn = 0;
 	bool initial_line_drawn = false;
-	int current_line = 1;
 	bool cursor_drawn = false;
 
 	memset(buff, 0, 512);
@@ -62,8 +61,29 @@ void render_tui(edit_state_t* state) {
 	int space_to_draw = 1 + strlen(buff);
 	cur_x = space_to_draw;
 
+	int viewport_height = height - 3;
+	static int start_line = 0;
+	
+	if (state->buffer_ln_idx < start_line) {
+		start_line = state->buffer_ln_idx;
+	} else if (state->buffer_ln_idx >= start_line + viewport_height) {
+		start_line = state->buffer_ln_idx - viewport_height + 1;
+	}
+	
+	if (start_line < 0) {
+		start_line = 0;
+	}
+	if (start_line + viewport_height > state->ln_cnt) {
+		start_line = state->ln_cnt - viewport_height;
+		if (start_line < 0) {
+			start_line = 0;
+		}
+	}
+
+	int current_line = start_line + 1;
+
 	for (int i = 0; i < state->current_size; i++) {
-		if ((state->ln_cnt - 1 < height - 3 || j >= state->buffer_ln_idx) && already_drawn <= height - 3) {
+		if ((j >= start_line && j < start_line + viewport_height) && already_drawn <= viewport_height) {
 			if (!initial_line_drawn) {
 				initial_line_drawn = true;
 				memset(buff, 0, 512);
@@ -86,6 +106,7 @@ void render_tui(edit_state_t* state) {
 			if (state->input_buffer[i] == '\n') {
 				already_drawn++;
 				current_line++;
+				j++;
 				cur_x = space_to_draw;
 				cur_y++;
 				memset(buff, 0, 512);
@@ -98,7 +119,6 @@ void render_tui(edit_state_t* state) {
 			}
 		} else {
 			if (state->input_buffer[i] == '\n') {
-				current_line++;
 				j++;
 			}
 		}
