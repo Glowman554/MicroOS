@@ -1,5 +1,5 @@
 LIBS = libwindow libwindow_flvm
-PROGRAMS = explorer imgview taskmgr sysctl netinfo paint
+PROGRAMS = imgview paint desktop
 
 all:
 	mkdir -p lib

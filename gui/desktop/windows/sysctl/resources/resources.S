@@ -7,5 +7,5 @@
 \name\()_size: .int . - \name
 .endm
 
-incbin reboot, "./resources/reboot.fpic"
-incbin shutdown, "./resources/shutdown.fpic"
+incbin reboot_button, "./windows/sysctl/resources/reboot.fpic"
+incbin shutdown_button, "./windows/sysctl/resources/shutdown.fpic"

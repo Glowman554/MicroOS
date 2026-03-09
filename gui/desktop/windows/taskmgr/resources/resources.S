@@ -7,4 +7,4 @@
 \name\()_size: .int . - \name
 .endm
 
-incbin kill_button, "./resources/exit.fpic"
+incbin kill_button, "./windows/taskmgr/resources/exit.fpic"
