@@ -1,4 +1,4 @@
-LIBS = libwindow libwindow_flvm
+LIBS = libwindow libwindow_flvm test_window
 PROGRAMS = paint desktop
 
 all:
