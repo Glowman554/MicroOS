@@ -1,5 +1,6 @@
 #include <sys/graphics.h>
 #include <sys/mouse.h>
+#include <sys/getc.h>
 #include <stdbool.h>
 
 #include <types.h>
@@ -131,6 +132,39 @@ int main() {
         last_button_right = info.button_right;
         last_button_middle = info.button_middle;
         
+        /* ── keyboard input ─────────────────────────────────── */
+        int focused = window_get_focused();
+        if (focused >= 0) {
+            window_instance_t* fw = window_get(focused);
+            if (fw && fw->update) {
+                char key = async_getc();
+                if (key) {
+                    event_t kevt;
+                    kevt.type = EVENT_KEY_PRESS;
+                    kevt.key = key;
+                    kevt.arrow = 0;
+                    kevt.x = 0;
+                    kevt.y = 0;
+                    kevt.button = 0;
+                    fw->update(fw, &kevt);
+                    if (fw->is_dirty) should_redraw = true;
+                } else {
+                    int arrow = async_getarrw();
+                    if (arrow) {
+                        event_t aevt;
+                        aevt.type = EVENT_ARROW_KEY;
+                        aevt.key = 0;
+                        aevt.arrow = arrow;
+                        aevt.x = 0;
+                        aevt.y = 0;
+                        aevt.button = 0;
+                        fw->update(fw, &aevt);
+                        if (fw->is_dirty) should_redraw = true;
+                    }
+                }
+            }
+        }
+
         should_redraw = true;
         
         if (should_redraw) {

@@ -37,17 +37,26 @@ typedef enum {
     EVENT_MOUSE_CLICK,
     EVENT_MOUSE_MOVE,
     EVENT_CLOSE,
+    EVENT_KEY_PRESS,
+    EVENT_ARROW_KEY,
 } event_type_t;
 
 #define MOUSE_BUTTON_LEFT   1
 #define MOUSE_BUTTON_RIGHT  2
 #define MOUSE_BUTTON_MIDDLE 4
 
+#define ARROW_UP    1
+#define ARROW_DOWN  2
+#define ARROW_LEFT  3
+#define ARROW_RIGHT 4
+
 typedef struct {
     event_type_t type;
     int x;
     int y;
     int button;
+    char key;
+    int arrow;
 } event_t;
 
 typedef enum {

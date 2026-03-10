@@ -8,6 +8,8 @@
 #include <sys/time.h>
 #include <buildin/unix_time.h>
 
+#include "windows/edit/edit.h"
+
 #define MAX_ASSOCS 16
 
 typedef struct {
@@ -46,6 +48,8 @@ void desktop_open_file(const char* path) {
             return;
         }
     }
+
+    edit_open(path);
 }
 
 void desktop_draw_background(void) {
