@@ -1,9 +1,13 @@
 #pragma once
 
 #include <types.h>
+#include <button.h>
 
 typedef struct {
     int count;
+    button_t increment_btn;
+    button_t decrement_btn;
+    button_t reset_btn;
 } counter_state_t;
 
 void counter_init(window_instance_t* w);

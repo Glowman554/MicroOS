@@ -3,6 +3,7 @@
 #include <window_helpers.h>
 #include <graphics.h>
 #include <desktop.h>
+#include <button.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,9 +11,6 @@
 #include <sys/file.h>
 
 extern psf1_font_t font;
-extern fpic_image_t back_button;
-extern fpic_image_t up_arrow;
-extern fpic_image_t down_arrow;
 
 void format_size(char* out, size_t size) {
     if (size < 1024) {
@@ -25,13 +23,6 @@ void format_size(char* out, size_t size) {
         sprintf(out, "%d Gb", size / (1024 * 1024 * 1024));
     }
 }
-
-typedef struct {
-    int x;
-    int y;
-    int width;
-    int height;
-} button_area_t;
 
 void explorer_invalidate_cache(explorer_state_t* state) {
     if (state->size_cached) {
@@ -51,6 +42,42 @@ void explorer_realloc_rows(explorer_state_t* state, int new_max) {
     memset(state->sizes, 0, sizeof(int) * new_max);
     state->size_cached = realloc(state->size_cached, sizeof(bool) * new_max);
     memset(state->size_cached, 0, sizeof(bool) * new_max);
+}
+
+void on_explorer_back(window_instance_t* w, void* userdata) {
+    explorer_state_t* state = (explorer_state_t*)w->state;
+    char full_path[128] = { 0 };
+    strcpy(full_path, state->cwd);
+    int fp_len = strlen(full_path);
+    if (fp_len > 0 && full_path[fp_len - 1] != '/') {
+        strcat(full_path, "/");
+    }
+    strcat(full_path, "..");
+    char path_buf[64] = { 0 };
+    if (!resolve(full_path, path_buf)) {
+        state->fs_mode = true;
+        memset(state->cwd, 0, 64);
+    } else {
+        memset(state->cwd, 0, 64);
+        strcpy(state->cwd, path_buf);
+    }
+    state->offset = 0;
+    explorer_invalidate_cache(state);
+}
+
+void on_explorer_up(window_instance_t* w, void* userdata) {
+    explorer_state_t* state = (explorer_state_t*)w->state;
+    if (state->offset > 0) {
+        state->offset--;
+        explorer_invalidate_cache(state);
+    }
+}
+
+void on_explorer_down(window_instance_t* w, void* userdata) {
+    (void)userdata;
+    explorer_state_t* state = (explorer_state_t*)w->state;
+    state->offset++;
+    explorer_invalidate_cache(state);
 }
 
 void explorer_init(window_instance_t* w) {
@@ -73,76 +100,26 @@ void explorer_init(window_instance_t* w) {
     state->size_cached = malloc(sizeof(bool) * max);
     memset(state->size_cached, 0, sizeof(bool) * max);
     memset(state->cwd, 0, 64);
+
+    button_init(&state->back_btn, w->width - 54, 2, 50, 18, "Back", on_explorer_back, NULL);
+    button_init(&state->up_btn, w->width - 28, 22, 24, 20, "^", on_explorer_up, NULL);
+    button_init(&state->down_btn, w->width - 28, w->height - TITLE_BAR_HEIGHT - 24, 24, 20, "v", on_explorer_down, NULL);
+
     w->state = state;
     w->title_bar_color = 0x4488ff;
 }
 
 void explorer_update(window_instance_t* w, event_t* event) {
     explorer_state_t* state = (explorer_state_t*)w->state;
-    
+
+    button_handle_event(&state->back_btn, w, event);
+    button_handle_event(&state->up_btn, w, event);
+    button_handle_event(&state->down_btn, w, event);
+
     if (event->type == EVENT_MOUSE_CLICK && event->button == MOUSE_BUTTON_LEFT) {
         int rel_x = event->x;
         int rel_y = event->y;
-        
-        button_area_t back_button_area;
-        back_button_area.x = w->width - 25 * 2;
-        back_button_area.y = TITLE_BAR_HEIGHT;
-        back_button_area.width = 25 * 2;
-        back_button_area.height = 11 * 2;
-        
-        if (rel_x >= back_button_area.x && rel_x < back_button_area.x + back_button_area.width &&
-            rel_y >= back_button_area.y && rel_y < back_button_area.y + back_button_area.height) {
-            char full_path[128] = { 0 };
-            strcpy(full_path, state->cwd);
-            int fp_len = strlen(full_path);
-            if (fp_len > 0 && full_path[fp_len - 1] != '/') {
-                strcat(full_path, "/");
-            }
-            strcat(full_path, "..");
-            char path_buf[64] = { 0 };
-            if (!resolve(full_path, path_buf)) {
-                state->fs_mode = true;
-                memset(state->cwd, 0, 64);
-            } else {
-                memset(state->cwd, 0, 64);
-                strcpy(state->cwd, path_buf);
-            }
-            state->offset = 0;
-            explorer_invalidate_cache(state);
-            w->is_dirty = true;
-            return;
-        }
-        
-        button_area_t up_arrow_area;
-        up_arrow_area.x = w->width - 16;
-        up_arrow_area.y = TITLE_BAR_HEIGHT + 32;
-        up_arrow_area.width = 16;
-        up_arrow_area.height = 16;
-        
-        if (rel_x >= up_arrow_area.x && rel_x < up_arrow_area.x + up_arrow_area.width &&
-            rel_y >= up_arrow_area.y && rel_y < up_arrow_area.y + up_arrow_area.height) {
-            if (state->offset > 0) {
-                state->offset--;
-                explorer_invalidate_cache(state);
-                w->is_dirty = true;
-            }
-            return;
-        }
-        
-        button_area_t down_arrow_area;
-        down_arrow_area.x = w->width - 16;
-        down_arrow_area.y = w->height - 16;
-        down_arrow_area.width = 16;
-        down_arrow_area.height = 16;
-        
-        if (rel_x >= down_arrow_area.x && rel_x < down_arrow_area.x + down_arrow_area.width &&
-            rel_y >= down_arrow_area.y && rel_y < down_arrow_area.y + down_arrow_area.height) {
-            state->offset++;
-            explorer_invalidate_cache(state);
-            w->is_dirty = true;
-            return;
-        }
-        
+
         for (int i = 0; i < state->max_rows; i++) {
             click_area_t* btn = &state->files[i];
             if (btn->width && btn->height &&
@@ -212,6 +189,7 @@ void explorer_draw(window_instance_t* w) {
         state->cached_h = w->height;
         int new_max = (w->height - TITLE_BAR_HEIGHT - 50) / 16;
         explorer_realloc_rows(state, new_max);
+        state->down_btn.y = w->height - TITLE_BAR_HEIGHT - 24;
     }
     
     for (int x = 0; x < w->width; x++) {
@@ -224,26 +202,9 @@ void explorer_draw(window_instance_t* w) {
     
     window_draw_line(w, 0, 20, w->width, 20, 0x444444);
     
-    button_area_t back_button_area;
-    back_button_area.x = w->width - 25 * 2;
-    back_button_area.y = TITLE_BAR_HEIGHT;
-    back_button_area.width = 25 * 2;
-    back_button_area.height = 11 * 2;
-    window_draw_fpic_scaled(w, &back_button, back_button_area.x, back_button_area.y, 2);
-    
-    button_area_t up_arrow_area;
-    up_arrow_area.x = w->width - 16;
-    up_arrow_area.y = TITLE_BAR_HEIGHT + 32;
-    up_arrow_area.width = 16;
-    up_arrow_area.height = 16;
-    window_draw_fpic(w, &up_arrow, up_arrow_area.x, up_arrow_area.y);
-    
-    button_area_t down_arrow_area;
-    down_arrow_area.x = w->width - 16;
-    down_arrow_area.y = w->height - 16;
-    down_arrow_area.width = 16;
-    down_arrow_area.height = 16;
-    window_draw_fpic(w, &down_arrow, down_arrow_area.x, down_arrow_area.y);
+    button_draw(&state->back_btn, w);
+    button_draw(&state->up_btn, w);
+    button_draw(&state->down_btn, w);
     
     int start_y = 32;
     

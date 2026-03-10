@@ -1,10 +1,11 @@
 #pragma once
 
 #include <types.h>
+#include <button.h>
 
 typedef struct {
-    click_area_t reboot_area;
-    click_area_t shutdown_area;
+    button_t reboot_btn;
+    button_t shutdown_btn;
 } sysctl_state_t;
 
 void sysctl_init(window_instance_t* w);

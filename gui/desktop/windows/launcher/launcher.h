@@ -1,9 +1,10 @@
 #pragma once
 
 #include <types.h>
+#include <button.h>
 
 typedef struct {
-    click_area_t* buttons;
+    button_t* buttons;
     int button_count;
 } launcher_state_t;
 

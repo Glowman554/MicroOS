@@ -6,11 +6,3 @@
     .incbin "\file"
 \name\()_size: .int . - \name
 .endm
-
-incbin back_button, "./resources/back.fpic"
-incbin up_arrow, "./resources/up_arrow.fpic"
-incbin down_arrow, "./resources/down_arrow.fpic"
-incbin kill_button, "./resources/exit.fpic"
-incbin reboot_button, "./resources/reboot.fpic"
-incbin shutdown_button, "./resources/shutdown.fpic"
-incbin dhcp_button, "./resources/dhcp.fpic"

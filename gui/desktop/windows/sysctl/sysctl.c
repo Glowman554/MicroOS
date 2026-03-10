@@ -2,6 +2,7 @@
 #include <window.h>
 #include <window_helpers.h>
 #include <graphics.h>
+#include <button.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -10,8 +11,6 @@
 #include <buildin/unix_time.h>
 
 extern psf1_font_t font;
-extern fpic_image_t reboot_button;
-extern fpic_image_t shutdown_button;
 
 #define is_kb(x) ((x) >= 1024)
 #define is_mb(x) ((x) >= 1024 * 1024)
@@ -32,21 +31,24 @@ static void format_memory_usage(char* out_buf, uint32_t usage) {
     }
 }
 
+void on_reboot(window_instance_t* w, void* userdata) {
+    env(SYS_PWR_RESET_ID);
+}
+
+void on_shutdown(window_instance_t* w, void* userdata) {
+    env(SYS_PWR_SHUTDOWN_ID);
+}
+
 void sysctl_init(window_instance_t* w) {
     sysctl_state_t* state = malloc(sizeof(sysctl_state_t));
 
-    int btn_w = (int)reboot_button.width;
-    int btn_h = (int)reboot_button.height;
+    button_init(&state->reboot_btn, w->width - 80, 2, 76, 22, "Reboot", on_reboot, NULL);
+    state->reboot_btn.bg_color = 0x554400;
+    state->reboot_btn.hover_color = 0x887700;
 
-    state->reboot_area.x   = w->width - btn_w - 4;
-    state->reboot_area.y   = TITLE_BAR_HEIGHT;
-    state->reboot_area.width  = btn_w;
-    state->reboot_area.height = btn_h;
-
-    state->shutdown_area.x  = w->width - btn_w - 4;
-    state->shutdown_area.y  = TITLE_BAR_HEIGHT + btn_h + 4;
-    state->shutdown_area.width  = btn_w;
-    state->shutdown_area.height = btn_h;
+    button_init(&state->shutdown_btn, w->width - 80, 28, 76, 22, "Shutdown", on_shutdown, NULL);
+    state->shutdown_btn.bg_color = 0x660000;
+    state->shutdown_btn.hover_color = 0xaa2222;
 
     w->state = state;
     w->title_bar_color = 0x553366;
@@ -58,19 +60,8 @@ void sysctl_update(window_instance_t* w, event_t* event) {
 
     w->is_dirty = true;
 
-    if (event->type == EVENT_MOUSE_CLICK && event->button == MOUSE_BUTTON_LEFT) {
-        click_area_t* rb = &state->reboot_area;
-        click_area_t* sd = &state->shutdown_area;
-
-        if (event->x >= rb->x && event->x < rb->x + rb->width &&
-            event->y >= rb->y && event->y < rb->y + rb->height) {
-            env(SYS_PWR_RESET_ID);
-        }
-        if (event->x >= sd->x && event->x < sd->x + sd->width &&
-            event->y >= sd->y && event->y < sd->y + sd->height) {
-            env(SYS_PWR_SHUTDOWN_ID);
-        }
-    }
+    button_handle_event(&state->reboot_btn, w, event);
+    button_handle_event(&state->shutdown_btn, w, event);
 }
 
 void sysctl_draw(window_instance_t* w) {
@@ -82,11 +73,8 @@ void sysctl_draw(window_instance_t* w) {
         }
     }
 
-    click_area_t* rb = &state->reboot_area;
-    window_draw_fpic(w, &reboot_button, rb->x, rb->y);
-
-    click_area_t* sd = &state->shutdown_area;
-    window_draw_fpic(w, &shutdown_button, sd->x, sd->y);
+    button_draw(&state->reboot_btn, w);
+    button_draw(&state->shutdown_btn, w);
 
     char timebuf[128] = { 0 };
     unix_time_to_string(time(NULL), timebuf);

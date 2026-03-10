@@ -127,6 +127,26 @@ int main() {
                 }
             }
         }
+
+        if (info.x != last_mouse_x || info.y != last_mouse_y) {
+            int hover_idx = window_at_point(info.x, info.y);
+            if (hover_idx >= 0) {
+                window_instance_t* hw = window_get(hover_idx);
+                if (hw && hw->update) {
+                    event_t mevt;
+                    mevt.type = EVENT_MOUSE_MOVE;
+                    mevt.x = info.x - hw->x;
+                    mevt.y = info.y - hw->y;
+                    mevt.button = 0;
+                    mevt.key = 0;
+                    mevt.arrow = 0;
+                    hw->update(hw, &mevt);
+                    if (hw->is_dirty) {
+                        should_redraw = true;
+                    }
+                }
+            }
+        }
         
         if (!info.button_left && last_button_left) {
             if (dragging_window >= 0) {

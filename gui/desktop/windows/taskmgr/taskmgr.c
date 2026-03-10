@@ -2,6 +2,7 @@
 #include <window.h>
 #include <window_helpers.h>
 #include <graphics.h>
+#include <button.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,7 +10,6 @@
 #include <sys/raminfo.h>
 
 extern psf1_font_t font;
-extern fpic_image_t kill_button;
 
 #define is_kb(x) ((x) >= 1024)
 #define is_mb(x) ((x) >= 1024 * 1024)
@@ -30,6 +30,11 @@ static int format_memory_usage(char* out_buf, uint32_t usage) {
     }
 }
 
+static void on_kill_task(window_instance_t* w, void* userdata) {
+    int pid = (int)(long)userdata;
+    kill(pid);
+}
+
 void taskmgr_init(window_instance_t* w) {
     taskmgr_state_t* state = malloc(sizeof(taskmgr_state_t));
     memset(state, 0, sizeof(taskmgr_state_t));
@@ -45,17 +50,14 @@ void taskmgr_update(window_instance_t* w, event_t* event) {
     state->task_count = get_task_list(state->tasks, TASKMGR_MAX_TASKS);
     w->is_dirty = true;
 
-    if (event->type == EVENT_MOUSE_CLICK && event->button == MOUSE_BUTTON_LEFT) {
-        for (int i = 0; i < state->task_count; i++) {
-            click_area_t* btn = &state->kill_buttons[i];
-            if (btn->width && btn->height &&
-                event->x >= btn->x && event->x < btn->x + btn->width &&
-                event->y >= btn->y && event->y < btn->y + btn->height) {
-                kill(state->tasks[i].pid);
-                w->is_dirty = true;
-                break;
-            }
-        }
+    for (int i = 0; i < state->task_count; i++) {
+        int row_y = 20 + i * 16;
+        int btn_x = w->width - 7 * 8;
+        button_init(&state->kill_buttons[i], btn_x, row_y, 6 * 8, 16, "Kill", on_kill_task, (void*)(long)state->tasks[i].pid);
+        state->kill_buttons[i].bg_color = 0x662222;
+        state->kill_buttons[i].hover_color = 0xaa3333;
+        state->kill_buttons[i].text_color = 0xff8888;
+        button_handle_event(&state->kill_buttons[i], w, event);
     }
 }
 
@@ -68,11 +70,8 @@ void taskmgr_draw(window_instance_t* w) {
         }
     }
 
-    int kill_w = (int)kill_button.width;
-    int kill_h = (int)kill_button.height;
-
     window_draw_string(w, 4, 4, "PID  Term Name", 0x88ffaa);
-    window_draw_string(w, w->width - 4 * 8, 4, "Kill", 0x88ffaa);
+    window_draw_string(w, w->width - 6 * 8, 4, "Kill", 0x88ffaa);
 
     window_draw_line(w, 0, 18, w->width, 18, 0x336644);
 
@@ -89,16 +88,7 @@ void taskmgr_draw(window_instance_t* w) {
 
         window_draw_string(w, 10 * 8, row_y + 1, state->tasks[i].name, 0xffffff);
 
-
-        int btn_x = w->width - kill_w - 4;
-        int btn_y = row_y;
-
-        state->kill_buttons[i].x = btn_x;
-        state->kill_buttons[i].y = TITLE_BAR_HEIGHT + btn_y;
-        state->kill_buttons[i].width = kill_w;
-        state->kill_buttons[i].height = kill_h;
-
-        window_draw_fpic(w, &kill_button, btn_x, TITLE_BAR_HEIGHT + btn_y);
+        button_draw(&state->kill_buttons[i], w);
     }
 
     uint32_t mem_free;

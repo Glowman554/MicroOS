@@ -2,6 +2,7 @@
 #include <window.h>
 #include <window_helpers.h>
 #include <graphics.h>
+#include <button.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/file.h>
@@ -10,9 +11,6 @@
 #include <net/ipv4.h>
 
 extern psf1_font_t font;
-extern fpic_image_t up_arrow;
-extern fpic_image_t down_arrow;
-extern fpic_image_t dhcp_button;
 
 static void netinfo_refresh(netinfo_state_t* state) {
     char buffer[16] = { 0 };
@@ -27,25 +25,41 @@ static void netinfo_refresh(netinfo_state_t* state) {
     state->nic_valid = 1;
 }
 
+void on_netinfo_up(window_instance_t* w, void* userdata) {
+    netinfo_state_t* state = (netinfo_state_t*)w->state;
+    state->interface--;
+    netinfo_refresh(state);
+}
+
+void on_netinfo_down(window_instance_t* w, void* userdata) {
+    netinfo_state_t* state = (netinfo_state_t*)w->state;
+    state->interface++;
+    netinfo_refresh(state);
+}
+
+void on_netinfo_dhcp(window_instance_t* w, void* userdata) {
+    netinfo_state_t* state = (netinfo_state_t*)w->state;
+    char interface_str[8] = { 0 };
+    sprintf(interface_str, "%d", state->interface);
+    char* exec = search_executable("dhcp");
+    if (exec != NULL) {
+        const char* dhcp_argv[] = { "dhcp", "-i", interface_str, NULL };
+        spawn(exec, dhcp_argv, NULL);
+        free(exec);
+    }
+    netinfo_refresh(state);
+}
+
 void netinfo_init(window_instance_t* w) {
     netinfo_state_t* state = malloc(sizeof(netinfo_state_t));
     state->interface = 0;
     netinfo_refresh(state);
 
-    state->up_area.x      = w->width - 16;
-    state->up_area.y      = TITLE_BAR_HEIGHT;
-    state->up_area.width  = 16;
-    state->up_area.height = 16;
-
-    state->down_area.x      = w->width - 16;
-    state->down_area.y      = w->height - 16;
-    state->down_area.width  = 16;
-    state->down_area.height = 16;
-
-    state->dhcp_area.x      = w->width - 16;
-    state->dhcp_area.y      = TITLE_BAR_HEIGHT + 32;
-    state->dhcp_area.width  = 16;
-    state->dhcp_area.height = 16;
+    button_init(&state->up_btn, w->width - 28, 2, 24, 20, "^", on_netinfo_up, NULL);
+    button_init(&state->down_btn, w->width - 28, w->height - TITLE_BAR_HEIGHT - 24, 24, 20, "v", on_netinfo_down, NULL);
+    button_init(&state->dhcp_btn, w->width - 54, 26, 50, 20, "DHCP", on_netinfo_dhcp, NULL);
+    state->dhcp_btn.bg_color = 0x336644;
+    state->dhcp_btn.hover_color = 0x44aa66;
 
     w->state = state;
     w->title_bar_color = 0x1a3a2e;
@@ -55,40 +69,11 @@ void netinfo_init(window_instance_t* w) {
 void netinfo_update(window_instance_t* w, event_t* event) {
     netinfo_state_t* state = (netinfo_state_t*)w->state;
 
-    if (event->type == EVENT_MOUSE_CLICK && event->button == MOUSE_BUTTON_LEFT) {
-        click_area_t* up   = &state->up_area;
-        click_area_t* dn   = &state->down_area;
-        click_area_t* dhcp = &state->dhcp_area;
+    w->is_dirty = true;
 
-        if (event->x >= up->x && event->x < up->x + up->width &&
-            event->y >= up->y && event->y < up->y + up->height) {
-            state->interface--;
-            netinfo_refresh(state);
-            w->is_dirty = true;
-        }
-
-        if (event->x >= dn->x && event->x < dn->x + dn->width &&
-            event->y >= dn->y && event->y < dn->y + dn->height) {
-            state->interface++;
-            netinfo_refresh(state);
-            w->is_dirty = true;
-        }
-
-        if (event->x >= dhcp->x && event->x < dhcp->x + dhcp->width &&
-            event->y >= dhcp->y && event->y < dhcp->y + dhcp->height) {
-            char interface_str[8] = { 0 };
-            sprintf(interface_str, "%d", state->interface);
-
-            char* exec = search_executable("dhcp");
-            if (exec != NULL) {
-                const char* dhcp_argv[] = { "dhcp", "-i", interface_str, NULL };
-                spawn(exec, dhcp_argv, NULL);
-                free(exec);
-            }
-            netinfo_refresh(state);
-            w->is_dirty = true;
-        }
-    }
+    button_handle_event(&state->up_btn, w, event);
+    button_handle_event(&state->down_btn, w, event);
+    button_handle_event(&state->dhcp_btn, w, event);
 }
 
 void netinfo_draw(window_instance_t* w) {
@@ -100,13 +85,9 @@ void netinfo_draw(window_instance_t* w) {
         }
     }
 
-    click_area_t* up   = &state->up_area;
-    click_area_t* dn   = &state->down_area;
-    click_area_t* dhcp = &state->dhcp_area;
-
-    window_draw_fpic(w, &up_arrow,    up->x,   up->y);
-    window_draw_fpic(w, &down_arrow,  dn->x,   dn->y);
-    window_draw_fpic(w, &dhcp_button, dhcp->x, dhcp->y);
+    button_draw(&state->up_btn, w);
+    button_draw(&state->down_btn, w);
+    button_draw(&state->dhcp_btn, w);
 
     char buffer[128] = { 0 };
 

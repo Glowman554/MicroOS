@@ -2,6 +2,7 @@
 #include <window.h>
 #include <window_helpers.h>
 #include <graphics.h>
+#include <button.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,19 +10,9 @@
 #include <sys/file.h>
 
 extern psf1_font_t font;
-extern fpic_image_t back_button;
-extern fpic_image_t up_arrow;
-extern fpic_image_t down_arrow;
 
 #define FP_ROW_H   16
 #define FP_HDR_H   32
-
-typedef struct {
-    int x;
-    int y;
-    int width;
-    int height;
-} fp_btn_t;
 
 typedef struct {
     click_area_t* rows;
@@ -30,7 +21,45 @@ typedef struct {
     bool fs_mode;
     char cwd[128];
     filepicker_callback_t callback;
+    button_t back_btn;
+    button_t up_btn;
+    button_t down_btn;
 } filepicker_state_t;
+
+static void on_fp_back(window_instance_t* w, void* userdata) {
+    filepicker_state_t* st = (filepicker_state_t*)w->state;
+    if (st->fs_mode) {
+        return;
+    }
+    char full[128] = { 0 };
+    strcpy(full, st->cwd);
+    int fl = strlen(full);
+    if (fl > 0 && full[fl - 1] != '/') {
+        strcat(full, "/");
+    }
+    strcat(full, "..");
+    char buf[128] = { 0 };
+    if (!resolve(full, buf)) {
+        st->fs_mode = true;
+        memset(st->cwd, 0, sizeof(st->cwd));
+    } else {
+        memset(st->cwd, 0, sizeof(st->cwd));
+        strcpy(st->cwd, buf);
+    }
+    st->offset = 0;
+}
+
+static void on_fp_up(window_instance_t* w, void* userdata) {
+    (void)userdata;
+    filepicker_state_t* st = (filepicker_state_t*)w->state;
+    if (st->offset > 0) st->offset--;
+}
+
+static void on_fp_down(window_instance_t* w, void* userdata) {
+    (void)userdata;
+    filepicker_state_t* st = (filepicker_state_t*)w->state;
+    st->offset++;
+}
 
 void fp_init(window_instance_t* w) {
     filepicker_state_t* st = malloc(sizeof(filepicker_state_t));
@@ -42,6 +71,11 @@ void fp_init(window_instance_t* w) {
     st->fs_mode = true;
     st->rows = malloc(sizeof(click_area_t) * st->max_rows);
     memset(st->rows, 0, sizeof(click_area_t) * st->max_rows);
+
+    button_init(&st->back_btn, w->width - 54, 2, 50, 18, "Back", on_fp_back, NULL);
+    button_init(&st->up_btn, w->width - 28, FP_HDR_H, 24, 20, "^", on_fp_up, NULL);
+    button_init(&st->down_btn, w->width - 28, w->height - TITLE_BAR_HEIGHT - 24, 24, 20, "v", on_fp_down, NULL);
+
     w->state = st;
     w->title_bar_color = 0x446688;
     w->is_dirty = true;
@@ -60,65 +94,16 @@ void fp_update(window_instance_t* w, event_t* event) {
         s_pending_callback = NULL;
     }
 
+    button_handle_event(&st->back_btn, w, event);
+    button_handle_event(&st->up_btn, w, event);
+    button_handle_event(&st->down_btn, w, event);
+
     if (event->type != EVENT_MOUSE_CLICK || event->button != MOUSE_BUTTON_LEFT) {
         return;
     }
 
     int rx = event->x;
     int ry = event->y;
-
-    fp_btn_t back;
-    back.x = w->width - 25 * 2;
-    back.y = TITLE_BAR_HEIGHT;
-    back.width = 25 * 2;
-    back.height = 11 * 2;
-    if (rx >= back.x && rx < back.x + back.width && ry >= back.y && ry < back.y + back.height) {
-        if (st->fs_mode) {
-            return;
-        }
-        char full[128] = { 0 };
-        strcpy(full, st->cwd);
-        int fl = strlen(full);
-        if (fl > 0 && full[fl - 1] != '/') {
-            strcat(full, "/");
-        }
-        strcat(full, "..");
-        char buf[128] = { 0 };
-        if (!resolve(full, buf)) {
-            st->fs_mode = true;
-            memset(st->cwd, 0, sizeof(st->cwd));
-        } else {
-            memset(st->cwd, 0, sizeof(st->cwd));
-            strcpy(st->cwd, buf);
-        }
-        st->offset = 0;
-        w->is_dirty = true;
-        return;
-    }
-
-    fp_btn_t up;
-    up.x = w->width - 16;
-    up.y = TITLE_BAR_HEIGHT + FP_HDR_H;
-    up.width = 16;
-    up.height = 16;
-    if (rx >= up.x && rx < up.x + up.width &&
-        ry >= up.y && ry < up.y + up.height) {
-        if (st->offset > 0) { 
-            st->offset--; w->is_dirty = true;
-        }
-        return;
-    }
-
-    fp_btn_t dn;
-    dn.x = w->width - 16;
-    dn.y = w->height - 16;
-    dn.width = 16;
-    dn.height = 16;
-    if (rx >= dn.x && rx < dn.x + dn.width && ry >= dn.y && ry < dn.y + dn.height) {
-        st->offset++;
-        w->is_dirty = true;
-        return;
-    }
 
     for (int i = 0; i < st->max_rows; i++) {
         click_area_t* btn = &st->rows[i];
@@ -202,9 +187,9 @@ static void fp_draw(window_instance_t* w) {
     window_draw_string(w, 2, 2, st->cwd[0] ? st->cwd : "(select a filesystem)", 0xffffff);
     window_draw_line(w, 0, 20, w->width, 20, 0x444444);
 
-    window_draw_fpic_scaled(w, &back_button, w->width - 25 * 2, TITLE_BAR_HEIGHT, 2);
-    window_draw_fpic(w, &up_arrow, w->width - 16, TITLE_BAR_HEIGHT + FP_HDR_H);
-    window_draw_fpic(w, &down_arrow, w->width - 16, w->height - 16);
+    button_draw(&st->back_btn, w);
+    button_draw(&st->up_btn, w);
+    button_draw(&st->down_btn, w);
 
     int start_y = FP_HDR_H;
 

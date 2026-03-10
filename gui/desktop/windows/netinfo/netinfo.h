@@ -1,15 +1,16 @@
 #pragma once
 
 #include <types.h>
+#include <button.h>
 #include <net/ipv4.h>
 
 typedef struct {
     int interface;
     int nic_valid;
     nic_content_t nic_data;
-    click_area_t up_area;
-    click_area_t down_area;
-    click_area_t dhcp_area;
+    button_t up_btn;
+    button_t down_btn;
+    button_t dhcp_btn;
 } netinfo_state_t;
 
 void netinfo_init(window_instance_t* w);
