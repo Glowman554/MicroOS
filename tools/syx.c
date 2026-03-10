@@ -321,9 +321,47 @@ void write_fl_syntax() {
     save_syx(&header, words, len, buf, "fl.syx");
 }
 
+void write_json_syntax() {
+	char* buf = NULL;
+	int len = 0;
+
+    syntax_word_t words[] = {
+		NEW_WORD("true", blue),
+		NEW_WORD("false", blue),
+		NEW_WORD("null", blue),
+
+	};
+
+	syntax_header_t header = {
+		.magic = 0xff << 24 | 'S' << 0 | 'Y' << 8 | 'X' << 16, // TODO,
+		.single_line_comment = {
+			.active = false,
+		},
+		.multi_line_comment = {
+			.active = false,
+		},
+		.string = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "\""),
+			.sect_end_offset = write_string(&len, &buf, "\""),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.single_char = {
+			.active = false,
+		},
+		.brackets_start = write_string(&len, &buf, "{["),
+		.brackets_end = write_string(&len, &buf, "]}"),
+		.match_brackets = true,
+		.num_words = sizeof(words) / sizeof(words[0])
+	};
+
+    save_syx(&header, words, len, buf, "json.syx");
+}
 
 int main(int argc, char** argv) {
 	write_c_syntax();
     write_asm_syntax();
 	write_fl_syntax();
+	write_json_syntax();
 }
