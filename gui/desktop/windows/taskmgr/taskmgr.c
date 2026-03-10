@@ -64,7 +64,7 @@ void taskmgr_draw(window_instance_t* w) {
 
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            desktop_set_pixel(w->x + x, w->y + y, 0x111111);
+            window_set_pixel(w, x, y, 0x111111);
         }
     }
 
@@ -98,7 +98,7 @@ void taskmgr_draw(window_instance_t* w) {
         state->kill_buttons[i].width = kill_w;
         state->kill_buttons[i].height = kill_h;
 
-        desktop_draw_fpic(&kill_button, w->x + btn_x, w->y + TITLE_BAR_HEIGHT + btn_y);
+        window_draw_fpic(w, &kill_button, btn_x, TITLE_BAR_HEIGHT + btn_y);
     }
 
     uint32_t mem_free;

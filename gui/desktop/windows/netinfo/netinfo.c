@@ -96,7 +96,7 @@ void netinfo_draw(window_instance_t* w) {
 
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            desktop_set_pixel(w->x + x, w->y + y, 0x051015);
+            window_set_pixel(w, x, y, 0x051015);
         }
     }
 
@@ -104,9 +104,9 @@ void netinfo_draw(window_instance_t* w) {
     click_area_t* dn   = &state->down_area;
     click_area_t* dhcp = &state->dhcp_area;
 
-    desktop_draw_fpic(&up_arrow,    w->x + up->x,   w->y + up->y);
-    desktop_draw_fpic(&down_arrow,  w->x + dn->x,   w->y + dn->y);
-    desktop_draw_fpic(&dhcp_button, w->x + dhcp->x, w->y + dhcp->y);
+    window_draw_fpic(w, &up_arrow,    up->x,   up->y);
+    window_draw_fpic(w, &down_arrow,  dn->x,   dn->y);
+    window_draw_fpic(w, &dhcp_button, dhcp->x, dhcp->y);
 
     char buffer[128] = { 0 };
 

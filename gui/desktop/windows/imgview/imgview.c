@@ -71,7 +71,7 @@ void imgview_draw(window_instance_t* w) {
 
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            desktop_set_pixel(w->x + x, w->y + y, 0x000000);
+            window_set_pixel(w, x, y, 0x000000);
         }
     }
 
@@ -108,7 +108,7 @@ void imgview_draw(window_instance_t* w) {
             uint32_t rgb = color & 0x00FFFFFF;
             for (int sx = 0; sx < scale; sx++) {
                 for (int sy = 0; sy < scale; sy++) {
-                    desktop_set_pixel(w->x + off_x + px * scale + sx, w->y + TITLE_BAR_HEIGHT + off_y + py * scale + sy, rgb);
+                    window_set_pixel(w, off_x + px * scale + sx, TITLE_BAR_HEIGHT + off_y + py * scale + sy, rgb);
                 }
             }
         }

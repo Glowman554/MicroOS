@@ -78,15 +78,15 @@ void sysctl_draw(window_instance_t* w) {
 
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            desktop_set_pixel(w->x + x, w->y + y, 0x1a0a2e);
+            window_set_pixel(w, x, y, 0x1a0a2e);
         }
     }
 
     click_area_t* rb = &state->reboot_area;
-    desktop_draw_fpic(&reboot_button, w->x + rb->x, w->y + rb->y);
+    window_draw_fpic(w, &reboot_button, rb->x, rb->y);
 
     click_area_t* sd = &state->shutdown_area;
-    desktop_draw_fpic(&shutdown_button, w->x + sd->x, w->y + sd->y);
+    window_draw_fpic(w, &shutdown_button, sd->x, sd->y);
 
     char timebuf[128] = { 0 };
     unix_time_to_string(time(NULL), timebuf);

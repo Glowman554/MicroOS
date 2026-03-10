@@ -52,7 +52,7 @@ void launcher_draw(window_instance_t* w) {
         
         for (int x = btn->x; x < btn->x + btn->width; x++) {
             for (int y = btn->y; y < btn->y + btn->height; y++) {
-                desktop_set_pixel(w->x + x, w->y + TITLE_BAR_HEIGHT + y, 0x445566);
+                window_set_pixel(w, x, TITLE_BAR_HEIGHT + y, 0x445566);
             }
         }
         

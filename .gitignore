@@ -26,3 +26,5 @@ limine-hdd.h
 microos.jpg
 
 initrd/*.wav
+
+kvm

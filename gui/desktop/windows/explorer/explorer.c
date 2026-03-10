@@ -175,7 +175,7 @@ void explorer_draw(window_instance_t* w) {
     
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            desktop_set_pixel(w->x + x, w->y + y, 0x1a1a2e);
+            window_set_pixel(w, x, y, 0x1a1a2e);
         }
     }
     
@@ -188,21 +188,21 @@ void explorer_draw(window_instance_t* w) {
     back_button_area.y = TITLE_BAR_HEIGHT;
     back_button_area.width = 25 * 2;
     back_button_area.height = 11 * 2;
-    desktop_draw_fpic_scaled(&back_button, w->x + back_button_area.x, w->y + back_button_area.y, 2);
+    window_draw_fpic_scaled(w, &back_button, back_button_area.x, back_button_area.y, 2);
     
     button_area_t up_arrow_area;
     up_arrow_area.x = w->width - 16;
     up_arrow_area.y = TITLE_BAR_HEIGHT + 32;
     up_arrow_area.width = 16;
     up_arrow_area.height = 16;
-    desktop_draw_fpic(&up_arrow, w->x + up_arrow_area.x, w->y + up_arrow_area.y);
+    window_draw_fpic(w, &up_arrow, up_arrow_area.x, up_arrow_area.y);
     
     button_area_t down_arrow_area;
     down_arrow_area.x = w->width - 16;
     down_arrow_area.y = w->height - 16;
     down_arrow_area.width = 16;
     down_arrow_area.height = 16;
-    desktop_draw_fpic(&down_arrow, w->x + down_arrow_area.x, w->y + down_arrow_area.y);
+    window_draw_fpic(w, &down_arrow, down_arrow_area.x, down_arrow_area.y);
     
     int start_y = 32;
     
@@ -234,7 +234,7 @@ void explorer_draw(window_instance_t* w) {
             int y = start_y + count * 16;
             uint32_t color = (dir.type == ENTRY_DIR) ? 0x90EE90 : 0xFF6B6B;
             window_draw_string(w, 2, y, dir.name, color);
-            desktop_draw_char(&font, w->x + w->width - 32, w->y + TITLE_BAR_HEIGHT + y, dir.type == ENTRY_FILE ? 'F' : 'D', 0xffffff, 0x1a1a2e);
+            window_draw_char(w, w->width - 32, TITLE_BAR_HEIGHT + y, dir.type == ENTRY_FILE ? 'F' : 'D', 0xffffff, 0x1a1a2e);
             
             state->files[count].x = 0;
             state->files[count].y = TITLE_BAR_HEIGHT + y;
