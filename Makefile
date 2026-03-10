@@ -121,6 +121,7 @@ libs.zip: all
 ifeq ($(GUI),1)
 	cp gui/lib/* res/libs/. -rf
 	cp gui/libwindow/include/* res/libs/include/. -rf
+	cp gui/desktop/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/

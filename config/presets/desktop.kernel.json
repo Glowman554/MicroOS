@@ -1,0 +1,8 @@
+{
+    "TEXT_MODE_EMULATION": true,
+    "STATUS_BAR": false,
+    "RAW_FRAMEBUFFER_ACCESS": true,
+    "FULL_SCREEN_TERMINAL": true,
+    "NETWORK_STACK": true,
+    "TCP": true
+}

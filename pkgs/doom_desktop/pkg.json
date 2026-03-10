@@ -1,0 +1,10 @@
+{
+	"directories": [
+		"doom"
+	],
+	"mappings": {
+		"src/doom.o": "doom/doom.o"
+	},
+	"name": "DOOM Desktop",
+	"license": "src/DOOM/DOOMLIC.TXT"
+}

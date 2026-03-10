@@ -25,12 +25,14 @@ mkdir -p pkgs
 	build_dir saf &
 	build_dir nextfs &
 	build_dir mcc &
+	build_dir doom_desktop &
 	wait
 )
 
 (
 	cd pkgs
 	echo "#!/bin/terminal.mex" > all.msh
+	echo "cd \$ROOT_FS/pkgs" >> all.msh
 	echo export ACCEPT_ALL=1 >> all.msh
 	ls *.elf >> all.msh
 	ls *.mex >> all.msh
