@@ -28,6 +28,7 @@ int main() {
     register_windows();
 
     register_launcher_window();
+    desktop_start_menu_init();
     
     desktop_draw_all();
     desktop_draw_mouse_pointer(0, 0);
@@ -57,7 +58,10 @@ int main() {
             } else if (info.button_middle && !last_button_middle) {
                 button = MOUSE_BUTTON_MIDDLE;
             }
-            
+
+            if (button == MOUSE_BUTTON_LEFT && desktop_start_menu_handle_click(info.x, info.y)) {
+                should_redraw = true;
+            } else {
             int clicked_idx = window_at_point(info.x, info.y);
             
             if (clicked_idx >= 0) {
@@ -104,6 +108,7 @@ int main() {
                     }
                 }
             }
+            }
         }
         
         if (info.button_left && dragging_window >= 0) {
@@ -132,7 +137,6 @@ int main() {
         last_button_right = info.button_right;
         last_button_middle = info.button_middle;
         
-        /* ── keyboard input ─────────────────────────────────── */
         int focused = window_get_focused();
         if (focused >= 0) {
             window_instance_t* fw = window_get(focused);

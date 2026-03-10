@@ -1,12 +1,14 @@
 #include <desktop.h>
 #include <graphics.h>
 #include <window.h>
+#include <windows.h>
 #include <types.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 #include <buildin/unix_time.h>
+#include <buildin/array.h>
 
 #include "windows/edit/edit.h"
 
@@ -17,8 +19,8 @@ typedef struct {
     void (*open_fn)(const char* path);
 } file_assoc_t;
 
-static file_assoc_t s_assocs[MAX_ASSOCS];
-static int s_assoc_count = 0;
+file_assoc_t s_assocs[MAX_ASSOCS];
+int s_assoc_count = 0;
 
 void desktop_register_file_assoc(const char* ext, void (*open_fn)(const char* path)) {
     if (s_assoc_count >= MAX_ASSOCS) {
@@ -110,6 +112,101 @@ void desktop_draw_window_chrome(window_instance_t* w) {
 #define TASKBAR_PADDING 4
 #define TASKBAR_ITEM_MIN_WIDTH 80
 
+#define START_BUTTON_WIDTH 56
+#define START_MENU_ITEM_H 24
+#define START_MENU_WIDTH 180
+#define START_MENU_PADDING 4
+
+bool s_start_menu_open = false;
+click_area_t s_start_button = { 0 };
+
+#define START_MENU_MAX_ITEMS 32
+click_area_t s_menu_items[START_MENU_MAX_ITEMS];
+int s_menu_item_count = 0;
+
+void desktop_start_menu_init(void) {
+    s_start_menu_open = false;
+}
+
+bool desktop_is_start_menu_open(void) {
+    return s_start_menu_open;
+}
+
+void desktop_toggle_start_menu(void) {
+    s_start_menu_open = !s_start_menu_open;
+}
+
+bool desktop_start_menu_handle_click(int x, int y) {
+    if (x >= s_start_button.x && x < s_start_button.x + s_start_button.width &&
+        y >= s_start_button.y && y < s_start_button.y + s_start_button.height) {
+        desktop_toggle_start_menu();
+        return true;
+    }
+
+    if (s_start_menu_open) {
+        for (int i = 0; i < s_menu_item_count; i++) {
+            click_area_t* item = &s_menu_items[i];
+            if (x >= item->x && x < item->x + item->width && y >= item->y && y < item->y + item->height) {
+                window_definition_t* def = window_definitions[i];
+                def->register_window();
+                s_start_menu_open = false;
+                return true;
+            }
+        }
+        s_start_menu_open = false;
+        return true;
+    }
+
+    return false;
+}
+
+void desktop_draw_start_menu(void) {
+    int count = array_length(window_definitions);
+    if (count > START_MENU_MAX_ITEMS) {
+        count = START_MENU_MAX_ITEMS;
+    }
+    s_menu_item_count = count;
+
+    int menu_h = count * START_MENU_ITEM_H + START_MENU_PADDING * 2;
+    int menu_x = 0;
+    int menu_y = framebuffer.fb_height - TASKBAR_HEIGHT - menu_h;
+
+    for (int x = menu_x; x < menu_x + START_MENU_WIDTH; x++) {
+        for (int y = menu_y; y < menu_y + menu_h; y++) {
+            desktop_set_pixel(x, y, 0x2a2a2a);
+        }
+    }
+
+    desktop_draw_line(menu_x, menu_y, menu_x + START_MENU_WIDTH, menu_y, 0x555555);
+    desktop_draw_line(menu_x + START_MENU_WIDTH - 1, menu_y, menu_x + START_MENU_WIDTH - 1, menu_y + menu_h, 0x555555);
+    desktop_draw_line(menu_x, menu_y, menu_x, menu_y + menu_h, 0x555555);
+
+    for (int i = 0; i < count; i++) {
+        int ix = menu_x + START_MENU_PADDING;
+        int iy = menu_y + START_MENU_PADDING + i * START_MENU_ITEM_H;
+        int iw = START_MENU_WIDTH - START_MENU_PADDING * 2;
+        int ih = START_MENU_ITEM_H;
+
+        s_menu_items[i].x = ix;
+        s_menu_items[i].y = iy;
+        s_menu_items[i].width = iw;
+        s_menu_items[i].height = ih;
+
+        for (int x = ix; x < ix + iw; x++) {
+            for (int y = iy; y < iy + ih; y++) {
+                desktop_set_pixel(x, y, 0x3a3a4e);
+            }
+        }
+
+        desktop_draw_line(ix, iy, ix + iw, iy, 0x555577);
+        desktop_draw_line(ix, iy + ih - 1, ix + iw, iy + ih - 1, 0x333344);
+        desktop_draw_line(ix, iy, ix, iy + ih, 0x555577);
+        desktop_draw_line(ix + iw - 1, iy, ix + iw - 1, iy + ih, 0x333344);
+
+        desktop_draw_string(&font, ix + 8, iy + 4, window_definitions[i]->name, 0xaaffaa, 0x3a3a4e);
+    }
+}
+
 void desktop_draw_taskbar(void) {
     int window_count = window_get_count();
     int focused_window = window_get_focused();
@@ -122,6 +219,25 @@ void desktop_draw_taskbar(void) {
     }
     
     desktop_draw_line(0, taskbar_y, framebuffer.fb_width, taskbar_y, 0x555555);
+
+    s_start_button.x = TASKBAR_PADDING;
+    s_start_button.y = taskbar_y + TASKBAR_PADDING;
+    s_start_button.width = START_BUTTON_WIDTH;
+    s_start_button.height = TASKBAR_HEIGHT - TASKBAR_PADDING * 2;
+
+    uint32_t start_bg = s_start_menu_open ? 0x4488ff : 0x445566;
+    for (int x = s_start_button.x; x < s_start_button.x + s_start_button.width; x++) {
+        for (int y = s_start_button.y; y < s_start_button.y + s_start_button.height; y++) {
+            desktop_set_pixel(x, y, start_bg);
+        }
+    }
+    desktop_draw_line(s_start_button.x, s_start_button.y, s_start_button.x + s_start_button.width, s_start_button.y, 0x666688);
+    desktop_draw_line(s_start_button.x, s_start_button.y + s_start_button.height - 1, s_start_button.x + s_start_button.width, s_start_button.y + s_start_button.height - 1, 0x333344);
+    desktop_draw_line(s_start_button.x, s_start_button.y, s_start_button.x, s_start_button.y + s_start_button.height, 0x666688);
+    desktop_draw_line(s_start_button.x + s_start_button.width - 1, s_start_button.y, s_start_button.x + s_start_button.width - 1, s_start_button.y + s_start_button.height, 0x333344);
+    desktop_draw_string(&font, s_start_button.x + 4, taskbar_y + 4, "Start", 0xffffff, start_bg);
+
+    int items_start_x = TASKBAR_PADDING + START_BUTTON_WIDTH + TASKBAR_PADDING;
     
     int year, month, day, hour, minute, second;
     from_unix_time((unsigned long int)time(NULL), &year, &month, &day, &hour, &minute, &second);
@@ -131,13 +247,13 @@ void desktop_draw_taskbar(void) {
     int clock_x = framebuffer.fb_width - clock_char_w - TASKBAR_PADDING;
     desktop_draw_string(&font, clock_x, taskbar_y + 4, clock_buf, 0xffffff, 0x2a2a2a);
 
-    int available_width = framebuffer.fb_width - TASKBAR_PADDING * 2 - clock_char_w - TASKBAR_PADDING * 2;
+    int available_width = clock_x - items_start_x - TASKBAR_PADDING;
     int item_width = available_width / (window_count > 0 ? window_count : 1);
     if (item_width > TASKBAR_ITEM_MIN_WIDTH) {
         item_width = TASKBAR_ITEM_MIN_WIDTH;
     }
     
-    int x_pos = TASKBAR_PADDING;
+    int x_pos = items_start_x;
     for (int i = 0; i < window_count; i++) {
         window_instance_t* w = window_get(i);
         if (!w) {
@@ -195,4 +311,8 @@ void desktop_draw_all(void) {
     }
     
     desktop_draw_taskbar();
+
+    if (s_start_menu_open) {
+        desktop_draw_start_menu();
+    }
 }

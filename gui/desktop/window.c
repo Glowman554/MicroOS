@@ -21,6 +21,7 @@ void window_add(int x, int y, int width, int height, const char* title, uint32_t
     w->y = y;
     w->width = width;
     w->height = height;
+    memset(w->title, 0, sizeof(w->title));
     strcpy(w->title, title);
     w->bg_color = bg_color;
     w->title_bar_color = 0x444477;
