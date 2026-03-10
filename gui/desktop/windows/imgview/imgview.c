@@ -2,6 +2,7 @@
 #include "scanner.h"
 #include <window.h>
 #include <window_helpers.h>
+#include <filepicker.h>
 #include <graphics.h>
 #include <stdlib.h>
 #include <string.h>
@@ -124,4 +125,13 @@ void imgview_cleanup(window_instance_t* w) {
         free(state);
         w->state = NULL;
     }
+}
+
+window_definition_t imgview_definition = {
+    .name = "Image Viewer",
+    .register_window = imgview_open_picker,
+};
+
+void imgview_open_picker(void) {
+    filepicker_open(imgview_open);
 }

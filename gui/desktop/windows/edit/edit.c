@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "syntax.h"
+#include <filepicker.h>
 
 extern psf1_font_t font;
 
@@ -197,12 +198,21 @@ void handle_key(edit_state_t* st, char input) {
 }
 
 
+static char s_pending_path[128];
+
+void edit_load_file(edit_state_t* st, const char* path);
+
 void edit_init(window_instance_t* w) {
     edit_state_t* st = malloc(sizeof(edit_state_t));
     memset(st, 0, sizeof(edit_state_t));
     st->is_in_insert_mode = true;
     w->state = st;
     w->title_bar_color = 0x445566;
+
+    if (s_pending_path[0]) {
+        edit_load_file(st, s_pending_path);
+        s_pending_path[0] = '\0';
+    }
 }
 
 char* get_file_extension(const char* filename) {
@@ -257,6 +267,10 @@ void edit_load_file(edit_state_t* st, const char* path) {
 	}
 
     recompute_color(st);
+}
+
+static void edit_picker_callback(const char* path) {
+    edit_open(path);
 }
 
 void edit_update(window_instance_t* w, event_t* event) {
@@ -407,34 +421,26 @@ void edit_cleanup(window_instance_t* w) {
 
 window_definition_t edit_definition = {
     .name = "Editor",
-    .register_window = register_edit_window,
+    .register_window = edit_open_picker,
 };
 
-void register_edit_window() {
-    window_add(80, 60, 500, 380, "Editor", 0x1a1a2e, edit_init, edit_update, edit_draw, edit_cleanup);
+void edit_open_picker() {
+    filepicker_open(edit_picker_callback);
 }
 
 void edit_open(const char* path) {
-    register_edit_window();
+    int plen = strnlen(path, sizeof(s_pending_path) - 1);
+    memcpy(s_pending_path, path, plen);
+    s_pending_path[plen] = '\0';
 
-    window_instance_t* w = window_get(window_get_count() - 1);
-    if (w && w->state) {
-        edit_state_t* st = (edit_state_t*)w->state;
-        edit_load_file(st, path);
-
-        const char* name = path;
-        for (const char* p = path; *p; p++) {
-            if (*p == '/') {
-                name = p + 1;
-            }
+    const char* base = path;
+    for (const char* p = path; *p; p++) {
+        if (*p == '/') {
+            base = p + 1;
         }
-        char title[64] = { 0 };
-        sprintf(title, "Edit: %s", name);
-        int tlen = strlen(title);
-        if (tlen >= (int)sizeof(w->title)) {
-            tlen = sizeof(w->title) - 1;
-        }
-        memcpy(w->title, title, tlen);
-        w->title[tlen] = '\0';
     }
+    char title[64] = { 0 };
+    sprintf(title, "Edit: %s", base);
+
+    window_add(80, 60, 500, 380, title, 0x1a1a2e, edit_init, edit_update, edit_draw, edit_cleanup);
 }

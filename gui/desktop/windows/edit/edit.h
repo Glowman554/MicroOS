@@ -33,7 +33,7 @@ void edit_init(window_instance_t* w);
 void edit_update(window_instance_t* w, event_t* event);
 void edit_draw(window_instance_t* w);
 void edit_cleanup(window_instance_t* w);
-void register_edit_window(void);
+void edit_open_picker(void);
 void edit_open(const char* path);
 
 extern window_definition_t edit_definition;
