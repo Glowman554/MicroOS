@@ -17,6 +17,7 @@ void window_add(int x, int y, int width, int height, const char* title, uint32_t
     }
     
     window_instance_t* w = &windows[window_count];
+    memset(w, 0, sizeof(window_instance_t));
     w->x = x;
     w->y = y;
     w->width = width;

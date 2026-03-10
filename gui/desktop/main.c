@@ -45,7 +45,7 @@ int main() {
         mouse_info_t info;
         mouse_info(&info);
         
-        bool should_redraw = false;
+        bool should_redraw = true;
         
         if ((info.button_left && !last_button_left) ||
             (info.button_right && !last_button_right) ||
@@ -169,7 +169,22 @@ int main() {
             }
         }
 
-        should_redraw = true;
+        for (int i = 0; i < window_get_count(); i++) {
+            window_instance_t* w = window_get(i);
+            if (w && w->is_realtime && w->update) {
+                event_t none_evt;
+                none_evt.type = EVENT_NONE;
+                none_evt.key = 0;
+                none_evt.arrow = 0;
+                none_evt.x = 0;
+                none_evt.y = 0;
+                none_evt.button = 0;
+                w->update(w, &none_evt);
+                if (w->is_dirty) {
+                    should_redraw = true;
+                }
+            }
+        }
         
         if (should_redraw) {
             desktop_draw_all();

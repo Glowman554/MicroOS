@@ -96,6 +96,7 @@ typedef struct window_instance {
     click_area_t close_button;
     bool is_focused;
     bool is_dirty;
+    bool is_realtime;
     
     drag_type_t drag_state;
     int drag_start_x;

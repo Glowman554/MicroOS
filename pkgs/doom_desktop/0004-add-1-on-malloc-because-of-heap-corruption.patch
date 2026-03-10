@@ -1,0 +1,30 @@
+From 9b5ffba94156b0e354d9f3d0da2b011df5ef00cb Mon Sep 17 00:00:00 2001
+From: Glowman554 <vossjanick62@gmail.com>
+Date: Tue, 10 Mar 2026 10:12:14 +0000
+Subject: [PATCH 4/4] add 1 on malloc because of heap corruption
+
+---
+ src/DOOM/DOOM.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/DOOM/DOOM.c b/src/DOOM/DOOM.c
+index 1cbf1a1..2a3f7e0 100644
+--- a/src/DOOM/DOOM.c
++++ b/src/DOOM/DOOM.c
+@@ -62,11 +62,11 @@ static void doom_print_impl(const char* str)
+ static void doom_print_impl(const char* str) {}
+ #endif
+ 
+-#if defined(DOOM_IMPLEMENT_MALLOC)
++#if defined(DOOM_IMPLEMENT_MALLOC)
+ #include <stdlib.h>
+ static void* doom_malloc_impl(int size)
+ {
+-    return malloc((size_t)size);
++    return malloc((size_t)size + 1);
+ }
+ static void doom_free_impl(void* ptr)
+ {
+-- 
+2.43.0
+

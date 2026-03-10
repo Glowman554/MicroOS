@@ -1,7 +1,7 @@
-From 1814f70ec5d662ad5a4e41e8e6ab1e7346efa379 Mon Sep 17 00:00:00 2001
+From c2f507140672c94ff745f7bbc13ba40b6a634d1c Mon Sep 17 00:00:00 2001
 From: Glowman554 <vossjanick62@gmail.com>
 Date: Mon, 15 Dec 2025 13:32:58 +0100
-Subject: [PATCH] Fixing bool type for new gcc/g++ versions
+Subject: [PATCH 3/4] Fixing bool type for new gcc/g++ versions
 
 ---
  src/DOOM/doomtype.h | 13 +++++++------
@@ -33,5 +33,5 @@ index f398dc3..4b51dcd 100644
  
  
 -- 
-2.51.0
+2.43.0
 
