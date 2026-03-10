@@ -61,6 +61,8 @@ int main() {
 
             if (button == MOUSE_BUTTON_LEFT && desktop_start_menu_handle_click(info.x, info.y)) {
                 should_redraw = true;
+            } else if (button == MOUSE_BUTTON_LEFT && desktop_taskbar_handle_click(info.x, info.y)) {
+                should_redraw = true;
             } else {
             int clicked_idx = window_at_point(info.x, info.y);
             
@@ -69,6 +71,11 @@ int main() {
                 if (w) {
                     if (button == MOUSE_BUTTON_LEFT && check_click_area(&w->close_button, info.x, info.y)) {
                         window_close(clicked_idx);
+                        should_redraw = true;
+                    } else if (button == MOUSE_BUTTON_LEFT && check_click_area(&w->minimize_button, info.x, info.y)) {
+                        w->is_minimized = true;
+                        w->is_dirty = true;
+                        window_set_focused(-1);
                         should_redraw = true;
                     } else {
                         if (clicked_idx != window_get_focused()) {
@@ -171,7 +178,7 @@ int main() {
 
         for (int i = 0; i < window_get_count(); i++) {
             window_instance_t* w = window_get(i);
-            if (w && w->is_realtime && w->update) {
+            if (w && w->is_realtime && w->update && !w->is_minimized) {
                 event_t none_evt;
                 none_evt.type = EVENT_NONE;
                 none_evt.key = 0;

@@ -12,3 +12,4 @@ void desktop_start_menu_init(void);
 bool desktop_is_start_menu_open(void);
 void desktop_toggle_start_menu(void);
 bool desktop_start_menu_handle_click(int x, int y);
+bool desktop_taskbar_handle_click(int x, int y);

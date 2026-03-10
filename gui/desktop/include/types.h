@@ -94,9 +94,11 @@ typedef struct window_instance {
     void (*cleanup)(struct window_instance* w);
     
     click_area_t close_button;
+    click_area_t minimize_button;
     bool is_focused;
     bool is_dirty;
     bool is_realtime;
+    bool is_minimized;
     
     drag_type_t drag_state;
     int drag_start_x;

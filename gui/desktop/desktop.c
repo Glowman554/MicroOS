@@ -89,6 +89,17 @@ void desktop_draw_window_chrome(window_instance_t* w) {
     desktop_draw_line(w->close_button.x + BUTTON_SIZE, w->close_button.y, w->close_button.x + BUTTON_SIZE, w->close_button.y + BUTTON_SIZE, 0xff0000);
     desktop_draw_line(w->close_button.x, w->close_button.y + BUTTON_SIZE, w->close_button.x + BUTTON_SIZE, w->close_button.y + BUTTON_SIZE, 0xff0000);
     
+    w->minimize_button.x = w->close_button.x - BUTTON_SIZE - 4;
+    w->minimize_button.y = w->y + 2;
+    w->minimize_button.width = BUTTON_SIZE;
+    w->minimize_button.height = BUTTON_SIZE;
+    
+    desktop_draw_line(w->minimize_button.x, w->minimize_button.y, w->minimize_button.x + BUTTON_SIZE, w->minimize_button.y, 0xffcc00);
+    desktop_draw_line(w->minimize_button.x, w->minimize_button.y, w->minimize_button.x, w->minimize_button.y + BUTTON_SIZE, 0xffcc00);
+    desktop_draw_line(w->minimize_button.x + BUTTON_SIZE, w->minimize_button.y, w->minimize_button.x + BUTTON_SIZE, w->minimize_button.y + BUTTON_SIZE, 0xffcc00);
+    desktop_draw_line(w->minimize_button.x, w->minimize_button.y + BUTTON_SIZE, w->minimize_button.x + BUTTON_SIZE, w->minimize_button.y + BUTTON_SIZE, 0xffcc00);
+    desktop_draw_line(w->minimize_button.x + 3, w->minimize_button.y + BUTTON_SIZE - 3, w->minimize_button.x + BUTTON_SIZE - 3, w->minimize_button.y + BUTTON_SIZE - 3, 0xffffff);
+    
     for (int i = w->x + BORDER_WIDTH; i < w->x + w->width - BORDER_WIDTH; i++) {
         for (int j = w->y + TITLE_BAR_HEIGHT; j < w->y + w->height - BORDER_WIDTH; j++) {
             desktop_set_pixel(i, j, w->bg_color);
@@ -123,6 +134,10 @@ click_area_t s_start_button = { 0 };
 #define START_MENU_MAX_ITEMS 32
 click_area_t s_menu_items[START_MENU_MAX_ITEMS];
 int s_menu_item_count = 0;
+
+click_area_t s_taskbar_items[MAX_WINDOWS];
+int s_taskbar_item_window_idx[MAX_WINDOWS];
+int s_taskbar_item_count = 0;
 
 void desktop_start_menu_init(void) {
     s_start_menu_open = false;
@@ -254,14 +269,25 @@ void desktop_draw_taskbar(void) {
     }
     
     int x_pos = items_start_x;
+    s_taskbar_item_count = 0;
     for (int i = 0; i < window_count; i++) {
         window_instance_t* w = window_get(i);
         if (!w) {
             continue;
         }
         
-        uint32_t item_bg = (i == focused_window) ? 0x4488ff : 0x444444;
-        uint32_t item_text = (i == focused_window) ? 0xffffff : 0xaaaaaa;
+        uint32_t item_bg;
+        uint32_t item_text;
+        if (w->is_minimized) {
+            item_bg = 0x333333;
+            item_text = 0x888888;
+        } else if (i == focused_window) {
+            item_bg = 0x4488ff;
+            item_text = 0xffffff;
+        } else {
+            item_bg = 0x444444;
+            item_text = 0xaaaaaa;
+        }
         
         for (int x = x_pos; x < x_pos + item_width - 2; x++) {
             for (int y = taskbar_y + TASKBAR_PADDING; y < framebuffer.fb_height - TASKBAR_PADDING; y++) {
@@ -276,8 +302,41 @@ void desktop_draw_taskbar(void) {
         
         desktop_draw_string(&font, x_pos + 4, taskbar_y + 4, w->title, item_text, item_bg);
         
+        s_taskbar_items[s_taskbar_item_count].x = x_pos;
+        s_taskbar_items[s_taskbar_item_count].y = taskbar_y + TASKBAR_PADDING;
+        s_taskbar_items[s_taskbar_item_count].width = item_width - 2;
+        s_taskbar_items[s_taskbar_item_count].height = TASKBAR_HEIGHT - TASKBAR_PADDING * 2;
+        s_taskbar_item_window_idx[s_taskbar_item_count] = i;
+        s_taskbar_item_count++;
+        
         x_pos += item_width;
     }
+}
+
+bool desktop_taskbar_handle_click(int x, int y) {
+    for (int i = 0; i < s_taskbar_item_count; i++) {
+        click_area_t* area = &s_taskbar_items[i];
+        if (x >= area->x && x < area->x + area->width &&
+            y >= area->y && y < area->y + area->height) {
+            int win_idx = s_taskbar_item_window_idx[i];
+            window_instance_t* w = window_get(win_idx);
+            if (w) {
+                if (w->is_minimized) {
+                    w->is_minimized = false;
+                    w->is_dirty = true;
+                    window_set_focused(win_idx);
+                } else if (win_idx == window_get_focused()) {
+                    w->is_minimized = true;
+                    w->is_dirty = true;
+                    window_set_focused(-1);
+                } else {
+                    window_set_focused(win_idx);
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 void desktop_draw_all(void) {
@@ -289,7 +348,7 @@ void desktop_draw_all(void) {
     for (int i = 0; i < window_count; i++) {
         if (i != focused_window) {
             window_instance_t* w = window_get(i);
-            if (w) {
+            if (w && !w->is_minimized) {
                 desktop_draw_window_chrome(w);
                 if (w->draw) {
                     w->draw(w);
@@ -301,7 +360,7 @@ void desktop_draw_all(void) {
     
     if (focused_window >= 0 && focused_window < window_count) {
         window_instance_t* w = window_get(focused_window);
-        if (w) {
+        if (w && !w->is_minimized) {
             desktop_draw_window_chrome(w);
             if (w->draw) {
                 w->draw(w);

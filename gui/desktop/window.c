@@ -66,7 +66,7 @@ void window_close(int idx) {
 int window_at_point(int x, int y) {
     if (focused_window >= 0 && focused_window < window_count) {
         window_instance_t* w = &windows[focused_window];
-        if (x >= w->x && x < w->x + w->width && y >= w->y && y < w->y + w->height) {
+        if (!w->is_minimized && x >= w->x && x < w->x + w->width && y >= w->y && y < w->y + w->height) {
             return focused_window;
         }
     }
@@ -77,7 +77,7 @@ int window_at_point(int x, int y) {
         }
         
         window_instance_t* w = &windows[i];
-        if (x >= w->x && x < w->x + w->width && y >= w->y && y < w->y + w->height) {
+        if (!w->is_minimized && x >= w->x && x < w->x + w->width && y >= w->y && y < w->y + w->height) {
             return i;
         }
     }
@@ -87,7 +87,7 @@ int window_at_point(int x, int y) {
 
 drag_type_t detect_drag_type(window_instance_t* w, int x, int y) {
     if (y >= w->y && y < w->y + TITLE_BAR_HEIGHT && x >= w->x && x < w->x + w->width) {
-        if (x < w->close_button.x) {
+        if (x < w->minimize_button.x) {
             return DRAG_MOVE;
         }
     }
