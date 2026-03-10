@@ -317,6 +317,10 @@ void edit_draw(window_instance_t* w) {
         bool in_view = (line >= st->scroll_offset && line < st->scroll_offset + viewport_rows);
 
         if (in_view) {
+            if (draw_y + CHAR_H > content_h) {
+                break;
+            }
+
             if (!vis_start_drawn || (draw_x == gutter_px && i > 0 && st->input_buffer[i - 1] == '\n')) {
                 int display_line = line + 1;
                 char ln_buf[16] = { 0 };
@@ -354,7 +358,7 @@ void edit_draw(window_instance_t* w) {
     }
 
     if (!cursor_drawn) {
-        if (line >= st->scroll_offset && line < st->scroll_offset + viewport_rows) {
+        if (line >= st->scroll_offset && line < st->scroll_offset + viewport_rows && draw_y + CHAR_H <= content_h) {
             if (!vis_start_drawn) {
                 char ln_buf[16] = { 0 };
                 sprintf(ln_buf, "%d.", line + 1);
