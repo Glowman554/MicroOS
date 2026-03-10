@@ -71,7 +71,9 @@ void taskmgr_draw(window_instance_t* w) {
     int kill_w = (int)kill_button.width;
     int kill_h = (int)kill_button.height;
 
-    window_draw_string(w, 4, 4, "PID  Name                Kill", 0x88ffaa);
+    window_draw_string(w, 4, 4, "PID  Term Name", 0x88ffaa);
+    window_draw_string(w, w->width - 4 * 8, 4, "Kill", 0x88ffaa);
+
     window_draw_line(w, 0, 18, w->width, 18, 0x336644);
 
     // Task rows
@@ -81,7 +83,12 @@ void taskmgr_draw(window_instance_t* w) {
         char pid_buf[16] = { 0 };
         sprintf(pid_buf, "%d", state->tasks[i].pid);
         window_draw_string(w, 4, row_y + 1, pid_buf, 0xffffff);
-        window_draw_string(w, 5 * 8, row_y + 1, state->tasks[i].name, 0xffffff);
+        char term_buf[16] = { 0 };
+        sprintf(term_buf, "%d", state->tasks[i].term);
+        window_draw_string(w, 5 * 8, row_y + 1, term_buf, 0xffffff);
+
+        window_draw_string(w, 10 * 8, row_y + 1, state->tasks[i].name, 0xffffff);
+
 
         int btn_x = w->width - kill_w - 4;
         int btn_y = row_y;

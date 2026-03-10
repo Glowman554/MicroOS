@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 
 	char terminal[128] = { 0 };
 	strcat(terminal, cwd);
-	strcat(terminal, INIT_PROCESS);
+	strcat(terminal, INIT_TERMINAL);
 #ifdef INIT_DEBUG
 	printf("got terminal %s\n", terminal);
 #endif
@@ -127,10 +127,19 @@ int main(int argc, char* argv[]) {
 		printf("Could not find autostart file: %s\n", autostart);
 	}
 
+#ifdef INIT_LOGO
 	print_logo();
+#endif
+
+	char process[128] = { 0 };
+	strcat(process, cwd);
+	strcat(process, INIT_PROCESS);
+#ifdef INIT_DEBUG
+	printf("got process %s\n", process);
+#endif
 
 	char* new_argv[] = {
-		terminal,
+		process,
 		NULL
 	};
 
@@ -142,7 +151,7 @@ int main(int argc, char* argv[]) {
 			yield();
 		}
 
-		printf("Terminal proccess %d exited\n", pid);
+		printf("init: proccess %d exited\n", pid);
 	}
 
 	return 0;

@@ -8,7 +8,9 @@
 // End Debug
 
 // Init process
+#define INIT_TERMINAL "bin/terminal.mex"
 #define INIT_PROCESS "bin/terminal.mex"
+#define INIT_LOGO
 // End Init process
 
 // Syscalls

@@ -29,8 +29,16 @@
                     "title": "Init process",
                     "items": [
                         {
+                            "name": "INIT_TERMINAL",
+                            "value": "bin/terminal.mex"
+                        },
+                        {
                             "name": "INIT_PROCESS",
                             "value": "bin/terminal.mex"
+                        },
+                        {
+                            "name": "INIT_LOGO",
+                            "value": true
                         }
                     ]
                 }
