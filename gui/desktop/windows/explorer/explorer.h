@@ -8,6 +8,10 @@ typedef struct {
     int max_rows;
     bool fs_mode;
     char cwd[64];
+    int* sizes;
+    bool* size_cached;
+    int cached_w;
+    int cached_h;
 } explorer_state_t;
 
 void explorer_init(window_instance_t* w);

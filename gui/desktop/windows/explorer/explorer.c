@@ -33,16 +33,45 @@ typedef struct {
     int height;
 } button_area_t;
 
+void explorer_invalidate_cache(explorer_state_t* state) {
+    if (state->size_cached) {
+        memset(state->size_cached, 0, sizeof(bool) * state->max_rows);
+    }
+}
+
+void explorer_realloc_rows(explorer_state_t* state, int new_max) {
+    if (new_max < 1) {
+        new_max = 1;
+    }
+
+    state->max_rows = new_max;
+    state->files = realloc(state->files, sizeof(click_area_t) * new_max);
+    memset(state->files, 0, sizeof(click_area_t) * new_max);
+    state->sizes = realloc(state->sizes, sizeof(int) * new_max);
+    memset(state->sizes, 0, sizeof(int) * new_max);
+    state->size_cached = realloc(state->size_cached, sizeof(bool) * new_max);
+    memset(state->size_cached, 0, sizeof(bool) * new_max);
+}
+
 void explorer_init(window_instance_t* w) {
     explorer_state_t* state = malloc(sizeof(explorer_state_t));
+    memset(state, 0, sizeof(explorer_state_t));
     state->offset = 0;
-    state->max_rows = (w->height - TITLE_BAR_HEIGHT - 50) / 16;
-    if (state->max_rows < 1) {
-        state->max_rows = 1;
-    }
     state->fs_mode = true;
-    state->files = malloc(sizeof(click_area_t) * state->max_rows);
-    memset(state->files, 0, sizeof(click_area_t) * state->max_rows);
+    state->cached_w = w->width;
+    state->cached_h = w->height;
+    int max = (w->height - TITLE_BAR_HEIGHT - 50) / 16;
+    if (max < 1) {
+        max = 1;
+    }
+
+    state->max_rows = max;
+    state->files = malloc(sizeof(click_area_t) * max);
+    memset(state->files, 0, sizeof(click_area_t) * max);
+    state->sizes = malloc(sizeof(int) * max);
+    memset(state->sizes, 0, sizeof(int) * max);
+    state->size_cached = malloc(sizeof(bool) * max);
+    memset(state->size_cached, 0, sizeof(bool) * max);
     memset(state->cwd, 0, 64);
     w->state = state;
     w->title_bar_color = 0x4488ff;
@@ -79,6 +108,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
                 strcpy(state->cwd, path_buf);
             }
             state->offset = 0;
+            explorer_invalidate_cache(state);
             w->is_dirty = true;
             return;
         }
@@ -93,6 +123,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
             rel_y >= up_arrow_area.y && rel_y < up_arrow_area.y + up_arrow_area.height) {
             if (state->offset > 0) {
                 state->offset--;
+                explorer_invalidate_cache(state);
                 w->is_dirty = true;
             }
             return;
@@ -107,6 +138,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
         if (rel_x >= down_arrow_area.x && rel_x < down_arrow_area.x + down_arrow_area.width &&
             rel_y >= down_arrow_area.y && rel_y < down_arrow_area.y + down_arrow_area.height) {
             state->offset++;
+            explorer_invalidate_cache(state);
             w->is_dirty = true;
             return;
         }
@@ -126,6 +158,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
                         strcpy(state->cwd, out);
                         state->fs_mode = false;
                         state->offset = 0;
+                        explorer_invalidate_cache(state);
                         w->is_dirty = true;
                     }
                 } else {
@@ -151,6 +184,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
                                 strcpy(state->cwd, path_buf);
                                 state->offset = 0;
                             }
+                            explorer_invalidate_cache(state);
                             w->is_dirty = true;
                         } else if (dir.type == ENTRY_FILE) {
                             char full_path[128] = { 0 };
@@ -172,6 +206,13 @@ void explorer_update(window_instance_t* w, event_t* event) {
 
 void explorer_draw(window_instance_t* w) {
     explorer_state_t* state = (explorer_state_t*)w->state;
+    
+    if (w->width != state->cached_w || w->height != state->cached_h) {
+        state->cached_w = w->width;
+        state->cached_h = w->height;
+        int new_max = (w->height - TITLE_BAR_HEIGHT - 50) / 16;
+        explorer_realloc_rows(state, new_max);
+    }
     
     for (int x = 0; x < w->width; x++) {
         for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
@@ -236,6 +277,32 @@ void explorer_draw(window_instance_t* w) {
             window_draw_string(w, 2, y, dir.name, color);
             window_draw_char(w, w->width - 32, TITLE_BAR_HEIGHT + y, dir.type == ENTRY_FILE ? 'F' : 'D', 0xffffff, 0x1a1a2e);
             
+            if (dir.type == ENTRY_FILE) {
+                if (!state->size_cached[count]) {
+                    char full_path[128] = { 0 };
+                    strcpy(full_path, state->cwd);
+                    int fp_len = strlen(full_path);
+                    if (fp_len > 0 && full_path[fp_len - 1] != '/') {
+                        strcat(full_path, "/");
+                    }
+                    strcat(full_path, dir.name);
+                    int fd = open(full_path, 0);
+                    if (fd >= 0) {
+                        state->sizes[count] = filesize(fd);
+                        close(fd);
+                    } else {
+                        state->sizes[count] = -1;
+                    }
+                    state->size_cached[count] = true;
+                }
+                if (state->sizes[count] >= 0) {
+                    char size_str[16] = { 0 };
+                    format_size(size_str, state->sizes[count]);
+                    int size_x = w->width - 40 - strlen(size_str) * 8;
+                    window_draw_string(w, size_x, y, size_str, 0x888888);
+                }
+            }
+            
             state->files[count].x = 0;
             state->files[count].y = TITLE_BAR_HEIGHT + y;
             state->files[count].width = w->width - 32;
@@ -252,6 +319,15 @@ void explorer_cleanup(window_instance_t* w) {
         if (state->files) {
             free(state->files);
         }
+
+        if (state->sizes) {
+            free(state->sizes);
+        }
+
+        if (state->size_cached) {
+            free(state->size_cached);
+        }
+        
         free(state);
         w->state = NULL;
     }
