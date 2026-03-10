@@ -31,7 +31,7 @@ int main() {
     desktop_start_menu_init();
     
     desktop_draw_all();
-    desktop_draw_mouse_pointer(0, 0);
+    desktop_draw_mouse_pointer(0, 0, CURSOR_DEFAULT);
     fb_flush();
     
     int last_mouse_x = 0;
@@ -214,8 +214,64 @@ int main() {
         }
         
         if (should_redraw) {
+            cursor_type_t cursor = CURSOR_DEFAULT;
+
+            if (dragging_window >= 0) {
+                window_instance_t* dw = window_get(dragging_window);
+                if (dw) {
+                    switch (dw->drag_state) {
+                        case DRAG_RESIZE_N:
+                        case DRAG_RESIZE_S:
+                            cursor = CURSOR_RESIZE_NS;
+                            break;
+                        case DRAG_RESIZE_E:
+                        case DRAG_RESIZE_W:
+                            cursor = CURSOR_RESIZE_EW;
+                            break;
+                        case DRAG_RESIZE_NE:
+                        case DRAG_RESIZE_SW:
+                            cursor = CURSOR_RESIZE_NESW;
+                            break;
+                        case DRAG_RESIZE_NW:
+                        case DRAG_RESIZE_SE:
+                            cursor = CURSOR_RESIZE_NWSE;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } else {
+                int hover_win = window_at_point(info.x, info.y);
+                if (hover_win >= 0) {
+                    window_instance_t* hw = window_get(hover_win);
+                    if (hw) {
+                        drag_type_t potential = detect_drag_type(hw, info.x, info.y);
+                        switch (potential) {
+                            case DRAG_RESIZE_N:
+                            case DRAG_RESIZE_S:
+                                cursor = CURSOR_RESIZE_NS;
+                                break;
+                            case DRAG_RESIZE_E:
+                            case DRAG_RESIZE_W:
+                                cursor = CURSOR_RESIZE_EW;
+                                break;
+                            case DRAG_RESIZE_NE:
+                            case DRAG_RESIZE_SW:
+                                cursor = CURSOR_RESIZE_NESW;
+                                break;
+                            case DRAG_RESIZE_NW:
+                            case DRAG_RESIZE_SE:
+                                cursor = CURSOR_RESIZE_NWSE;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
             desktop_draw_all();
-            desktop_draw_mouse_pointer(info.x, info.y);
+            desktop_draw_mouse_pointer(info.x, info.y, cursor);
             fb_flush();
         }
     }

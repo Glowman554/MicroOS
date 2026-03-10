@@ -68,20 +68,130 @@ void desktop_draw_line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint3
 
 extern uint8_t mouse_pointer[];
 
+#define cursor_ns_width 9
+#define cursor_ns_height 15
+static const uint8_t cursor_resize_ns[] = {
+    0,0,0,0,1,0,0,0,0,
+    0,0,0,1,2,1,0,0,0,
+    0,0,1,2,2,2,1,0,0,
+    0,1,2,2,2,2,2,1,0,
+    1,1,1,2,2,2,1,1,1,
+    0,0,0,2,2,2,0,0,0,
+    0,0,0,2,2,2,0,0,0,
+    0,0,0,2,2,2,0,0,0,
+    0,0,0,2,2,2,0,0,0,
+    0,0,0,2,2,2,0,0,0,
+    1,1,1,2,2,2,1,1,1,
+    0,1,2,2,2,2,2,1,0,
+    0,0,1,2,2,2,1,0,0,
+    0,0,0,1,2,1,0,0,0,
+    0,0,0,0,1,0,0,0,0,
+};
 
-void desktop_draw_mouse_pointer(int x, int y) {
+#define cursor_ew_width 15
+#define cursor_ew_height 9
+static const uint8_t cursor_resize_ew[] = {
+    0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,
+    0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,
+    0,0,1,2,1,0,0,0,0,0,1,2,1,0,0,
+    0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,
+    1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,
+    0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,
+    0,0,1,2,1,0,0,0,0,0,1,2,1,0,0,
+    0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,
+    0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,
+};
+
+#define cursor_nesw_width 11
+#define cursor_nesw_height 11
+static const uint8_t cursor_resize_nesw[] = {
+    0,0,0,0,0,0,1,1,1,1,1,
+    0,0,0,0,0,0,0,1,2,2,1,
+    0,0,0,0,0,0,1,2,2,1,0,
+    0,0,0,0,0,1,2,2,1,0,0,
+    0,0,0,0,1,2,2,1,0,0,0,
+    0,0,0,1,2,2,1,0,0,0,0,
+    0,0,1,2,2,1,0,0,0,0,0,
+    0,1,2,2,1,0,0,0,0,0,0,
+    0,1,2,2,1,0,0,0,0,0,0,
+    1,2,2,1,0,0,0,0,0,0,0,
+    1,1,1,1,1,0,0,0,0,0,0,
+};
+
+#define cursor_nwse_width 11
+#define cursor_nwse_height 11
+static const uint8_t cursor_resize_nwse[] = {
+    1,1,1,1,1,0,0,0,0,0,0,
+    1,2,2,1,0,0,0,0,0,0,0,
+    0,1,2,2,1,0,0,0,0,0,0,
+    0,0,1,2,2,1,0,0,0,0,0,
+    0,0,0,1,2,2,1,0,0,0,0,
+    0,0,0,0,1,2,2,1,0,0,0,
+    0,0,0,0,0,1,2,2,1,0,0,
+    0,0,0,0,0,0,1,2,2,1,0,
+    0,0,0,0,0,0,1,2,2,1,0,
+    0,0,0,0,0,0,0,1,2,2,1,
+    0,0,0,0,0,0,0,0,1,1,1,
+};
+
+void desktop_draw_mouse_pointer(int x, int y, cursor_type_t cursor) {
+    const uint8_t* data;
+    int w;
+    int h;
+    int ox = 0;
+    int oy = 0;
+
+    switch (cursor) {
+        case CURSOR_RESIZE_NS:
+            data = cursor_resize_ns;
+            w = cursor_ns_width;
+            h = cursor_ns_height;
+            ox = -w / 2;
+            oy = -h / 2;
+            break;
+        case CURSOR_RESIZE_EW:
+            data = cursor_resize_ew;
+            w = cursor_ew_width;
+            h = cursor_ew_height;
+            ox = -w / 2;
+            oy = -h / 2;
+            break;
+        case CURSOR_RESIZE_NESW:
+            data = cursor_resize_nesw;
+            w = cursor_nesw_width;
+            h = cursor_nesw_height;
+            ox = -w / 2;
+            oy = -h / 2;
+            break;
+        case CURSOR_RESIZE_NWSE:
+            data = cursor_resize_nwse;
+            w = cursor_nwse_width;
+            h = cursor_nwse_height;
+            ox = -w / 2;
+            oy = -h / 2;
+            break;
+        default:
+            data = mouse_pointer;
+            w = mouse_pointer_width;
+            h = mouse_pointer_height;
+            ox = 0;
+            oy = 0;
+            break;
+    }
+
     int current_x = 0;
-	int current_y = 0;
+    int current_y = 0;
+    int len = w * h;
 
-    for (int i = 0; i < mouse_pointer_len; i++) {
-        if (mouse_pointer[i] == 2) {
-            desktop_set_pixel(x + current_x, y + current_y, 0xFFFFFF);
-        } else if (mouse_pointer[i] == 1) {
-            desktop_set_pixel(x + current_x, y + current_y, 0x000000);
+    for (int i = 0; i < len; i++) {
+        if (data[i] == 2) {
+            desktop_set_pixel(x + ox + current_x, y + oy + current_y, 0xFFFFFF);
+        } else if (data[i] == 1) {
+            desktop_set_pixel(x + ox + current_x, y + oy + current_y, 0x000000);
         }
 
         current_x++;
-        if (current_x >= mouse_pointer_width) {
+        if (current_x >= w) {
             current_x = 0;
             current_y++;
         }

@@ -72,6 +72,14 @@ typedef enum {
     DRAG_RESIZE_SW,
 } drag_type_t;
 
+typedef enum {
+    CURSOR_DEFAULT,
+    CURSOR_RESIZE_NS,
+    CURSOR_RESIZE_EW,
+    CURSOR_RESIZE_NESW,
+    CURSOR_RESIZE_NWSE,
+} cursor_type_t;
+
 typedef struct {
     const char* name;
     void (*register_window)(void);
