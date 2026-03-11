@@ -38,7 +38,7 @@ static void on_fp_back(window_instance_t* w, void* userdata) {
         strcat(full, "/");
     }
     strcat(full, "..");
-    char buf[128] = { 0 };
+    char buf[256] = { 0 };
     if (!resolve(full, buf)) {
         st->fs_mode = true;
         memset(st->cwd, 0, sizeof(st->cwd));

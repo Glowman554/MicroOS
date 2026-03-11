@@ -53,7 +53,7 @@ void on_explorer_back(window_instance_t* w, void* userdata) {
         strcat(full_path, "/");
     }
     strcat(full_path, "..");
-    char path_buf[64] = { 0 };
+    char path_buf[256] = { 0 };
     if (!resolve(full_path, path_buf)) {
         state->fs_mode = true;
         memset(state->cwd, 0, 64);
@@ -151,7 +151,7 @@ void explorer_update(window_instance_t* w, event_t* event) {
                                 strcat(full_path, "/");
                             }
                             strcat(full_path, dir.name);
-                            char path_buf[64] = { 0 };
+                            char path_buf[256] = { 0 };
                             if (!resolve(full_path, path_buf)) {
                                 state->fs_mode = true;
                                 memset(state->cwd, 0, 64);
