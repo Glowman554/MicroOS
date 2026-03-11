@@ -1,0 +1,8 @@
+#!/bin/terminal.mex
+
+export TMPFILE=tmp:/claunch.elf
+
+echo Compiling $1
+mcc $1 -o $TMPFILE
+
+$TMPFILE

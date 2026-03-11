@@ -24,7 +24,6 @@ mkdir -p pkgs
 	build_dir doom &
 	build_dir saf &
 	build_dir nextfs &
-	build_dir mcc &
 	build_dir doom_desktop &
 	wait
 )

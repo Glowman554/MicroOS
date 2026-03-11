@@ -1,3 +1,4 @@
+//!/scripts/claunch.msh
 // -*- c -*-
 
 // This is a line comment.

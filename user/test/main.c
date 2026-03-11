@@ -47,15 +47,15 @@
 // }
 
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/getc.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char c;
 	while ((c = async_getc()) != EOF_CHAR) {
-		if (c != 0) {
-			printf("Got char: %c\n", c);
-		}
+		void* ptr = malloc(100);
+		printf("malloced 100 bytes at 0x%x\n", ptr);
 	}
 	return 0;
 }

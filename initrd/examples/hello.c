@@ -1,3 +1,4 @@
+//!/scripts/claunch.msh
 struct registers {
     int eax;
     int ebx;
