@@ -69,13 +69,7 @@ void imgview_update(window_instance_t* w, event_t* event) {
 
 void imgview_draw(window_instance_t* w) {
     imgview_state_t* state = (imgview_state_t*)w->state;
-
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x000000);
-        }
-    }
-
+    
     if (!state || !state->scanner) {
         window_draw_string(w, 4, 4, "Unsupported format", 0xff4444);
         return;

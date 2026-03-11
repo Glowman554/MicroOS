@@ -67,12 +67,6 @@ void sysctl_update(window_instance_t* w, event_t* event) {
 void sysctl_draw(window_instance_t* w) {
     sysctl_state_t* state = (sysctl_state_t*)w->state;
 
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x1a0a2e);
-        }
-    }
-
     button_draw(&state->reboot_btn, w);
     button_draw(&state->shutdown_btn, w);
 

@@ -291,12 +291,6 @@ void edit_update(window_instance_t* w, event_t* event) {
 void edit_draw(window_instance_t* w) {
     edit_state_t* st = (edit_state_t*)w->state;
 
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x1a1a2e);
-        }
-    }
-
     if (!st->input_buffer) {
         window_draw_string(w, 4, 4, "No file loaded", 0xFF6B6B);
         return;

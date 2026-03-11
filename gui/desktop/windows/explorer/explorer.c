@@ -192,12 +192,6 @@ void explorer_draw(window_instance_t* w) {
         state->down_btn.y = w->height - TITLE_BAR_HEIGHT - 24;
     }
     
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x1a1a2e);
-        }
-    }
-    
     window_draw_string(w, 2, 2, state->cwd, 0xffffff);
     
     window_draw_line(w, 0, 20, w->width, 20, 0x444444);

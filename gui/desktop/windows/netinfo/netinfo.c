@@ -79,12 +79,6 @@ void netinfo_update(window_instance_t* w, event_t* event) {
 void netinfo_draw(window_instance_t* w) {
     netinfo_state_t* state = (netinfo_state_t*)w->state;
 
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x051015);
-        }
-    }
-
     button_draw(&state->up_btn, w);
     button_draw(&state->down_btn, w);
     button_draw(&state->dhcp_btn, w);

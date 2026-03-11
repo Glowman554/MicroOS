@@ -64,12 +64,6 @@ void taskmgr_update(window_instance_t* w, event_t* event) {
 void taskmgr_draw(window_instance_t* w) {
     taskmgr_state_t* state = (taskmgr_state_t*)w->state;
 
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x111111);
-        }
-    }
-
     window_draw_string(w, 4, 4, "PID  Term Name", 0x88ffaa);
     window_draw_string(w, w->width - 6 * 8, 4, "Kill", 0x88ffaa);
 

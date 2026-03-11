@@ -178,12 +178,6 @@ void fp_update(window_instance_t* w, event_t* event) {
 static void fp_draw(window_instance_t* w) {
     filepicker_state_t* st = (filepicker_state_t*)w->state;
 
-    for (int x = 0; x < w->width; x++) {
-        for (int y = TITLE_BAR_HEIGHT; y < w->height; y++) {
-            window_set_pixel(w, x, y, 0x445533);
-        }
-    }
-
     window_draw_string(w, 2, 2, st->cwd[0] ? st->cwd : "(select a filesystem)", 0xffffff);
     window_draw_line(w, 0, 20, w->width, 20, 0x444444);
 
