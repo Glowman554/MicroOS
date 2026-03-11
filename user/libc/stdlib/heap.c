@@ -47,11 +47,11 @@ heap_segment_header_t* hsh_split(heap_segment_header_t* _this, size_t split_leng
 		return NULL;
 	}
 
-	int64_t split_seg_length = _this->length - (split_length + sizeof(heap_segment_header_t));
-
-	if (split_seg_length < 0x10) {
+	if (_this->length < split_length + sizeof(heap_segment_header_t) + 0x10) {
 		return NULL;
 	}
+
+	size_t split_seg_length = _this->length - split_length - sizeof(heap_segment_header_t);
 
 	heap_segment_header_t* new_split_hdr = (heap_segment_header_t*) ((size_t) _this + split_length + sizeof(heap_segment_header_t));
 	if (_this->next) {
