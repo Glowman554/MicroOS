@@ -90,6 +90,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		fread(state.input_buffer, file_size, 1, state.file);
 	}
 
+	state.ln_cnt = 1;
 	for (int i = 0; i < state.current_size; i++) {
 		state.char_cnt++;
 		if (state.input_buffer[i] == '\n') {
