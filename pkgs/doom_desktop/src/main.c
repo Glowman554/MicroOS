@@ -148,7 +148,7 @@ void doom_win_cleanup(window_instance_t* w) {
 }
 
 void register_doom_window(void) {
-    window_add(50, 50, 640 + BORDER_WIDTH * 2, 400 + TITLE_BAR_HEIGHT + BORDER_WIDTH, "DOOM", 0x000000, doom_win_init, doom_win_update, doom_win_draw, doom_win_cleanup);
+    window_add(50, 50, 640, 400 + TITLE_BAR_HEIGHT, "DOOM", 0x000000, doom_win_init, doom_win_update, doom_win_draw, doom_win_cleanup);
 }
 
 window_definition_t doom_definition = {
