@@ -7,7 +7,6 @@ typedef struct window_instance window_instance_t;
 
 #define MAX_WINDOWS 16
 #define TITLE_BAR_HEIGHT 20
-#define BORDER_WIDTH 4
 #define BUTTON_SIZE 16
 #define RESIZE_BORDER 8
 

@@ -72,11 +72,6 @@ void desktop_draw_window_chrome(window_instance_t* w) {
         }
     }
     
-    desktop_draw_line(w->x, w->y, w->x + w->width, w->y, 0x666666);
-    desktop_draw_line(w->x, w->y + TITLE_BAR_HEIGHT - 1, w->x + w->width, w->y + TITLE_BAR_HEIGHT - 1, 0x666666);
-    desktop_draw_line(w->x, w->y, w->x, w->y + TITLE_BAR_HEIGHT - 1, 0x666666);
-    desktop_draw_line(w->x + w->width - 1, w->y, w->x + w->width - 1, w->y + TITLE_BAR_HEIGHT - 1, 0x666666);
-    
     desktop_draw_string(&font, w->x + 4, w->y + 2, w->title, 0xffffff, w->title_bar_color);
     
     w->close_button.x = w->x + w->width - BUTTON_SIZE - 2;
@@ -100,23 +95,11 @@ void desktop_draw_window_chrome(window_instance_t* w) {
     desktop_draw_line(w->minimize_button.x, w->minimize_button.y + BUTTON_SIZE, w->minimize_button.x + BUTTON_SIZE, w->minimize_button.y + BUTTON_SIZE, 0xffcc00);
     desktop_draw_line(w->minimize_button.x + 3, w->minimize_button.y + BUTTON_SIZE - 3, w->minimize_button.x + BUTTON_SIZE - 3, w->minimize_button.y + BUTTON_SIZE - 3, 0xffffff);
     
-    for (int i = w->x + BORDER_WIDTH; i < w->x + w->width - BORDER_WIDTH; i++) {
-        for (int j = w->y + TITLE_BAR_HEIGHT; j < w->y + w->height - BORDER_WIDTH; j++) {
+    for (int i = w->x; i < w->x + w->width; i++) {
+        for (int j = w->y + TITLE_BAR_HEIGHT; j < w->y + w->height; j++) {
             desktop_set_pixel(i, j, w->bg_color);
         }
-    }
-    
-    desktop_draw_line(w->x, w->y + TITLE_BAR_HEIGHT, w->x + w->width, w->y + TITLE_BAR_HEIGHT, 0x666666);
-    desktop_draw_line(w->x, w->y + w->height - BORDER_WIDTH, w->x + w->width, w->y + w->height - BORDER_WIDTH, 0x666666);
-    desktop_draw_line(w->x, w->y + TITLE_BAR_HEIGHT, w->x, w->y + w->height - BORDER_WIDTH, 0x666666);
-    desktop_draw_line(w->x + w->width - BORDER_WIDTH, w->y + TITLE_BAR_HEIGHT, w->x + w->width - BORDER_WIDTH, w->y + w->height - BORDER_WIDTH, 0x666666);
-    
-    for (int i = 0; i < RESIZE_BORDER; i++) {
-        desktop_draw_line(w->x + i, w->y + TITLE_BAR_HEIGHT + i, w->x + w->width - i, w->y + TITLE_BAR_HEIGHT + i, 0x888888);
-        desktop_draw_line(w->x + i, w->y + w->height - 1 - i, w->x + w->width - i, w->y + w->height - 1 - i, 0x888888);
-        desktop_draw_line(w->x + i, w->y + TITLE_BAR_HEIGHT, w->x + i, w->y + w->height, 0x888888);
-        desktop_draw_line(w->x + w->width - 1 - i, w->y + TITLE_BAR_HEIGHT, w->x + w->width - 1 - i, w->y + w->height, 0x888888);
-    }
+    }    
 }
 
 #define TASKBAR_HEIGHT 24

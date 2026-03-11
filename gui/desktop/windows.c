@@ -14,6 +14,7 @@
 #include "windows/netinfo/netinfo.h"
 #include "windows/imgview/imgview.h"
 #include "windows/edit/edit.h"
+#include "windows/terminal/terminal.h"
 
 window_definition_t** window_definitions = NULL;
 
@@ -56,6 +57,7 @@ void register_windows(void) {
     register_window(&netinfo_definition);
     register_window(&edit_definition);
     register_window(&imgview_definition);
+    register_window(&terminal_definition);
 
     desktop_register_file_assoc("fpic", imgview_open);
     desktop_register_file_assoc("bmp",  imgview_open);
