@@ -1,8 +1,9 @@
 #include <stdlib.h>
+#include <non-standart/heap.h>
 
 #include <stdint.h>
 #include <string.h>
-#include <sys/mmap.h>
+#include <non-standart/sys/mmap.h>
 #include <stdio.h>
 
 #ifdef ALLOC_CANARY

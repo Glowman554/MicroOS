@@ -1,18 +1,19 @@
 #include <commands.h>
 
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-#include <sys/spawn.h>
-#include <sys/env.h>
-#include <sys/file.h>
+#include <non-standart/sys/spawn.h>
+#include <non-standart/sys/env.h>
+#include <non-standart/sys/file.h>
 
 #include <argv_tools.h>
 
-#include <ipc.h>
-#include <buildin/path.h>
+#include <non-standart/buildin/ipc.h>
+#include <non-standart/buildin/path.h>
 
 #define GET_CWD(cwd) char cwd[64] = { 0 }; set_env(SYS_GET_PWD_ID, cwd)
 

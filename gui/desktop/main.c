@@ -1,6 +1,6 @@
-#include <sys/graphics.h>
-#include <sys/mouse.h>
-#include <sys/getc.h>
+#include <non-standart/sys/graphics.h>
+#include <non-standart/sys/mouse.h>
+#include <non-standart/sys/getc.h>
 #include <stdbool.h>
 
 #include <types.h>

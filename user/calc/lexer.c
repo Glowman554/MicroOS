@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 void lexer_delete(dynamic_array_t* token) {
 	dynamic_array_iterator_t iterator;

@@ -1,7 +1,7 @@
 #include <strings.h>
 #include <ctype.h>
 
-int strncasecmp(char* str1, char* str2, int n) {
+int strncasecmp(const char* str1, const char* str2, int n) {
 	while (n && *str1 && (tolower(*str1) == tolower(*str2))) {
 		++str1;
 		++str2;

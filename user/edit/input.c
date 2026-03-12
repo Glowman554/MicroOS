@@ -1,10 +1,10 @@
 #include <input.h>
 
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include <sys/getc.h>
+#include <non-standart/sys/getc.h>
 
 #include <render.h>
 

@@ -1,8 +1,8 @@
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <syntax.h>
-#include <sys/graphics.h>
+#include <non-standart/sys/graphics.h>
 
 char* color_lut[] = {
     [black]   = "black",

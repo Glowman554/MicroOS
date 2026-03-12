@@ -3,7 +3,7 @@
 #include <load.h>
 
 #include <stdint.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 
 void native_extension(struct vm_instance* vm) {

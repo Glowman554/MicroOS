@@ -1,10 +1,9 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/file.h>
+#include <non-standart/sys/file.h>
 #include <assert.h>
-#include <buildin/pci.h>
+#include <non-standart/buildin/pci.h>
 #include <pci_descriptors.h>
 
 void print_bar(uint32_t* bar0, int bar_num) {

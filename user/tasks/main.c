@@ -1,7 +1,7 @@
-#include <buildin/graphics.h>
-#include <sys/getc.h>
-#include <buildin/ansi.h>
-#include <sys/spawn.h>
+#include <non-standart/buildin/graphics.h>
+#include <non-standart/sys/getc.h>
+#include <non-standart/buildin/ansi.h>
+#include <non-standart/sys/spawn.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

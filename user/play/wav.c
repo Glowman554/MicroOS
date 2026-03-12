@@ -1,9 +1,9 @@
 #include <wav.h>
-#include <sys/sound.h>
+#include <non-standart/sys/sound.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 
 bool check_fourcc(const char* data, const char* expected) {
     return data[0] == expected[0] && data[1] == expected[1] && data[2] == expected[2] && data[3] == expected[3];

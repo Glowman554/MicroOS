@@ -1,10 +1,9 @@
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/exit.h>
-#include <sys/env.h>
+#include <non-standart/heap.h>
+#include <non-standart/stdio.h>
+#include <non-standart/sys/exit.h>
+#include <non-standart/sys/env.h>
 #include <config.h>
-#include <string.h>
+#include <stdint.h>
 
 int main(int argc, char* argv[], char* envp[]);
 
@@ -40,19 +39,8 @@ void _start() {
 	initialize_heap((void*) HEAP_ADDRESS, HEAP_PAGES);
 	init_stdio();
 
-	int error = 0;
-	if (print_help) {
-		for (int i = 0; i < argc; i++) {
-			if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
-				print_help(argv[0]);
-				goto skip_main;
-			}
-		}
-	}
+	int error = main(argc, argv, envp);
 
-	error = main(argc, argv, envp);
-
-skip_main:
 	uninit_stdio();
 	
 #ifdef ALLOC_DEBUG

@@ -1,10 +1,10 @@
 #include <script.h>
 #include <argv_tools.h>
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <non-standart/stdio.h>
 
 #include <commands.h>
 

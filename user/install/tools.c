@@ -1,7 +1,7 @@
 #include <tools.h>
-#include <sys/file.h>
+#include <non-standart/sys/file.h>
 
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>

@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
-#include <sys/graphics.h>
+#include <non-standart/sys/graphics.h>
 
 uint32_t true_hsv(int angle) {
 	uint64_t red, green, blue, alpha;

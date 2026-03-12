@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/file.h>
+#include <non-standart/sys/file.h>
 
 struct FILE* stdout;
 struct FILE* stdin;

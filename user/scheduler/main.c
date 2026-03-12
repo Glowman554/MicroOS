@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
-#include <sys/spawn.h>
-#include <sys/env.h>
+#include <non-standart/sys/time.h>
+#include <non-standart/sys/spawn.h>
+#include <non-standart/sys/env.h>
 
 #define MAX_JOBS 128
 #define CMD_LEN 256

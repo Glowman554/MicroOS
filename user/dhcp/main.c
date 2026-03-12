@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include <sys/time.h>
-#include <net/socket.h>
-#include <net/ipv4.h>
+#include <non-standart/sys/time.h>
+#include <non-standart/net/socket.h>
+#include <non-standart/net/ipv4.h>
 #include <stdlib.h>
 #include <assert.h>
 

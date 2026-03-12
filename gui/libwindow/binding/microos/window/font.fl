@@ -1,2 +1,0 @@
-$native <load_psf1_font 789036>
-function(external) load_psf1_font(str path) -> ptr;

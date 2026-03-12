@@ -1,10 +1,10 @@
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 
-#include <buildin/disk_raw.h>
+#include <non-standart/buildin/disk_raw.h>
 #include <crc32.h>
 #include <gpt.h>
 

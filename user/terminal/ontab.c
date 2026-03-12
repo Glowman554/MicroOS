@@ -1,7 +1,7 @@
 #include <ontab.h>
 #include <stdio.h>
-#include <sys/env.h>
-#include <sys/file.h>
+#include <non-standart/sys/env.h>
+#include <non-standart/sys/file.h>
 #include <stdlib.h>
 #include <string.h>
 

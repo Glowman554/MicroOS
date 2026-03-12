@@ -6,9 +6,9 @@
 #include <button.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdbool.h>
-#include <sys/file.h>
+#include <non-standart/sys/file.h>
 
 extern psf1_font_t font;
 

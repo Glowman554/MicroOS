@@ -1,10 +1,10 @@
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 
-#include <sys/file.h>
-#include <sys/env.h>
+#include <non-standart/sys/file.h>
+#include <non-standart/sys/env.h>
 
 void print_size(char* file, size_t size, bool human_readable) {
 	printf("%s -> ", file);

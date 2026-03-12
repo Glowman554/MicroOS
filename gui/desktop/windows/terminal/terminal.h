@@ -2,7 +2,7 @@
 
 #include <types.h>
 #include <stdbool.h>
-#include <sys/spawn.h>
+#include <non-standart/sys/spawn.h>
 
 #define TERM_OUTPUT_SIZE   (64 * 1024)
 #define TERM_INPUT_SIZE    2048

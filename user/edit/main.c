@@ -1,11 +1,11 @@
-#include <sys/graphics.h>
-#include <assert.h>
+#include <non-standart/sys/graphics.h>
 #include <render.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <input.h>
-#include <buildin/ansi.h>
+#include <non-standart/stdio.h>
+#include <non-standart/buildin/ansi.h>
 
 void print_usage(char* prog) {
 	printf("Usage: %s [-r] <file-name>\n\n", prog);

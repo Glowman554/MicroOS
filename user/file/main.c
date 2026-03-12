@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
 
 #include <file_scanner.h>

@@ -1,10 +1,10 @@
-#include <sys/spawn.h>
-#include <sys/file.h>
-#include <sys/env.h>
+#include <non-standart/sys/spawn.h>
+#include <non-standart/sys/file.h>
+#include <non-standart/sys/env.h>
 #include <stddef.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
-#include <buildin/path.h>
+#include <non-standart/buildin/path.h>
 
 // #define BACKGROUND_DEBUG
 

@@ -5,13 +5,13 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdbool.h>
 
-#include <sys/spawn.h>
-#include <sys/env.h>
-#include <sys/file.h>
-#include <buildin/path.h>
+#include <non-standart/sys/spawn.h>
+#include <non-standart/sys/env.h>
+#include <non-standart/sys/file.h>
+#include <non-standart/buildin/path.h>
 
 #define PIPE_BUFFER_SIZE 65536
 

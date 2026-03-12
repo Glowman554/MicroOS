@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include <buildin/number_parser.h>
+#include <non-standart/buildin/number_parser.h>
 
 #define arg_str(name) char* name = NULL; for (int i = 1; i < argc; i++) { if (strcmp(argv[i], "--"#name) == 0) { name = argv[i + 1]; break; } }
 #define arg(name) bool name = false; for (int i = 1; i < argc; i++) { if (strcmp(argv[i], "--"#name) == 0) { name = true; break; } }
@@ -133,8 +133,8 @@ int main(int argc, char* argv[]) {
         case LESS:
         {
             int num1, num2;
-            __libc_parse_number(val1, &num1);
-            __libc_parse_number(val2, &num2);
+            parse_number(val1, &num1);
+            parse_number(val2, &num2);
             if ((num1 < num2) ^ not) {
                 system(cmd);
             }
@@ -144,8 +144,8 @@ int main(int argc, char* argv[]) {
         case MORE:
         {
             int num1, num2;
-            __libc_parse_number(val1, &num1);
-            __libc_parse_number(val2, &num2);
+            parse_number(val1, &num1);
+            parse_number(val2, &num2);
             if ((num1 > num2) ^ not) {
                 system(cmd);
             }
