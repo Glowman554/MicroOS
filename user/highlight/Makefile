@@ -1,4 +1,4 @@
-PROGRAM = edit.elf
+PROGRAM = highlight.elf
 
 include ../program.mk
 

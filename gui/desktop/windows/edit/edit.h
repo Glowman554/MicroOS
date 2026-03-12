@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "syntax.h"
+#include <syntax.h>
 
 typedef struct {
     char file_name[128];

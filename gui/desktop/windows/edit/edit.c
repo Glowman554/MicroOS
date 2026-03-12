@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include "syntax.h"
+#include <syntax.h>
 #include <filepicker.h>
 
 extern psf1_font_t font;
