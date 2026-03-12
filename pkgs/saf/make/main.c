@@ -1,10 +1,10 @@
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include <non-standart/stdio.h>
 #include <stdlib.h>
-#include <sys/file.h>
+#include <non-standart/sys/file.h>
 #include <string.h>
-#include <buildin/ansi.h>
+#include <non-standart/buildin/ansi.h>
 #include <saf.h>
 
 // port from https://github.com/chocabloc/saf/blob/main/saf-make.c
