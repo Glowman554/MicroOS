@@ -117,6 +117,7 @@ libs.zip: all
 	cp user/libflvm/include/* res/libs/include/. -rf
 	cp user/libjson/include/* res/libs/include/. -rf
 	cp user/libload/include/* res/libs/include/. -rf
+	cp user/libsyntax/include/* res/libs/include/. -rf
 
 ifeq ($(GUI),1)
 	cp gui/lib/* res/libs/. -rf
