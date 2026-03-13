@@ -141,7 +141,10 @@ void _main(multiboot_info_t* mb_info) {
 	text_console_clrscr(NULL, 1);
 	text_console_puts(NULL, 1, "Booting MicroOS...\n");
 
-
+	bool enable_gdb = false;
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
+		enable_gdb = true;
+	}
 
 	bool enable_serial = false;
 	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--serial", NULL)) {
@@ -150,7 +153,7 @@ void _main(multiboot_info_t* mb_info) {
 	}
 
 #ifdef EARLY_SERIAL_DEBUG
-	if (!gdb_active && enable_serial) {
+	if (!enable_gdb && enable_serial) {
 		serial_output_driver.driver.init((driver_t*) &serial_output_driver);
 	}
 #endif
@@ -158,7 +161,7 @@ void _main(multiboot_info_t* mb_info) {
 	init_initial_gdt();
 	init_interrupts();
 
-	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--gdb", NULL)) {
+	if (enable_gdb) {
 		if (!enable_serial) {
 			abortf(false, "Cannot use gdb without serial");
 		}
@@ -206,7 +209,7 @@ void _main(multiboot_info_t* mb_info) {
 	parse_madt();
 #endif
 
-	if (!gdb_active && enable_serial) {
+	if (!enable_gdb && enable_serial) {
 		register_driver((driver_t*) &serial_output_driver);
 	}
 #ifdef FULL_SCREEN_TERMINAL
