@@ -47,6 +47,8 @@ void text_console_early();
 void text_console_puts(char_output_driver_t* driver, int term, const char *s);
 void text_console_putc(char_output_driver_t* driver, int term, char c);
 void text_console_clrscr(char_output_driver_t* driver, int term);
+void text_console_erase_display(char_output_driver_t* driver, int term, enum ansi_erase_mode mode);
+void text_console_erase_line(char_output_driver_t* driver, int term, enum ansi_erase_mode mode);
 
 extern char* color_table[];
 

@@ -5,7 +5,6 @@
 #include <string.h>
 #include <input.h>
 #include <non-standart/stdio.h>
-#include <non-standart/buildin/ansi.h>
 
 void print_usage(char* prog) {
 	printf("Usage: %s [-r] <file-name>\n\n", prog);
@@ -114,6 +113,6 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	free(state.input_buffer);
 	fclose(state.file);
-	ansi_printf("\033[H\033[J");
+	printf("\033[H\033[J");
 	return 0;
 }

@@ -11,14 +11,6 @@ diff --git a/tools/visual_eumlator/main.c b/tools/visual_eumlator/main.c
 index 0110cc5..091a7ac 100644
 --- a/tools/visual_eumlator/main.c
 +++ b/tools/visual_eumlator/main.c
-@@ -4,6 +4,7 @@
- #include <stdio.h>
- #include <cpu_disasm.h>
- #include <stdlib.h>
-+#include <non-standart/buildin/ansi.h>
- 
- uint8_t memory_[0xffff] = { 0 };
- 
 @@ -30,7 +31,7 @@ void cpu_tout(bool val) {
  	debugf("tout: %s", val ? "true" : "false");
  }
@@ -42,7 +34,7 @@ index 0110cc5..091a7ac 100644
      cpu_state_t state = { 0 };
  
 -    system("clear");
-+	ansi_printf("\033[H\033[J");
++	printf("\033[H\033[J");
      printf("Welcome to the %s emulator!\nPress 'h' for help.\n", argv[0]);
  
      bool running = true;
@@ -52,7 +44,7 @@ index 0110cc5..091a7ac 100644
 -        char command = getch();
 -        system("clear");
 +        char command = getchar();
-+	    ansi_printf("\033[H\033[J");
++	    printf("\033[H\033[J");
  
          switch (command) {
              case 'h':

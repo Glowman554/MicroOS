@@ -1,6 +1,5 @@
 #include <non-standart/buildin/graphics.h>
 #include <non-standart/sys/getc.h>
-#include <non-standart/buildin/ansi.h>
 #include <non-standart/sys/spawn.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -102,6 +101,6 @@ int main(int argc, char* argv[]) {
 	} while ((c = async_getc()) != 27);
 
 	free(list);
-	ansi_printf("\033[H\033[J");
+	printf("\033[H\033[J");
 	return 0;
 }

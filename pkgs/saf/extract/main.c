@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <non-standart/sys/file.h>
-#include <non-standart/buildin/ansi.h>
 #include <saf.h>
 
 // port from https://github.com/chocabloc/saf/blob/main/saf-extract.c
@@ -13,7 +12,7 @@
 
 static void panic(const char* msg, ...) {
 	char buf[512] = { 0 };
-    ansi_printf("\033[31merror: \033[0m");
+    printf("\033[31merror: \033[0m");
     va_list args;
 	va_start(args, msg);
 	vsprintf(buf, msg, args);
@@ -24,7 +23,7 @@ static void panic(const char* msg, ...) {
 
 static void info(const char* msg, ...) {
 	char buf[512] = { 0 };
-    ansi_printf("\033[32minfo: \033[0m");
+    printf("\033[32minfo: \033[0m");
     va_list args;
 	va_start(args, msg);
 	vsprintf(buf, msg, args);
