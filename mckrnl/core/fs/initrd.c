@@ -105,8 +105,6 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 		dir_t dir;
 		memset(&dir, 0, sizeof(dir));
 
-		debugf("%x", child);
-
 		strcpy(dir.name, child->name);
 		dir.idx = idx;
 		dir.is_none = false;
