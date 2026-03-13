@@ -94,7 +94,7 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 
 	saf_node_folder_t* folder_node = (saf_node_folder_t*) folder;
 
-	if (idx > folder_node->num_children - 1) {
+	if (idx >= folder_node->num_children) {
 		dir_t dir = {
 			.is_none = true,
 		};
@@ -104,6 +104,8 @@ dir_t initrd_dir_at(vfs_mount_t* mount, int idx, char* path) {
 
 		dir_t dir;
 		memset(&dir, 0, sizeof(dir));
+
+		debugf("%x", child);
 
 		strcpy(dir.name, child->name);
 		dir.idx = idx;
