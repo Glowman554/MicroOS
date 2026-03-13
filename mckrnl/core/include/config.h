@@ -54,7 +54,7 @@
 // Other
 #define FD_OFFSET 5
 #define FAST_MEMORY
-#define ABI_VERSION 4
+#define ABI_VERSION 5
 #define SYMBOLS_FILE
 // End Other
 
