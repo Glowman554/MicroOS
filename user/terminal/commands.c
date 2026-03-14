@@ -429,8 +429,6 @@ void set_wait_and_yield() {
 	yield();
 }
 
-bool already_in_ipc = false;
-
 int spawn_process(char** argv, char** terminal_envp, pipe_t* stdout, pipe_t* stdin) {
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
@@ -452,45 +450,12 @@ int spawn_process(char** argv, char** terminal_envp, pipe_t* stdout, pipe_t* std
 		set_pipe(pid, stdin, PIPE_STDIN);
 	}
 
-	if (already_in_ipc) {
-		// printf("WARNING: already_in_ipc == true\n");
-		set_env(SYS_ENV_PIN, (void*) 0);
-		goto normal_wait;
-	}
-
-	already_in_ipc = true;
-
-	ipc_init_mapping(IPC_CONNECTION_TERMINAL, pid);
 	set_env(SYS_ENV_PIN, (void*) 0);
-	while (get_proc_info(pid)) {
-		if (ipc_init_host(IPC_CONNECTION_TERMINAL)) {
-			goto ipc_tunnel_ok;
-		}
-		set_wait_and_yield();
-	}
 
-	already_in_ipc = false;
-	goto done;
-
-ipc_tunnel_ok:
-	while (get_proc_info(pid)) {
-		char out[0x1000] = { 0 };
-		if (ipc_message_ready(IPC_CONNECTION_TERMINAL, (void*) out)) {
-			bool should_break = false;
-			command_received(out, &should_break, NULL, NULL);
-			ipc_ok(IPC_CONNECTION_TERMINAL);
-		}
-		set_wait_and_yield();
-	}
-
-	already_in_ipc = false;
-
-normal_wait:
 	while (get_proc_info(pid)) {
 		set_wait_and_yield();
 	}
 
-done:
 	free(executable);
 	return pid;
 }

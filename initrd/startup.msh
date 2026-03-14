@@ -1,4 +1,4 @@
 #!/bin/terminal.mex
-background 2 terminal -e scheduler
+background 2 scheduler
 
 clear

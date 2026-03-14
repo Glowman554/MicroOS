@@ -150,10 +150,10 @@ void _main(multiboot_info_t* mb_info) {
 		font_size = default_font_size;
 	}
 	init_text_mode_emulation(psf1_buffer_to_font(font_pointer));
+#endif
 
 	set_log_level();
 
-#endif
 	text_console_early();
 	text_console_clrscr(NULL, 1);
 	text_console_puts(NULL, 1, "Booting MicroOS...\n");
