@@ -17,7 +17,7 @@ uint8_t madt_ioapic_count = 0;
 void parse_madt() {
 	madt_header_t* madt = (madt_header_t*) find_SDT((char*) "APIC", 0);
 	if (madt == NULL) {
-		debugf("Failed to parse madt!");
+		debugf(WARNING, "Failed to parse madt!");
 		return;
 	}
 	
@@ -49,14 +49,14 @@ void parse_madt() {
 
 			default:
 				{
-					debugf("WARNING: Unknown MADT record type %d", record->type);
+					debugf(WARNING, "Unknown MADT record type %d", record->type);
 				}
 				break;
 		}
 	}
 
-	debugf("Found %d local APICs", madt_lapic_count);
-	debugf("Found %d I/O APICs", madt_ioapic_count);
+	debugf(SPAM, "Found %d local APICs", madt_lapic_count);
+	debugf(SPAM, "Found %d I/O APICs", madt_ioapic_count);
 
-	debugf("madt_lapic_base_addr: %x", madt_lapic_base_addr);
+	debugf(SPAM, "madt_lapic_base_addr: %x", madt_lapic_base_addr);
 }

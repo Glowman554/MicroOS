@@ -53,7 +53,7 @@ void kill(char* reason) {
 }
 
 void init_killer() {
-	debugf("Initialising killers!");
+	debugf(SPAM, "Initialising killers!");
 
 	register_interrupt_handler(0x0, division_by_zero_killer, NULL);
 	register_interrupt_handler(0x6, invalid_opcode_killer, NULL);

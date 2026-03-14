@@ -84,7 +84,7 @@ void ansi_debug(char f, int* argv, int argc) {
 		c += sprintf(c, ")");
 	}
 
-	debugf("ansi: %s", buffer);
+	debugf(INFO, "ansi: %s", buffer);
 }
 
 void ansi_run(char_output_driver_t* driver, int term, char f, int* argv, int argc) {

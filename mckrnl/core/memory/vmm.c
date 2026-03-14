@@ -66,7 +66,7 @@ extern const void paging_end;
 
 
 void vmm_init(void) {
-	debugf("Initializing virtual memory manager");
+	debugf(SPAM, "Initializing virtual memory manager");
 
 	kernel_context = vmm_create_context();
 
@@ -77,7 +77,7 @@ void vmm_init(void) {
     vmm_identity_map((uintptr_t) &kernel_start, (uintptr_t) &kernel_end);
     vmm_identity_map((uintptr_t) &paging_start, (uintptr_t) &paging_end);
 
-    debugf("Mapping framebuffer...");
+    debugf(SPAM, "Mapping framebuffer...");
 #ifdef TEXT_MODE_EMULATION
     for (int i = 0; i < global_multiboot_info->fb_height * (global_multiboot_info->fb_pitch / 4) * (global_multiboot_info->fb_bpp / 8); i += 0x1000) {
 	#ifdef RAW_FRAMEBUFFER_ACCESS
@@ -97,7 +97,7 @@ void vmm_init(void) {
     }
 #endif
 
-    debugf("Mapping multiboot structure...");
+    debugf(SPAM, "Mapping multiboot structure...");
 	struct multiboot_module* modules = global_multiboot_info->mbs_mods_addr;
     vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) global_multiboot_info), ALIGN_PAGE_DOWN((uintptr_t) global_multiboot_info), PTE_PRESENT);
     vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) modules), ALIGN_PAGE_DOWN((uintptr_t) modules), PTE_PRESENT);
@@ -117,7 +117,7 @@ void vmm_init(void) {
 
 	register_interrupt_handler(0xe, page_fault_handler, NULL);
 
-	debugf("Activating paging NOW!");
+	debugf(SPAM, "Activating paging NOW!");
 	uint32_t cr0;
 	asm volatile("mov %%cr0, %0" : "=r" (cr0));
 	cr0 |= 0x80000000;
@@ -336,7 +336,7 @@ void* vmm_resize(int data_size, int old_size, int new_size, void* ptr) {
 	}
 
 	if (new_size == 0) {
-		debugf("Deallocating...");
+		debugf(SPAM, "Deallocating...");
 		vmm_free(ptr, old_size_p);
 		return NULL;
 	}

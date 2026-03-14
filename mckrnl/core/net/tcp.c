@@ -211,7 +211,7 @@ void tcp_socket_send(tcp_socket_t* socket, uint8_t* data, int size) {
 }
 
 void tcp_set_local_port(tcp_socket_t* socket, uint16_t port) {
-    debugf("Setting local port to %d", port);
+    debugf(SPAM, "Setting local port to %d", port);
     socket->local_port = BSWAP16(port);
 }
 
@@ -311,7 +311,7 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
     }
 
     if (socket == NULL) {
-        debugf("TCP message cannot be routed to valid socket!");
+        debugf(WARNING, "TCP message cannot be routed to valid socket!");
         return;
     }
 
@@ -407,7 +407,7 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
     }
 
     if (prev_state != socket->state) {
-        debugf("tcp: state %s -> %s", tcp_socket_state_str[prev_state], tcp_socket_state_str[socket->state]);
+        debugf(SPAM, "tcp: state %s -> %s", tcp_socket_state_str[prev_state], tcp_socket_state_str[socket->state]);
     }
 
     if(reset) {
@@ -417,7 +417,7 @@ void tcp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
 
     if (socket->state == CLOSED) {
         tcp_tx_clear_unacked(socket);
-        debugf("socket closed");
+        debugf(SPAM, "socket closed");
         for (int i = 0; i < socket->stack->tcp->num_binds; i++) {
             if (socket->stack->tcp->binds[i].socket == socket) {
                 socket->stack->tcp->binds[i].socket = NULL;
@@ -447,7 +447,7 @@ void tcp_poll(network_stack_t* stack) {
             }
             if ((now - s->tx_last_send_ms) >= TCP_CTL_TIMEOUT_MS) {
                 if (s->tx_retries >= TCP_CTL_MAX_RETRIES) {
-                    debugf("tcp: SYN retry limit reached, closing socket");
+                    debugf(WARNING, "tcp: SYN retry limit reached, closing socket");
                     s->state = CLOSED;
                     tcp_tx_clear_unacked(s);
                     continue;
@@ -477,13 +477,13 @@ void tcp_poll(network_stack_t* stack) {
         if ((now - s->tx_last_send_ms) >= timeout) {
             uint8_t maxr = (s->tx_max_retries ? s->tx_max_retries : TCP_RETRANSMIT_MAX_RETRIES);
             if (s->tx_retries >= maxr) {
-                debugf("tcp: retransmit limit reached, closing socket");
+                debugf(WARNING, "tcp: retransmit limit reached, closing socket");
                 s->state = CLOSED;
                 tcp_tx_clear_unacked(s);
                 continue;
             }
 
-            debugf("tcp: retransmitting %d bytes (try %d)", (unsigned)s->tx_unacked_len, (unsigned)(s->tx_retries + 1));
+            debugf(SPAM, "tcp: retransmitting %d bytes (try %d)", (unsigned)s->tx_unacked_len, (unsigned)(s->tx_retries + 1));
             tcp_socket_resend_unacked(s);
         }
     }

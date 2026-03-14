@@ -97,7 +97,7 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 
 	memset(task, 0, sizeof(task_t));
 
-	debugf("Creating task with entry point %p in task slot located at %p", entry, task);
+	debugf(SPAM, "Creating task with entry point %p in task slot located at %p", entry, task);
 
 	uint8_t* stack = vmm_alloc(KERNEL_STACK_SIZE_PAGES);
 	uint8_t* user_stack = vmm_alloc(USER_STACK_SIZE_PAGES);
@@ -184,7 +184,7 @@ void exit_task(task_t* task) {
 		vmm_destroy_context(task->context);
 	}
 
-	debugf("Task %p (%d) exited", task, task->pid);
+	debugf(SPAM, "Task %p (%d) exited", task, task->pid);
 	vmm_free((void*) task->stack, KERNEL_STACK_SIZE_PAGES);
 
 	task->taken = false;
@@ -278,7 +278,7 @@ cpu_registers_t* schedule(cpu_registers_t* registers, void* _) {
 }
 
 void init_scheduler() {
-	debugf("Initializing scheduler");
+	debugf(SPAM, "Initializing scheduler");
  
 	// register_interrupt_handler(0x20, schedule, NULL); // now gets called by the interrupt handler of the pit timer
 

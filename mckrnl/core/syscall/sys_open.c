@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void sys_open_dealloc(void* resource) {
-	debugf("Freeing resource %x", resource);
+	debugf(SPAM, "Freeing resource %x", resource);
 	vfs_close((file_t*) resource);
 }
 

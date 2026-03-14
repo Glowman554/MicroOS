@@ -44,7 +44,7 @@ void e1000_init(driver_t* driver) {
 	e1000_driver_t* e1000_driver = (e1000_driver_t*) driver;
 	enable_mmio(e1000_driver->header.bus, e1000_driver->header.device, e1000_driver->header.function);
 
-	debugf("e1000: interrupt %d", e1000_driver->header.header.interrupt_line + 0x20);
+	debugf(SPAM, "e1000: interrupt %d", e1000_driver->header.header.interrupt_line + 0x20);
 	register_interrupt_handler(e1000_driver->header.header.interrupt_line + 0x20, e1000_interrupt, driver);
 
 	for (int i = 0; i < 6; i++) {
@@ -56,14 +56,14 @@ void e1000_init(driver_t* driver) {
 			for (int i = 0; i < pci_bar.size / 0x1000 + 1; i++) {
 				vmm_map_page(kernel_context, e1000_driver->mem_base + 0x1000 * i, e1000_driver->mem_base + 0x1000 * i, PTE_PRESENT | PTE_WRITE);
 			}
-			debugf("e1000: MMIO address: 0x%x", e1000_driver->mem_base);
-			debugf("e1000: SIZE = %d; BAR TYPE = %d", pci_bar.size, pci_bar.type);
+			debugf(SPAM, "e1000: MMIO address: 0x%x", e1000_driver->mem_base);
+			debugf(SPAM, "e1000: SIZE = %d; BAR TYPE = %d", pci_bar.size, pci_bar.type);
 			break;
 		} else if (pci_bar.type == IO) {
 			e1000_driver->bar_type = 1;
 			e1000_driver->io_port = pci_bar.io_address;
-			debugf("e1000: IO port: %d", e1000_driver->io_port);
-			debugf("e1000: SIZE = %d; BAR TYPE = %d", pci_bar.size, pci_bar.type);
+			debugf(SPAM, "e1000: IO port: %d", e1000_driver->io_port);
+			debugf(SPAM, "e1000: SIZE = %d; BAR TYPE = %d", pci_bar.size, pci_bar.type);
 			break;
 		}
 	}
@@ -88,7 +88,7 @@ void e1000_init(driver_t* driver) {
 	e1000_detect_eeprom(e1000_driver);
 
 	e1000_driver->driver.mac = e1000_get_mac(e1000_driver);
-	debugf("e1000: mac: %x:%x:%x:%x:%x:%x", e1000_driver->driver.mac.mac_p[0], e1000_driver->driver.mac.mac_p[1], e1000_driver->driver.mac.mac_p[2], e1000_driver->driver.mac.mac_p[3], e1000_driver->driver.mac.mac_p[4], e1000_driver->driver.mac.mac_p[5]);
+	debugf(SPAM, "e1000: mac: %x:%x:%x:%x:%x:%x", e1000_driver->driver.mac.mac_p[0], e1000_driver->driver.mac.mac_p[1], e1000_driver->driver.mac.mac_p[2], e1000_driver->driver.mac.mac_p[3], e1000_driver->driver.mac.mac_p[4], e1000_driver->driver.mac.mac_p[5]);
 
 	e1000_start_link(e1000_driver);
 	for(int i = 0; i < 0x80; i++) {
@@ -104,7 +104,7 @@ void e1000_init(driver_t* driver) {
 	e1000_rx_init(e1000_driver);
 	e1000_tx_init(e1000_driver);
 
-	debugf("e1000: successfully activated!");
+	debugf(SPAM, "e1000: successfully activated!");
 
 	register_nic_driver((nic_driver_t*) e1000_driver);
 }
@@ -145,7 +145,7 @@ cpu_registers_t* e1000_interrupt(cpu_registers_t* regs, void* data) {
 	if (status & 0x04) {
 		e1000_start_link(driver);
 	} else if(status & 0x10) {
-		debugf("e1000: Good threshold");
+		debugf(SPAM, "e1000: Good threshold");
 	} else if(status & 0x80) {
 		e1000_receive(driver);
 	}
@@ -158,7 +158,7 @@ void e1000_receive(e1000_driver_t* driver) {
 		uint8_t* data = (uint8_t*) (uint32_t) driver->rx_descs[driver->rx_cur]->addr;
 		uint16_t size = driver->rx_descs[driver->rx_cur]->length;
 
-		debugf("e1000: Received packet of length %d", size);
+		debugf(SPAM, "e1000: Received packet of length %d", size);
 		driver->driver.recv((nic_driver_t*) driver, data, size);
 
 		driver->rx_descs[driver->rx_cur]->status = 0;

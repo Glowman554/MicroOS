@@ -17,14 +17,14 @@ cpu_registers_t* sci_interrupt_handler(cpu_registers_t* registers, void* context
 	uint16_t ev = lai_get_sci_event();
 
 	if (ev & ACPI_POWER_BUTTON) {
-		debugf("sci: power button");
+		debugf(SPAM, "sci: power button");
 		global_power_driver->shutdown(global_power_driver);
 	} else if (ev & ACPI_SLEEP_BUTTON) {
-		debugf("sci: sleep button");
+		debugf(SPAM, "sci: sleep button");
 	} else if (ev & ACPI_WAKE) {
-		debugf("sci: sleep wake up");
+		debugf(SPAM, "sci: sleep wake up");
 	} else {
-		debugf("sci: unknown");
+		debugf(SPAM, "sci: unknown");
 	}	
 
 	return registers;
@@ -32,7 +32,7 @@ cpu_registers_t* sci_interrupt_handler(cpu_registers_t* registers, void* context
 
 void register_sci_interrupt() {
 	int sci_interrupt = get_sci_interrupt();
-	debugf("Registering SCI interrupt at %d", sci_interrupt);
+	debugf(SPAM, "Registering SCI interrupt at %d", sci_interrupt);
 
 	register_interrupt_handler(sci_interrupt, sci_interrupt_handler, NULL);
 }

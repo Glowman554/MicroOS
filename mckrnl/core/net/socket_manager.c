@@ -13,7 +13,7 @@ socket_manager_t* global_socket_manager = NULL;
 
 void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 	socket_t* _socket = socket->data;
-	debugf("socket_udp_recv(): %d bytes", size);
+	debugf(SPAM, "socket_udp_recv(): %d bytes", size);
 
 	if (_socket->received_data == NULL) {
 		_socket->received_data = kmalloc(size);
@@ -31,7 +31,7 @@ void socket_udp_recv(struct udp_socket* socket, uint8_t* data, int size) {
 #ifdef TCP
 void socket_tcp_recv(struct tcp_socket* socket, uint8_t* data, int size) {
 	socket_t* _socket = socket->data;
-	debugf("socket_tcp_recv(): %d bytes", size);
+	debugf(SPAM, "socket_tcp_recv(): %d bytes", size);
 
 	if (_socket->received_data == NULL) {
 		_socket->received_data = kmalloc(size);
@@ -218,7 +218,7 @@ socket_t* socket_manager_find(int socket_id) {
 }
 
 void init_socket_manager() {
-	debugf("Allocating socket manager...");
+	debugf(SPAM, "Allocating socket manager...");
 	global_socket_manager = kmalloc(sizeof(socket_manager_t));
 	memset(global_socket_manager, 0, sizeof(socket_manager_t));
 

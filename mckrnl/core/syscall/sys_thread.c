@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 void sys_thread_kill(void* resource) {
-	debugf("Killing thread %d", resource);
+	debugf(SPAM, "Killing thread %d", resource);
     task_t* thread = get_task_by_pid((int) resource);
     if (thread) {
         exit_task(thread);

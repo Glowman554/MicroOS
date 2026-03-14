@@ -34,7 +34,7 @@ void setup_trace_flags() {
 void stage_driver() {
     if (rsdp) {
         uint8_t revision = rsdp->revision;
-        debugf("ACPI RSDP found, revision: %d", revision);
+        debugf(SPAM, "ACPI RSDP found, revision: %d", revision);
 
         setup_trace_flags();
 

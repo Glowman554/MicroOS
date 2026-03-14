@@ -97,7 +97,7 @@ void ramfs_delete(vfs_mount_t* mount, file_t* file) { todo(); }
 
 void ramfs_mkdir(vfs_mount_t* mount, char* path) {
 	if (ramfs_find(path, mount->driver_specific_data)) {
-		debugf("%s ALREADY EXISTS", path);
+		debugf(SPAM, "%s ALREADY EXISTS", path);
 		return;
 	}
 
@@ -106,7 +106,7 @@ void ramfs_mkdir(vfs_mount_t* mount, char* path) {
 
 	ramfs_node_t* node = ramfs_find(path_buf, mount->driver_specific_data);
 	if (node == NULL || node->type != NODE_DIR) {
-		debugf("Node not found or of wrong type!");
+		debugf(WARNING, "Node not found or of wrong type!");
 		return;
 	}
 
@@ -125,7 +125,7 @@ void ramfs_mkdir(vfs_mount_t* mount, char* path) {
 
 void ramfs_touch(vfs_mount_t* mount, char* path) {
 	if (ramfs_find(path, mount->driver_specific_data)) {
-		debugf("%s ALREADY EXISTS", path);
+		debugf(SPAM, "%s ALREADY EXISTS", path);
 		return;
 	}
 
@@ -134,7 +134,7 @@ void ramfs_touch(vfs_mount_t* mount, char* path) {
 
 	ramfs_node_t* node = ramfs_find(path_buf, mount->driver_specific_data);
 	if (node == NULL || node->type != NODE_DIR) {
-		debugf("Node not found or of wrong type!");
+		debugf(WARNING, "Node not found or of wrong type!");
 		return;
 	}
 

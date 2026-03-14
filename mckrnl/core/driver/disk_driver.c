@@ -12,7 +12,7 @@ disk_driver_t** disks = NULL;
 int register_disk(disk_driver_t* disk) {
 	disks = krealloc(disks, sizeof(disk_driver_t*) * (num_disks + 1));
 	disks[num_disks] = disk;
-	debugf("Registered disk %d", num_disks);
+	debugf(SPAM, "Registered disk %d", num_disks);
 	num_disks++;
 
 	return num_disks - 1;

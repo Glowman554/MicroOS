@@ -48,7 +48,7 @@ void ne2k_init(driver_t* driver) {
     for (int i = 0; i < 5; i++) {
         pci_bar_t bar = pci_get_bar(&ne_driver->header.header.BAR0, i, ne_driver->header.bus, ne_driver->header.device, ne_driver->header.function);
         if (bar.type == IO) {
-            debugf("ne2k: bar %d: io_base: %x", i, bar.io_address);
+            debugf(SPAM, "ne2k: bar %d: io_base: %x", i, bar.io_address);
             ne_driver->io_base = bar.io_address;
             break;
         }
@@ -76,7 +76,7 @@ void ne2k_init(driver_t* driver) {
     outb(ne_driver->io_base + NE_RBCR1, 0x00);
 
     ne_driver->driver.mac = ne2k_get_mac(ne_driver);
-    debugf("ne2k: mac: %x:%x:%x:%x:%x:%x", ne_driver->driver.mac.mac_p[0], ne_driver->driver.mac.mac_p[1], ne_driver->driver.mac.mac_p[2], ne_driver->driver.mac.mac_p[3], ne_driver->driver.mac.mac_p[4], ne_driver->driver.mac.mac_p[5]);
+    debugf(SPAM, "ne2k: mac: %x:%x:%x:%x:%x:%x", ne_driver->driver.mac.mac_p[0], ne_driver->driver.mac.mac_p[1], ne_driver->driver.mac.mac_p[2], ne_driver->driver.mac.mac_p[3], ne_driver->driver.mac.mac_p[4], ne_driver->driver.mac.mac_p[5]);
 
     outb(ne_driver->io_base + NE_CMD, 0x61);
     ne_driver->next_packet = PAGE_RX + 1;
@@ -121,7 +121,7 @@ void ne2k_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t siz
     switch (async->state) {
         case STATE_INIT:
             if (size > 0x700) {
-                debugf("ne2k: packet too long");
+                debugf(WARNING, "ne2k: packet too long");
                 size = 0x700;
             }
 
@@ -175,29 +175,29 @@ cpu_registers_t* ne2k_interrupt(cpu_registers_t* regs, void* data) {
 	uint8_t isr = inb(ne_driver->io_base + NE_ISR);
     if (isr & 0x0A) {
         if(!(isr & 0x8)) {
-            debugf("ne2k: transmit complete");
+            debugf(SPAM, "ne2k: transmit complete");
         }
     }
 
     if(isr & 0x05) {
-        debugf("ne2k: received packet");
+        debugf(SPAM, "ne2k: received packet");
         if(!(isr & 0x04)) {
             outb(ne_driver->io_base + NE_IMR, 0x3a);
             isr &= ~1;
             ne2k_receive(ne_driver);
             outb(ne_driver->io_base + NE_IMR, 0x3f);
         } else {
-            debugf("ne2k: receive failed");
+            debugf(ERROR, "ne2k: receive failed");
         }
 
     }
 
     if (isr & 0x10) {
-        debugf("ne2k: receive buffer overflow");
+        debugf(ERROR, "ne2k: receive buffer overflow");
     }
 
     if(isr & 0x20) {
-        debugf("ne2k: counter overflow");
+        debugf(ERROR, "ne2k: counter overflow");
     }
 
     outb(ne_driver->io_base + NE_ISR, isr);
@@ -253,7 +253,7 @@ void ne2k_receive(ne2k_driver_t* driver) {
         driver->next_packet = status >> 8;
         outb(driver->io_base + NE_BNDRY, (driver->next_packet == PAGE_RX) ? (PAGE_STOP - 1) : (driver->next_packet - 1));
 
-        debugf("ne2k: received packet of size %d", length);
+        debugf(SPAM, "ne2k: received packet of size %d", length);
 
 	    driver->driver.recv((nic_driver_t*) driver, (uint8_t*) data, length - 4);
     }

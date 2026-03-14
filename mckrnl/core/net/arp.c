@@ -18,7 +18,7 @@ void arp_add_to_cache(network_stack_t* stack, mac_u mac, ip_u ip) {
 		stack->arp->num_cache_entry = 0;
 	}
 
-	debugf("%d.%d.%d.%d is at %x:%x:%x:%x:%x:%x", ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[2], mac.mac_p[0], mac.mac_p[1], mac.mac_p[2], mac.mac_p[3], mac.mac_p[4], mac.mac_p[5]);
+	debugf(SPAM, "%d.%d.%d.%d is at %x:%x:%x:%x:%x:%x", ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[2], mac.mac_p[0], mac.mac_p[1], mac.mac_p[2], mac.mac_p[3], mac.mac_p[4], mac.mac_p[5]);
 
 	stack->arp->ip_cache[stack->arp->num_cache_entry] = ip;
 	stack->arp->mac_cache[stack->arp->num_cache_entry] = mac;
@@ -43,7 +43,7 @@ void arp_etherframe_recv(ether_frame_handler_t* handler, mac_u src_mac, uint8_t*
 						arp->src_mac = handler->stack->driver->mac.mac;
 
 						ip_u dest_ip = { .ip = arp->dest_ip };
-						debugf("Sending ARP response to %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
+						debugf(INFO, "Sending ARP response to %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
 						
 						etherframe_send(&handler->stack->arp->handler, handler->stack, arp->dest_mac, (uint8_t*) arp,  sizeof(arp_message_t));
 					}

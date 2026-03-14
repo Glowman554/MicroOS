@@ -45,7 +45,7 @@ keymap_file_header_t* loaded_keymap = NULL;
 int current_keymap_idx = 0;
 
 void init_keymap(char* path) {
-    debugf("Loading keymap from %s", path);
+    debugf(INFO, "Loading keymap from %s", path);
 
     file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
     if (!file) {
@@ -95,20 +95,20 @@ void set_layout(char* name) {
     for (int i = 0; i < loaded_keymap->num_keymaps; i++) {
         keymap_t* map = &((keymap_t*) &loaded_keymap[1])[i];
         if (strcmp(map->name, name) == 0) {
-            debugf("Using new layout %s stored at index %d", name, i);
+            debugf(SPAM, "Using new layout %s stored at index %d", name, i);
             current_keymap_idx = i;
             return;
         }
     }
 
-    debugf("Layout %s not found, not changing layout!", name);
+    debugf(WARNING, "Layout %s not found, not changing layout!", name);
 }
 
 void global_fkey_handler(int f, bool up) {
-    debugf("f%d %s", f, up ? "up" : "down");
+    debugf(SPAM, "f%d %s", f, up ? "up" : "down");
 
     if (!up && f <= MAX_VTERM) {
-        debugf("Switching to vterm: %d", f);
+        debugf(SPAM, "Switching to vterm: %d", f);
         global_char_output_driver->vterm(global_char_output_driver, f);
     }
 }

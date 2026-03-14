@@ -12,7 +12,7 @@ rsdp2_t* rsdp = NULL;
 
 
 rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
-	debugf("Scanning for RSDP in %x to %x", start, start + length);
+	debugf(SPAM, "Scanning for RSDP in %x to %x", start, start + length);
     uintptr_t start2 = (uintptr_t) start;
 	char* end = start + length;
 
@@ -32,28 +32,28 @@ rsdp2_t* scan_for_rsdp(char* start, uint32_t length) {
 void rsdp_init() {
 	rsdp = scan_for_rsdp((char*) RSDP_SCAN_BASE_ADDR, RSDP_SCAN_LENGTH);
 	if (!rsdp) {
-		debugf("RSDP not found");
+		debugf(WARNING, "RSDP not found");
 		return;
 	}
 
-	debugf("rsdp found at %x", rsdp);
+	debugf(SPAM, "rsdp found at %x", rsdp);
 
 	if(rsdp->xsdt_address) {
 		xsdt = (xsdt_t*)((uint32_t) rsdp->xsdt_address);
 		vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) xsdt), ALIGN_PAGE_DOWN((uintptr_t) xsdt), PTE_PRESENT | PTE_WRITE);
 		for (int i = 0; i < xsdt->header.length / 0x1000 + 1; i++) {
 			vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, PTE_PRESENT | PTE_WRITE);
-			debugf("Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, xsdt->header.length / 0x1000 + 1);
+			debugf(SPAM, "Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) xsdt) + i * 0x1000, xsdt->header.length / 0x1000 + 1);
 		}
-		debugf("xsdt found at %x", xsdt);
+		debugf(SPAM, "xsdt found at %x", xsdt);
 	} else if(rsdp->rsdt_address) {
 		rsdt = (rsdt_t*)((uint32_t) rsdp->rsdt_address);
 		vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) rsdt), ALIGN_PAGE_DOWN((uintptr_t) rsdt), PTE_PRESENT | PTE_WRITE);
 		for (int i = 0; i < rsdt->header.length / 0x1000 + 1; i++) {
 			vmm_map_page(kernel_context, ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, PTE_PRESENT | PTE_WRITE);
-			debugf("Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, rsdt->header.length / 0x1000 + 1);
+			debugf(SPAM, "Mapped %x (length: %d)", ALIGN_PAGE_DOWN((uintptr_t) rsdt) + i * 0x1000, rsdt->header.length / 0x1000 + 1);
 		}
-		debugf("rsdt found at %x", rsdt);
+		debugf(SPAM, "rsdt found at %x", rsdt);
 	}
 }
 

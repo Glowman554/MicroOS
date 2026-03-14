@@ -82,7 +82,7 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
             break;
 
 		default:
-			debugf("sys_env: Unknown id %d", id);
+			debugf(WARNING, "sys_env: Unknown id %d", id);
 			break;
 	}
 

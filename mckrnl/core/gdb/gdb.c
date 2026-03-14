@@ -22,7 +22,7 @@ int gdb_recv_ack(gdb_state_t* state) {
         case '-':
             return 1;
         default:
-            debugf("received bad packet response: 0x%x", response);
+            debugf(WARNING, "received bad packet response: 0x%x", response);
             return GDB_EOF;
     }
 }
@@ -88,7 +88,7 @@ int gdb_recv_packet(gdb_state_t* state, char* pkt_buf, int pkt_buf_len, int* pkt
             break;
         } else {
             if (*pkt_len >= pkt_buf_len) {
-                debugf("packet buffer overflow");
+                debugf(ERROR, "packet buffer overflow");
                 return GDB_EOF;
             }
 
@@ -119,7 +119,7 @@ int gdb_recv_packet(gdb_state_t* state, char* pkt_buf, int pkt_buf_len, int* pkt
 
     char actual_csum = gdb_checksum(pkt_buf, *pkt_len);
     if (actual_csum != expected_csum) {
-        debugf("received packet with bad checksum");
+        debugf(WARNING, "received packet with bad checksum");
         gdb_sys_putchar(state, '-');
         return GDB_EOF;
     }
@@ -364,7 +364,7 @@ int gdb_main(gdb_state_t* state) {
 
 
             default:
-                debugf("unknown command %c", pkt_buf[0]);
+                debugf(WARNING, "unknown command %c", pkt_buf[0]);
                 gdb_send_packet(state, NULL, 0);
                 break;
         }

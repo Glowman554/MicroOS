@@ -14,11 +14,11 @@
 
 
 void dsdt_init(simple_power_driver_t* driver) {
-	debugf("dsdt init...");
+	debugf(SPAM, "dsdt init...");
 	fadt_table_t* fadt = (fadt_table_t*) find_SDT((char*) "FACP", 0);
 
 	if (fadt == NULL) {
-		debugf("Failed to init dsdt!");
+		debugf(WARNING, "Failed to init dsdt!");
 		return;
 	}
 
@@ -30,7 +30,7 @@ void dsdt_init(simple_power_driver_t* driver) {
 
 	uint32_t aligned_dsdt_addr = ALIGN_PAGE_DOWN((uintptr_t) dsdt_addr);
 	for (int i = 0; i < dsdt_length / 0x1000 + 1; i++) {
-		debugf("mapping dsdt at %x", aligned_dsdt_addr + i * 0x1000);
+		debugf(SPAM, "mapping dsdt at %x", aligned_dsdt_addr + i * 0x1000);
 		vmm_map_page(kernel_context, aligned_dsdt_addr + i * 0x1000, aligned_dsdt_addr + i * 0x1000, PTE_PRESENT | PTE_WRITE);
 	}
 
@@ -41,7 +41,7 @@ void dsdt_init(simple_power_driver_t* driver) {
 	}
 
 	if (dsdt_length <= 0) {
-		debugf("_S5 not present in ACPI");
+		debugf(WARNING, "_S5 not present in ACPI");
 		return;
 	}
 
@@ -62,11 +62,11 @@ void dsdt_init(simple_power_driver_t* driver) {
 
 		driver->SLP_TYPb = *(s5_addr) << 10;
 
-		debugf("_S5 found in ACPI");
+		debugf(SPAM, "_S5 found in ACPI");
 		return;
 	}
 
-	debugf("Failed to parse _S5 in ACPI");
+	debugf(WARNING, "Failed to parse _S5 in ACPI");
 }
 
 bool simple_power_driver_is_device_present(driver_t* driver) {
@@ -95,7 +95,7 @@ void simple_power_driver_reboot(power_driver_t* driver) {
 	switch (fadt->reset_reg.address_space) {
 		case GENERIC_ADDRESS_SPACE_SYSTEM_IO:
 			{
-				debugf("ACPI reboot: system io\n");
+				debugf(INFO, "ACPI reboot: system io\n");
 				outb(fadt->reset_reg.address, fadt->reset_value);
 			}
 			break;
@@ -108,7 +108,7 @@ void simple_power_driver_reboot(power_driver_t* driver) {
 		
 		case GENERIC_ADDRESS_SPACE_PCI_CONFIGURATION_SPACE:
 			{
-				debugf(false, "ACPI reboot: pci configuration space\n");
+				debugf(INFO, "ACPI reboot: pci configuration space\n");
 				pci_writeb(0, (fadt->reset_reg.address >> 32) & 0xFFFF, (fadt->reset_reg.address >> 16) & 0xFFFF, fadt->reset_reg.address & 0xFFFF, fadt->reset_value);
 			}
 			break;

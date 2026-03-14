@@ -24,7 +24,7 @@ cpu_registers_t* sys_spawn(cpu_registers_t* regs) {
 
 	task_t* spawned_task = get_task_by_pid(regs->esi);
 
-	debugf("copying pwd: %s", current->pwd);
+	debugf(SPAM, "copying pwd: %s", current->pwd);
 	size_t pwd_len = strlen(current->pwd);
 	if (pwd_len >= sizeof(spawned_task->pwd)) {
 		pwd_len = sizeof(spawned_task->pwd) - 1;
