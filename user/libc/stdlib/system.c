@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <non-standart/buildin/ipc.h>
+#include <non-standard/buildin/ipc.h>
 
 bool ipc_initialised = false;
 

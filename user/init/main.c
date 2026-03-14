@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <non-standart/sys/spawn.h>
-#include <non-standart/sys/graphics.h>
-#include <non-standart/sys/env.h>
+#include <non-standard/sys/spawn.h>
+#include <non-standard/sys/graphics.h>
+#include <non-standard/sys/env.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>

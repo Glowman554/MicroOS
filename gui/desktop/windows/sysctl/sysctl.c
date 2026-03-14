@@ -5,10 +5,10 @@
 #include <button.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <non-standart/sys/time.h>
-#include <non-standart/sys/raminfo.h>
-#include <non-standart/sys/env.h>
-#include <non-standart/buildin/unix_time.h>
+#include <non-standard/sys/time.h>
+#include <non-standard/sys/raminfo.h>
+#include <non-standard/sys/env.h>
+#include <non-standard/buildin/unix_time.h>
 
 extern psf1_font_t font;
 

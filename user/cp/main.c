@@ -1,9 +1,9 @@
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-#include <non-standart/sys/file.h>
+#include <non-standard/sys/file.h>
 
 void copy_file(char* src_dir, char* dest_dir, char* file_name, bool verbose) {
 	char src_path[512] = { 0 };

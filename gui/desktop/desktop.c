@@ -6,9 +6,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <non-standart/sys/time.h>
-#include <non-standart/buildin/unix_time.h>
-#include <non-standart/buildin/data/array.h>
+#include <non-standard/sys/time.h>
+#include <non-standard/buildin/unix_time.h>
+#include <non-standard/buildin/data/array.h>
 
 #include "windows/edit/edit.h"
 

@@ -1,7 +1,7 @@
 #include <stdint.h>
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <string.h>
-#include <non-standart/sys/getc.h>
+#include <non-standard/sys/getc.h>
 
 #define RAM_AMT (64 * 1024 * 1024)
 
@@ -31,7 +31,7 @@ int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno);
 #include <mini-rv32ima.h>
 #include <device_tree.h>
 
-#include <non-standart/sys/env.h>
+#include <non-standard/sys/env.h>
 
 struct MiniRV32IMAState* core;
 

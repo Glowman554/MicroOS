@@ -1,6 +1,6 @@
-#include <non-standart/buildin/graphics.h>
-#include <non-standart/sys/getc.h>
-#include <non-standart/sys/spawn.h>
+#include <non-standard/buildin/graphics.h>
+#include <non-standard/sys/getc.h>
+#include <non-standard/sys/spawn.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

@@ -9,7 +9,7 @@ src_compress = """
 #include <stdlib.h>
 #include <tinf.h>
 #include <stdbool.h>
-#include <non-standart/sys/file.h>
+#include <non-standard/sys/file.h>
 
 {{data}}
 

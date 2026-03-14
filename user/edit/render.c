@@ -1,6 +1,6 @@
 #include <render.h>
 
-#include <non-standart/buildin/graphics.h>
+#include <non-standard/buildin/graphics.h>
 #include <string.h>
 #include <stdlib.h>
 

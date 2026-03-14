@@ -1,7 +1,7 @@
 #include "chibi.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <non-standart/sys/time.h>
+#include <non-standard/sys/time.h>
 
 // Returns the contents of a given file.
 static char *read_file(char *path) {

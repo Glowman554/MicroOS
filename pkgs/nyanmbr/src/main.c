@@ -1,10 +1,10 @@
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
 
-#include <non-standart/buildin/disk_raw.h>
+#include <non-standard/buildin/disk_raw.h>
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {

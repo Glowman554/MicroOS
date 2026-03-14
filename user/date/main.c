@@ -1,9 +1,9 @@
-#include <non-standart/sys/time.h>
-#include <non-standart/buildin/unix_time.h>
+#include <non-standard/sys/time.h>
+#include <non-standard/buildin/unix_time.h>
 #include <stdio.h>
-#include <non-standart/net/ntp.h>
-#include <non-standart/sys/net.h>
-#include <non-standart/net/dns.h>
+#include <non-standard/net/ntp.h>
+#include <non-standard/sys/net.h>
+#include <non-standard/net/dns.h>
 #include <string.h>
 #include <stdlib.h>
 

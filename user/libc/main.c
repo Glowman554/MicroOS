@@ -1,7 +1,7 @@
-#include <non-standart/heap.h>
-#include <non-standart/stdio.h>
-#include <non-standart/sys/exit.h>
-#include <non-standart/sys/env.h>
+#include <non-standard/heap.h>
+#include <non-standard/stdio.h>
+#include <non-standard/sys/exit.h>
+#include <non-standard/sys/env.h>
 #include <config.h>
 #include <stdint.h>
 

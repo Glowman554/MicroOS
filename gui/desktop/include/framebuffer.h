@@ -1,6 +1,6 @@
 #pragma once
 
-#include <non-standart/buildin/framebuffer.h>
+#include <non-standard/buildin/framebuffer.h>
 
 
 

@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <string.h>
 
 typedef struct symbols {

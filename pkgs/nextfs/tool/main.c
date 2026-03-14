@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../src/tools/nextfs.c"
-#include <non-standart/buildin/disk_raw.h>
+#include <non-standard/buildin/disk_raw.h>
 #include <assert.h>
 
 int disk = 1;
