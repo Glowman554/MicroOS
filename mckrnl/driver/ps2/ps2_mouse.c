@@ -32,7 +32,7 @@ void ps2_mouse_wait() {
 		}
 	}
 
-	debugf("ps2_mouse_wait() timed out");
+	debugf(WARNING, "ps2_mouse_wait() timed out");
 }
 
 void ps2_mouse_wait_input() {
@@ -43,7 +43,7 @@ void ps2_mouse_wait_input() {
 		}
 	}
 
-	debugf("ps2_mouse_wait() timed out");
+	debugf(WARNING, "ps2_mouse_wait() timed out");
 }
 
 void ps2_mouse_write(unsigned char a_write) {

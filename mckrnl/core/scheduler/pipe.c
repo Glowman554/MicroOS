@@ -15,7 +15,7 @@ int read_pipe(task_t* task, int pipeid, char* buffer, uint64_t size) {
         int can_read = size;
         if (pipe.size - pipe.pos < can_read) {
             can_read = pipe.size - pipe.pos;
-            debugf("read_pipe: pipe empty, read only %d bytes", can_read);
+            debugf(WARNING, "read_pipe: pipe empty, read only %d bytes", can_read);
         }
 
         vmm_read_context(&pipe.buffer[pipe.pos], buffer, can_read, other->context);
@@ -38,7 +38,7 @@ int write_pipe(task_t* task, int pipeid, char* buffer, uint64_t size) {
 		int to_write = size;
 		if (pipe.size - pipe.pos < to_write) {
 			to_write = pipe.size - pipe.pos;
-			debugf("write_pipe: pipe full, wrote only %d bytes", to_write);
+			debugf(WARNING, "write_pipe: pipe full, wrote only %d bytes", to_write);
 		}
         
         vmm_write_context(&pipe.buffer[pipe.pos], buffer, to_write, other->context);

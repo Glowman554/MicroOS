@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include <stddef.h>
-#include <sys/file.h>
+#include <non-standard/sys/file.h>
 #include <string.h>
 
 int printf(const char *fmt, ...) {

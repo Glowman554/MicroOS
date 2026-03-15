@@ -17,6 +17,14 @@
 
 #include <module.h>
 
+log_level_t current_log_level = INFO;
+const char* log_level_names[] = {
+	[SPAM] = "SPAM",
+	[INFO] = "INFO",
+	[WARNING] = "WARNING",
+	[ERROR] = "ERROR",
+};
+
 char_output_driver_t* debugf_driver = NULL;
 char_output_driver_t* printf_driver = NULL;
 
@@ -127,14 +135,14 @@ int abortf_intrnl(const char* file, int line, const char* function, bool weak, c
 		kill("Kernel Panic");
 	} else {
 	#ifdef ALLOW_PANIC_CONTINUE
-		debugf("KERNEL PANIC: Press <x> to continue execution or <h> to halt");
+		debugf(ERROR, "KERNEL PANIC: Press <x> to continue execution or <h> to halt");
 
 		while (true) {
 			char c = read_serial();
 
 			switch (c) {
 				case 'x':
-				debugf("Continuing...");
+				debugf(ERROR, "Continuing...");
 					return 0;
 				case 'h':
 					goto do_halt;
@@ -143,7 +151,7 @@ int abortf_intrnl(const char* file, int line, const char* function, bool weak, c
 	#endif
 	}
 do_halt:
-	debugf("Halting...");
+	debugf(ERROR, "Halting...");
 	while (true) {
 		halt();
 	}
@@ -152,7 +160,7 @@ do_halt:
 
 void breakpoint() {
 	if (!gdb_active) {
-		debugf("breakpoint() ignored since gdb isn't activated");
+		debugf(SPAM, "breakpoint() ignored since gdb isn't activated");
 		return;
 	}
 	__asm__ __volatile__ ("int3");

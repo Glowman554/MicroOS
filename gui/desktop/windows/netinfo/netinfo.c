@@ -5,10 +5,10 @@
 #include <button.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/file.h>
-#include <sys/spawn.h>
-#include <buildin/path.h>
-#include <net/ipv4.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/sys/spawn.h>
+#include <non-standard/buildin/path.h>
+#include <non-standard/net/ipv4.h>
 
 extern psf1_font_t font;
 

@@ -1,10 +1,10 @@
-#include <nettools.h>
+#include <non-standard/net/nettools.h>
 #include <stdint.h>
 #include <stdio.h>
 
-#include <net/socket.h>
-#include <sys/spawn.h>
-#include <sys/graphics.h>
+#include <non-standard/net/socket.h>
+#include <non-standard/sys/spawn.h>
+#include <non-standard/sys/graphics.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

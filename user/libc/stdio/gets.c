@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int gets(char* buffer) {
+char* gets(char* buffer) {
 	int buffer_len = 0;
 	
 	while (true) {
@@ -24,5 +24,5 @@ int gets(char* buffer) {
 		}
 	}
 
-	return buffer_len;
+	return buffer;
 }

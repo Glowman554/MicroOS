@@ -6,16 +6,16 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sys/graphics.h>
-#include <sys/env.h>
+#include <non-standard/sys/graphics.h>
+#include <non-standard/sys/env.h>
 #define FB_SET_PX_IMPL
 #define FB_UNSAFE_SETPX
-#include <buildin/framebuffer.h>
+#include <non-standard/buildin/framebuffer.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sys/getc.h>
+#include <non-standard/sys/getc.h>
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 

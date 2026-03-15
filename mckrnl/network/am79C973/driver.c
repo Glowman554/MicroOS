@@ -50,16 +50,16 @@ void am79C973_init(driver_t* driver) {
 	enable_bus_master(am_driver->header.bus, am_driver->header.device, am_driver->header.function);
 
 	am_driver->base_port = pci_get_io_port(&am_driver->header.header, am_driver->header.bus, am_driver->header.device, am_driver->header.function);
-	debugf("am79C973: base_port: %d", am_driver->base_port);
+	debugf(SPAM, "am79C973: base_port: %d", am_driver->base_port);
 
-	debugf("am79C973: interrupt %d", am_driver->header.header.interrupt_line + 0x20);
+	debugf(SPAM, "am79C973: interrupt %d", am_driver->header.header.interrupt_line + 0x20);
 	register_interrupt_handler(am_driver->header.header.interrupt_line + 0x20, am79C973_interrupt, am_driver);
 
 	inw(am_driver->base_port + 0x14);
 	outw(am_driver->base_port + 0x14, 0);
 
 	am_driver->driver.mac = am79C973_get_mac(am_driver);
-	debugf("am79C973: mac: %x:%x:%x:%x:%x:%x", am_driver->driver.mac.mac_p[0], am_driver->driver.mac.mac_p[1], am_driver->driver.mac.mac_p[2], am_driver->driver.mac.mac_p[3], am_driver->driver.mac.mac_p[4], am_driver->driver.mac.mac_p[5]);
+	debugf(SPAM, "am79C973: mac: %x:%x:%x:%x:%x:%x", am_driver->driver.mac.mac_p[0], am_driver->driver.mac.mac_p[1], am_driver->driver.mac.mac_p[2], am_driver->driver.mac.mac_p[3], am_driver->driver.mac.mac_p[4], am_driver->driver.mac.mac_p[5]);
 
 	am_driver->init_block->mode = 0x0000; // promiscuous mode = false
 	am_driver->init_block->reserved1 = 0;
@@ -133,7 +133,7 @@ void am79C973_send(nic_driver_t* driver, async_t* async, uint8_t* data, uint32_t
 				am_driver->current_send_buffer = (am_driver->current_send_buffer + 1) % 8;
 
 				if (size > 1518) {
-					debugf("am79C973: packet too long");
+					debugf(WARNING, "am79C973: packet too long");
 					size = 1518;
 				}
 
@@ -163,34 +163,34 @@ cpu_registers_t* am79C973_interrupt(cpu_registers_t* regs, void* data) {
 	outw(register_address_port, 0x0);
 	uint32_t temp = inw(register_data_port);
 
-	debugf("am79C973: interrupt: %x", temp);
+	debugf(SPAM, "am79C973: interrupt: %x", temp);
 
 	if ((temp & 0x100) == 0x100) {
-		debugf("am79C973: init done");
+		debugf(SPAM, "am79C973: init done");
 	}
 
 	if((temp & 0x8000) == 0x8000) {
-		debugf("am79c973: ERROR");
+		debugf(ERROR, "am79c973: ERROR");
 	}
 
 	if((temp & 0x2000) == 0x2000) {
-		debugf("am79c973: COLLISION ERROR");
+		debugf(ERROR, "am79c973: COLLISION ERROR");
 	}
 
 	if((temp & 0x1000) == 0x1000) {
-		debugf("am79c973: MISSED FRAME");
+		debugf(WARNING, "am79c973: MISSED FRAME");
 	}
 
 	if((temp & 0x0800) == 0x0800) {
-		debugf("am79c973: MEMORY ERROR");
+		debugf(ERROR, "am79c973: MEMORY ERROR");
 	}
 
 	if((temp & 0x0400) == 0x0400) {
-		debugf("am79c973: RECEIVE");
+		debugf(SPAM, "am79c973: RECEIVE");
 	}
 
 	if((temp & 0x0200) == 0x0200) {
-		debugf("am79c973: TRANSMIT");
+		debugf(SPAM, "am79c973: TRANSMIT");
 	}
 
 	if ((temp & 0x0400) == 0x0400) {
@@ -208,7 +208,7 @@ void am79C973_recieve(am79C973_driver_t* driver) {
 		if (!(driver->recv_buffer_descr[driver->current_recv_buffer].flags & 0x40000000) && (driver->recv_buffer_descr[driver->current_recv_buffer].flags & 0x03000000) == 0x03000000) {
 			uint32_t size = driver->recv_buffer_descr[driver->current_recv_buffer].flags & 0xFFF;
 
-			debugf("am79C973: received packet of size %d", size);
+			debugf(SPAM, "am79C973: received packet of size %d", size);
 
 			if (size > 64) {
 				size -= 4;
@@ -221,7 +221,7 @@ void am79C973_recieve(am79C973_driver_t* driver) {
 			driver->recv_buffer_descr[driver->current_recv_buffer].flags = 0x8000F7FF;
 
 		} else {
-			debugf("am79C973: packet not ready");
+			debugf(WARNING, "am79C973: packet not ready");
 		}
 	}
 }

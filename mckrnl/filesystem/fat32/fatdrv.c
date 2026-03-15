@@ -14,7 +14,7 @@ char* fatfs_name(vfs_mount_t* mount) {
 
 file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 	fatfs_mount_data_t* data = (fatfs_mount_data_t*) mount->driver_specific_data;
-	debugf("Opening file %s", path);
+	debugf(SPAM, "Opening file %s", path);
 
 	FIL fil;
 	file_t* file = (file_t*) kmalloc(sizeof(file_t));
@@ -43,13 +43,13 @@ file_t* fatfs_open(vfs_mount_t* mount, char* path, int flags) {
 			break;
 
 		default:
-			debugf("Invalid open mode");
+			debugf(ERROR, "Invalid open mode");
 			break;
 	}
 
 	FRESULT fr = f_open(&fil, new_path, mode);
 	if (fr != FR_OK) {
-		debugf("Error opening file %s: %d", path, fr);
+		debugf(SPAM, "Error opening file %s: %d", path, fr);
 		kfree(file);
 		return NULL;
 	}
@@ -98,7 +98,7 @@ void fatfs_write(vfs_mount_t* mount, file_t* f, void* buffer, size_t size, size_
 }
 
 void fatfs_truncate(vfs_mount_t* mount, file_t* file, size_t new_size) {
-    debugf("fatfs_truncate: %d", new_size);
+    debugf(SPAM, "fatfs_truncate: %d", new_size);
 	FIL* fil = (FIL*) file->driver_specific_data;
 
 	f_lseek(fil, new_size);
@@ -206,7 +206,7 @@ void fatfs_delete_dir(vfs_mount_t* mount, char* path) {
 
 	FRESULT result = f_rmdir(new_path);
 	if (result != FR_OK) {
-		debugf("Failed to delete directory %s", new_path);
+		debugf(ERROR, "Failed to delete directory %s", new_path);
 	}
 }
 
@@ -249,7 +249,7 @@ void fatfs_rename(vfs_mount_t* fat_mount, char* name) {
 	memset(mount_data->name, 0, sizeof(mount_data->name));
 	strcpy(mount_data->name, name);
 
-	debugf("New label: %s", name);
+	debugf(SPAM, "New label: %s", name);
 }
 
 bool is_fat32_bpb(BPB_t* bpb) {
@@ -351,7 +351,7 @@ vfs_mount_t* fatfs_scanner(int disk_id) {
 		return NULL;
 	}
 
-	debugf("fatfs_scanner: found fat32 disk %d", disk_id);
+	debugf(SPAM, "fatfs_scanner: found fat32 disk %d", disk_id);
 
 	char name[64] = {0};
 	sprintf(name, "fat32_%d", disk_id);

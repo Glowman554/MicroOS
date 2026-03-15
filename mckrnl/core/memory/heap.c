@@ -83,7 +83,7 @@ void initialize_heap(size_t page_count) {
 	heap_start = vmm_alloc(page_count);
 	heap_end = (void*) ((size_t) heap_start + heap_length);
 
-    debugf("Heap initialized from 0x%x to 0x%x (%d pages, %d bytes)", heap_start, heap_end, page_count, heap_length);
+    debugf(SPAM, "Heap initialized from 0x%x to 0x%x (%d pages, %d bytes)", heap_start, heap_end, page_count, heap_length);
 
 	heap_segment_header_t* start_seg = (heap_segment_header_t*) heap_start;
 	start_seg->length = heap_length - sizeof(heap_segment_header_t);
@@ -97,9 +97,9 @@ void initialize_heap(size_t page_count) {
 void print_allocations(const char* msg) {
 	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
 
-	debugf("--- Heap allocations: %s ---", msg);
+	debugf(SPAM, "--- Heap allocations: %s ---", msg);
 	while(true) {
-		debugf("0x%x (%d bytes) free: %s", current_seg, current_seg->length, current_seg->free ? "true" : "false");
+		debugf(SPAM, "0x%x (%d bytes) free: %s", current_seg, current_seg->length, current_seg->free ? "true" : "false");
 
 		if (current_seg->next == NULL) {
 			break;
@@ -107,7 +107,7 @@ void print_allocations(const char* msg) {
 
 		current_seg = current_seg->next;
 	}
-	debugf("--- End of heap allocations ---");
+	debugf(SPAM, "--- End of heap allocations ---");
 }
 
 #ifdef HEAP_CANARY

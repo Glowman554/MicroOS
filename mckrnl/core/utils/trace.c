@@ -86,5 +86,5 @@ void init_global_symbols(char* symfile) {
 		register_symbol(sym);
 	}
 
-	debugf("Loaded %d symbols!", symbols_count);
+	debugf(SPAM, "Loaded %d symbols!", symbols_count);
 }

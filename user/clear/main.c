@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <sys/graphics.h>
-#include <sys/file.h>
+#include <non-standard/sys/graphics.h>
+#include <non-standard/sys/file.h>
 
 void clear_80x25() {
 	char vmem[80 * 25 * 2] = { 0 };

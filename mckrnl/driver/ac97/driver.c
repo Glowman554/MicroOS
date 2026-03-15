@@ -43,7 +43,7 @@ void ac97_init(driver_t* driver) {
     enable_mmio(ac97->bus, ac97->device, ac97->function);
 
     pci_bar_t bar = pci_get_bar(&ac97->header.BAR0, 0, ac97->bus, ac97->device, ac97->function);
-    debugf("AC97 MEM: %x. IO: %x, SIZE: %x, TYPE: %d", (uint32_t)bar.mem_address, bar.io_address, bar.size, bar.type);
+    debugf(SPAM, "AC97 MEM: %x. IO: %x, SIZE: %x, TYPE: %d", (uint32_t)bar.mem_address, bar.io_address, bar.size, bar.type);
 
     uint8_t irq = ac97->header.interrupt_line;
     ac97->irq = irq + 0x20;
@@ -106,12 +106,12 @@ void ac97_init(driver_t* driver) {
 
     global_sound_driver = (sound_driver_t*)ac97;
 
-    debugf("AC97 ready");
+    debugf(SPAM,"AC97 ready");
 }
 
 uint64_t ac97_write_pcm(sound_driver_t* driver, uint8_t* buffer, uint64_t size) {
     ac97_driver_t* ac97 = (ac97_driver_t*)driver;
-    debugf("ac97_write_pcm(0x%x, %d)", buffer, size);
+    debugf(SPAM, "ac97_write_pcm(0x%x, %d)", buffer, size);
     return ac97_write_buffer(ac97, 0, buffer, size);
 }
 

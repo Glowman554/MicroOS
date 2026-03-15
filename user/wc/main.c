@@ -1,11 +1,6 @@
-#include <stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void print_help(char* argv0) {
-	printf("Usage: %s <file>\n", argv0);
-	printf("Output: lines words chars name\n");
-}
 
 int main(int argc, char* argv[]) {
 	const char* name = NULL;

@@ -49,7 +49,7 @@ void rtl8139_init(driver_t* driver) {
 	rtl_driver->io_base = (rtl_driver->header.header.BAR0 & (~3));
 	rtl_driver->mem_base = (rtl_driver->header.header.BAR0 & (~15));
 
-	debugf("rtl8139: bar_type: %d, io_base: %x, mem_base: %x", rtl_driver->bar_type, rtl_driver->io_base, rtl_driver->mem_base);
+	debugf(SPAM, "rtl8139: bar_type: %d, io_base: %x, mem_base: %x", rtl_driver->bar_type, rtl_driver->io_base, rtl_driver->mem_base);
 
 	enable_bus_master(rtl_driver->header.bus, rtl_driver->header.device, rtl_driver->header.function);
 
@@ -73,7 +73,7 @@ void rtl8139_init(driver_t* driver) {
 	outb(rtl_driver->io_base + 0x37, 0x0C);
 
 	rtl_driver->driver.mac = rtl8139_get_mac(rtl_driver);
-	debugf("rtl8139: mac: %x:%x:%x:%x:%x:%x", rtl_driver->driver.mac.mac_p[0], rtl_driver->driver.mac.mac_p[1], rtl_driver->driver.mac.mac_p[2], rtl_driver->driver.mac.mac_p[3], rtl_driver->driver.mac.mac_p[4], rtl_driver->driver.mac.mac_p[5]);
+	debugf(SPAM, "rtl8139: mac: %x:%x:%x:%x:%x:%x", rtl_driver->driver.mac.mac_p[0], rtl_driver->driver.mac.mac_p[1], rtl_driver->driver.mac.mac_p[2], rtl_driver->driver.mac.mac_p[3], rtl_driver->driver.mac.mac_p[4], rtl_driver->driver.mac.mac_p[5]);
 
 	register_interrupt_handler(rtl_driver->header.header.interrupt_line + 0x20, rtl8139_interrupt, rtl_driver);
 	register_nic_driver((nic_driver_t*) rtl_driver);
@@ -105,7 +105,7 @@ cpu_registers_t* rtl8139_interrupt(cpu_registers_t* regs, void* data) {
 	outw(rtl_driver->io_base + 0x3E, 0x5);
 
 	if(status & TOK) {
-		debugf("rtl8139: Packet sent");
+		debugf(SPAM, "rtl8139: Packet sent");
 	}
 
 	if (status & ROK) {
@@ -119,7 +119,7 @@ void rtl8139_recieve(rtl8139_driver_t* driver) {
 	uint16_t * t = (uint16_t*)(driver->rx_buffer + driver->current_packet_ptr);
 	uint16_t packet_length = *(t + 1);
 
-	debugf("rtl8139: Received packet of length %d", packet_length);
+	debugf(SPAM, "rtl8139: Received packet of length %d", packet_length);
 
 	t = t + 2;
 

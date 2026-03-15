@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <sys/raminfo.h>
+#include <non-standard/sys/raminfo.h>
 
 #define is_kb(x) ((x) >= 1024)
 #define is_mb(x) ((x) >= 1024 * 1024)

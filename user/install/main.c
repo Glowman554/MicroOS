@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <tools.h>
 #include <string.h>
-#include <sys/file.h>
+#include <non-standard/sys/file.h>
 #include <saf.h>
 
 void pack_kernel_modules(const char *partition_path) {
@@ -120,7 +120,8 @@ int main(int argc, char* argv[]) {
 		strcpy(partition_path, getenv("partition"));
 	} else {
 		printf("On witch partition do you want to install MicroOS? > ");
-		int len = gets(partition_path);
+		gets(partition_path);
+		int len = strlen(partition_path);
 		
 		if (partition_path[len - 1] != ':') {
 			printf("Error: Only mountpoints are supported.\n");

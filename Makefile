@@ -37,7 +37,7 @@ ifeq ($(GUI),1)
 	cp -r ./gui/lib/*.o ./res/initrd/lib/ -v
 	mkdir -p ./res/initrd/opt/gui/bin
 ifeq ($(FIRESTORM),1)
-	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
+# 	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
 endif
 endif
 	cp -r ./initrd/* ./res/initrd/ -v
@@ -121,7 +121,6 @@ libs.zip: all
 
 ifeq ($(GUI),1)
 	cp gui/lib/* res/libs/. -rf
-	cp gui/libwindow/include/* res/libs/include/. -rf
 	cp gui/desktop/include/* res/libs/include/. -rf
 endif
 

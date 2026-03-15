@@ -7,13 +7,13 @@
 #include <stddef.h>
 
 void sys_mmmap_dealloc(void* resource) {
-	debugf("Freeing %x", resource);
+	debugf(SPAM, "Freeing %x", resource);
 	pmm_free(resource);
 }
 
 
 cpu_registers_t* sys_mmmap(cpu_registers_t* regs) {
-	debugf("sys_mmmap(%x, %d)", regs->ebx, regs->ecx);
+	debugf(SPAM, "sys_mmmap(%x, %d)", regs->ebx, regs->ecx);
 
 	uintptr_t ptr = regs->ebx;
 	uintptr_t ptr_remote = regs->ecx;
@@ -23,7 +23,7 @@ cpu_registers_t* sys_mmmap(cpu_registers_t* regs) {
 	if (old_phys_ptr != NULL) {
 		// We might be leaking the page
 		// (this might happen since it is not guaranteed that its mapped in both processes)
-		debugf("WARNING: Possible leaked page %x", old_phys_ptr);
+		debugf(WARNING, "Possible leaked page %x", old_phys_ptr);
 	}
 
 	void* phys_ptr = pmm_alloc();
@@ -33,7 +33,7 @@ cpu_registers_t* sys_mmmap(cpu_registers_t* regs) {
 	if (other) {
 		vmm_map_page(other->context, ptr_remote, (uintptr_t) phys_ptr, PTE_PRESENT | PTE_WRITE | PTE_USER);
 	} else {
-		debugf("Failed to map tunnel for %d", pid);
+		debugf(ERROR, "Failed to map tunnel for %d", pid);
 	}
 
 	return regs;

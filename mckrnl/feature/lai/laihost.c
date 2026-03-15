@@ -24,21 +24,21 @@ void* laihost_map(size_t address, size_t count) {
 }
 
 void laihost_unmap(void* pointer, size_t count) {
-	debugf("laihost_unmap: %x %d not implemented!", pointer, count);
+	debugf(WARNING, "laihost_unmap: %x %d not implemented!", pointer, count);
 }
 
 void laihost_log(int level, const char* msg) {
 	switch (level) {
 		case LAI_WARN_LOG:
-			debugf("lai warn: %s", msg);
+			debugf(WARNING, "lai: %s", msg);
 			break;
 			
 		case LAI_DEBUG_LOG:
-			debugf("lai debug: %s", msg);
+			debugf(SPAM, "lai: %s", msg);
 			break;
 			
 		default:
-			debugf("lai unknown: %s", msg);
+			debugf(INFO, "lai: %s", msg);
 			break;
     }
 }
@@ -110,7 +110,7 @@ uint32_t laihost_pci_readd(uint16_t seg, uint8_t bus, uint8_t slot, uint8_t fun,
 }
 
 void laihost_sleep(uint64_t ms) {
-    debugf("laihost_sleep not implemented!");
+    debugf(WARNING, "laihost_sleep not implemented!");
 }
 
 uint64_t laihost_timer(void) {
@@ -118,21 +118,21 @@ uint64_t laihost_timer(void) {
 }
 
 void laihost_handle_amldebug(lai_variable_t* var) {
-	debugf("laihost_handle_amldebug with %x", var);
+	debugf(SPAM, "laihost_handle_amldebug with %x", var);
 }
 
 void laihost_handle_global_notify(lai_nsnode_t* node, int value) {
-    debugf("laihost_handle_global_notify not implemented!");
+    debugf(WARNING, "laihost_handle_global_notify not implemented!");
 }
 
 
 int laihost_sync_wait(struct lai_sync_state *sync, unsigned int val, int64_t timeout) {
-    debugf("laihost_sync_wait not implemented!");
+    debugf(WARNING, "laihost_sync_wait not implemented!");
 	return -1;
 }
 
 void laihost_sync_wake(struct lai_sync_state *sync) {
-    debugf("laihost_sync_wake not implemented!");
+    debugf(WARNING, "laihost_sync_wake not implemented!");
 }
 
 void* laihost_scan(const char *sig, size_t index) {

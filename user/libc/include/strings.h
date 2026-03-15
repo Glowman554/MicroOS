@@ -1,3 +1,3 @@
 #pragma once
 
-int strncasecmp(char* str1, char* str2, int n);
+int strncasecmp(const char* str1, const char* str2, int n);

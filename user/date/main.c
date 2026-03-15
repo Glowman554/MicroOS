@@ -1,9 +1,9 @@
-#include <sys/time.h>
-#include <buildin/unix_time.h>
+#include <non-standard/sys/time.h>
+#include <non-standard/buildin/unix_time.h>
 #include <stdio.h>
-#include <net/ntp.h>
-#include <sys/net.h>
-#include <net/dns.h>
+#include <non-standard/net/ntp.h>
+#include <non-standard/sys/net.h>
+#include <non-standard/net/dns.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 	if (ntp) {
 		printf("Using ntp server %s...\n", timesv);
 		ip_u ip = dns_resolve_A(nic_id, timesv);
-		__libc_time_t time = ntp_time(nic_id, ip);
+		clock_result_t time = ntp_time(nic_id, ip);
 		unix_time = to_unix_time(time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
 	} else {
 		unix_time = time(NULL);

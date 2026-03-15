@@ -5,7 +5,7 @@
 # End Gui
 
 # Other
-ABI_VERSION = 4
+ABI_VERSION = 5
 # End Other
 
 # Syscalls

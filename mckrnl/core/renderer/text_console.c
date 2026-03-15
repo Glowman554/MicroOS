@@ -1,5 +1,6 @@
 #include <renderer/text_console.h>
 #include <renderer/text_mode_emulation.h>
+#include <renderer/ansi.h>
 #include <memory/vmm.h>
 
 #include <stdint.h>
@@ -32,6 +33,11 @@ void text_console_early() {
 }
 
 void text_console_putc(char_output_driver_t* driver, int term, char c) {
+	c = ansi_process(driver, term, c);
+	if (c == 0) {
+		return;
+	}
+
 	char* buffer = text_console_video;
 	text_console_vterm_t* vterm = &text_console_vterms[term - 1];
 	if (driver && driver->current_term != term) {
@@ -119,6 +125,76 @@ void text_console_clrscr(char_output_driver_t* driver, int term) {
 
 	vterm->x = vterm->y = 0;
     EMU_UPDATE();
+}
+
+void text_console_erase_display(char_output_driver_t* driver, int term, enum ansi_erase_mode mode) {
+	char* buffer = text_console_video;
+	text_console_vterm_t* vterm = &text_console_vterms[term - 1];
+	if (driver && driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
+
+	int start_pos, end_pos;
+	int total_cells = SCREEN_WIDTH * SCREEN_HEIGHT;
+	int current_pos = vterm->y * SCREEN_WIDTH + vterm->x;
+
+	switch (mode) {
+		case ERASE_CURSOR_TO_END:
+			start_pos = current_pos;
+			end_pos = total_cells;
+			break;
+		case ERASE_BEGINNING_TO_CURSOR:
+			start_pos = 0;
+			end_pos = current_pos + 1;
+			break;
+		case ERASE_ENTIRE:
+		case ERASE_SAVED_LINES:
+			start_pos = 0;
+			end_pos = total_cells;
+			break;
+		default:
+			return;
+	}
+
+	for (int i = start_pos; i < end_pos; i++) {
+		buffer[2*i] = ' ';
+		buffer[2*i+1] = vterm->color;
+	}
+	EMU_UPDATE();
+}
+
+void text_console_erase_line(char_output_driver_t* driver, int term, enum ansi_erase_mode mode) {
+	char* buffer = text_console_video;
+	text_console_vterm_t* vterm = &text_console_vterms[term - 1];
+	if (driver && driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
+
+	int line_start = vterm->y * SCREEN_WIDTH;
+	int start_pos, end_pos;
+
+	switch (mode) {
+		case ERASE_CURSOR_TO_END:
+			start_pos = line_start + vterm->x;
+			end_pos = line_start + SCREEN_WIDTH;
+			break;
+		case ERASE_BEGINNING_TO_CURSOR:
+			start_pos = line_start;
+			end_pos = line_start + vterm->x + 1;
+			break;
+		case ERASE_ENTIRE:
+			start_pos = line_start;
+			end_pos = line_start + SCREEN_WIDTH;
+			break;
+		default:
+			return;
+	}
+
+	for (int i = start_pos; i < end_pos; i++) {
+		buffer[2*i] = ' ';
+		buffer[2*i+1] = vterm->color;
+	}
+	EMU_UPDATE();
 }
 
 bool text_console_driver_is_present(driver_t* driver) {
@@ -251,5 +327,7 @@ char_output_driver_t text_console_driver = {
 	.vterm = text_console_vterm,
 	.vcursor = text_console_vcursor,
 	.vcursor_get = text_console_vcursor_get,
-	.set_color = text_console_set_color
+	.set_color = text_console_set_color,
+	.erase_display = text_console_erase_display,
+	.erase_line = text_console_erase_line,
 };

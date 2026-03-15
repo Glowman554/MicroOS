@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/net.h>
-#include <net/icmp.h>
-#include <net/dns.h>
+#include <non-standard/sys/net.h>
+#include <non-standard/net/icmp.h>
+#include <non-standard/net/dns.h>
 
 
 int main(int argc, char* argv[], char* envp[]) {

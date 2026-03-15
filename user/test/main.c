@@ -49,7 +49,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/getc.h>
+#include <non-standard/sys/getc.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char c;

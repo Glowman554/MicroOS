@@ -1,11 +1,10 @@
-#include <sys/graphics.h>
-#include <assert.h>
+#include <non-standard/sys/graphics.h>
 #include <render.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <input.h>
-#include <buildin/ansi.h>
+#include <non-standard/stdio.h>
 
 void print_usage(char* prog) {
 	printf("Usage: %s [-r] <file-name>\n\n", prog);
@@ -114,6 +113,6 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	free(state.input_buffer);
 	fclose(state.file);
-	ansi_printf("\033[H\033[J");
+	printf("\033[H\033[J");
 	return 0;
 }

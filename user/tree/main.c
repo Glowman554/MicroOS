@@ -1,9 +1,9 @@
-#include <stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <sys/file.h>
-#include <sys/env.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/sys/env.h>
 
 void print_tree(char* path, const char* prefix) {
     char* resolved = malloc(256);

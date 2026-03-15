@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include <sys/env.h>
+#include <non-standard/sys/env.h>
 #include <string.h>
 
 char* getenv(const char* name) {

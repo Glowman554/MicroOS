@@ -25,7 +25,7 @@ void disk_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t s
             }
             break;
         default:
-            debugf("Unknown disk command %d\n", cmd->command);
+            debugf(WARNING, "Unknown disk command %d\n", cmd->command);
             break;
     }
 }

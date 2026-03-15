@@ -16,7 +16,7 @@ file_t* nextfs_open(vfs_mount_t* mount, char* path, int flags) {
 
     char file[0xff] = { 0 };
     while (*(path = copy_until('/', path, file)));
-    debugf("file: %s", file);
+    debugf(SPAM, "file: %s", file);
 
     for (int i = 1; i < data->header.file_header_index; i++) {
 		if(strcmp(data->file_header[i].name, file) == 0) {
@@ -94,7 +94,7 @@ vfs_mount_t* nextfs_scanner(int disk_id) {
     read_disk(disk_id, 17, 1, &header);
 
     if (header.magic == MAGIC) {
-        debugf("found nextfs partition '%s' on disk %d", header.label, disk_id);
+        debugf(SPAM, "found nextfs partition '%s' on disk %d", header.label, disk_id);
 
         return nextfs_mount(disk_id);
     }

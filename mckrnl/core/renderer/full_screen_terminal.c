@@ -1,6 +1,7 @@
 #include <renderer/full_screen_terminal.h>
 #include <renderer/text_mode_emulation.h>
 #include <renderer/text_console.h>
+#include <renderer/ansi.h>
 
 #include <memory/vmm.h>
 #include <stdint.h>
@@ -34,9 +35,110 @@ void full_screen_terminal_clear(char_output_driver_t* driver, int term) {
 	memset(buffer, 0x00, global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
 }
 
+void full_screen_terminal_erase_display(char_output_driver_t* driver, int term, enum ansi_erase_mode mode) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	void* buffer = (void*)(uint32_t) global_multiboot_info->fb_addr;
+	if (driver && driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
+
+	uint32_t pixel_pitch = global_multiboot_info->fb_pitch;
+	uint32_t screen_width = global_multiboot_info->fb_width;
+	uint32_t total_size = pixel_pitch * global_multiboot_info->fb_height;
+
+	switch (mode) {
+		case ERASE_CURSOR_TO_END:
+			{
+				uint32_t line_end_y = vterm->y + 16;
+				if (line_end_y > global_multiboot_info->fb_height) {
+					line_end_y = global_multiboot_info->fb_height;
+				}
+				uint32_t erase_width = (screen_width - vterm->x) * 4;
+				for (uint32_t row = vterm->y; row < line_end_y; row++) {
+					uint32_t row_offset = row * pixel_pitch + vterm->x * 4;
+					memset((uint8_t*)buffer + row_offset, 0, erase_width);
+				}
+				uint32_t below_start = line_end_y * pixel_pitch;
+				if (below_start < total_size) {
+					memset((uint8_t*)buffer + below_start, 0, total_size - below_start);
+				}
+			}
+			break;
+		case ERASE_BEGINNING_TO_CURSOR:
+			{
+				if (vterm->y > 0) {
+					memset(buffer, 0, vterm->y * pixel_pitch);
+				}
+				uint32_t line_end_y = vterm->y + 16;
+				if (line_end_y > global_multiboot_info->fb_height) {
+					line_end_y = global_multiboot_info->fb_height;
+				}
+				uint32_t erase_width = vterm->x * 4;
+				for (uint32_t row = vterm->y; row < line_end_y; row++) {
+					uint32_t row_offset = row * pixel_pitch;
+					memset((uint8_t*)buffer + row_offset, 0, erase_width);
+				}
+			}
+			break;
+		case ERASE_ENTIRE:
+		case ERASE_SAVED_LINES:
+			memset(buffer, 0, total_size);
+			break;
+		default:
+			return;
+	}
+}
+
+void full_screen_terminal_erase_line(char_output_driver_t* driver, int term, enum ansi_erase_mode mode) {
+	full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[term - 1];
+	void* buffer = (void*)(uint32_t) global_multiboot_info->fb_addr;
+	if (driver && driver->current_term != term) {
+		buffer = vterm->buffer;
+	}
+
+	uint32_t pixel_pitch = global_multiboot_info->fb_pitch;
+	uint32_t screen_width = global_multiboot_info->fb_width;
+	uint32_t line_end_y = vterm->y + 16;
+	if (line_end_y > global_multiboot_info->fb_height) {
+		line_end_y = global_multiboot_info->fb_height;
+	}
+
+	switch (mode) {
+		case ERASE_CURSOR_TO_END:
+			{
+				uint32_t erase_width = (screen_width - vterm->x) * 4;
+				for (uint32_t row = vterm->y; row < line_end_y; row++) {
+					uint32_t row_offset = row * pixel_pitch + vterm->x * 4;
+					memset((uint8_t*)buffer + row_offset, 0, erase_width);
+				}
+			}
+			break;
+		case ERASE_BEGINNING_TO_CURSOR:
+			{
+				uint32_t erase_width = vterm->x * 4;
+				for (uint32_t row = vterm->y; row < line_end_y; row++) {
+					uint32_t row_offset = row * pixel_pitch;
+					memset((uint8_t*)buffer + row_offset, 0, erase_width);
+				}
+			}
+			break;
+		case ERASE_ENTIRE:
+			{
+				uint32_t erase_width = screen_width * 4;
+				for (uint32_t row = vterm->y; row < line_end_y; row++) {
+					uint32_t row_offset = row * pixel_pitch;
+					memset((uint8_t*)buffer + row_offset, 0, erase_width);
+				}
+			}
+			break;
+		default:
+			return;
+	}
+}
+
 void full_screen_terminal_driver_init(driver_t* driver) {
 	int size = TO_PAGES(global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
-	debugf("framebuffer size (pages): %d", size);
+	debugf(SPAM, "framebuffer size (pages): %d", size);
 
 	for (int i = 0; i < MAX_VTERM; i++) {
 		full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[i];
@@ -75,6 +177,7 @@ void full_screen_terminal_driver_init(driver_t* driver) {
 // }
 
 void full_screen_terminal_driver_putc(char_output_driver_t* driver, int term, char c) {
+	c = ansi_process(driver, term, c);
 	if(c == 0) {
 		return;
 	}
@@ -218,5 +321,7 @@ char_output_driver_t full_screen_terminal_driver = {
 	.vcursor = full_screen_terminal_vcursor,
 	.vcursor_get = full_screen_terminal_vcursor_get,
 	.set_color = full_screen_terminal_set_color,
-	.rgb_color = full_screen_terminal_rgb_color
+	.rgb_color = full_screen_terminal_rgb_color,
+	.erase_display = full_screen_terminal_erase_display,
+	.erase_line = full_screen_terminal_erase_line,
 };

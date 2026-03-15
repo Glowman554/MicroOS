@@ -36,21 +36,13 @@ size_t fwrite(const void* ptr, size_t size, size_t nmemb, FILE* stream);
 size_t fprintf(FILE* stream, const char* format, ...);
 size_t fputs(const char* s, FILE* stream);
 size_t fputc(char c, FILE* stream);
-void ftruncate(FILE* f);
-bool resolve(char* path, char* output);
-bool resolve_check(char* path, char* output, bool check_childs);
 
 int feof(FILE* stream);
 
-int gets(char* buffer);
+char* gets(char* buffer);
 int getc(FILE* stream);
 
 int puts(const char* s);
-
-#define fsize(stream, size) fseek(stream, 0, SEEK_END); size_t size = ftell(stream); fseek(stream, 0, SEEK_SET);
-
-void init_stdio();
-void uninit_stdio();
 
 int vsprintf(char *buf, const char *str, va_list args);
 int printf(const char *format, ...);
@@ -58,8 +50,4 @@ int sprintf(char *buf, const char *fmt, ...);
 char getchar();
 void putchar(char c);
 
-__attribute__((weak))
-void print_help(char* argv0);
 
-void read_all_stdin(char** out, size_t* size);
-void read_all_file(FILE* f, char** out, size_t* size);

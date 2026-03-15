@@ -13,3 +13,5 @@ typedef struct full_screen_terminal_vterm {
 } full_screen_terminal_vterm_t;
 
 void full_screen_terminal_clear(char_output_driver_t* driver, int term);
+void full_screen_terminal_erase_display(char_output_driver_t* driver, int term, enum ansi_erase_mode mode);
+void full_screen_terminal_erase_line(char_output_driver_t* driver, int term, enum ansi_erase_mode mode);

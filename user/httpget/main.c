@@ -1,6 +1,6 @@
-#include <net/http.h>
+#include <non-standard/net/http.h>
 
-#include <buildin/time.h>
+#include <non-standard/buildin/time.h>
 
 #include <stdio.h>
 
@@ -17,14 +17,13 @@ int main(int argc, char* argv[], char* envp[]) {
 	int status = http_request_perform(nic, request);
 	
 	printf("HTTP Response Code: %d\n", status);
-	printf("Response Body (%d bytes):\n", request->response_body_length);
 	
 	printf("Headers:\n");
 	for (int i = 0; i < request->response_headers_count; i++) {
 		printf("  %s\n", request->response_headers[i]);
 	}
 
-	printf("\nBody:\n");
+	printf("\nResponse Body (%d bytes):\n", request->response_body_length);
 
 	for (int i = 0; i < request->response_body_length; i++) {
 		putchar(request->response_body[i]);

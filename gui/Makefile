@@ -1,5 +1,5 @@
-LIBS = libwindow libwindow_flvm test_window
-PROGRAMS = paint desktop
+LIBS = test_window
+PROGRAMS = desktop
 
 all:
 	mkdir -p lib

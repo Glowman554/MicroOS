@@ -30,12 +30,12 @@ void smp_ap_main() {
 		.pointer = idt,
 	};
 	asm volatile("lidt %0" : : "m" (idtp));
-	debugf("Enabling interrupts!");
+	debugf(SPAM, "Enabling interrupts!");
 	asm volatile("sti");
 
 	// init paging
 	vmm_activate_context(kernel_context);
-	debugf("Activating paging NOW!");
+	debugf(SPAM, "Activating paging NOW!");
 	uint32_t cr0;
 	asm volatile("mov %%cr0, %0" : "=r" (cr0));
 	cr0 |= 0x80000000;
@@ -58,10 +58,10 @@ typedef struct {
 void smp_startup_all() {
 	bsp_id = lapic_id();
 	cpu_started[bsp_id] = true;
-	debugf("bspid: %d", bsp_id);
+	debugf(SPAM, "bspid: %d", bsp_id);
 
 	vmm_map_page(kernel_context, madt_lapic_base_addr, madt_lapic_base_addr, PTE_PRESENT | PTE_WRITE);
-	debugf("Mapped LAPIC memory at %p", (void*) madt_lapic_base_addr);
+	debugf(SPAM, "Mapped LAPIC memory at %p", (void*) madt_lapic_base_addr);
 
 	vmm_map_page(kernel_context, SMP_TRAMPOLINE_ADDR, SMP_TRAMPOLINE_ADDR, PTE_PRESENT | PTE_WRITE);
 	memcpy((void*) SMP_TRAMPOLINE_ADDR, smp_trampoline, 0x1000);
@@ -72,13 +72,13 @@ void smp_startup_all() {
 
 	for (int i = 0; i < madt_lapic_count; i++) {
 		if(madt_lapic_ids[i] == bsp_id) {
-			debugf("Skiping BSP at %d", madt_lapic_ids[i]);
+			debugf(SPAM, "Skiping BSP at %d", madt_lapic_ids[i]);
 			continue;
 		}
 
-		debugf("spinning up CPU %d using trampoline at 0x%x...", i, SMP_TRAMPOLINE_ADDR);
+		debugf(INFO, "spinning up CPU %d using trampoline at 0x%x...", i, SMP_TRAMPOLINE_ADDR);
 		info->stack = (uint32_t) vmm_alloc(KERNEL_STACK_SIZE_PAGES) + KERNEL_STACK_SIZE_PAGES * 0x1000;
-		debugf("allocated stack at 0x%x", info->stack);
+		debugf(SPAM, "allocated stack at 0x%x", info->stack);
 		info->entry = (uint32_t) smp_ap_main;
 		info->done = false;
 
@@ -106,7 +106,7 @@ void smp_startup_all() {
 			__asm__ __volatile__("pause" ::: "memory");
 		}
 
-		debugf("CPU %d spinup complete!", i);
+		debugf(INFO, "CPU %d spinup complete!", i);
 		// wait();
 	}
 }

@@ -6,7 +6,7 @@
 
 
 void gdt_set_entry(uint64_t* gdt, int i, unsigned int base, unsigned int limit, int flags) {
-	debugf("Setting gdt (%x) entry at %d with base 0x%x and limit 0x%x and the flags 0x%x", gdt, i, base, limit, flags);
+	debugf(SPAM, "Setting gdt (%x) entry at %d with base 0x%x and limit 0x%x and the flags 0x%x", gdt, i, base, limit, flags);
 
 	gdt[i] = limit & 0xffffLL;
 	gdt[i] |= (base & 0xffffffLL) << 16;
@@ -17,7 +17,7 @@ void gdt_set_entry(uint64_t* gdt, int i, unsigned int base, unsigned int limit, 
 }
 
 uint64_t* new_gdt() {
-	debugf("Creating new gdt...");
+	debugf(SPAM, "Creating new gdt...");
 	uint64_t* gdt = vmm_alloc(TO_PAGES(sizeof(uint64_t) * GDT_ENTRIES));
 	uint32_t* tss = vmm_alloc(TO_PAGES(sizeof(uint32_t) * 32));
 

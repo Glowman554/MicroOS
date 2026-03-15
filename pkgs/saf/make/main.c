@@ -1,10 +1,9 @@
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
-#include <sys/file.h>
+#include <non-standard/sys/file.h>
 #include <string.h>
-#include <buildin/ansi.h>
 #include <saf.h>
 
 // port from https://github.com/chocabloc/saf/blob/main/saf-make.c
@@ -29,7 +28,7 @@ static arch_data_t adata;
 
 static void panic(const char* msg, ...) {
 	char buf[512] = { 0 };
-    ansi_printf("\033[31merror: \033[0m");
+    printf("\033[31merror: \033[0m");
     va_list args;
 	va_start(args, msg);
 	vsprintf(buf, msg, args);
@@ -44,7 +43,7 @@ static void info(const char* msg, ...) {
 	}
 
 	char buf[512] = { 0 };
-    ansi_printf("\033[32minfo: \033[0m");
+    printf("\033[32minfo: \033[0m");
     va_list args;
 	va_start(args, msg);
 	vsprintf(buf, msg, args);

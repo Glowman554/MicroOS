@@ -1,8 +1,7 @@
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <non-standard/stdio.h>
 #include <string.h>
-#include <sys/getc.h>
+#include <non-standard/sys/getc.h>
 
 #define RAM_AMT (64 * 1024 * 1024)
 
@@ -32,8 +31,7 @@ int32_t HandleOtherCSRRead(uint8_t* image, uint16_t csrno);
 #include <mini-rv32ima.h>
 #include <device_tree.h>
 
-#include <sys/env.h>
-#include <buildin/ansi.h>
+#include <non-standard/sys/env.h>
 
 struct MiniRV32IMAState* core;
 
@@ -165,7 +163,7 @@ uint32_t HandleException(uint32_t ir, uint32_t code) { return code; }
 
 uint32_t HandleControlStore(uint32_t addy, uint32_t val) {
     if (addy == 0x10000000) {
-		ansi_printf("%c", val);
+		printf("%c", val);
     }
     return 0;
 }
@@ -181,7 +179,7 @@ uint32_t HandleControlLoad(uint32_t addy) {
 
 void HandleOtherCSRWrite(uint8_t* image, uint16_t csrno, uint32_t value) {
 	if (csrno == 0x139) {
-		ansi_printf("%c", value);
+		printf("%c", value);
 	}
 }
 

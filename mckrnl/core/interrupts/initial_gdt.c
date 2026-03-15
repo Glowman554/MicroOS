@@ -7,7 +7,7 @@ uint32_t tss[32] = { 0, 0, 0x10 };
 
 
 static void initial_gdt_set_entry(int i, unsigned int base, unsigned int limit, int flags) {
-	debugf("Setting initial gdt entry at %d with base 0x%x and limit 0x%x and the flags 0x%x", i, base, limit, flags);
+	debugf(SPAM, "Setting initial gdt entry at %d with base 0x%x and limit 0x%x and the flags 0x%x", i, base, limit, flags);
 
 	gdt[i] = limit & 0xffffLL;
 	gdt[i] |= (base & 0xffffffLL) << 16;

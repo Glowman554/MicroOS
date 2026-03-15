@@ -54,7 +54,7 @@ int load_executable_file(int term, file_t* file, char* path, char** argv, char**
         }
         executor[j] = '\0';
 
-        debugf("shebang detected, executor: %s", executor);
+        debugf(SPAM, "shebang detected, executor: %s", executor);
 
         int argc = 0;
         while (argv[argc] != NULL) {
@@ -80,7 +80,7 @@ int load_executable_file(int term, file_t* file, char* path, char** argv, char**
 				pid = load_executable_file(current->term, ex, path, new_argv, envp);
 				vfs_close(ex);
 			} else {
-				debugf("Failed to find executor '%s' for shebang", executor);
+				debugf(ERROR, "Failed to find executor '%s' for shebang", executor);
 				return -1;
 			}
 		}
@@ -97,7 +97,7 @@ int load_executable_file(int term, file_t* file, char* path, char** argv, char**
 int load_executable(int term, char* path, char** argv, char** envp) {
 	file_t* file = vfs_open(path, FILE_OPEN_MODE_READ);
 	if (!file) {
-		debugf("Failed to open %s", path);
+		debugf(ERROR, "Failed to open %s", path);
 		return -1;
 	}
 
@@ -112,7 +112,7 @@ int load_executable(int term, char* path, char** argv, char** envp) {
 symbols_t* collect_symbols(void* image, int* out_count) {
 	struct elf_header* hdr = (struct elf_header*) image;
 	if (hdr->sh_offset == 0 || hdr->sh_entry_count == 0) {
-		debugf("no section headers present");
+		debugf(ERROR, "no section headers present");
 		return NULL;
 	}
 
@@ -130,7 +130,7 @@ symbols_t* collect_symbols(void* image, int* out_count) {
 		unsigned int entsize = sh[i].entsize ? sh[i].entsize : sizeof(struct elf_symbol);
 		unsigned int count = sh[i].size / entsize;
 
-		debugf("Found symbol table in section %d: %u entries", i, count);
+		debugf(SPAM, "Found symbol table in section %d: %u entries", i, count);
 
 		int real_symbols = 0;
 		for (unsigned int j = 0; j < count; j++) {
@@ -153,7 +153,7 @@ symbols_t* collect_symbols(void* image, int* out_count) {
 			if (ELF_ST_TYPE(sym->info) == STT_FUNC || ELF_ST_TYPE(sym->info) == STT_OBJECT) {
 				char* name = strtab + sym->name;
 				if (strlen(name) >= sizeof(symbols[x].name)) {
-					debugf("Symbol name '%s' is too long, skipping", name);
+					debugf(WARNING, "Symbol name '%s' is too long, skipping", name);
 					continue;
 				}
 				strcpy(symbols[x].name, name);
@@ -223,7 +223,7 @@ int init_elf(int term, void* image, char** argv, char** envp) {
 	int num_argv = 0;
 	for (num_argv = 0; argv[num_argv] != NULL; num_argv++);
 
-	debugf("copying %d arguments and %d environment variables", num_argv, num_envp);
+	debugf(SPAM, "copying %d arguments and %d environment variables", num_argv, num_envp);
 
 	task->argv = (char**) vmm_alloc(1);
 	vmm_map_page(task->context, (uintptr_t) task->argv + USER_SPACE_OFFSET, (uintptr_t) task->argv, PTE_PRESENT | PTE_WRITE | PTE_USER);
@@ -271,7 +271,7 @@ static unsigned int read_le32(const unsigned char *p) {
 }
 
 char* mex_decompress(unsigned int decompressed_size, unsigned int compressed_size, void* content) {
-	debugf("decompressing %dkb to %dkb", compressed_size / 1024, decompressed_size / 1024);
+	debugf(SPAM, "decompressing %dkb to %dkb", compressed_size / 1024, decompressed_size / 1024);
 
     char* dest = (char*) kmalloc(decompressed_size);
 
@@ -307,7 +307,7 @@ int init_mex(int term, void* image, char** argv, char** envp) {
 		return -1;
 	}
 
-    debugf("Loading MEX executable, author: %s", header->programAuthor);
+    debugf(SPAM, "Loading MEX executable, author: %s", header->programAuthor);
 
 	unsigned int decompressed_size = read_le32(content + header->elfSizeCompressed - 4);
     char* dest = mex_decompress(decompressed_size, header->elfSizeCompressed, content);
@@ -327,7 +327,7 @@ int init_mex_v2(int term, void* image, char** argv, char** envp) {
         return -1;
     }
 
-    debugf("Loading MEX v2 executable, author: %s, flags: 0x%x, abiVersion: %d", header->programAuthor, header->flags, header->abiVersion);
+    debugf(SPAM, "Loading MEX v2 executable, author: %s, flags: 0x%x, abiVersion: %d", header->programAuthor, header->flags, header->abiVersion);
 
     if (header->abiVersion != ABI_VERSION) {
         printf("WARNING: ABI version mismatch: expected %d, got %d\n", ABI_VERSION, header->abiVersion);
@@ -349,14 +349,14 @@ int init_mex_v2(int term, void* image, char** argv, char** envp) {
 }
 
 int init_executable(int term, void* image, char** argv, char** envp) {
-	debugf("Loading executable at %p", image);
+	debugf(SPAM, "Loading executable at %p", image);
 	
 	for (int i = 0; argv[i] != NULL; i++) {
-		debugf("argv[%d]: %s", i, argv[i]);
+		debugf(SPAM, "argv[%d]: %s", i, argv[i]);
 	}
 
 	for (int i = 0; envp[i] != NULL; i++) {
-		debugf("envp[%d]: %s", i, envp[i]);
+		debugf(SPAM, "envp[%d]: %s", i, envp[i]);
 	}
 
 	mex_header_t* header = image;
