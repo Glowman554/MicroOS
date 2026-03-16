@@ -49,7 +49,7 @@ void kill(char* reason) {
 	char* name = current->argv[0] ? current->argv[0] : "unnamed";
 	printf("Killing task %d (%s) for reason: %s\n", current->pid, name, reason);
 
-	exit_task(current);
+	exit_task(current, -1);
 }
 
 void init_killer() {

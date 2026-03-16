@@ -10,6 +10,6 @@ cpu_registers_t* sys_kill(cpu_registers_t* regs) {
 	if (task == NULL) {
 		abortf(true, "sys_kill: no such pid %d", regs->ebx);
 	}
-	exit_task(task);
+	exit_task(task, -2);
 	return regs;
 }

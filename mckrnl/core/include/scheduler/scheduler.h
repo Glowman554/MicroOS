@@ -60,6 +60,11 @@ typedef struct {
 #endif
 } task_t;
 
+typedef struct {
+	int pid;
+	int exit_code;
+} exit_code_t;
+
 // extern task_t tasks[MAX_TASKS];
 // extern int current_task;
 extern bool is_scheduler_running;
@@ -67,7 +72,7 @@ extern bool is_scheduler_running;
 cpu_registers_t* schedule(cpu_registers_t* registers, void* _);
 
 task_t* init_task(int term, void* entry, bool thread, task_t* parent);
-void exit_task(task_t* task);
+void exit_task(task_t* task, int code);
 
 task_t* get_task_by_pid(int pid);
 
@@ -79,6 +84,8 @@ void resource_dealloc_self();
 void resource_dealloc(task_t* self);
 
 task_t* get_self();
+
+int get_exit_code(int pid);
 
 
 typedef struct task_list {

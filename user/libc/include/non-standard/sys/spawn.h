@@ -31,3 +31,5 @@ int thread(void* entry);
 
 void set_term(int pid, int term);
 void set_pipe(int pid, pipe_t* pipe, int output);
+
+int get_exit_code(int pid);

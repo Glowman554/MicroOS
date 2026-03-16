@@ -151,7 +151,8 @@ int main(int argc, char* argv[]) {
 			yield();
 		}
 
-		printf("init: proccess %d exited\n", pid);
+		int exit_code = get_exit_code(pid);
+		printf("init: proccess %d exited with code %d\n", pid, exit_code);
 	}
 
 	return 0;

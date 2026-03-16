@@ -86,6 +86,7 @@ void init_syscalls() {
 	register_syscall(SYS_SOUND_GET_SAMPLE_RATE_ID, sys_sound_get_sample_rate);
 	register_syscall(SYS_SET_PIPE_ID, sys_set_pipe);
 	register_syscall(SYS_RGB_COLOR_ID, sys_rgb_color);
+	register_syscall(SYS_GET_EXIT_CODE_ID, sys_get_exit_code);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

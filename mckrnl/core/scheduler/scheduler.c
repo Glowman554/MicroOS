@@ -33,6 +33,9 @@ int current_task = 0;
 int last_time_ms = 0;
 #endif
 
+exit_code_t exit_codes[MAX_TASKS] = { 0 };
+int exit_codes_idx = 0;
+
 #ifdef SMP
 	#define c_task(x) tasks[core_id][x]
 	#define c_current_task current_task[core_id]
@@ -164,14 +167,24 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	return task;
 }
 
+void add_exit_code(int pid, int exit_code) {
+	exit_codes[exit_codes_idx].pid = pid;
+	exit_codes[exit_codes_idx].exit_code = exit_code;
 
-void exit_task(task_t* task) {
+	debugf(SPAM, "Added exit code %d for pid %d at index %d", exit_code, pid, exit_codes_idx);
+
+	exit_codes_idx = (exit_codes_idx + 1) % MAX_TASKS;
+}
+
+void exit_task(task_t* task, int code) {
 	asm volatile("cli");
 
 	task_t* self = get_self();
 
 	task->active = false;
 	task->pin = false;
+
+	add_exit_code(task->pid, code);
 
 	resource_dealloc(task);
 	if (task->parent == -1) {
@@ -368,4 +381,14 @@ int get_amount_running_tasks() {
     }
     return j;
 #endif
+}
+
+int get_exit_code(int pid) {
+	for (int i = 0; i < MAX_TASKS; i++) {
+		if (exit_codes[i].pid == pid) {
+			return exit_codes[i].exit_code;
+		}
+	}
+
+	return -1;
 }
