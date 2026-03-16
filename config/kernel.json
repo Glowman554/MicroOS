@@ -194,7 +194,7 @@
                         },
                         {
                             "name": "ABI_VERSION",
-                            "value": 5
+                            "value": 6
                         },
                         {
                             "name": "SYMBOLS_FILE",

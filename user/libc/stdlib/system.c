@@ -31,5 +31,5 @@ int system(const char* in) {
 		yield();
 	}
 
-	return 0;
+	return get_exit_code(pid);
 }
