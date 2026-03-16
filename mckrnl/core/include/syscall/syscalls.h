@@ -81,3 +81,5 @@ cpu_registers_t* sys_sound_get_sample_rate(cpu_registers_t* regs);
 cpu_registers_t* sys_set_pipe(cpu_registers_t* regs);
 
 cpu_registers_t* sys_rgb_color(cpu_registers_t* regs);
+
+cpu_registers_t* sys_get_exit_code(cpu_registers_t* regs);

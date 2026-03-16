@@ -61,6 +61,7 @@
 #define SYS_SOUND_GET_SAMPLE_RATE_ID 48
 #define SYS_SET_PIPE_ID 49
 #define SYS_RGB_COLOR_ID 50
+#define SYS_GET_EXIT_CODE_ID 51
 // End Syscalls
 
 // End LibC configuration

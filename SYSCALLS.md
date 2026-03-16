@@ -49,3 +49,4 @@
 | SYS_SOUND_GET_SAMPLE_RATE | 0x30 | sample_rate (return) | - | - | - | - |
 | SYS_SET_PIPE | 0x31 | pid | pipe | output | - | - |
 | SYS_RGB_COLOR | 0x32 | color | background | - | - | - |
+| SYS_GET_EXIT_CODE | 0x33 | pid | exit_code (return) | - | - | - |

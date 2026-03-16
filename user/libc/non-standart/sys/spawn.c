@@ -41,3 +41,9 @@ void set_term(int pid, int term) {
 void set_pipe(int pid, pipe_t* pipe, int output) {
 	asm volatile("int $0x30" : : "a"(SYS_SET_PIPE_ID), "b"(pid), "c"(pipe), "d"(output));
 }
+
+int get_exit_code(int pid) {
+	int code;
+	asm volatile("int $0x30" : "=c"(code) : "a"(SYS_GET_EXIT_CODE_ID), "b"(pid));
+	return code;
+}

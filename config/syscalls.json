@@ -384,6 +384,14 @@
 				"color",
 				"background"
 			]
+		},
+		{
+			"name": "SYS_GET_EXIT_CODE",
+			"arguments": [
+				"0x33",
+				"pid",
+				"exit_code (return)"
+			]
 		}
 	]
 }
