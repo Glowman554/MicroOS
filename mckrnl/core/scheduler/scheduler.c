@@ -171,7 +171,7 @@ void add_exit_code(int pid, int exit_code) {
 	exit_codes[exit_codes_idx].pid = pid;
 	exit_codes[exit_codes_idx].exit_code = exit_code;
 
-	debugf("Added exit code %d for pid %d at index %d", exit_code, pid, exit_codes_idx);
+	debugf(SPAM, "Added exit code %d for pid %d at index %d", exit_code, pid, exit_codes_idx);
 
 	exit_codes_idx = (exit_codes_idx + 1) % MAX_TASKS;
 }
