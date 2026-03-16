@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-#define log(...) debugf("[ubsan --- WARNING ---] " __VA_ARGS__)
+#define log(...) debugf(WARNING, "[ubsan] " __VA_ARGS__)
 
 #ifdef SANITIZE
 

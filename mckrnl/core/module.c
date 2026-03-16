@@ -55,7 +55,7 @@ module_t* load_object_file(void* image) {
     if (header->magic != ELF_MAGIC || header->sh_entry_count == 0) {
         abortf(false, "Cannot load object file: invalid ELF header");
     }
-    debugf("Loading object file at 0x%x", image);
+    debugf(SPAM, "Loading object file at 0x%x", image);
     struct elf_section_header* section_headers = (struct elf_section_header*)((uint8_t*)image + header->sh_offset);
     uint32_t current_offset = 0;
     uint32_t section_addresses[header->sh_entry_count];
@@ -85,7 +85,7 @@ module_t* load_object_file(void* image) {
 
     memset(load_base, 0, pages * 4096);
 
-    debugf("Allocated %d pages for object file at %x%x", pages, load_base);
+    debugf(SPAM, "Allocated %d pages for object file at %x%x", pages, load_base);
 
     for (uint32_t i = 0; i < header->sh_entry_count; i++) {
         struct elf_section_header* section = &section_headers[i];
@@ -170,7 +170,7 @@ module_t* load_object_file(void* image) {
                 } else if (symbol->shndx == SHN_UNDEF) {
                     symbol_address = resolve_symbol_from_name(symbol_name);
                     if (symbol_address == 0) {
-                        debugf("Could not resolve symbol %s", symbol_name);
+                        debugf(WARNING, "Could not resolve symbol %s", symbol_name);
                         goto load_failed;
                     }
                     // debugf("Resolved %s to address 0x%x", symbol_name, symbol_address);
@@ -229,7 +229,7 @@ module_t* load_object_file(void* image) {
 
     module_t* module = (module_t*) resolve_symbol_address(&ctx, "__module__");
     if (module) {
-        debugf("Found module structure at 0x%x", module);
+        debugf(SPAM, "Found module structure at 0x%x", module);
         module->ctx = ctx;
     } else {
         abortf(false, "No __module__ symbol found in object file");
@@ -266,17 +266,17 @@ void initrd_load_modules(void* saf_image, char* path) {
 		saf_node_file_t* file_node = (saf_node_file_t*) child;
 		void* module_data = (void*) ((uint32_t) saf_image + (uint32_t) file_node->addr);
 
-		debugf("initrd: loading module %s (%d bytes)", child->name, file_node->size);
+		debugf(SPAM, "initrd: loading module %s (%d bytes)", child->name, file_node->size);
 		module_t* module = load_object_file(module_data);
 
         if (module == NULL) {
-            debugf("Failed to load module %s", child->name);
+            debugf(ERROR, "Failed to load module %s", child->name);
             continue;
         }
 
         loaded_modules[loaded_module_count++] = module;
 
-        debugf("Loaded module %s", module->name);
+        debugf(INFO, "Loaded module %s", module->name);
 
 		if (module->init) {
 			module->init();

@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <non-standart/sys/env.h>
+#include <non-standard/sys/env.h>
 
 extern psf1_font_t font;
 

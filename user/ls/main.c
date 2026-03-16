@@ -1,11 +1,11 @@
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <non-standart/sys/file.h>
-#include <non-standart/sys/env.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/sys/env.h>
 
-#include <non-standart/buildin/disk_raw.h>
+#include <non-standard/buildin/disk_raw.h>
 
 int main(int argc, char *argv[]) {
 	char ls_path[256] = {0};

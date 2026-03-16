@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <desktop.h>
-#include <non-standart/buildin/data/array.h>
+#include <non-standard/buildin/data/array.h>
 
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <load.h>
 

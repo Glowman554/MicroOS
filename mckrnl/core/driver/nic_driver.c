@@ -25,7 +25,7 @@ nic_driver_t* get_nic_driver(int i) {
 void load_network_stacks() {
 	for (int i = 0; i < num_nic_drivers; i++) {
 	#ifdef NETWORK_STACK
-		debugf("Loading network stack for (%d) %s...", i, nic_drivers[i]->driver.get_device_name((driver_t*) nic_drivers[i]));
+		debugf(INFO, "Loading network stack for (%d) %s...", i, nic_drivers[i]->driver.get_device_name((driver_t*) nic_drivers[i]));
 		load_network_stack(nic_drivers[i]);
 		devfs_register_file(&global_devfs, create_nic_file(nic_drivers[i], i));
 	#endif

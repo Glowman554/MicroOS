@@ -19,20 +19,30 @@ int read_core_id();
 
 void breakpoint();
 
+typedef enum {
+    SPAM,
+    INFO,
+    WARNING,
+    ERROR,
+} log_level_t;
+
+extern log_level_t current_log_level;
+extern const char* log_level_names[];
+
 #ifdef DEBUG
-#define debugf(fmt, ...) debugf_intrnl("[%d] [%s:%d in %s] ", read_core_id(), __FILE__, __LINE__, __FUNCTION__); debugf_intrnl(fmt, ##__VA_ARGS__); debugf_intrnl("\n")
+#define debugf(level, fmt, ...) if (level >= current_log_level) { debugf_intrnl("[%d] [%s] [%s:%d in %s] ", read_core_id(), log_level_names[level], __FILE__, __LINE__, __FUNCTION__); debugf_intrnl(fmt, ##__VA_ARGS__); debugf_intrnl("\n"); }
 #else
-#define debugf(fmt, ...)
+#define debugf(level, fmt, ...)
 #endif
 #define abortf(weak, fmt, ...) abortf_intrnl(__FILE__, __LINE__, __FUNCTION__, weak, fmt, ##__VA_ARGS__)
 
 #define todo() abortf(true, "%s not implemented! (yet i hope)", __FUNCTION__)
-#define note(n) debugf("note in %s (%s:%d): %s", __FUNCTION__, __FILE__, __LINE__, n)
-#define here() debugf("here");
+#define note(n) debugf(ERROR, "note in %s (%s:%d): %s", __FUNCTION__, __FILE__, __LINE__, n)
+#define here() debugf(ERROR, "here");
 #ifdef DEBUG
 #ifdef WAIT
 char read_serial();
-#define wait() { debugf("press any key continue executions..."); while(!read_serial()); }
+#define wait() { debugf(ERROR, "press any key continue executions..."); while(!read_serial()); }
 #else
 #define wait()
 #endif

@@ -138,7 +138,7 @@ void configure_vlan(const char* cfg) {
             abortf(false, "Invalid VLAN ID: %d\n", vlan_id);
         }
 
-        debugf("VLAN: vlan%d.%d", vlan_id, parent_if);
+        debugf(INFO, "VLAN: vlan%d.%d", vlan_id, parent_if);
         register_driver((driver_t*) get_vlan_driver(vlan_id, parent_if));
 
         if (*p == ',') {

@@ -16,7 +16,7 @@ acpi_vfs_mount_data_t create_acpi_vfs_mount_data() {
 	if(xsdt != NULL) {
 		for(uint64_t i = 0; i < entriesXSDT; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (uint32_t) xsdt->acpiptr[i];
-            debugf("[XSDT] Found ACPI table: %c%c%c%c", acpihdr->signature[0], acpihdr->signature[1], acpihdr->signature[2], acpihdr->signature[3]);
+            debugf(SPAM, "[XSDT] Found ACPI table: %c%c%c%c", acpihdr->signature[0], acpihdr->signature[1], acpihdr->signature[2], acpihdr->signature[3]);
 			mount_data.tables[i] = acpihdr;
         }
 	} 
@@ -24,7 +24,7 @@ acpi_vfs_mount_data_t create_acpi_vfs_mount_data() {
 	if(rsdt != NULL) {
 		for(uint64_t i = 0; i < entriesRSDT; i++) {
 			sdt_header_t* acpihdr = (sdt_header_t*) (rsdt->acpiptr[i]);
-            debugf("[RSDT] Found ACPI table: %c%c%c%c", acpihdr->signature[0], acpihdr->signature[1], acpihdr->signature[2], acpihdr->signature[3]);
+            debugf(SPAM, "[RSDT] Found ACPI table: %c%c%c%c", acpihdr->signature[0], acpihdr->signature[1], acpihdr->signature[2], acpihdr->signature[3]);
 			mount_data.tables[entriesXSDT + i] = acpihdr;
 		}
 	} 
@@ -41,7 +41,7 @@ file_t* acpi_vfs_open(vfs_mount_t* mount, char* path, int flags) {
 
     char file[0xff] = { 0 };
     while (*(path = copy_until('/', path, file)));
-    debugf("file: %s", file);
+    debugf(SPAM, "file: %s", file);
 
 	for (size_t i = 0; i < data->table_count; i++) {
 		sdt_header_t* table = data->tables[i];

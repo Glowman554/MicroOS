@@ -19,8 +19,8 @@ cpu_registers_t* sys_set_pipe(cpu_registers_t* regs) {
         abortf(true, "sys_set_pipe: invalid pipe index %d", output);
     }
 
-    debugf("sys_set_pipe: setting pipe for pid %d, output %d", pid, output);
-    debugf("sys_set_pipe: buffer=%p, size=%d, pos=%d", pipe->buffer, pipe->size, pipe->pos);
+    debugf(SPAM, "sys_set_pipe: setting pipe for pid %d, output %d", pid, output);
+    debugf(SPAM, "sys_set_pipe: buffer=%p, size=%d, pos=%d", pipe->buffer, pipe->size, pipe->pos);
 
     other->pipe[output] = pipe;
     other->pipe_source[output] = self->pid;

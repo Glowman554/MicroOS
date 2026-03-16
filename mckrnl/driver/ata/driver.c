@@ -75,7 +75,7 @@ void ata_driver_read28(ata_driver_data_t* data, uint32_t sector, uint8_t* buffer
 	}
 
 	if(status & 0x01) {
-		debugf("ATA: Read error");
+		debugf(ERROR, "ATA: Read error");
 		return;
 	}
 
@@ -107,7 +107,7 @@ void ata_driver_write28(ata_driver_data_t* data, uint32_t sector, uint8_t* buffe
 	}
 
 	if(status & 0x01) {
-		debugf("ATA: Write error");
+		debugf(ERROR, "ATA: Write error");
 		return;
 	}
 
@@ -133,16 +133,16 @@ void ata_driver_flush(disk_driver_t* driver) {
 	}
 
 	if (status & 0x01) {
-		debugf("ATA: Flush error");
+		debugf(ERROR, "ATA: Flush error");
 		return;
 	}
 }
 
 void ata_driver_init(driver_t* driver) {
-	debugf("Initializing ATA driver");
+	debugf(SPAM, "Initializing ATA driver");
 
 	if (!read_gpt((disk_driver_t*) driver)) {
-		debugf("ATA: Failed to read GPT");
+		debugf(WARNING, "ATA: Failed to read GPT");
 	}
 
 	register_disk((disk_driver_t*) driver);

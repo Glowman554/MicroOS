@@ -3,7 +3,7 @@
 #include <window_helpers.h>
 #include <windows.h>
 #include <button.h>
-#include <non-standart/buildin/data/array.h>
+#include <non-standard/buildin/data/array.h>
 #include <stdlib.h>
 
 #define LAUNCHER_BUTTON_HEIGHT 24

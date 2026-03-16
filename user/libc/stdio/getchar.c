@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <non-standart/sys/file.h>
+#include <non-standard/sys/file.h>
 
 char getchar() {
 	char input[1] = { 0 };

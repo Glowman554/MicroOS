@@ -1,10 +1,10 @@
-#include <non-standart/sys/graphics.h>
+#include <non-standard/sys/graphics.h>
 #include <render.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <input.h>
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 
 void print_usage(char* prog) {
 	printf("Usage: %s [-r] <file-name>\n\n", prog);

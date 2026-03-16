@@ -103,7 +103,7 @@ void load_init() {
 			NULL
 		};
 
-		debugf("loading %s as init process...", init_exec);
+		debugf(INFO, "loading %s as init process...", init_exec);
 		file_t* file = vfs_open(init_exec, FILE_OPEN_MODE_READ);
 		if (file == NULL) {
 			abortf(false, "Could not open %s", init_exec);
@@ -115,6 +115,21 @@ void load_init() {
 		vfs_close(file);
 	} else {
 		abortf(false, "Please use --init to set a init process");
+	}
+}
+
+void set_log_level() {
+	char log_level[64] = { 0 };
+	if (is_arg((char*) global_multiboot_info->mbs_cmdline, "--log", log_level)) {
+		if (strcmp(log_level, "spam") == 0) {
+			current_log_level = SPAM;
+		} else if (strcmp(log_level, "info") == 0) {
+			current_log_level = INFO;
+		} else if (strcmp(log_level, "warning") == 0) {
+			current_log_level = WARNING;
+		} else if (strcmp(log_level, "error") == 0) {
+			current_log_level = ERROR;
+		}
 	}
 }
 
@@ -135,8 +150,10 @@ void _main(multiboot_info_t* mb_info) {
 		font_size = default_font_size;
 	}
 	init_text_mode_emulation(psf1_buffer_to_font(font_pointer));
-
 #endif
+
+	set_log_level();
+
 	text_console_early();
 	text_console_clrscr(NULL, 1);
 	text_console_puts(NULL, 1, "Booting MicroOS...\n");
@@ -173,7 +190,7 @@ void _main(multiboot_info_t* mb_info) {
 	vmm_init();
 	initialize_heap(MB(KERNEL_HEAP_SIZE_MB) / 0x1000);
 
-	debugf("Memory usage after heap init:");
+	debugf(SPAM, "Memory usage after heap init:");
 	pmm_debug_print();
 
 	set_gdt(new_gdt());
@@ -199,7 +216,7 @@ void _main(multiboot_info_t* mb_info) {
 
 		multiboot_module_t* initrd_module = find_multiboot_module(initrd);
 
-		debugf("Loading kernel modules from initrd %s at path %s", initrd, modules);
+		debugf(INFO, "Loading kernel modules from initrd %s at path %s", initrd, modules);
 		initrd_load_modules((void*) initrd_module->mod_start, modules);
 	}
 
@@ -284,7 +301,7 @@ void _main(multiboot_info_t* mb_info) {
 	smp_startup_all();
 #endif
 
-	debugf("Boot finished at %d", time(global_clock_driver));
+	debugf(INFO, "Boot finished at %d", time(global_clock_driver));
 
 	// while (true) {
 	// 	debugf("Hello %d", global_timer_driver->time_ms(global_timer_driver));
@@ -293,7 +310,7 @@ void _main(multiboot_info_t* mb_info) {
 
 	load_init();
 
-	debugf("Memory usage after init:");
+	debugf(SPAM, "Memory usage after init:");
 	pmm_debug_print();
 
 	init_killer();

@@ -12,7 +12,7 @@ typedef struct nic_file {
 } nic_file_t;
 
 void debug_ip(char* name, char* field, ip_u ip) {
-    debugf("[%s] %s: %d.%d.%d.%d", name, field, ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[3]);
+    debugf(SPAM, "[%s] %s: %d.%d.%d.%d", name, field, ip.ip_p[0], ip.ip_p[1], ip.ip_p[2], ip.ip_p[3]);
 }
 
 void nic_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t size, size_t offset) {
@@ -22,7 +22,7 @@ void nic_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t si
     
     nic_content_t* content = (nic_content_t*) buf;
     if (content->mac.mac != nic_file->nic->mac.mac) {
-        debugf("Cannot change MAC address");
+        debugf(ERROR, "Cannot change MAC address");
     }
 
     nic_file->nic->ip_config = content->ip_config;

@@ -1,6 +1,6 @@
-#include <non-standart/net/http.h>
+#include <non-standard/net/http.h>
 
-#include <non-standart/buildin/time.h>
+#include <non-standard/buildin/time.h>
 
 #include <stdio.h>
 

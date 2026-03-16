@@ -18,7 +18,7 @@
 long long unsigned int idt[IDT_ENTRIES];
 
 static void idt_set_entry(int i, void (*fn)(), unsigned int selector, int flags) {
-	debugf("Setting idt entry at %d with handler 0x%x and selector 0x%x and the flags 0x%x", i, (uint32_t) fn, selector, flags);
+	debugf(SPAM, "Setting idt entry at %d with handler 0x%x and selector 0x%x and the flags 0x%x", i, (uint32_t) fn, selector, flags);
 
 	unsigned long int handler = (unsigned long int) fn;
 	idt[i] = handler & 0xffffLL;
@@ -28,7 +28,7 @@ static void idt_set_entry(int i, void (*fn)(), unsigned int selector, int flags)
 }
 
 void init_pic() {
-	debugf("Initializing PIC");
+	debugf(SPAM, "Initializing PIC");
 	outb(0x20, 0x11);
 	outb(0x21, 0x20);
 	outb(0x21, 0x04);
@@ -95,7 +95,7 @@ void init_interrupts() {
 	idt_set_entry(255, intr_stub_255, 0x8, IDT_FLAG_INTERRUPT_GATE | IDT_FLAG_RING0 | IDT_FLAG_PRESENT);
 	
 	asm volatile("lidt %0" : : "m" (idtp));
-	debugf("Enabling interrupts!");
+	debugf(SPAM, "Enabling interrupts!");
 	asm volatile("sti");
 }
 
@@ -110,7 +110,7 @@ interrupt_handler_t interrupt_handlers[256] = { 0 };
 void* interrupt_handlers_special_data[256] = { 0 };
 
 void register_interrupt_handler(uint8_t interrupt_number, interrupt_handler_t handler, void* special_data) {
-	debugf("Registering interrupt handler %p for interrupt %d", handler, interrupt_number);
+	debugf(SPAM, "Registering interrupt handler %p for interrupt %d", handler, interrupt_number);
 
 	interrupt_handlers[interrupt_number] = handler;
 	interrupt_handlers_special_data[interrupt_number] = special_data;

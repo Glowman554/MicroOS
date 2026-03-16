@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <non-standart/sys/spawn.h>
-#include <non-standart/sys/env.h>
-#include <non-standart/sys/file.h>
-#include <non-standart/sys/getc.h>
-#include <non-standart/sys/graphics.h>
+#include <non-standard/sys/spawn.h>
+#include <non-standard/sys/env.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/sys/getc.h>
+#include <non-standard/sys/graphics.h>
 
 #include <argv_tools.h>
 #include <commands.h>

@@ -138,7 +138,7 @@ void full_screen_terminal_erase_line(char_output_driver_t* driver, int term, enu
 
 void full_screen_terminal_driver_init(driver_t* driver) {
 	int size = TO_PAGES(global_multiboot_info->fb_pitch * global_multiboot_info->fb_height);
-	debugf("framebuffer size (pages): %d", size);
+	debugf(SPAM, "framebuffer size (pages): %d", size);
 
 	for (int i = 0; i < MAX_VTERM; i++) {
 		full_screen_terminal_vterm_t* vterm = &full_screen_terminal_vterms[i];

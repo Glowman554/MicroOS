@@ -20,11 +20,11 @@ mac_u ipv4_resolve_route(network_stack_t* stack, async_t* async, ip_u dest_ip) {
 		route = stack->driver->ip_config.gateway_ip;
 
 		if (async->state == STATE_INIT) {
-			debugf("IPv4: Resolving route for %d.%d.%d.%d via gateway %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3], route.ip_p[0], route.ip_p[1], route.ip_p[2], route.ip_p[3]);
+			debugf(SPAM, "IPv4: Resolving route for %d.%d.%d.%d via gateway %d.%d.%d.%d", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3], route.ip_p[0], route.ip_p[1], route.ip_p[2], route.ip_p[3]);
 		}
 	} else {
 		if (async->state == STATE_INIT) {
-			debugf("IPv4: Resolving route for %d.%d.%d.%d directly", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
+			debugf(SPAM, "IPv4: Resolving route for %d.%d.%d.%d directly", dest_ip.ip_p[0], dest_ip.ip_p[1], dest_ip.ip_p[2], dest_ip.ip_p[3]);
 		}
 	}
 
@@ -70,7 +70,7 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, ui
 	ipv4_message_t* ipv4 = (ipv4_message_t*) payload;
 
 	if (ipv4->version != 4) {
-		debugf("ipv4_etherframe_recv(): Invalid IPv4 version %d", ipv4->version);
+		debugf(WARNING, "ipv4_etherframe_recv(): Invalid IPv4 version %d", ipv4->version);
 		return;
 	}
 
@@ -92,7 +92,7 @@ void ipv4_etherframe_recv(struct ether_frame_handler* handler, mac_u src_mac, ui
 		}
 
 		if (!handled) {
-			debugf("--- WARNING --- Unhandled ipv4 %x!", ipv4->protocol);
+			debugf(WARNING, "Unhandled ipv4 %x!", ipv4->protocol);
 		}
 	}
 }

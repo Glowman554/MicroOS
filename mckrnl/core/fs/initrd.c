@@ -37,16 +37,16 @@ char* initrd_name(vfs_mount_t* mount) {
 }
 
 file_t* initrd_open(vfs_mount_t* mount, char* path, int flags) {
-	debugf("open: %s", path);
+	debugf(SPAM, "open: %s", path);
 
 	saf_node_hdr_t* file = initrd_find(path, mount->driver_specific_data, (saf_node_hdr_t*) mount->driver_specific_data);
 	if (file == NULL) {
-		debugf("file %s not found", path);
+		debugf(SPAM, "file %s not found", path);
 		return NULL;
 	}
 
 	if (file->flags == FLAG_ISFOLDER) {
-		debugf("file %s is a folder", path);
+		debugf(SPAM, "file %s is a folder", path);
 		return NULL;
 	}
 

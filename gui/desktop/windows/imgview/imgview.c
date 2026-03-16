@@ -6,7 +6,7 @@
 #include <graphics.h>
 #include <stdlib.h>
 #include <string.h>
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 
 extern psf1_font_t font;
 

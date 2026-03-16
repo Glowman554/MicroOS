@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <non-standart/sys/spawn.h>
+#include <non-standard/sys/spawn.h>
 
 #define PIPE_BUFFER_SIZE 65536
 

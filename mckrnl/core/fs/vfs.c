@@ -14,7 +14,7 @@ fs_scanner* vfs_scanner = NULL;
 int num_vfs_scanners = 0;
 
 void vfs_init() {
-	debugf("VFS: Initializing VFS");
+	debugf(SPAM, "VFS: Initializing VFS");
 }
 
 bool try_read_disk_label(char* out, vfs_mount_t* mount) {
@@ -28,13 +28,13 @@ bool try_read_disk_label(char* out, vfs_mount_t* mount) {
 		mount->close(mount, label);
 		return true;
 	} else {
-		debugf("Could not read disk label for disk %s", mount->name(mount));
+		debugf(WARNING, "Could not read disk label for disk %s", mount->name(mount));
 	}
 	return false;
 }
 
 void vfs_mount(vfs_mount_t* mount) {
-	debugf("VFS: Mounting %s", mount->name(mount));
+	debugf(INFO, "VFS: Mounting %s", mount->name(mount));
 
 	vfs_mounts = krealloc(vfs_mounts, sizeof(vfs_mount_t*) * (num_vfs_mounts + 1));
 	vfs_mounts[num_vfs_mounts] = mount;
@@ -68,7 +68,7 @@ file_t* vfs_open(char* path, int flags) {
 	vfs_mount_t* mount = vfs_find_mount(path, file_path);
 
 	if (mount == NULL) {
-		debugf("No device found for path: %s", path);
+		debugf(SPAM, "No device found for path: %s", path);
 		return NULL;
 	}
 
@@ -192,7 +192,7 @@ bool vfs_fs_at(int idx, char* out) {
 void vfs_register_fs_scanner(fs_scanner scanner) {
 	vfs_scanner = krealloc(vfs_scanner, sizeof(fs_scanner) * (num_vfs_scanners + 1));
 	vfs_scanner[num_vfs_scanners] = scanner;
-	debugf("Registered VFS scanner %d at 0x%x", num_vfs_scanners, scanner);
+	debugf(SPAM, "Registered VFS scanner %d at 0x%x", num_vfs_scanners, scanner);
 	num_vfs_scanners++;
 }
 
@@ -210,7 +210,7 @@ void vfs_scan_fs() {
 
 file_t* vfs_open_first_found(char* name, int flags) {
 	for (int i = 0; i < num_vfs_mounts; i++) {
-		debugf("Trying to open '%s' on mount %s", name, vfs_mounts[i]->name(vfs_mounts[i]));
+		debugf(SPAM, "Trying to open '%s' on mount %s", name, vfs_mounts[i]->name(vfs_mounts[i]));
 		file_t* f = vfs_mounts[i]->open(vfs_mounts[i], name, flags);
 		if (f) {
 			return f;

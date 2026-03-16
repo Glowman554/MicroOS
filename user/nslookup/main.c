@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <non-standart/net/dns.h>
-#include <non-standart/net/ipv4.h>
+#include <non-standard/net/dns.h>
+#include <non-standard/net/ipv4.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char* domain = NULL;

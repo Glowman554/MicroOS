@@ -78,7 +78,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 	}
 
 	icmp_message_t* icmp = (icmp_message_t*) payload;
-	debugf("ICMP: Received ICMP message of type %d from %d.%d.%d.%d", icmp->type, srcIP.ip_p[0], srcIP.ip_p[1], srcIP.ip_p[2], srcIP.ip_p[3]);
+	debugf(SPAM, "ICMP: Received ICMP message of type %d from %d.%d.%d.%d", icmp->type, srcIP.ip_p[0], srcIP.ip_p[1], srcIP.ip_p[2], srcIP.ip_p[3]);
 
 	switch (icmp->type) {
 		case 0:
@@ -86,7 +86,7 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 				// Echo reply
 				handler->stack->icmp->last_echo_reply_ip = srcIP.ip;
 
-				debugf("ICMP: Echo reply from %d.%d.%d.%d", srcIP.ip_p[0], srcIP.ip_p[1], srcIP.ip_p[2], srcIP.ip_p[3]);
+				debugf(SPAM, "ICMP: Echo reply from %d.%d.%d.%d", srcIP.ip_p[0], srcIP.ip_p[1], srcIP.ip_p[2], srcIP.ip_p[3]);
 			}
 			break;
 		case 8:
@@ -108,12 +108,12 @@ void icmp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_
 		case 3:
 			{
 				// Destination unreachable message
-				debugf("ICMP ---WARNING ---: Destination unreachable (%s)", icmp_destination_unreachable_to_str(icmp->code));
+				debugf(WARNING, "ICMP: Destination unreachable (%s)", icmp_destination_unreachable_to_str(icmp->code));
 			}
 			break;
 		default:
 			{
-				debugf("ICMP type %d not implemented!", icmp->type);
+				debugf(WARNING, "ICMP type %d not implemented!", icmp->type);
 			}
 			break;
 	}

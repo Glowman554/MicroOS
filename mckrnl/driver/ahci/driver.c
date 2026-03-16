@@ -22,7 +22,7 @@ void ahci_port_stop_command(ahci_driver_data_t* data) {
 		__asm__ __volatile__("pause");
 	}
 	if (timeout == 0) {
-		debugf("AHCI: Timeout stopping command engine");
+		debugf(WARNING, "AHCI: Timeout stopping command engine");
 	}
 }
 
@@ -32,7 +32,7 @@ void ahci_port_start_command(ahci_driver_data_t* data) {
 		__asm__ __volatile__("pause");
 	}
 	if (timeout == 0) {
-		debugf("AHCI: Timeout waiting for CR bit to clear");
+		debugf(WARNING, "AHCI: Timeout waiting for CR bit to clear");
 		return;
 	}
 
@@ -83,7 +83,7 @@ void ahci_port_init(driver_t* driver) {
     ahci_port_start_command(data);
 
     if (!read_gpt((disk_driver_t*) driver)) {
-		debugf("AHCI: Failed to read GPT");
+		debugf(WARNING, "AHCI: Failed to read GPT");
         breakpoint();
 	}
 
@@ -98,7 +98,7 @@ void ahci_port_read(disk_driver_t* driver, uint64_t sector, uint32_t count, void
     vmm_context_t context = vmm_get_current_context();
     void* physical_buffer = vmm_lookup((uintptr_t) buffer, &context);
 	if (physical_buffer == NULL) {
-		debugf("AHCI: Failed to get physical address of buffer!");
+		debugf(ERROR, "AHCI: Failed to get physical address of buffer!");
         breakpoint();
 		return;
 	}
@@ -108,7 +108,7 @@ void ahci_port_read(disk_driver_t* driver, uint64_t sector, uint32_t count, void
 		spin ++;
 	}
 	if (spin == 1000000) {
-		debugf("AHCI: Timeout while waiting for device to be ready!");
+		debugf(WARNING, "AHCI: Timeout while waiting for device to be ready!");
 		return;
 	}
 
@@ -156,13 +156,13 @@ void ahci_port_read(disk_driver_t* driver, uint64_t sector, uint32_t count, void
             break;
         }
 		if (data->hba_port->interrupt_status & HBA_PxIS_TFES) {
-			debugf("AHCI: Task file error during read");
+			debugf(ERROR, "AHCI: Task file error during read");
 			return;
 		}
 		__asm__ __volatile__("pause");
 	}
 	if (timeout == 0) {
-		debugf("AHCI: Timeout during read operation");
+		debugf(WARNING, "AHCI: Timeout during read operation");
 	}
 }
 
@@ -171,7 +171,7 @@ void ahci_port_write(disk_driver_t* driver, uint64_t sector, uint32_t count, voi
     vmm_context_t context = vmm_get_current_context();
     void* physical_buffer = vmm_lookup((uintptr_t) buffer, &context);
 	if (physical_buffer == NULL) {
-		debugf("AHCI: Failed to get physical address of buffer!");
+		debugf(ERROR, "AHCI: Failed to get physical address of buffer!");
         breakpoint();
 		return;
 	}
@@ -181,7 +181,7 @@ void ahci_port_write(disk_driver_t* driver, uint64_t sector, uint32_t count, voi
 		spin ++;
 	}
 	if (spin == 1000000) {
-		debugf("AHCI: Timeout while waiting for device to be ready!");
+		debugf(WARNING, "AHCI: Timeout while waiting for device to be ready!");
 		return;
 	}
 
@@ -229,13 +229,13 @@ void ahci_port_write(disk_driver_t* driver, uint64_t sector, uint32_t count, voi
             break;
         }
 		if (data->hba_port->interrupt_status & HBA_PxIS_TFES) {
-			debugf("AHCI: Task file error during write");
+			debugf(ERROR, "AHCI: Task file error during write");
 			return;
 		}
 		__asm__ __volatile__("pause");
 	}
 	if (timeout == 0) {
-		debugf("AHCI: Timeout during write operation");
+		debugf(WARNING, "AHCI: Timeout during write operation");
 	}
 }
 
@@ -299,7 +299,7 @@ void ahci_probe_ports(HBA_memory_t* ABAR) {
 			port_type_t port_type = ahci_check_port_type(&ABAR->ports[i]);
 
 			if (port_type == SATA || port_type == SATAPI) {
-				debugf("Found SATA/SATAPI port %d", i);
+				debugf(SPAM, "Found SATA/SATAPI port %d", i);
                 register_driver((driver_t*) get_ahci_driver(&ABAR->ports[i], port_type, port_count));
 				port_count++;
 			}

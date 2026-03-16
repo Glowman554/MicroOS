@@ -10,7 +10,7 @@ file_t* devfs_open(vfs_mount_t* mount, char* path, int flags) {
 		path++;
 	}
 
-	debugf("Opening dev fs file %s", path);
+	debugf(SPAM, "Opening dev fs file %s", path);
 
 	for (int i = 0; i < devfs->num_files; i++) {
 		if (strcmp(devfs->files[i]->name(devfs->files[i]), path) == 0) {
@@ -25,7 +25,7 @@ file_t* devfs_open(vfs_mount_t* mount, char* path, int flags) {
 		}
 	}
 
-	debugf("Could not find dev fs file %s", path);
+	debugf(SPAM, "Could not find dev fs file %s", path);
 	return NULL;
 }
 
@@ -82,7 +82,7 @@ devfs_t global_devfs = {
 };
 
 void devfs_register_file(devfs_t* devfs, devfs_file_t* file) {
-	debugf("Registering devfs file %s!", file->name(file));
+	debugf(SPAM, "Registering devfs file %s!", file->name(file));
 	devfs->files = krealloc(devfs->files, sizeof(devfs_file_t*) * (devfs->num_files + 1));
 	devfs->files[devfs->num_files] = file;
 	devfs->num_files++;

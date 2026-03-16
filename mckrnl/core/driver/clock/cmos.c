@@ -38,7 +38,7 @@ void cmos_init(driver_t* driver) {
 	global_clock_driver = (clock_driver_t*) driver;
 
 	clock_result_t result = global_clock_driver->get_time(global_clock_driver);
-	debugf("%d:%d:%d %d/%d/%d", result.hours, result.minutes, result.seconds, result.day, result.month, result.year);
+	debugf(SPAM, "%d:%d:%d %d/%d/%d", result.hours, result.minutes, result.seconds, result.day, result.month, result.year);
 }
 
 clock_result_t cmos_driver_time(clock_driver_t* driver) {

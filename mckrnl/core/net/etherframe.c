@@ -7,7 +7,7 @@
 #ifdef NETWORK_STACK
 
 void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) {
-	debugf("Registering etherframe handler for %d", handler.ether_type_be);
+	debugf(SPAM, "Registering etherframe handler for %d", handler.ether_type_be);
 	stack->ether_frame->handlers = krealloc(stack->ether_frame->handlers, sizeof(ether_frame_handler_t) * (stack->ether_frame->num_handlers + 1));
 	stack->ether_frame->handlers[stack->ether_frame->num_handlers] = handler;
 	stack->ether_frame->num_handlers++;
@@ -44,7 +44,7 @@ void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len)
 		}
 
 		if (!handled) {
-			debugf("--- WARNING --- Unhandled etherframe %x!", frame->ether_type_be);
+			debugf(WARNING, "Unhandled etherframe %x!", frame->ether_type_be);
 		}
 	}
 }

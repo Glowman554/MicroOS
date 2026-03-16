@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <non-standart/sys/spawn.h>
-#include <non-standart/sys/raminfo.h>
+#include <non-standard/sys/spawn.h>
+#include <non-standard/sys/raminfo.h>
 
 extern psf1_font_t font;
 

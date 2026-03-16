@@ -9,7 +9,7 @@ syscall_handler_t* syscall_table = { 0 };
 int num_syscall_handlers = 0;
 
 void register_syscall(uint8_t syscall_id, syscall_handler_t handler) {
-	debugf("Registering syscall %d with handler %p", syscall_id, handler);
+	debugf(SPAM, "Registering syscall %d with handler %p", syscall_id, handler);
 	if (!handler) {
 		return;
 	}
@@ -31,7 +31,7 @@ cpu_registers_t* syscall_handler(cpu_registers_t* registers, void* _) {
 }
 
 void init_syscalls() {
-	debugf("Initializing syscalls");
+	debugf(SPAM, "Initializing syscalls");
 
 	register_syscall(SYS_OPEN_ID, sys_open);
 	register_syscall(SYS_CLOSE_ID, sys_close);

@@ -34,11 +34,11 @@ uint32_t free_memory;
 uint32_t used_memory;
 
 void pmm_debug_print() {
-    debugf("--- PMM DEBUG ---");
-    debugf("Used: %d kb (%d mb)", used_memory / 1024, used_memory / 1024 / 1024);
-    debugf("Free: %d kb (%d mb)", free_memory / 1024, free_memory / 1024 / 1024);
-    debugf("Total: %d kb (%d mb)", (free_memory + used_memory) / 1024, (free_memory + used_memory) / 1024 / 1024);
-    debugf("-----------------");
+    debugf(SPAM, "--- PMM DEBUG ---");
+    debugf(SPAM, "Used: %d kb (%d mb)", used_memory / 1024, used_memory / 1024 / 1024);
+    debugf(SPAM, "Free: %d kb (%d mb)", free_memory / 1024, free_memory / 1024 / 1024);
+    debugf(SPAM, "Total: %d kb (%d mb)", (free_memory + used_memory) / 1024, (free_memory + used_memory) / 1024 / 1024);
+    debugf(SPAM, "-----------------");
 }
 
 void pmm_usage_use(uint32_t ammount) {
@@ -53,7 +53,7 @@ void pmm_usage_unuse(uint32_t ammount) {
 }
 
 void pmm_init() {
-	debugf("Initializing physical memory manager");
+	debugf(SPAM, "Initializing physical memory manager");
 
 	multiboot_mmap_t* mmap = global_multiboot_info->mbs_mmap_addr;
 	multiboot_mmap_t* mmap_end = (void*) ((uintptr_t) global_multiboot_info->mbs_mmap_addr + global_multiboot_info->mbs_mmap_length);
@@ -67,13 +67,13 @@ void pmm_init() {
 			uintptr_t end_addr = addr + mmap->length;
 
             if (mmap->base > 0xfffff000) {
-                debugf("WARNING: MMAP section out of range");
+                debugf(WARNING, "MMAP section out of range");
                 mmap++;
                 continue;
             }
 
             if ((mmap->base + mmap->length) > 0xffffffff) {
-                debugf("WARNING: MMAP section too big");
+                debugf(WARNING, "MMAP section too big");
                 end_addr = 0xfffff000;
             }
 
@@ -99,7 +99,7 @@ void pmm_init() {
 		addr += 0x1000;
 	}
 
-	debugf("Marking multiboot structures as used");
+	debugf(SPAM, "Marking multiboot structures as used");
 
 	struct multiboot_module* modules = global_multiboot_info->mbs_mods_addr;
 

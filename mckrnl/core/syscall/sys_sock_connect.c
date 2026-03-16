@@ -15,7 +15,7 @@ void sys_connect_dealloc_async(async_t* async) {
 }
 
 void sys_connect_dealloc(void* resource) {
-	debugf("Freeing resource %x", resource);
+	debugf(SPAM, "Freeing resource %x", resource);
 	
 	async_t async = { .state = STATE_INIT, .data = resource };
 	add_async_task(sys_connect_dealloc_async, async, false);

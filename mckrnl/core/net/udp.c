@@ -81,7 +81,7 @@ udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 }
 
 void udp_set_local_port(udp_socket_t* socket, uint16_t port) {
-	debugf("Setting local port to %d", port);
+	debugf(SPAM, "Setting local port to %d", port);
 	socket->local_port = BSWAP16(port);
 }
 
@@ -146,7 +146,7 @@ void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
 	}
 
 	if (socket == NULL) {
-		debugf("UDP message cannot be routed to valid socket!");
+		debugf(WARNING, "UDP message cannot be routed to valid socket!");
 	} else {
 		socket->recv(socket, payload + sizeof(udp_header_t), size - sizeof(udp_header_t));
 	}

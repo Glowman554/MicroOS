@@ -1,9 +1,9 @@
 #include <stdarg.h>
 #include <stddef.h>
-#include <non-standart/stdio.h>
+#include <non-standard/stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <non-standart/sys/file.h>
+#include <non-standard/sys/file.h>
 #include <saf.h>
 
 // port from https://github.com/chocabloc/saf/blob/main/saf-extract.c

@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <non-standart/sys/graphics.h>
-#include <non-standart/sys/file.h>
+#include <non-standard/sys/graphics.h>
+#include <non-standard/sys/file.h>
 
 fb_info_t framebuffer;
 fb_info_t fb_display_info;

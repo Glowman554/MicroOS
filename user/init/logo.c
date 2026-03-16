@@ -4,15 +4,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <non-standart/buildin/unix_time.h>
-#include <non-standart/sys/time.h>
-#include <non-standart/sys/raminfo.h>
-#include <non-standart/sys/file.h>
-#include <non-standart/buildin/disk_raw.h>
+#include <non-standard/buildin/unix_time.h>
+#include <non-standard/sys/time.h>
+#include <non-standard/sys/raminfo.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/buildin/disk_raw.h>
 
-#include <non-standart/sys/graphics.h>
+#include <non-standard/sys/graphics.h>
 #define FB_SET_PX_IMPL
-#include <non-standart/buildin/framebuffer.h>
+#include <non-standard/buildin/framebuffer.h>
 
 
 
