@@ -264,7 +264,7 @@ bool run_command(char* command, char** terminal_envp, bool* should_break, pipe_t
 
 		int exit_code = get_exit_code(pid);
 		char export_cmd[32] = { 0 };
-		sprintf(export_cmd, "export $?=%d", exit_code);
+		sprintf(export_cmd, "export ?=%d", exit_code);
 		export(export_cmd, outgoing_stdout);
 
         free(new_command);
