@@ -1,0 +1,11 @@
+{
+	"directories": [
+		"lua"
+	],
+	"mappings": {
+        "src/lua": "bin/lua",
+
+        "hello.lua": "lua/hello.lua"
+	},
+	"name": "Lua"
+}

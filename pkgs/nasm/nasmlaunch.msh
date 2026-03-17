@@ -1,0 +1,8 @@
+#!/bin/terminal.mex
+
+export TMPFILE=tmp:/nasmlaunch.o
+
+echo Compiling $1
+nasm $1 -o $TMPFILE -f elf32
+
+load $TMPFILE

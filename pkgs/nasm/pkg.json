@@ -1,0 +1,16 @@
+{
+	"directories": [
+		"nasm",
+		"scripts"
+	],
+	"mappings": {
+        "src/nasm": "bin/nasm",
+        "src/ndisasm": "bin/ndisasm",
+
+		"nasmlaunch.msh": "scripts/nasmlaunch.msh",
+
+        "hello.asm": "nasm/hello.asm"
+	},
+	"name": "nasm",
+	"license": "src/LICENSE"
+}

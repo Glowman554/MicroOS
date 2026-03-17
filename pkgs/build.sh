@@ -35,6 +35,9 @@ mkdir -p pkgs
 	build_dir doom_desktop &
 	build_dir flc &
 	build_dir jvm &
+	build_dir lua &
+	build_dir mujs &
+	build_dir nasm &
 	wait
 )
 

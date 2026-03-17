@@ -20,3 +20,6 @@ clean_dir nextfs
 clean_dir doom_desktop
 clean_dir flc
 clean_dir jvm
+clean_dir lua
+clean_dir mujs
+clean_dir nasm

@@ -1,0 +1,13 @@
+{
+	"directories": [
+		"mujs"
+	],
+	"mappings": {
+        "src/build/debug/mujs": "bin/mujs",
+        "src/build/debug/mujs-pp": "bin/mujs-pp",
+
+        "hello.js": "mujs/hello.js"
+	},
+	"name": "MuJS",
+	"license": "src/COPYING"
+}

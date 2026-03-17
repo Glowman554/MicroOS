@@ -16,5 +16,6 @@
         "src/tests/Vector1.class": "jvm/Vector1.class",
         "src/tests/Vector2.class": "jvm/Vector2.class"
 	},
-	"name": "JVM"
+	"name": "JVM",
+	"license": "src/LICENSE"
 }
