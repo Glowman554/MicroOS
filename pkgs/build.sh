@@ -5,7 +5,7 @@ export INSTALLER_PY=$(realpath $PWD/installer.py)
 export TOOLCHAIN=$(realpath $PWD/.toolchain)
 
 if [ ! -d $TOOLCHAIN ]; then
-	curl -SL https://github.com/Glowman554/MicroOS-ports/releases/download/toolchain-latest/toolchain.tar.gz -o /tmp/toolchain.tar.gz
+	curl -SL https://github.com/Glowman554/MicroOS-toolchain/releases/download/toolchain-latest/toolchain.tar.gz -o /tmp/toolchain.tar.gz
 	mkdir -p $TOOLCHAIN
 	tar -xzf /tmp/toolchain.tar.gz -C $TOOLCHAIN --strip-components=1
 fi
