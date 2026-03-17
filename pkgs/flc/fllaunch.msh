@@ -1,0 +1,4 @@
+#!/bin/terminal.mex
+
+echo Running $1
+flc --include=$ROOT_FS/opt/flc/stdlib --input=$1 -r 

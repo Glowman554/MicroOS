@@ -1,0 +1,9 @@
+//!/opt/scripts/fllaunch.msh
+
+$include <std.fl>
+
+
+function spark(int argc, str[] argv) -> int {
+    prints("Hello world!");
+    return 0;
+}

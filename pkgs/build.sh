@@ -1,12 +1,20 @@
-export PROGRAM_MK=$PWD/build/program.mk
-export LIBS_ZIP=$PWD/../libs.zip
-export INSTALLER_PY=$PWD/installer.py
+export PROGRAM_MK=$(realpath $PWD/build/program.mk)
+export LIBRARY_MK=$(realpath $PWD/build/library.mk)
+export LIBS_ZIP=$(realpath $PWD/../libs.zip)
+export INSTALLER_PY=$(realpath $PWD/installer.py)
+export TOOLCHAIN=$(realpath $PWD/.toolchain)
+
+if [ ! -d $TOOLCHAIN ]; then
+	curl -SL https://github.com/Glowman554/MicroOS-ports/releases/download/toolchain-latest/toolchain.tar.gz -o /tmp/toolchain.tar.gz
+	mkdir -p $TOOLCHAIN
+	tar -xzf /tmp/toolchain.tar.gz -C $TOOLCHAIN --strip-components=1
+fi
 
 function build_dir {
 	echo "Building $1"
 	(
 		cd $1
-		bash build.sh $PROGRAM_MK $LIBS_ZIP $INSTALLER_PY
+		bash build.sh
 	)
 }
 
@@ -25,6 +33,7 @@ mkdir -p pkgs
 	build_dir saf &
 	build_dir nextfs &
 	build_dir doom_desktop &
+	build_dir flc &
 	wait
 )
 
