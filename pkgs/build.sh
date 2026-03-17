@@ -34,6 +34,7 @@ mkdir -p pkgs
 	build_dir nextfs &
 	build_dir doom_desktop &
 	build_dir flc &
+	build_dir jvm &
 	wait
 )
 

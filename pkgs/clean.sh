@@ -19,3 +19,4 @@ clean_dir saf
 clean_dir nextfs
 clean_dir doom_desktop
 clean_dir flc
+clean_dir jvm

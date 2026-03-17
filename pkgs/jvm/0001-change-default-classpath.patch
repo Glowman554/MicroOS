@@ -1,0 +1,24 @@
+From 0abe44c70c865829185adf80fb575dbc78b276f0 Mon Sep 17 00:00:00 2001
+From: Glowman554 <vossjanick62@gmail.com>
+Date: Mon, 16 Mar 2026 10:57:28 +0100
+Subject: [PATCH] change default classpath
+
+---
+ java.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/java.c b/java.c
+index d8a411d..68316a4 100644
+--- a/java.c
++++ b/java.c
+@@ -2837,7 +2837,7 @@ main(int argc, char *argv[])
+ 	argc -= i;
+ 	argv += i;
+ 	if (cpath == NULL)
+-		cpath = ".";
++		cpath = "tmp:/opt/jvm";
+ 	setclasspath(cpath);
+ 	atexit(classfree);
+ 	java(argc, argv);
+-- 
+2.43.0

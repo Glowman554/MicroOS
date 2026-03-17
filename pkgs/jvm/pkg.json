@@ -1,0 +1,20 @@
+{
+	"directories": [
+		"jvm"
+	],
+	"mappings": {
+        "src/java": "bin/java",
+        "src/javap": "bin/javap",
+
+        "src/tests/Double.class": "jvm/Double.class",
+        "src/tests/Echo.class": "jvm/Echo.class",
+        "src/tests/HelloWorld.class": "jvm/HelloWorld.class",
+        "src/tests/Int.class": "jvm/Int.class",
+        "src/tests/Multi.class": "jvm/Multi.class",
+        "src/tests/StringTest.class": "jvm/StringTest.class",
+        "src/tests/TableSwitch.class": "jvm/TableSwitch.class",
+        "src/tests/Vector1.class": "jvm/Vector1.class",
+        "src/tests/Vector2.class": "jvm/Vector2.class"
+	},
+	"name": "JVM"
+}
