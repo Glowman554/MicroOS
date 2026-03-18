@@ -1,7 +1,7 @@
 
 CORE = core
 MODULES = network/am79C973 network/e1000 network/ne2k network/rtl8139 network/vlan \
-          filesystem/fat32 filesystem/nextfs filesystem/ramfs \
+          filesystem/fat32 filesystem/ramfs \
           feature/acpi_dump feature/lai feature/system \
 		  driver/ac97 driver/ata driver/ps2 driver/ahci
 
