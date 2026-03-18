@@ -1,4 +1,4 @@
-#include "../user/edit/include/syntax.h"
+#include "../user/libsyntax/include/syntax.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -359,9 +359,169 @@ void write_json_syntax() {
     save_syx(&header, words, len, buf, "json.syx");
 }
 
+void write_lua_syntax() {
+	char* buf = NULL;
+	int len = 0;
+
+	syntax_word_t words[] = {
+		NEW_WORD("and", magenta),
+		NEW_WORD("break", magenta),
+		NEW_WORD("do", magenta),
+		NEW_WORD("else", magenta),
+		NEW_WORD("elseif", magenta),
+		NEW_WORD("end", magenta),
+		NEW_WORD("for", magenta),
+		NEW_WORD("function", magenta),
+		NEW_WORD("goto", magenta),
+		NEW_WORD("if", magenta),
+		NEW_WORD("in", magenta),
+		NEW_WORD("local", magenta),
+		NEW_WORD("not", magenta),
+		NEW_WORD("or", magenta),
+		NEW_WORD("repeat", magenta),
+		NEW_WORD("return", magenta),
+		NEW_WORD("then", magenta),
+		NEW_WORD("until", magenta),
+		NEW_WORD("while", magenta),
+
+		NEW_WORD("true", red),
+		NEW_WORD("false", red),
+		NEW_WORD("nil", red),
+
+		NEW_WORD("self", cyan),
+	};
+
+	syntax_header_t header = {
+		.magic = 0xff << 24 | 'S' << 0 | 'Y' << 8 | 'X' << 16, // TODO,
+		.single_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "--"),
+			.sect_end_offset = write_string(&len, &buf, "\n"),
+			.color = green
+		},
+		.multi_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "--[["),
+			.sect_end_offset = write_string(&len, &buf, "]]"),
+			.color = green
+		},
+		.string = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "\""),
+			.sect_end_offset = write_string(&len, &buf, "\""),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.single_char = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "'"),
+			.sect_end_offset = write_string(&len, &buf, "'"),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.brackets_start = write_string(&len, &buf, "({["),
+		.brackets_end = write_string(&len, &buf, "]})"),
+		.match_brackets = true,
+		.num_words = sizeof(words) / sizeof(words[0])
+	};
+
+	save_syx(&header, words, len, buf, "lua.syx");
+}
+
+void write_js_syntax() {
+	char* buf = NULL;
+	int len = 0;
+
+	syntax_word_t words[] = {
+		NEW_WORD("var", blue),
+		NEW_WORD("let", blue),
+		NEW_WORD("const", blue),
+		NEW_WORD("function", blue),
+		NEW_WORD("class", blue),
+		NEW_WORD("extends", blue),
+		NEW_WORD("new", blue),
+		NEW_WORD("delete", blue),
+		NEW_WORD("typeof", blue),
+		NEW_WORD("instanceof", blue),
+		NEW_WORD("void", blue),
+
+		NEW_WORD("if", magenta),
+		NEW_WORD("else", magenta),
+		NEW_WORD("for", magenta),
+		NEW_WORD("while", magenta),
+		NEW_WORD("do", magenta),
+		NEW_WORD("switch", magenta),
+		NEW_WORD("case", magenta),
+		NEW_WORD("break", magenta),
+		NEW_WORD("continue", magenta),
+		NEW_WORD("default", magenta),
+		NEW_WORD("return", magenta),
+		NEW_WORD("try", magenta),
+		NEW_WORD("catch", magenta),
+		NEW_WORD("finally", magenta),
+		NEW_WORD("throw", magenta),
+		NEW_WORD("in", magenta),
+		NEW_WORD("of", magenta),
+
+		NEW_WORD("import", cyan),
+		NEW_WORD("export", cyan),
+		NEW_WORD("from", cyan),
+		NEW_WORD("async", cyan),
+		NEW_WORD("await", cyan),
+		NEW_WORD("yield", cyan),
+		NEW_WORD("super", cyan),
+		NEW_WORD("this", cyan),
+		NEW_WORD("static", cyan),
+
+		NEW_WORD("true", red),
+		NEW_WORD("false", red),
+		NEW_WORD("null", red),
+		NEW_WORD("undefined", red),
+		NEW_WORD("NaN", red),
+	};
+
+	syntax_header_t header = {
+		.magic = 0xff << 24 | 'S' << 0 | 'Y' << 8 | 'X' << 16, // TODO,
+		.single_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "//"),
+			.sect_end_offset = write_string(&len, &buf, "\n"),
+			.color = green
+		},
+		.multi_line_comment = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "/*"),
+			.sect_end_offset = write_string(&len, &buf, "*/"),
+			.color = green
+		},
+		.string = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "\""),
+			.sect_end_offset = write_string(&len, &buf, "\""),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.single_char = {
+			.active = true,
+			.sect_start_offset = write_string(&len, &buf, "'"),
+			.sect_end_offset = write_string(&len, &buf, "'"),
+			.color = yellow,
+			.skip_next = '\\'
+		},
+		.brackets_start = write_string(&len, &buf, "({["),
+		.brackets_end = write_string(&len, &buf, "]})"),
+		.match_brackets = true,
+		.num_words = sizeof(words) / sizeof(words[0])
+	};
+
+	save_syx(&header, words, len, buf, "js.syx");
+}
+
 int main(int argc, char** argv) {
 	write_c_syntax();
-    write_asm_syntax();
+	write_asm_syntax();
 	write_fl_syntax();
 	write_json_syntax();
+	write_lua_syntax();
+	write_js_syntax();
 }
