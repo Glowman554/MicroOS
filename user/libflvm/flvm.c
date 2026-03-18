@@ -1,6 +1,6 @@
-#include <flvm.h>
-
+#include "flvm.h"
 #include <stdint.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,45 +34,45 @@ void nativePutchar(struct vm_instance* vm) {
 }
 
 void nativePuts(struct vm_instance* vm) {
-    char* s = (char*) (uint32_t) stack_pop(vm);
+    char* s = (char*) stack_pop(vm);
     puts(s);
     stack_push(vm, 0);
 }
 
 void nativeMalloc(struct vm_instance* vm) {
-    stack_push(vm, (int64_t)(uint32_t)malloc(stack_pop(vm)));
+    stack_push(vm, (int64_t)malloc(stack_pop(vm)));
 }
 
 void nativeFree(struct vm_instance* vm) {
-    free((void*)(uint32_t)stack_pop(vm));
+    free((void*)stack_pop(vm));
     stack_push(vm, 0);
 }
 
 void nativeFopen(struct vm_instance* vm) {
-    const char* mode = (const char*)(uint32_t)stack_pop(vm);
-    const char* file = (const char*)(uint32_t)stack_pop(vm);
-    stack_push(vm, (int64_t)(uint32_t)fopen(file, mode));
+    const char* mode = (const char*)stack_pop(vm);
+    const char* file = (const char*)stack_pop(vm);
+    stack_push(vm, (int64_t)fopen(file, mode));
 }
 
 void nativeFclose(struct vm_instance* vm) {
-    fclose((FILE*)(uint32_t)stack_pop(vm));
+    fclose((FILE*)stack_pop(vm));
     stack_push(vm, 0);
 }
 
 void nativeFseek(struct vm_instance* vm) {
     int64_t whence = stack_pop(vm);
     int64_t offset = stack_pop(vm);
-    FILE* f = (FILE*)(uint32_t)stack_pop(vm);
+    FILE* f = (FILE*)stack_pop(vm);
 
     fseek(f, offset, whence);
     stack_push(vm, 0);
 }
 
 void nativeFread(struct vm_instance* vm) {
-    FILE* f = (FILE*)(uint32_t)stack_pop(vm);
+    FILE* f = (FILE*)stack_pop(vm);
     int64_t n = stack_pop(vm);
     int64_t size = stack_pop(vm);
-    char* buffer = (char*)(uint32_t)stack_pop(vm);
+    char* buffer = (char*)stack_pop(vm);
 
     stack_push(vm, fread(buffer, size, n, f));
 }
@@ -81,13 +81,13 @@ void nativeFwrite(struct vm_instance* vm) {
     FILE* f = (FILE*)stack_pop(vm);
     int64_t n = stack_pop(vm);
     int64_t size = stack_pop(vm);
-    char* buffer = (char*)(uint32_t)stack_pop(vm);
+    char* buffer = (char*)stack_pop(vm);
 
     stack_push(vm, fwrite(buffer, size, n, f));
 }
 
 void nativeFtell(struct vm_instance* vm) {
-    FILE* f = (FILE*)(uint32_t)stack_pop(vm);
+    FILE* f = (FILE*)stack_pop(vm);
     stack_push(vm, ftell(f));
 }
 
@@ -163,25 +163,17 @@ bool getVariableArray(uint64_t idx, uint8_t* local, uint8_t* global) {
     }
 }
 
-void invoke(struct vm_instance* vm, uint64_t location) {
-    uint64_t counter = location;
+void step(struct vm_instance* vm) {
+    uint8_t instruction = read_u8(vm->code, vm->counter++);
 
-    int64_t variables[256] = { 0 };
-    uint8_t variable_types[256] = { 0 };
-
-    bool noreturn = false;
-
-    while (true) {
-        uint8_t instruction = read_u8(vm->code, counter++);
-
-        switch (instruction) {
+    switch (instruction) {
         case GLOBAL_RESERVE:
         case VARIABLE:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
-            uint8_t datatype = read_u8(vm->code, counter++);
-            uint8_t array = read_u8(vm->code, counter++);
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
+            uint8_t datatype = read_u8(vm->code, vm->counter++);
+            uint8_t array = read_u8(vm->code, vm->counter++);
             if (!array) {
                 datatype |= (1 << 7);
             }
@@ -193,129 +185,132 @@ void invoke(struct vm_instance* vm, uint64_t location) {
                 vm->global_variable_types[idx] = datatype;
             }
             else {
-                variables[idx] = 0;
-                variable_types[idx] = datatype;
+                vm->call_stack[vm->call_depth].variables[idx] = 0;
+                vm->call_stack[vm->call_depth].variable_types[idx] = datatype;
             }
         }
         break;
 
         case ASSIGN:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
-            *selectVariable(idx, variables, vm->global_variables) = stack_pop(vm);
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
+            *selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables) = stack_pop(vm);
         }
         break;
         case ASSIGN_INDEXED:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
             int64_t b = stack_pop(vm);
             int64_t a = stack_pop(vm);
-            int sz = datatypeToSize(getVariableType(idx, variable_types, vm->global_variable_types));
+            int sz = datatypeToSize(getVariableType(idx, vm->call_stack[vm->call_depth].variable_types, vm->global_variable_types));
             switch (sz) {
                 case 1:
-                    write_i8(*selectVariable(idx, variables, vm->global_variables), a, b);
+                    write_i8(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), a, b);
                     break;
                 case 2:
-                    write_i16(*selectVariable(idx, variables, vm->global_variables), a * 2, b);
+                    write_i16(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), a * 2, b);
                     break;
                 case 4:
-                    write_i32(*selectVariable(idx, variables, vm->global_variables), a * 4, b);
+                    write_i32(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), a * 4, b);
                     break;
                 case 8:
-                    write_i64(*selectVariable(idx, variables, vm->global_variables), a * 8, b);
+                    write_i64(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), a * 8, b);
                     break;
             }
         }
         break;
         case LOAD:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
-            stack_push(vm, *selectVariable(idx, variables, vm->global_variables));
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
+            stack_push(vm, *selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables));
         }
         break;
         case LOAD_INDEXED:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
-            if (getVariableArray(idx, variable_types, vm->global_variable_types)) {
-                int sz = datatypeToSize(getVariableType(idx, variable_types, vm->global_variable_types));
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
+            if (getVariableArray(idx, vm->call_stack[vm->call_depth].variable_types, vm->global_variable_types)) {
+                int sz = datatypeToSize(getVariableType(idx, vm->call_stack[vm->call_depth].variable_types, vm->global_variable_types));
                 switch (sz) {
                     case 1:
-                        stack_push(vm, (uint8_t) read_i8(*selectVariable(idx, variables, vm->global_variables), stack_pop(vm)));
+                        stack_push(vm, (uint8_t) read_i8(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), stack_pop(vm)));
                         break;
                     case 2:
-                        stack_push(vm, (uint16_t) read_i16(*selectVariable(idx, variables, vm->global_variables), stack_pop(vm) * 2));
+                        stack_push(vm, (uint16_t) read_i16(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), stack_pop(vm) * 2));
                         break;
                     case 4:
-                        stack_push(vm, (uint32_t) read_i32(*selectVariable(idx, variables, vm->global_variables), stack_pop(vm) * 4));
+                        stack_push(vm, (uint32_t) read_i32(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), stack_pop(vm) * 4));
                         break;
                     case 8:
-                        stack_push(vm, read_i64(*selectVariable(idx, variables, vm->global_variables), stack_pop(vm) * 8));
+                        stack_push(vm, read_i64(*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables), stack_pop(vm) * 8));
                         break;
                 }
             }
             else {
-                stack_push(vm, (*selectVariable(idx, variables, vm->global_variables) & (1 << stack_pop(vm))) ? 1 : 0);
+                stack_push(vm, (*selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables) & (1 << stack_pop(vm))) ? 1 : 0);
             }
         }
         break;
 
         case STRING:
         {
-            uint64_t len = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t len = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
 
-            stack_push(vm, (int64_t)vm->code + counter);
+            stack_push(vm, (int64_t)vm->code + vm->counter);
 
-            counter += len + 1;
+            vm->counter += len + 1;
         }
         break;
         case NUMBER:
         {
-            int64_t num = read_u64(vm->code, counter);
-            counter += 8;
+            int64_t num = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
             stack_push(vm, num);
         }
         break;
 
         case GOTO:
         {
-            counter = read_u64(vm->code, counter);
+            vm->counter = read_u64(vm->code, vm->counter);
         }
         break;
         case GOTO_TRUE:
         case GOTO_FALSE:
         {
-            uint64_t nextCounter = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t nextCounter = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
 
             if (instruction == GOTO_TRUE) {
                 if (stack_pop(vm)) {
-                    counter = nextCounter;
+                    vm->counter = nextCounter;
                 }
             }
             else {
                 if (!stack_pop(vm)) {
-                    counter = nextCounter;
+                    vm->counter = nextCounter;
                 }
             }
         }
         break;
         case INVOKE:
         {
-            uint64_t loc = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t loc = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
 
-            invoke(vm, loc);
+            vm->call_depth++;
+            memset(&vm->call_stack[vm->call_depth], 0, sizeof(struct call_frame));
+            vm->call_stack[vm->call_depth].return_address = vm->counter;
+            vm->counter = loc;
         }
         break;
         case INVOKE_NATIVE:
         {
-            uint64_t nativeID = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t nativeID = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
 
             if (nativeID >= sizeof(nativeFunctions) / sizeof(NativeFunction)) {
                 for (int i = 0; i < num_natives; i++) {
@@ -334,24 +329,31 @@ void invoke(struct vm_instance* vm, uint64_t location) {
         break;
         case RETURN:
         {
-            if (noreturn) {
-                invoke(vm, read_u64(vm->code, 16));
+            if (vm->call_stack[vm->call_depth].noreturn) {
+                vm->call_depth++;
+                vm->call_stack[vm->call_depth].return_address = vm->counter;
+                vm->counter = read_u64(vm->code, 16);
+            } else if (vm->call_depth > 0) {
+                uint64_t loc = vm->call_stack[vm->call_depth].return_address;
+                vm->call_depth--;
+                vm->counter = loc;
+            } else {
+                vm->running = false;
             }
-            return;
         }
         break;
 
         case INCREASE:
         case DECREASE:
         {
-            uint64_t idx = read_u64(vm->code, counter);
-            counter += 8;
+            uint64_t idx = read_u64(vm->code, vm->counter);
+            vm->counter += 8;
 
             if (instruction == INCREASE) {
-                *selectVariable(idx, variables, vm->global_variables) += 1;
+                *selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables) += 1;
             }
             else {
-                *selectVariable(idx, variables, vm->global_variables) -= 1;
+                *selectVariable(idx, vm->call_stack[vm->call_depth].variables, vm->global_variables) -= 1;
             }
         }
         break;
@@ -446,7 +448,7 @@ void invoke(struct vm_instance* vm, uint64_t location) {
 
         case NORETURN:
         {
-            noreturn = true;
+            vm->call_stack[vm->call_depth].noreturn = true;
         }
         break;
 
@@ -466,18 +468,21 @@ void invoke(struct vm_instance* vm, uint64_t location) {
         default:
             printf("Invalid instruction %d\n", instruction);
             abort();
-        }
+    }
+}
+
+void invoke(struct vm_instance* vm, uint64_t location) {
+    memset(&vm->call_stack[vm->call_depth], 0, sizeof(struct call_frame));
+    vm->counter = location;
+    vm->running = true;
+
+    while (vm->running) {
+        step(vm);
     }
 }
 
 #define STACK 256
 struct vm_instance* vm_load(const char* file) {
-    struct vm_instance* vm = malloc(sizeof(struct vm_instance));
-    memset(vm, 0, sizeof(struct vm_instance));
-
-    vm->stack = malloc(sizeof(int64_t) * STACK);
-    vm->max_stack = STACK;
-    
     FILE* codeFile = fopen(file, "rb");
     assert(codeFile);
 
@@ -485,11 +490,24 @@ struct vm_instance* vm_load(const char* file) {
     int codeSize = ftell(codeFile);
     fseek(codeFile, 0, SEEK_SET);
 
-    vm->code = malloc(codeSize);
-    fread(vm->code, codeSize, 1, codeFile);
+    void* code = malloc(codeSize);
+    fread(code, codeSize, 1, codeFile);
     fclose(codeFile);
 
-    invoke(vm, read_i64(vm->code, 8)); // globals
+    return vm_create(code, codeSize);
+}
+
+struct vm_instance* vm_create(void* code, int64_t code_size) {
+    struct vm_instance* vm = malloc(sizeof(struct vm_instance));
+    memset(vm, 0, sizeof(struct vm_instance));
+
+    vm->stack = malloc(sizeof(int64_t) * STACK);
+    vm->max_stack = STACK;
+
+    vm->code = code;
+    vm->code_size = code_size;
+
+    vm->globals = read_i64(vm->code, 8);
     vm->spark = read_i64(vm->code, 0);
 
     return vm;

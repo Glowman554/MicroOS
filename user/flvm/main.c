@@ -47,6 +47,9 @@ int main(int argc, char* argv[]) {
     
     vm_native_register(70894354, native_extension);
 
+    invoke(vm, vm->globals);
+    stack_pop(vm);
+
     stack_push(vm, argc - 1);
     stack_push(vm, (int64_t)(uint32_t)&argv[1]);
     invoke(vm, vm->spark);
