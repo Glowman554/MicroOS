@@ -16,7 +16,6 @@ clean_dir phoenixv2_tools
 clean_dir nyanmbr
 clean_dir doom
 clean_dir saf
-clean_dir nextfs
 clean_dir doom_desktop
 clean_dir flc
 clean_dir jvm
