@@ -9,7 +9,6 @@
 	],
 	"mappings": {
 		"src/flc/flc": "bin/flc",
-		"src/flvmd/flvmd": "bin/flvmd",
 		"fllaunch.msh": "scripts/fllaunch.msh",
 		"hello.fl": "flc/hello.fl",
 
