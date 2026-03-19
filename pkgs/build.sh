@@ -31,7 +31,6 @@ mkdir -p pkgs
 	build_dir nyanmbr &
 	build_dir doom &
 	build_dir saf &
-	build_dir nextfs &
 	build_dir doom_desktop &
 	build_dir flc &
 	build_dir jvm &
