@@ -4,10 +4,12 @@
 		"scripts",
 		"flc/stdlib",
 		"flc/stdlib/impl",
-		"flc/stdlib/libc"
+		"flc/stdlib/libc",
+		"flc/stdlib/data"
 	],
 	"mappings": {
 		"src/flc/flc": "bin/flc",
+		"src/flvmd/flvmd": "bin/flvmd",
 		"fllaunch.msh": "scripts/fllaunch.msh",
 		"hello.fl": "flc/hello.fl",
 
@@ -21,7 +23,8 @@
 		"src/libraries/stdlib/impl/memory.fl": "flc/stdlib/impl/memory.fl",
 		"src/libraries/stdlib/impl/offset.fl": "flc/stdlib/impl/offset.fl",
 		"src/libraries/stdlib/impl/old.fl": "flc/stdlib/impl/old.fl",
-		"src/libraries/stdlib/impl/string.fl": "flc/stdlib/impl/string.fl"
+		"src/libraries/stdlib/impl/string.fl": "flc/stdlib/impl/string.fl",
+        "src/libraries/stdlib/data/array.fl": "flc/stdlib/data/array.fl"
 	},
 	"name": "FireStorm compiler",
 	"license": "src/LICENSE"
