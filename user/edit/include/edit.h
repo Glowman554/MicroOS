@@ -8,7 +8,8 @@ typedef struct edit_state {
 	char* input_buffer;
 	bool is_edited;
 	bool is_in_insert_mode;
-
+	bool show_tab_char;
+	
 	unsigned int ln_cnt;
 	unsigned int char_cnt;
 

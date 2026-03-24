@@ -54,6 +54,12 @@ int main(int argc, char* argv[], char* envp[]) {
 
 		idx++;
 	}
+	
+	if (file_name == NULL) {
+		printf("Error: No file name provided\n");
+		print_usage(argv[0]);
+		return 1;
+	}
 
 
 	if (!getenv("NOSYX")) {
@@ -72,6 +78,7 @@ int main(int argc, char* argv[], char* envp[]) {
 	state.is_edited = false;
 	state.is_in_insert_mode = true;
 	state.read_only = read_only;
+	state.show_tab_char = false;
 
 	state.file = fopen(file_name, "r");
 	if (state.file == NULL) {

@@ -129,6 +129,10 @@ bool listen_input(edit_state_t* state) {
 					move_down(state);
 					break;
 
+				case 't':
+					state->show_tab_char = !state->show_tab_char;
+					break;
+
 				case '+':
 					state->file = freopen(state->file_name, "w", state->file);
 					fseek(state->file, 0, SEEK_SET);
