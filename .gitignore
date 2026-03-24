@@ -28,3 +28,6 @@ microos.jpg
 initrd/*.wav
 
 kvm
+
+.cross
+.cross-build
