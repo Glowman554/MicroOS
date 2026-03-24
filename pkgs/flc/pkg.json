@@ -23,7 +23,8 @@
 		"src/libraries/stdlib/impl/offset.fl": "flc/stdlib/impl/offset.fl",
 		"src/libraries/stdlib/impl/old.fl": "flc/stdlib/impl/old.fl",
 		"src/libraries/stdlib/impl/string.fl": "flc/stdlib/impl/string.fl",
-        "src/libraries/stdlib/data/array.fl": "flc/stdlib/data/array.fl"
+        "src/libraries/stdlib/data/array.fl": "flc/stdlib/data/array.fl",
+        "src/libraries/stdlib/data/string.fl": "flc/stdlib/data/string.fl"
 	},
 	"name": "FireStorm compiler",
 	"license": "src/LICENSE"
