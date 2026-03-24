@@ -120,7 +120,7 @@ int main() {
 
 def gen_data(file):
 	# replace every caracter witch is not a-z, A-Z, 0-9, _, - with _
-	name = file.split("/")[-1]
+	name = file.replace("/", "_")
 	normalized_name = "_"
 	for c in name:
 		if not (c.isalpha() or c.isdigit() or c == "_"):
