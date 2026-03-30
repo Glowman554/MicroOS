@@ -1,3 +1,4 @@
+include ../config.mk
 
 LIBS = libc libtinf libflvm libjson libload libsyntax
 PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
@@ -5,6 +6,10 @@ PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
 		   fasm figl du linux tasks stream free install lminst touch dhcp ip \
 		   pciinfo flvm scheduler if httpget jsonprint createmex lolcat load \
 		   tree mcc highlight
+
+ifeq ($(GUI),1)
+	PROGRAMS += desktop
+endif
 
 all:
 	make build_libraries

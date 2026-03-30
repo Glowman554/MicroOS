@@ -3,9 +3,6 @@ include config.mk
 all: res
 	make -C mckrnl
 	make -C user
-ifeq ($(GUI),1)
-	make -C gui
-endif
 
 NETDEV = e1000
 
@@ -32,14 +29,7 @@ initrd.saf:
 	mkdir -p ./res/initrd/lib
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
 	cp -r ./user/lib/*.o ./res/initrd/lib/ -v
-ifeq ($(GUI),1)
-	cp -r ./gui/bin/*.mex ./res/initrd/bin/ -v
-	cp -r ./gui/lib/*.o ./res/initrd/lib/ -v
-	mkdir -p ./res/initrd/opt/gui/bin
-ifeq ($(FIRESTORM),1)
-# 	cp -r ./gui/bin/*.flbb ./res/initrd/opt/gui/bin/ -v
-endif
-endif
+
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
 	mkdir -p ./res/initrd/docs
@@ -106,9 +96,6 @@ debug:
 clean:
 	make -C mckrnl clean
 	make -C user clean
-ifeq ($(GUI),1)
-	make -C gui clean
-endif
 
 deepclean:
 	rm -rfv res
@@ -125,8 +112,7 @@ libs.zip: all
 	cp user/libsyntax/include/* res/libs/include/. -rf
 
 ifeq ($(GUI),1)
-	cp gui/lib/* res/libs/. -rf
-	cp gui/desktop/include/* res/libs/include/. -rf
+	cp user/desktop/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/
@@ -134,9 +120,6 @@ endif
 compile_flags.txt:
 	make -C mckrnl compile_flags.txt 
 	make -C user compile_flags.txt
-ifeq ($(GUI),1)
-	make -C gui compile_flags.txt
-endif
 
 pre_commit:
 	deno run -A config/write_syscalls_md.ts
