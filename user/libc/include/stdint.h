@@ -12,5 +12,6 @@ typedef signed short int16_t;
 typedef signed char int8_t;
 
 typedef uint32_t uintptr_t;
+typedef int32_t  intptr_t;
 
 #endif

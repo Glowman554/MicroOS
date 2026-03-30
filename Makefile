@@ -1,10 +1,10 @@
 include config.mk
 
 all: res
-	make -C mckrnl -j $(nproc)
-	make -C user -j $(nproc)
+	make -C mckrnl
+	make -C user
 ifeq ($(GUI),1)
-	make -C gui -j $(nproc)
+	make -C gui
 endif
 
 NETDEV = e1000

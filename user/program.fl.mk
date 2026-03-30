@@ -2,7 +2,7 @@ include ../../config.mk
 
 SRCS = $(shell find -name '*.fl')
 
-FLFLAGS = --target=bytecode --include=../libwindow/bindings/
+FLFLAGS = --target=bytecode
 
 prog: $(PROGRAM)
 

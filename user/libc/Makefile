@@ -1,3 +1,5 @@
-LIBRARY = libc.o 
+LIBRARY = libc.o
 
 include ../library.mk
+
+CFLAGS += -nostdinc

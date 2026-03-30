@@ -8,11 +8,11 @@ MODULES = network/am79C973 network/e1000 network/ne2k network/rtl8139 network/vl
 all: _core $(addsuffix _module,$(MODULES))
 
 _core:
-	make -C $(CORE) -j $(nproc)
+	make -C $(CORE)
 
 %_module:
 	mkdir -p modules
-	make -C $(patsubst %_module,%,$@) -j $(nproc)
+	make -C $(patsubst %_module,%,$@)
 
 
 clean:

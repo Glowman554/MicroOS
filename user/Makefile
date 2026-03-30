@@ -7,19 +7,24 @@ PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
 		   tree mcc highlight
 
 all:
-	make build_libraries -j $(nproc)
-	make build_programs -j $(nproc)
+	make build_libraries
+	make build_programs
 
 build_libraries: $(addsuffix _library,$(LIBS))
+deploy_libraries: $(addsuffix _library_deploy,$(LIBS))
 build_programs: $(addsuffix _prog,$(PROGRAMS))
 
 %_library:
 	mkdir -p lib
-	make -C $* library -j $(nproc)
+	make -C $* library
+
+%_library_deploy:
+	mkdir -p lib
+	make -C $* deploy SYSROOT=../../.cross/i686-microos
 
 %_prog:
 	mkdir -p bin
-	make -C $* prog -j $(nproc)
+	make -C $* prog
 
 
 clean:
