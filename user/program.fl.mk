@@ -8,7 +8,8 @@ prog: $(PROGRAM)
 
 $(PROGRAM): $(SRCS)
 ifeq ($(FIRESTORM),1)
-	fire compile $(FLFLAGS) --output=../bin/$@ --input=main.fl
+	@echo FL $^
+	@fire compile $(FLFLAGS) --output=../bin/$@ --input=main.fl
 endif
 
 clean:

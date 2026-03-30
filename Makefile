@@ -76,6 +76,11 @@ res:
 
 	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
 
+	make -C tools/createmex
+	cp tools/createmex/createmex res/createmex
+	make -C tools/compile-flags
+	cp tools/compile-flags/compile-flags res/compile-flags
+
 format_disk:
 	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
 	mkfs.vfat -F 32 res/foxos.img

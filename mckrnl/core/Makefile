@@ -20,7 +20,7 @@ mckrnl.syms: mckrnl.elf
 
 mckrnl.elf: $(OBJS)
 	@echo LD $^
-	$(LD) $(LDFLAGS) -o $@ $^ -lgcc
+	@$(LD) $(LDFLAGS) -o $@ $^ -lgcc
 
 %.o: %.c
 	@echo CC $^
@@ -34,6 +34,6 @@ clean:
 	rm $(OBJS) compile_flags.txt
 
 compile_flags.txt:
-	deno run -A ../../compile_flags.ts $(CFLAGS) > compile_flags.txt
+	@../../res/compile-flags $(CFLAGS) > compile_flags.txt
 
 .PHONY: clean

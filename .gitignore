@@ -5,6 +5,7 @@
 *.saf
 *.syms
 *.flbb
+*.a
 res
 mckrnl/target
 .fire

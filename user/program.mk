@@ -11,15 +11,19 @@ LDFLAGS = -m32 -ffreestanding -no-pie -nostdlib -L../lib
 
 LOAD_ADDR = 0xB0000000
 
+CC = i686-linux-gnu-gcc
+LD = i686-linux-gnu-gcc
+
 prog: $(PROGRAM)
 
 $(PROGRAM): $(OBJS)
-	i686-linux-gnu-gcc $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ $(EXTRA_OBJS) $(LINK) -lc -lgcc
-	@deno run -A ../../encode_mex_v2.ts glowman554 $(ABI_VERSION) ../bin/$@ ../bin/$(addsuffix .mex,$(basename $@))
+	@echo LD $^
+	@$(LD) $(LDFLAGS) -Ttext=$(LOAD_ADDR) -o ../bin/$@ $^ $(EXTRA_OBJS) $(LINK) -lc -lgcc
+	@../../res/createmex -a glowman554 -b $(ABI_VERSION) ../bin/$@ ../bin/$(addsuffix .mex,$(basename $@))
 
 %.o: %.c
 	@echo CC $^
-	@i686-linux-gnu-gcc $(CFLAGS) -c -o $@ $^
+	@$(CC) $(CFLAGS) -c -o $@ $^
 
 %.o: %.S
 	@echo AS $^
@@ -29,4 +33,4 @@ clean:
 	rm -f $(OBJS) $(PROGRAM) compile_flags.txt
 
 compile_flags.txt:
-	deno run -A ../../compile_flags.ts $(CFLAGS) > compile_flags.txt
+	@../../res/compile-flags $(CFLAGS) > compile_flags.txt
