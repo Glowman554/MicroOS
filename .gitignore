@@ -31,4 +31,5 @@ initrd/*.wav
 kvm
 
 .cross
-.cross-build
+.cross-newlib
+.build

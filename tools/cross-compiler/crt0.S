@@ -1,0 +1,1 @@
+// Stub, crt0 functionality is included with libc

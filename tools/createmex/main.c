@@ -91,12 +91,12 @@ int main(int argc, char* argv[]) {
     }
 
     if (!elfFilePath) {
-        fprintf(stderr, "Error: ELF input file must be specified with -i\n");
+        fprintf(stderr, "Error: ELF input file must be specified\n");
         usage(argv[0]);
     }
 
     if (!outputFile) {
-        fprintf(stderr, "Error: Output file must be specified with -o\n");
+        fprintf(stderr, "Error: Output file must be specified\n");
         usage(argv[0]);
     }
 

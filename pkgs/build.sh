@@ -25,19 +25,18 @@ fi
 mkdir -p pkgs
 
 (
-	build_dir brainasm &
-	build_dir phoenix_tools &
-	build_dir phoenixv2_tools &
-	build_dir nyanmbr &
-	build_dir doom &
-	build_dir saf &
-	build_dir doom_desktop &
-	build_dir flc &
-	build_dir jvm &
-	build_dir lua &
-	build_dir mujs &
-	build_dir nasm &
-	wait
+	build_dir brainasm
+	build_dir phoenix_tools
+	build_dir phoenixv2_tools
+	build_dir nyanmbr
+	build_dir doom
+	build_dir saf
+	build_dir doom_desktop
+	build_dir flc
+	build_dir jvm
+	build_dir lua
+	build_dir mujs
+	build_dir nasm
 )
 
 (
