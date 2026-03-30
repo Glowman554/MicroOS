@@ -1,0 +1,46 @@
+name: Release cross-compilation toolchain
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential bison flex libgmp-dev libmpc-dev libmpfr-dev \
+            texinfo wget curl git xorriso autoconf automake \
+            libtool pkg-config gcc-i686-linux-gnu
+
+      - name: Build toolchain
+        run: |
+          cd tools/cross-compiler
+          bash build.sh
+
+      - name: Deploy libraries
+        run: |
+          make -C user deploy_libraries
+
+      - name: Package toolchain
+        run: tar -czf toolchain.tar.gz .cross
+
+      - name: Upload toolchain to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: toolchain-latest
+          name: Toolchain
+          body: Pre-built i686-microos cross-compilation toolchain
+          files: toolchain.tar.gz
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
