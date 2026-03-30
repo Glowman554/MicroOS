@@ -1,5 +1,6 @@
 TARGET=i686-linux-gnu
-PREFIX=$(pwd)/.cross
+PREFIX=$(pwd)/../cross-i686-linux-gnu
+PREFIX=$(realpath "$PREFIX")
 
 BINUTILS_VERSION=2.42
 GCC_VERSION=13.2.0
