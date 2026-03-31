@@ -1,3 +1,3 @@
-make format_disk_gpt
+rm -rf res
 make run
-qemu-system-i386 -hda res/foxos.img -serial stdio
+qemu-system-i386 -hda res/hda.img -serial stdio

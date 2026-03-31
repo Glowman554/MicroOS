@@ -6,7 +6,7 @@ all: res
 
 NETDEV = e1000
 
-QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -hda res/foxos.img
+QEMU_FLAGS = -m 2G -cdrom cdrom.iso -boot d -hda res/hda.img
 QEMU_FLAGS += -netdev user,id=u1 -device $(NETDEV),netdev=u1 -object filter-dump,id=f1,netdev=u1,file=dump.pcap
 # QEMU_FLAGS += -soundhw pcspk
 ifeq ($(AUDIO),1)
@@ -64,7 +64,7 @@ res:
 	git clone https://github.com/chocabloc/saf.git --depth=1 ./res/saf
 	make -C res/saf
 
-	wget https://github.com/TheUltimateFoxOS/FoxOS/releases/download/latest/foxos.img -O res/foxos.img
+	wget https://filething.toxicfox.de/files/a8b030e0-d43e-4826-889a-a3989b644e50.img -O res/hda.img
 
 	make -C tools/createmex
 	cp tools/createmex/createmex res/createmex
@@ -72,13 +72,13 @@ res:
 	cp tools/compile-flags/compile-flags res/compile-flags
 
 format_disk:
-	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
+	dd if=/dev/zero of=res/hda.img bs=512 count=93750 status=progress
 	mkfs.vfat -F 32 res/foxos.img
 
 format_disk_gpt:
-	dd if=/dev/zero of=res/foxos.img bs=512 count=93750 status=progress
-	echo 'echo "o\ny\nn\n1\n\n\n0700\nw\ny\n" | gdisk res/foxos.img' | sh
-	sudo losetup /dev/loop100 res/foxos.img -P
+	dd if=/dev/zero of=res/hda.img bs=512 count=93750 status=progress
+	echo 'echo "o\ny\nn\n1\n\n\n0700\nw\ny\n" | gdisk res/hda.img' | sh
+	sudo losetup /dev/loop100 res/hda.img -P
 	sudo mkfs.vfat -F 32 /dev/loop100p1
 	sudo losetup -d /dev/loop100
 
