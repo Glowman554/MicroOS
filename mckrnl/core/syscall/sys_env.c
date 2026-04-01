@@ -65,7 +65,7 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 
 		case SYS_ENV_PIN:
 			{
-				get_self()->pin = regs->ecx;
+				// get_self()->pin = regs->ecx;
 			}
 			break;
 
@@ -77,7 +77,7 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
 
 		case SYS_ENV_TASK_SET_WAIT_TIME:
             {
-                get_self()->wait_time = regs->ecx;
+                // get_self()->wait_time = regs->ecx;
             }
             break;
 

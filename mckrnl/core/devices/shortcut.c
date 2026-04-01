@@ -1,9 +1,15 @@
 #include <devices/shortcut.h>
 #include <memory/heap.h>
 #include <scheduler/scheduler.h>
+#include <scheduler/message.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+
+typedef struct {
+    char key;
+    char command[MAX_CMD];
+} shortcut_launch_t;
 
 shortcut_t* shortcuts = NULL;
 int shortcut_count = 0;
@@ -42,25 +48,12 @@ char* shortcut_file_name(devfs_file_t* file) {
 bool execute_shortcut(char key) {
     for (int i = 0; i < shortcut_count; i++) {
         if (shortcuts[i].key == key) {
-            char* argv[] = {
-                shortcuts[i].launcher,
-                shortcuts[i].command,
-                NULL
-            };
-
-            char* envp[] = {
-                "SHORTCUT=yes",
-                NULL
-            };
-
-            // TODO: select proper terminal
-            int pid = load_executable(1, shortcuts[i].launcher, argv, envp);
-            if (pid == -1) {
-                debugf(ERROR, "Failed to execute shortcut '%c': Failed to load executable '%s'", shortcuts[i].key, shortcuts[i].launcher);
-                return false;
-            }
-            task_t* task = get_task_by_pid(pid);
-            strcpy(task->pwd, shortcuts[i].pwd);
+            debugf(SPAM, "Executing shortcut '%c' -> '%s'", shortcuts[i].key, shortcuts[i].command);
+            
+            shortcut_launch_t launch = { 0 };
+            launch.key = shortcuts[i].key;
+            strcpy(launch.command, shortcuts[i].command);
+            message_send(TOPIC_SHORTCUT_LAUNCH, &launch, sizeof(launch));
 
             return true;
         }

@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define TOPIC_SHORTCUT_LAUNCH 3
+
 typedef struct message_entry {
 	void* data;
 	uint32_t size;

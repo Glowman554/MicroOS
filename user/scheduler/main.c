@@ -318,7 +318,7 @@ int main(int argc, char* argv[], char* envp[]) {
                     j->last_run = now;
                 } else {
                 #ifdef DEBUG_SCHEDULER
-                    printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * MINUTE - (now - j->last_run));
+                    // printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * MINUTE - (now - j->last_run));
                 #endif
                 }
                 break;
@@ -329,7 +329,7 @@ int main(int argc, char* argv[], char* envp[]) {
                     j->last_run = now;
                 } else {
                 #ifdef DEBUG_SCHEDULER
-                    printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * HOUR - (now - j->last_run));
+                    // printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * HOUR - (now - j->last_run));
                 #endif
                 }
                 break;
