@@ -44,9 +44,7 @@ int job_count = 0;
 #define MAX_PWD 64
 typedef struct {
     char key;
-    char launcher[MAX_CMD];
     char command[MAX_CMD];
-    char pwd[MAX_PWD];
 } shortcut_t;
 
 
@@ -267,22 +265,6 @@ int main(int argc, char* argv[], char* envp[]) {
         if (fd < 0) {
             printf("scheduler: Failed to open shortcut interface\n");
         } else {
-            char* terminal = search_executable("terminal");
-            if (!terminal) {
-                printf("scheduler: Failed to find terminal executable for shortcuts\n");
-                abort();
-            }
-
-            char* root_fs = getenv("ROOT_FS");
-            assert(root_fs);
-
-            for (int i = 0; i < array_length(shortcuts); i++) {
-                strcpy(shortcuts[i].launcher, terminal);
-                strcpy(shortcuts[i].pwd, root_fs);
-            }
-
-            free(terminal);
-
             size_t size = array_length(shortcuts) * sizeof(shortcut_t);
             write(fd, shortcuts, size, 0);
             close(fd);

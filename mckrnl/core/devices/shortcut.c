@@ -27,7 +27,6 @@ void shortcut_file_write(struct devfs_file* dfile, file_t* file, void* buf, size
 
     for (int i = 0; i < shortcut_count; i++) {
         debugf(SPAM, "shortcut: Registered shortcut '%c' -> '%s'", shortcuts[i].key, shortcuts[i].command);
-        debugf(SPAM, "          Launcher for '%c' is '%s'", shortcuts[i].key, shortcuts[i].launcher);
     }
 
 }
