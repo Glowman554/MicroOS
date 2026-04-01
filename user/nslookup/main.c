@@ -2,17 +2,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <non-standard/net/dns.h>
+#include <dns.h>
 #include <non-standard/net/ipv4.h>
 
 int main(int argc, char* argv[], char* envp[]) {
 	char* domain = NULL;
+	int nic_id = 0;
 
 	int idx = 1;
 	while (idx < argc) {
-		if (strcmp(argv[idx], "-h") == 0) {
-			printf("Usage: %s <domain>\n", argv[0]);
+		if (strcmp(argv[idx], "-i") == 0) {
+			if (idx + 1 < argc) {
+				nic_id = atoi(argv[idx + 1]);
+				idx++;
+			} else {
+				printf("Error: -i requires an argument\n");
+				abort();
+			}
+		} else if (strcmp(argv[idx], "-s") == 0) {
+			if (idx + 1 < argc) {
+				dns_server = parse_ip(argv[idx + 1]);
+				idx++;
+			} else {
+				printf("Error: -s requires an argument\n");
+				abort();
+			}
+		} else if (strcmp(argv[idx], "-h") == 0) {
+			printf("Usage: %s [-i <nic_id>] [-s <dns_server>] [-v] <domain>\n", argv[0]);
 			exit(0);
+		} else if (strcmp(argv[idx], "-v") == 0) {
+			dns_debug = true;
 		} else {
 			if (domain == NULL) {
 				domain = argv[idx];
@@ -30,7 +49,7 @@ int main(int argc, char* argv[], char* envp[]) {
 		abort();
 	}
 
-	ip_u ip = dns_resolve_A(0, domain);
+	ip_u ip = dns_resolve_A(nic_id, domain);
 	if (ip.ip == 0) {
 		printf("Error: Could not resolve %s\n", domain);
 		abort();

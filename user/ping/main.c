@@ -53,7 +53,7 @@ int main(int argc, char* argv[], char* envp[]) {
 
 	ip_u ip = parse_ip(domain_or_ip);
 	if (ip.ip == 0) {
-		ip = dns_resolve_A(nic_id, domain_or_ip);
+		ip = resolved_A(domain_or_ip);
 		if (ip.ip == 0) {
 			printf("Error: Could not resolve %s\n", domain_or_ip);
 			abort();

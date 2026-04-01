@@ -212,7 +212,7 @@ void http_buffer_append_int(char** buf, int* cap, int* len, int v) {
 int http_request_perform(int nic, http_request_t* request) {
     ip_u ip = parse_ip(request->domain);
 	if (ip.ip == 0) {
-		ip = dns_resolve_A(nic, request->domain);
+		ip = resolved_A(request->domain);
 		if (ip.ip == 0) {
 			printf("Error: Could not resolve %s\n", request->domain);
 			abort();

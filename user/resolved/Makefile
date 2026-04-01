@@ -1,4 +1,4 @@
-PROGRAM = nslookup.elf
+PROGRAM = resolved.elf
 
 include ../program.mk
 
