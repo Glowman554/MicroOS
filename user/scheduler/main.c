@@ -15,12 +15,15 @@
 #define MINUTE 60
 #define HOUR   3600
 
+#define MAX_RETRIES 10
+
 #define DEBUG_SCHEDULER
 
 typedef enum {
     JOB_EVERY_MINUTES,
     JOB_EVERY_HOURS,
-    JOB_REBOOT
+    JOB_REBOOT,
+    JOB_SERVICE
 } job_type_t;
 
 typedef struct {
@@ -30,6 +33,8 @@ typedef struct {
     char command[CMD_LEN];
     long last_run;
     int last_run_day;
+    int pid;
+    int retry;
 } job_t;
 
 job_t jobs[MAX_JOBS];
@@ -43,6 +48,45 @@ typedef struct {
     char command[MAX_CMD];
     char pwd[MAX_PWD];
 } shortcut_t;
+
+
+
+char** argv_split(char* str) {
+    int len = strlen(str);
+    int argc = 1;
+    bool in_quote = false;
+    bool in_dquote = false;
+
+    for (int i = 0; i < len; i++) {
+        if (str[i] == ' ' && !in_quote && !in_dquote) {
+            argc++;
+        } else if (str[i] == '\"' && !in_dquote) {
+            in_quote = !in_quote;
+        } else if (str[i] == '\'' && !in_quote) {
+            in_dquote = !in_dquote;
+        }
+    }
+
+    char** argv = malloc(sizeof(char*) * (argc + 1));
+    argc = 1;
+    argv[0] = &str[0];
+    in_quote = false;
+    in_dquote = false;
+
+    for (int i = 0; i < len; i++) {
+        if (str[i] == ' ' && !in_quote && !in_dquote) {
+            str[i] = 0;
+            argv[argc++] = &str[i + 1];
+        } else if (str[i] == '\"' && !in_dquote) {
+            in_quote = !in_quote;
+        } else if (str[i] == '\'' && !in_quote) {
+            in_dquote = !in_dquote;
+        }
+    }
+    argv[argc] = NULL;
+    return argv;
+}
+
 
 char* skip_ws(char* p) {
     while (*p == ' ' || *p == '\t') {
@@ -80,8 +124,26 @@ void read_rest(char* p, char* out, size_t max) {
 }
 
 
-void run_command(const char* cmd) {
-    system((char*) cmd);
+int run_command(const char* cmd, char** envp) {
+    char* dup = strdup(cmd);
+    char** argv = argv_split(dup);
+    char* path = search_executable(argv[0]);
+    if (!path) {
+        free(argv);
+        free(dup);
+        return -1;
+    }
+
+    int pid = spawn(path, (const char**) argv, (const char**) envp);
+    free(path);
+    free(argv);
+    free(dup);
+
+    if (pid < 0) {
+        printf("scheduler: Failed to spawn command: %s\n", cmd);
+    }
+
+    return pid;
 }
 
 shortcut_t* parse_config(const char* file) {
@@ -137,6 +199,13 @@ shortcut_t* parse_config(const char* file) {
         #ifdef DEBUG_SCHEDULER
             printf("scheduler: Added reboot job: %s\n", j->command);
         #endif
+        } else if (!strncmp(line, "@service", 8)) {
+            j->type = JOB_SERVICE;
+            read_rest(line + 8, j->command, CMD_LEN);
+
+        #ifdef DEBUG_SCHEDULER
+            printf("scheduler: Added service job: %s\n", j->command);
+        #endif
         } else if (!strncmp(line, "every", 5)) {
             char unit[16] = { 0 };
 
@@ -190,7 +259,7 @@ shortcut_t* parse_config(const char* file) {
     return shortcuts;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[], char* envp[]) {
     shortcut_t* shortcuts = parse_config("scheduler.conf");
 
     if (array_length(shortcuts) > 0) {
@@ -227,7 +296,10 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < job_count; i++) {
         if (jobs[i].type == JOB_REBOOT) {
-            run_command(jobs[i].command);
+            jobs[i].pid = run_command(jobs[i].command, envp);
+            jobs[i].last_run = time(NULL);
+        } else if (jobs[i].type == JOB_SERVICE) {
+            jobs[i].pid = run_command(jobs[i].command, envp);
             jobs[i].last_run = time(NULL);
         }
     }
@@ -242,7 +314,7 @@ int main(int argc, char* argv[]) {
 
             case JOB_EVERY_MINUTES:
                 if (now - j->last_run >= j->value * MINUTE) {
-                    run_command(j->command);
+                    j->pid = run_command(j->command, envp);
                     j->last_run = now;
                 } else {
                 #ifdef DEBUG_SCHEDULER
@@ -253,12 +325,28 @@ int main(int argc, char* argv[]) {
 
             case JOB_EVERY_HOURS:
                 if (now - j->last_run >= j->value * HOUR) {
-                    run_command(j->command);
+                    j->pid = run_command(j->command, envp);
                     j->last_run = now;
                 } else {
                 #ifdef DEBUG_SCHEDULER
                     printf("scheduler: Remaining time until execution '%s': %d seconds\n", j->command, j->value * HOUR - (now - j->last_run));
                 #endif
+                }
+                break;
+
+            case JOB_SERVICE:
+                if (j->pid == -1 || !get_proc_info(j->pid)) {
+                    int exit_code = get_exit_code(j->pid);
+                    printf("scheduler: Service '%s' exited with code %d\n", j->command, exit_code);
+
+                    if (j->retry < MAX_RETRIES) {
+                        printf("scheduler: Restarting service '%s' (attempt %d)\n", j->command, j->retry + 1);
+                        j->pid = run_command(j->command, envp);
+                        j->last_run = now;
+                        j->retry++;
+                    } else {
+                        printf("scheduler: Service '%s' failed after %d attempts, giving up\n", j->command, MAX_RETRIES);
+                    }
                 }
                 break;
 
