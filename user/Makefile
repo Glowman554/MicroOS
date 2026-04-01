@@ -1,6 +1,6 @@
 include ../config.mk
 
-LIBS = libc libtinf libflvm libjson libload libsyntax
+LIBS = libc libtinf libflvm libjson libload libsyntax libdns
 PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
            ping nslookup play wc cp env file mkdir rm rmdir date background \
 		   fasm figl du linux tasks stream free install lminst touch dhcp ip \
