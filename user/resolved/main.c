@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
             reply.ip = resolved_ip;
             message_send(TOPIC_RESOLVED_REPLY, &reply, sizeof(reply));
         } else {
-            sleep_ms(100);
+            yield();
         }
     }
 }
