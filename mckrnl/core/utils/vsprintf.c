@@ -2,6 +2,7 @@
 
 #include <utils/string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 /* Flags */
 #define FLAG_LEFT   (1 << 0)   /* '-': left-align */
@@ -56,22 +57,40 @@ static int write_num(char* out,
 	char* b = out;
 
 	if (flags & FLAG_LEFT) {
-		memcpy(b, prefix, (unsigned int)pfxlen); b += pfxlen;
-		for (int i = 0; i < prec_zeros; i++) *b++ = '0';
-		memcpy(b, digits, (unsigned int)diglen);  b += diglen;
-		for (int i = 0; i < pad; i++) *b++ = ' ';
+		memcpy(b, prefix, (unsigned int)pfxlen);
+		b += pfxlen;
+		for (int i = 0; i < prec_zeros; i++) {
+			*b++ = '0';
+		}
+		memcpy(b, digits, (unsigned int)diglen);
+		b += diglen;
+		for (int i = 0; i < pad; i++) {
+			*b++ = ' ';
+		}
 	} else if (fill == '0') {
 		/* sign/prefix first, then zero-pad, then digits */
-		memcpy(b, prefix, (unsigned int)pfxlen); b += pfxlen;
-		for (int i = 0; i < pad; i++) *b++ = '0';
-		for (int i = 0; i < prec_zeros; i++) *b++ = '0';
-		memcpy(b, digits, (unsigned int)diglen);  b += diglen;
+		memcpy(b, prefix, (unsigned int)pfxlen);
+		b += pfxlen;
+		for (int i = 0; i < pad; i++) {
+			*b++ = '0';
+		}
+		for (int i = 0; i < prec_zeros; i++) {
+			*b++ = '0';
+		}
+		memcpy(b, digits, (unsigned int)diglen);
+		b += diglen;
 	} else {
 		/* space-pad first, then prefix, then digits */
-		for (int i = 0; i < pad; i++) *b++ = ' ';
-		memcpy(b, prefix, (unsigned int)pfxlen); b += pfxlen;
-		for (int i = 0; i < prec_zeros; i++) *b++ = '0';
-		memcpy(b, digits, (unsigned int)diglen);  b += diglen;
+		for (int i = 0; i < pad; i++) {
+			*b++ = ' ';
+		}
+		memcpy(b, prefix, (unsigned int)pfxlen);
+		b += pfxlen;
+		for (int i = 0; i < prec_zeros; i++) {
+			*b++ = '0';
+		}
+		memcpy(b, digits, (unsigned int)diglen);
+		b += diglen;
 	}
 	return (int)(b - out);
 }
@@ -86,29 +105,48 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
 		}
 		fmt++;
 
-		if (*fmt == '\0') break;
+		if (*fmt == '\0') {
+			break;
+		}
 
 		/* --- flags --- */
 		int flags = 0;
-		for (;;) {
-			if      (*fmt == '-') { flags |= FLAG_LEFT;  fmt++; }
-			else if (*fmt == '+') { flags |= FLAG_PLUS;  fmt++; }
-			else if (*fmt == ' ') { flags |= FLAG_SPACE; fmt++; }
-			else if (*fmt == '0') { flags |= FLAG_ZERO;  fmt++; }
-			else break;
+		while (true) {
+			if (*fmt == '-') {
+				flags |= FLAG_LEFT;
+				fmt++;
+			} else if (*fmt == '+') {
+				flags |= FLAG_PLUS;
+				fmt++;
+			} else if (*fmt == ' ') {
+				flags |= FLAG_SPACE;
+				fmt++;
+			} else if (*fmt == '0') {
+				flags |= FLAG_ZERO;
+				fmt++;
+			} else {
+				break;
+			}
 		}
 		/* '-' overrides '0' */
-		if (flags & FLAG_LEFT) flags &= ~FLAG_ZERO;
+		if (flags & FLAG_LEFT) {
+			flags &= ~FLAG_ZERO;
+		}
 
 		/* --- width --- */
 		int width = 0;
 		if (*fmt == '*') {
 			width = va_arg(args, int);
-			if (width < 0) { flags |= FLAG_LEFT; flags &= ~FLAG_ZERO; width = -width; }
+			if (width < 0) {
+				flags |= FLAG_LEFT;
+				flags &= ~FLAG_ZERO;
+				width = -width;
+			}
 			fmt++;
 		} else {
-			while (*fmt >= '0' && *fmt <= '9')
+			while (*fmt >= '0' && *fmt <= '9') {
 				width = width * 10 + (*fmt++ - '0');
+			}
 		}
 
 		/* --- precision --- */
@@ -118,11 +156,14 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
 			prec = 0;
 			if (*fmt == '*') {
 				prec = va_arg(args, int);
-				if (prec < 0) prec = -1;
+				if (prec < 0) {
+					prec = -1;
+				}
 				fmt++;
 			} else {
-				while (*fmt >= '0' && *fmt <= '9')
+				while (*fmt >= '0' && *fmt <= '9') {
 					prec = prec * 10 + (*fmt++ - '0');
+				}
 			}
 		}
 
@@ -130,18 +171,24 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
 		int len_mod = LEN_INT;
 		if (*fmt == 'h') {
 			fmt++;
-			if (*fmt == 'h') fmt++; /* hh -> treat as int */
+			if (*fmt == 'h') {
+				fmt++; /* hh -> treat as int */
+			}
 		} else if (*fmt == 'l') {
 			len_mod = LEN_LONG;
 			fmt++;
-			if (*fmt == 'l') fmt++; /* ll -> same as l on 32-bit */
+			if (*fmt == 'l') {
+				fmt++; /* ll -> same as l on 32-bit */
+			}
 		} else if (*fmt == 'z') {
 			len_mod = LEN_LONG;
 			fmt++;
 		}
 
 		char spec = *fmt;
-		if (spec == '\0') break;
+		if (spec == '\0') {
+			break;
+		}
 		fmt++;
 
 		/* --- format specifiers --- */
@@ -154,62 +201,89 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
 		case 'c': {
 			char c = (char)va_arg(args, int);
 			int pad = (width > 1) ? width - 1 : 0;
-			if (!(flags & FLAG_LEFT))
-				for (int i = 0; i < pad; i++) *out++ = ' ';
+			if (!(flags & FLAG_LEFT)) {
+				for (int i = 0; i < pad; i++) {
+					*out++ = ' ';
+				}
+			}
 			*out++ = c;
-			if (flags & FLAG_LEFT)
-				for (int i = 0; i < pad; i++) *out++ = ' ';
+			if (flags & FLAG_LEFT) {
+				for (int i = 0; i < pad; i++) {
+					*out++ = ' ';
+				}
+			}
 			break;
 		}
 
 		case 's': {
 			const char* s = va_arg(args, const char*);
-			if (!s) s = "(null)";
+			if (!s) {
+				s = "(null)";
+			}
 			int slen = strlen(s);
-			if (prec >= 0 && prec < slen) slen = prec;
+			if (prec >= 0 && prec < slen) {
+				slen = prec;
+			}
 			int pad = (width > slen) ? width - slen : 0;
-			if (!(flags & FLAG_LEFT))
-				for (int i = 0; i < pad; i++) *out++ = ' ';
-			memcpy(out, s, (unsigned int)slen); out += slen;
-			if (flags & FLAG_LEFT)
-				for (int i = 0; i < pad; i++) *out++ = ' ';
+			if (!(flags & FLAG_LEFT)) {
+				for (int i = 0; i < pad; i++) {
+					*out++ = ' ';
+				}
+			}
+			memcpy(out, s, (unsigned int)slen);
+			out += slen;
+			if (flags & FLAG_LEFT) {
+				for (int i = 0; i < pad; i++) {
+					*out++ = ' ';
+				}
+			}
 			break;
 		}
 
 		case 'd':
 		case 'i': {
 			long val = (len_mod == LEN_LONG) ? va_arg(args, long) : (long)va_arg(args, int);
-			char prefix[2]; int pfxlen = 0;
+			char prefix[2];
+			int pfxlen = 0;
 			unsigned long uval;
 			if (val < 0) {
-				prefix[0] = '-'; pfxlen = 1;
+				prefix[0] = '-';
+				pfxlen = 1;
 				uval = (unsigned long)(-(val + 1)) + 1UL;
 			} else {
-				if      (flags & FLAG_PLUS)  { prefix[0] = '+'; pfxlen = 1; }
-				else if (flags & FLAG_SPACE) { prefix[0] = ' '; pfxlen = 1; }
+				if (flags & FLAG_PLUS) {
+					prefix[0] = '+';
+					pfxlen = 1;
+				} else if (flags & FLAG_SPACE) {
+					prefix[0] = ' ';
+					pfxlen = 1;
+				}
 				uval = (unsigned long)val;
 			}
-			char nbuf[12]; int nlen = num_to_str(uval, 10, 0, nbuf);
+			char nbuf[12];
+			int nlen = num_to_str(uval, 10, 0, nbuf);
 			int prec_zeros = (prec > nlen) ? prec - nlen : 0;
-			char fill = (flags & FLAG_ZERO) && prec < 0 ? '0' : ' ';
+			char fill = ((flags & FLAG_ZERO) && prec < 0) ? '0' : ' ';
 			out += write_num(out, prefix, pfxlen, prec_zeros, nbuf, nlen, width, flags, fill);
 			break;
 		}
 
 		case 'u': {
 			unsigned long val = (len_mod == LEN_LONG) ? va_arg(args, unsigned long) : (unsigned long)va_arg(args, unsigned int);
-			char nbuf[12]; int nlen = num_to_str(val, 10, 0, nbuf);
+			char nbuf[12];
+			int nlen = num_to_str(val, 10, 0, nbuf);
 			int prec_zeros = (prec > nlen) ? prec - nlen : 0;
-			char fill = (flags & FLAG_ZERO) && prec < 0 ? '0' : ' ';
+			char fill = ((flags & FLAG_ZERO) && prec < 0) ? '0' : ' ';
 			out += write_num(out, "", 0, prec_zeros, nbuf, nlen, width, flags, fill);
 			break;
 		}
 
 		case 'o': {
 			unsigned long val = (len_mod == LEN_LONG) ? va_arg(args, unsigned long) : (unsigned long)va_arg(args, unsigned int);
-			char nbuf[12]; int nlen = num_to_str(val, 8, 0, nbuf);
+			char nbuf[12];
+			int nlen = num_to_str(val, 8, 0, nbuf);
 			int prec_zeros = (prec > nlen) ? prec - nlen : 0;
-			char fill = (flags & FLAG_ZERO) && prec < 0 ? '0' : ' ';
+			char fill = ((flags & FLAG_ZERO) && prec < 0) ? '0' : ' ';
 			out += write_num(out, "", 0, prec_zeros, nbuf, nlen, width, flags, fill);
 			break;
 		}
@@ -217,18 +291,20 @@ int vsprintf(char* buf, const char* fmt, va_list args) {
 		case 'x':
 		case 'X': {
 			unsigned long val = (len_mod == LEN_LONG) ? va_arg(args, unsigned long) : (unsigned long)va_arg(args, unsigned int);
-			char nbuf[10]; int nlen = num_to_str(val, 16, spec == 'X', nbuf);
+			char nbuf[10];
+			int nlen = num_to_str(val, 16, spec == 'X', nbuf);
 			int prec_zeros = (prec > nlen) ? prec - nlen : 0;
-			char fill = (flags & FLAG_ZERO) && prec < 0 ? '0' : ' ';
+			char fill = ((flags & FLAG_ZERO) && prec < 0) ? '0' : ' ';
 			out += write_num(out, "", 0, prec_zeros, nbuf, nlen, width, flags, fill);
 			break;
 		}
 
 		case 'p': {
 			unsigned long val = va_arg(args, unsigned long);
-			char nbuf[10]; int nlen = num_to_str(val, 16, 0, nbuf);
+			char nbuf[10];
+			int nlen = num_to_str(val, 16, 0, nbuf);
 			int prec_zeros = (prec > nlen) ? prec - nlen : 0;
-			char fill = (flags & FLAG_ZERO) && prec < 0 ? '0' : ' ';
+			char fill = ((flags & FLAG_ZERO) && prec < 0) ? '0' : ' ';
 			out += write_num(out, "0x", 2, prec_zeros, nbuf, nlen, width, flags, fill);
 			break;
 		}
