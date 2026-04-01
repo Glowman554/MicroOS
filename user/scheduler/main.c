@@ -7,7 +7,7 @@
 #include <non-standard/sys/file.h>
 #include <non-standard/buildin/data/array.h>
 #include <non-standard/buildin/path.h>
-#include <assert.h>
+#include <non-standard/sys/message.h>
 
 #define MAX_JOBS 128
 #define CMD_LEN 256
@@ -16,6 +16,7 @@
 #define HOUR   3600
 
 #define MAX_RETRIES 10
+
 
 #define DEBUG_SCHEDULER
 
@@ -35,6 +36,7 @@ typedef struct {
     int last_run_day;
     int pid;
     int retry;
+    bool stopped;
 } job_t;
 
 job_t jobs[MAX_JOBS];
@@ -142,6 +144,199 @@ int run_command(const char* cmd, char** envp) {
     }
 
     return pid;
+}
+
+static void get_service_name(const char* command, char* name, size_t len) {
+    const char* start = command;
+    const char* end = command;
+    while (*end && *end != ' ') end++;
+
+    const char* slash = start;
+    for (const char* p = start; p < end; p++) {
+        if (*p == '/') slash = p + 1;
+    }
+
+    size_t name_len = (size_t)(end - slash);
+    if (name_len >= len) name_len = len - 1;
+    memcpy(name, slash, name_len);
+    name[name_len] = 0;
+}
+
+void handle_service_list_message() {
+    int dummy;
+    if (message_recv(TOPIC_SERVICE_LIST, &dummy, sizeof(dummy)) > 0) {
+        printf("scheduler: Received service list request\n");
+
+        service_list_reply_t reply;
+        memset(&reply, 0, sizeof(reply));
+
+        for (int i = 0; i < job_count && reply.count < MAX_SERVICES; i++) {
+            if (jobs[i].type != JOB_SERVICE) {
+                continue;
+            }
+
+            service_info_t* info = &reply.services[reply.count];
+            memset(info, 0, sizeof(*info));
+
+            get_service_name(jobs[i].command, info->name, SERVICE_NAME_LEN);
+            strcpy(info->command, jobs[i].command);
+            info->pid = jobs[i].pid;
+            info->retry = jobs[i].retry;
+
+            if (jobs[i].stopped) {
+                info->status = SERVICE_STATUS_STOPPED;
+            } else if (jobs[i].retry >= MAX_RETRIES) {
+                info->status = SERVICE_STATUS_FAILED;
+            } else if (jobs[i].pid > 0 && get_proc_info(jobs[i].pid)) {
+                info->status = SERVICE_STATUS_RUNNING;
+            } else {
+                info->status = SERVICE_STATUS_STOPPED;
+            }
+
+            reply.count++;
+        }
+
+        message_send(TOPIC_SERVICE_LIST_REPLY, &reply, sizeof(reply));
+    }
+}
+
+void handle_service_op_start_message(char** envp) {
+    service_op_request_t req;
+    if (message_recv(TOPIC_SERVICE_START, &req, sizeof(req)) > 0) {
+        printf("scheduler: Received start request for service '%s'\n", req.name);
+
+        service_op_reply_t reply;
+        memset(&reply, 0, sizeof(reply));
+        bool found = false;
+
+        for (int i = 0; i < job_count; i++) {
+            if (jobs[i].type != JOB_SERVICE) {
+                continue;
+            }
+
+            char name[SERVICE_NAME_LEN];
+            get_service_name(jobs[i].command, name, SERVICE_NAME_LEN);
+
+            if (strcmp(name, req.name) == 0) {
+                found = true;
+                if (!jobs[i].stopped && jobs[i].pid > 0 && get_proc_info(jobs[i].pid)) {
+                    reply.success = 0;
+                    strcpy(reply.message, "Service is already running");
+                } else {
+                    jobs[i].stopped = false;
+                    jobs[i].retry = 0;
+                    jobs[i].pid = run_command(jobs[i].command, envp);
+                    jobs[i].last_run = time(NULL);
+
+                    if (jobs[i].pid >= 0) {
+                        reply.success = 1;
+                        strcpy(reply.message, "Service started");
+                    } else {
+                        reply.success = 0;
+                        strcpy(reply.message, "Failed to start service");
+                    }
+                }
+                break;
+            }
+        }
+
+        if (!found) {
+            reply.success = 0;
+            strcpy(reply.message, "Service not found");
+        }
+
+        message_send(TOPIC_SERVICE_OP_REPLY, &reply, sizeof(reply));
+    }
+}
+
+void handle_service_op_stop_message(char** envp) {
+    service_op_request_t req;
+    if (message_recv(TOPIC_SERVICE_STOP, &req, sizeof(req)) > 0) {
+        printf("scheduler: Received stop request for service '%s'\n", req.name);
+
+        service_op_reply_t reply;
+        memset(&reply, 0, sizeof(reply));
+        bool found = false;
+
+        for (int i = 0; i < job_count; i++) {
+            if (jobs[i].type != JOB_SERVICE) {
+                continue;
+            }
+
+            char name[SERVICE_NAME_LEN];
+            get_service_name(jobs[i].command, name, SERVICE_NAME_LEN);
+
+            if (strcmp(name, req.name) == 0) {
+                found = true;
+                if (jobs[i].stopped) {
+                    reply.success = 0;
+                    strcpy(reply.message, "Service is already stopped");
+                } else {
+                    jobs[i].stopped = true;
+                    if (jobs[i].pid > 0 && get_proc_info(jobs[i].pid)) {
+                        kill(jobs[i].pid);
+                    }
+                    jobs[i].pid = -1;
+                    reply.success = 1;
+                    strcpy(reply.message, "Service stopped");
+                }
+                break;
+            }
+        }
+
+        if (!found) {
+            reply.success = 0;
+            strcpy(reply.message, "Service not found");
+        }
+
+        message_send(TOPIC_SERVICE_OP_REPLY, &reply, sizeof(reply));
+    }
+}
+
+void handle_service_op_restart_message(char** envp) {
+    service_op_request_t req;
+    if (message_recv(TOPIC_SERVICE_RESTART, &req, sizeof(req)) > 0) {
+        printf("scheduler: Received restart request for service '%s'\n", req.name);
+
+        service_op_reply_t reply;
+        memset(&reply, 0, sizeof(reply));
+        bool found = false;
+
+        for (int i = 0; i < job_count; i++) {
+            if (jobs[i].type != JOB_SERVICE) {
+                continue;
+            }
+
+            char name[SERVICE_NAME_LEN];
+            get_service_name(jobs[i].command, name, SERVICE_NAME_LEN);
+
+            if (strcmp(name, req.name) == 0) {
+                found = true;
+                if (jobs[i].pid > 0 && get_proc_info(jobs[i].pid)) {
+                    kill(jobs[i].pid);
+                }
+                jobs[i].stopped = false;
+                jobs[i].retry = 0;
+                jobs[i].pid = run_command(jobs[i].command, envp);
+                jobs[i].last_run = time(NULL);
+                if (jobs[i].pid >= 0) {
+                    reply.success = 1;
+                    strcpy(reply.message, "Service restarted");
+                } else {
+                    reply.success = 0;
+                    strcpy(reply.message, "Failed to restart service");
+                }
+                break;
+            }
+        }
+
+        if (!found) {
+            reply.success = 0;
+            strcpy(reply.message, "Service not found");
+        }
+
+        message_send(TOPIC_SERVICE_OP_REPLY, &reply, sizeof(reply));
+    }
 }
 
 shortcut_t* parse_config(const char* file) {
@@ -288,7 +483,12 @@ int main(int argc, char* argv[], char* envp[]) {
 
     while (1) {
         long now = time(NULL);
-
+        
+        handle_service_list_message();
+        handle_service_op_start_message(envp);
+        handle_service_op_stop_message(envp);
+        handle_service_op_restart_message(envp);
+        
         for (int i = 0; i < job_count; i++) {
             job_t* j = &jobs[i];
 
@@ -317,7 +517,7 @@ int main(int argc, char* argv[], char* envp[]) {
                 break;
 
             case JOB_SERVICE:
-                if (j->pid == -1 || !get_proc_info(j->pid)) {
+                if (!j->stopped && (j->pid == -1 || !get_proc_info(j->pid))) {
                     int exit_code = get_exit_code(j->pid);
                     printf("scheduler: Service '%s' exited with code %d\n", j->command, exit_code);
 
@@ -326,8 +526,6 @@ int main(int argc, char* argv[], char* envp[]) {
                         j->pid = run_command(j->command, envp);
                         j->last_run = now;
                         j->retry++;
-                    } else {
-                        printf("scheduler: Service '%s' failed after %d attempts, giving up\n", j->command, MAX_RETRIES);
                     }
                 }
                 break;
@@ -337,7 +535,7 @@ int main(int argc, char* argv[], char* envp[]) {
             }
         }
 
-        set_env(SYS_ENV_TASK_SET_WAIT_TIME, (void*) (1000 * 60));
+        set_env(SYS_ENV_TASK_SET_WAIT_TIME, (void*) (1000));
         yield();
     }
 }
