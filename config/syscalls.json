@@ -392,6 +392,25 @@
 				"pid",
 				"exit_code (return)"
 			]
+		},
+		{
+			"name": "SYS_MESSAGE_SEND",
+			"arguments": [
+				"0x34",
+				"topic",
+				"&message",
+				"size"
+			]
+		},
+		{
+			"name": "SYS_MESSAGE_RECV",
+			"arguments": [
+				"0x35",
+				"topic",
+				"&buffer",
+				"size",
+				"received (return)"
+			]
 		}
 	]
 }

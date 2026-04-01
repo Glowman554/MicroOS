@@ -112,6 +112,8 @@
 #define SYS_SET_PIPE_ID 49
 #define SYS_RGB_COLOR_ID 50
 #define SYS_GET_EXIT_CODE_ID 51
+#define SYS_MESSAGE_SEND_ID 52
+#define SYS_MESSAGE_RECV_ID 53
 // End Syscalls
 
 // End Kernel configuration

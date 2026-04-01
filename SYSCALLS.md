@@ -50,3 +50,5 @@
 | SYS_SET_PIPE | 0x31 | pid | pipe | output | - | - |
 | SYS_RGB_COLOR | 0x32 | color | background | - | - | - |
 | SYS_GET_EXIT_CODE | 0x33 | pid | exit_code (return) | - | - | - |
+| SYS_MESSAGE_SEND | 0x34 | topic | &message | size | - | - |
+| SYS_MESSAGE_RECV | 0x35 | topic | &buffer | size | received (return) | - |
