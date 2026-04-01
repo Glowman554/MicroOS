@@ -101,6 +101,7 @@ task_t* init_task(int term, void* entry, bool thread, task_t* parent) {
 	memset(task, 0, sizeof(task_t));
 
 	debugf(SPAM, "Creating task with entry point %p in task slot located at %p", entry, task);
+	debugf(SPAM, "Task is running in terminal %d", term);
 
 	uint8_t* stack = vmm_alloc(KERNEL_STACK_SIZE_PAGES);
 	uint8_t* user_stack = vmm_alloc(USER_STACK_SIZE_PAGES);

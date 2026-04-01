@@ -7,6 +7,8 @@
 #include <string.h>
 #include <memory/heap.h>
 #include <stdio.h>
+#include <devices/shortcut.h>
+
 
 
 typedef struct ps2_driver_data {
@@ -143,6 +145,13 @@ cpu_registers_t* ps2_keyboard_interrupt_handler(cpu_registers_t* registers, void
 
 
 					char c = keymap(key, &data->special_keys_down);
+					
+					if ((data->special_keys_down.left_ctrl || data->special_keys_down.right_ctrl) && ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+						if(execute_shortcut(c)) {
+							c = 0;
+						}
+					}
+
 					if ((data->special_keys_down.left_ctrl || data->special_keys_down.right_ctrl) && c == 'd') {
 						c = -1; // EOF_CHAR
 					}

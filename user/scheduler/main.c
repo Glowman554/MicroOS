@@ -4,6 +4,10 @@
 #include <non-standard/sys/time.h>
 #include <non-standard/sys/spawn.h>
 #include <non-standard/sys/env.h>
+#include <non-standard/sys/file.h>
+#include <non-standard/buildin/data/array.h>
+#include <non-standard/buildin/path.h>
+#include <assert.h>
 
 #define MAX_JOBS 128
 #define CMD_LEN 256
@@ -30,6 +34,15 @@ typedef struct {
 
 job_t jobs[MAX_JOBS];
 int job_count = 0;
+
+#define MAX_CMD 64
+#define MAX_PWD 64
+typedef struct {
+    char key;
+    char launcher[MAX_CMD];
+    char command[MAX_CMD];
+    char pwd[MAX_PWD];
+} shortcut_t;
 
 char* skip_ws(char* p) {
     while (*p == ' ' || *p == '\t') {
@@ -71,7 +84,7 @@ void run_command(const char* cmd) {
     system((char*) cmd);
 }
 
-void parse_config(const char* file) {
+shortcut_t* parse_config(const char* file) {
 #ifdef DEBUG_SCHEDULER
     printf("scheduler: Parsing config file: %s\n", file);
 #endif
@@ -95,6 +108,8 @@ void parse_config(const char* file) {
     fread(buf, 1, size, f);
     buf[size] = 0;
     fclose(f);
+
+    shortcut_t* shortcuts = array_create(sizeof(shortcut_t), 4);
 
     char* p = buf;
 
@@ -137,6 +152,29 @@ void parse_config(const char* file) {
         #ifdef DEBUG_SCHEDULER
             printf("scheduler: Added every %d %s job: %s\n", j->value, unit,  j->command);
         #endif
+        } else if (!strncmp(line, "shortcut", 8)) {
+            char key[32] = { 0 };
+            char* q = read_word(line + 9, key, sizeof(key));
+
+            char command[MAX_CMD] = { 0 };
+            read_rest(q + 1, command, sizeof(command));
+            
+        #ifdef DEBUG_SCHEDULER
+            printf("scheduler: Shortcut '%s' -> '%s'\n", key, command);
+        #endif
+
+            // make sure key starts with Strg+
+            if (strncmp(key, "Strg+", 5) != 0) {
+                printf("scheduler: Invalid shortcut key '%s', must start with 'Strg+'\n", key);
+                continue;
+            }
+
+            shortcut_t sc = { 0 };
+            sc.key = key[5];
+            strcpy(sc.command, command);
+            array_push(shortcuts, &sc);
+
+            continue;
         } else {
             continue;
         }
@@ -145,11 +183,47 @@ void parse_config(const char* file) {
         job_count++;
     }
 
+    printf("scheduler: Total jobs loaded: %d\n", job_count);
+    printf("scheduler: Total shortcuts loaded: %d\n", array_length(shortcuts));
+
     free(buf);
+    return shortcuts;
 }
 
 int main(int argc, char* argv[]) {
-    parse_config("scheduler.conf");
+    shortcut_t* shortcuts = parse_config("scheduler.conf");
+
+    if (array_length(shortcuts) > 0) {
+        int fd = open("dev:shortcut", 0);
+        if (fd < 0) {
+            printf("scheduler: Failed to open shortcut interface\n");
+        } else {
+            char* terminal = search_executable("terminal");
+            if (!terminal) {
+                printf("scheduler: Failed to find terminal executable for shortcuts\n");
+                abort();
+            }
+
+            char* root_fs = getenv("ROOT_FS");
+            assert(root_fs);
+
+            for (int i = 0; i < array_length(shortcuts); i++) {
+                strcpy(shortcuts[i].launcher, terminal);
+                strcpy(shortcuts[i].pwd, root_fs);
+            }
+
+            free(terminal);
+
+            size_t size = array_length(shortcuts) * sizeof(shortcut_t);
+            write(fd, shortcuts, size, 0);
+            close(fd);
+            array_destroy(shortcuts);
+
+            printf("scheduler: Shortcuts registered with the system\n");
+        }
+    } else {
+        array_destroy(shortcuts);
+    }
 
     for (int i = 0; i < job_count; i++) {
         if (jobs[i].type == JOB_REBOOT) {

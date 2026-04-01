@@ -62,6 +62,29 @@ int insert_history(char* buffer, int idx) {
 int main(int argc, char* argv[], char* envp[]) {
 	terminal_envp = envp;
 
+	if (getenv("SHORTCUT") != NULL) {
+		GET_CWD(cwd);
+
+		// if we run as a shortcut launcher we need to set up the environment
+		char buffer[128] = { 0 };
+		sprintf(buffer, "export ROOT_FS=%s", cwd);
+		export(buffer, NULL);
+
+		sprintf(buffer, "export PATH=%sbin", cwd);
+		export(buffer, NULL);
+
+		char command[MAX_BUFFER_SIZE] = { 0 };
+		strcpy(command, argv[1]);
+		for (int i = 2; i < argc; i++) {
+			strcat(command, " ");
+			strcat(command, argv[i]);
+		}
+
+		bool should_break = false;
+		run_command(command, terminal_envp, &should_break, NULL, NULL);
+		return 0;	
+	}
+
 	if (argc != 1) {
 		if (strcmp(argv[1], "-e") == 0) {
 			char command[MAX_BUFFER_SIZE] = { 0 };
