@@ -15,6 +15,7 @@
 #include "windows/imgview/imgview.h"
 #include "windows/edit/edit.h"
 #include "windows/terminal/terminal.h"
+#include "windows/service/service.h"
 
 window_definition_t** window_definitions = NULL;
 
@@ -58,6 +59,7 @@ void register_windows(void) {
     register_window(&edit_definition);
     register_window(&imgview_definition);
     register_window(&terminal_definition);
+    register_window(&service_window_definition);
 
     desktop_register_file_assoc("fpic", imgview_open);
     desktop_register_file_assoc("bmp",  imgview_open);
