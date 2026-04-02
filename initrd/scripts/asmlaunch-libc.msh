@@ -1,8 +1,12 @@
 #!/bin/terminal.mex
 
 export TMPFILE=tmp:/asmlaunch.o
+export TMPFILE_EXE=tmp:/asmlaunch.elf
 
 echo Compiling $1
 fasm $1 $TMPFILE
 
-load $TMPFILE
+
+link -L $ROOT_FS/lib -l c $TMPFILE -o $TMPFILE_EXE
+
+$TMPFILE_EXE
