@@ -29,6 +29,7 @@ initrd.saf:
 	mkdir -p ./res/initrd/lib
 	cp -r ./user/bin/*.mex ./res/initrd/bin/ -v
 	cp -r ./user/lib/*.o ./res/initrd/lib/ -v
+	cp -r ./user/lib/*.a ./res/initrd/lib/ -v
 
 	cp -r ./initrd/* ./res/initrd/ -v
 	cp LICENSE ./res/initrd/LICENSE -v
