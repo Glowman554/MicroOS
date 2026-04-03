@@ -5,7 +5,7 @@ PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
            ping nslookup play wc cp env file mkdir rm rmdir date background \
 		   fasm figl du linux tasks stream free install lminst touch dhcp ip \
 		   pciinfo flvm scheduler if httpget jsonprint createmex lolcat load \
-		   tree mcc highlight resolved shortcutd service link
+		   tree mcc highlight resolved shortcutd service link listen
 
 ifeq ($(GUI),1)
 	PROGRAMS += desktop
