@@ -20,6 +20,9 @@ cpu_registers_t* sys_mouse_info(cpu_registers_t* regs) {
     task_t* current = get_self();
 
 	if (global_char_output_driver->current_term == current->term) {
+		if (global_mouse_driver->poll != NULL) {
+			global_mouse_driver->poll(global_mouse_driver);
+		}
         *info = global_mouse_driver->info;
 	} else {
         memset(info, 0, sizeof(mouse_info_t));

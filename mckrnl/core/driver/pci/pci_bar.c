@@ -18,15 +18,15 @@ pci_bar_t pci_get_bar(uint32_t* bar0, int bar_num, uint16_t bus, uint16_t device
 		uint32_t mask;
 		pci_read_bar(&mask, bus, device, function, bar_num * sizeof(uint32_t));
 
-		if (*bar_ptr & 0x04) { //64-bit mmio
-            abortf(false, "What MMIO64 on 32 bit only?");
-            bar.type = NONE;
-		} else if (*bar_ptr & 0x01) { //IO
+		if (*bar_ptr & 0x01) { // Bit 0 = 1 → I/O BAR
 			bar.type = IO;
 
 			bar.io_address = (uint16_t)(*bar_ptr & ~0x3);
 			bar.size = (uint16_t)(~(mask & ~0x3) + 1);
-		} else { //32-bit mmio
+		} else if ((*bar_ptr & 0x06) == 0x04) { // Bits 2:1 = 10 → 64-bit MMIO
+			debugf(WARNING, "pci: 64-bit MMIO BAR%d not supported on 32-bit, skipping", bar_num);
+			bar.type = NONE;
+		} else { // 32-bit MMIO
 			bar.type = MMIO32;
 
 			bar.mem_address = (uint64_t) *bar_ptr & ~0xf;

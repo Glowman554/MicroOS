@@ -24,6 +24,14 @@ ifdef AHCI
 	QEMU_FLAGS += -machine q35
 endif
 
+ifdef USB
+	QEMU_FLAGS += -usb
+	QEMU_FLAGS += -device usb-kbd 
+	QEMU_FLAGS += -device usb-mouse
+	QEMU_FLAGS += -device usb-storage,drive=usbdisk
+	QEMU_FLAGS += -drive id=usbdisk,if=none,file=res/hdb.img,format=raw
+endif
+
 initrd.saf:
 	mkdir -p ./res/initrd/bin
 	mkdir -p ./res/initrd/lib
@@ -66,6 +74,7 @@ res:
 	make -C res/saf
 
 	wget https://filething.toxicfox.de/files/a8b030e0-d43e-4826-889a-a3989b644e50.img -O res/hda.img
+	cp res/hda.img res/hdb.img
 
 	make -C tools/createmex
 	cp tools/createmex/createmex res/createmex
