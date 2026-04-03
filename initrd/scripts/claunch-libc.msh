@@ -1,8 +1,11 @@
 #!/bin/terminal.mex
 
 export TMPFILE=tmp:/claunch.o
+export TMPFILE_EXE=tmp:/claunch.elf
 
 echo Compiling $1
 mcc $1 -r -o $TMPFILE
 
-load $TMPFILE
+link -L $ROOT_FS/lib -l c $TMPFILE -o $TMPFILE_EXE
+
+$TMPFILE_EXE

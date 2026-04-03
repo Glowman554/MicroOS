@@ -394,9 +394,28 @@
 			]
 		},
 		{
-			"name": "SYS_SOCK_LISTEN",
+			"name": "SYS_MESSAGE_SEND",
 			"arguments": [
 				"0x34",
+				"topic",
+				"&message",
+				"size"
+			]
+		},
+		{
+			"name": "SYS_MESSAGE_RECV",
+			"arguments": [
+				"0x35",
+				"topic",
+				"&buffer",
+				"size",
+				"received (return)"
+			]
+		},
+		{
+			"name": "SYS_SOCK_LISTEN",
+			"arguments": [
+				"0x36",
 				"nic",
 				"socket_type",
 				"port",
@@ -406,7 +425,7 @@
 		{
 			"name": "SYS_SOCK_ACCEPT",
 			"arguments": [
-				"0x35",
+				"0x37",
 				"socket_id",
 				"&async",
 				"child_socket_id (return)"

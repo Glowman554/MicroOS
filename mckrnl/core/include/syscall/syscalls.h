@@ -87,3 +87,6 @@ cpu_registers_t* sys_get_exit_code(cpu_registers_t* regs);
 cpu_registers_t* sys_sock_listen(cpu_registers_t* regs);
 
 cpu_registers_t* sys_sock_accept(cpu_registers_t* regs);
+
+cpu_registers_t* sys_message_send(cpu_registers_t* regs);
+cpu_registers_t* sys_message_recv(cpu_registers_t* regs);

@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
 	if (ntp) {
 		printf("Using ntp server %s...\n", timesv);
-		ip_u ip = dns_resolve_A(nic_id, timesv);
+		ip_u ip = resolved_A(timesv);
 		clock_result_t time = ntp_time(nic_id, ip);
 		unix_time = to_unix_time(time.year, time.month, time.day, time.hours, time.minutes, time.seconds);
 	} else {
