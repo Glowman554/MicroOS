@@ -93,6 +93,55 @@ socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type
 	return NULL;
 }
 
+socket_t* socket_listen(network_stack_t* stack, int socket_type, uint16_t port) {
+	switch (socket_type) {
+		case SOCKET_UDP:
+			{
+				udp_socket_t* udp_socket = udp_listen(stack, port);
+				if (udp_socket != NULL) {
+					socket_t* socket = socket_create(SOCKET_UDP);
+					socket->udp_socket = udp_socket;
+					socket->udp_socket->data = socket;
+					socket->udp_socket->recv = socket_udp_recv;
+					return socket;
+				}
+			}
+			break;
+		default:
+			invalid();
+	}
+
+	return NULL;
+}
+
+socket_t* socket_accept(socket_t* listener, async_t* async) {
+	switch (listener->socket_type) {
+		case SOCKET_UDP:
+			{
+				udp_socket_t* child = udp_accept(listener->udp_socket, async);
+				if (is_resolved(async) && child != NULL) {
+					socket_t* socket = socket_create(SOCKET_UDP);
+					socket->udp_socket = child;
+					socket->udp_socket->data = socket;
+					socket->udp_socket->recv = socket_udp_recv;
+
+					if (child->pending_data != NULL) {
+						socket->received_data = child->pending_data;
+						socket->num_bytes_received = child->pending_data_len;
+						child->pending_data = NULL;
+						child->pending_data_len = 0;
+					}
+
+					return socket;
+				}
+			}
+			break;
+		default:
+			invalid();
+	}
+	return NULL;
+}
+
 void socket_disconnect(socket_t* socket, async_t* async) {
 	switch (socket->socket_type) {
 		case SOCKET_UDP:
@@ -189,7 +238,10 @@ void socket_manager_register(socket_t* socket) {
 		}
 	}
 
-	global_socket_manager->sockets = kmalloc(sizeof(socket_t*) * (global_socket_manager->num_sockets + 1));
+	socket_t** new_sockets = kmalloc(sizeof(socket_t*) * (global_socket_manager->num_sockets + 1));
+	memcpy(new_sockets, global_socket_manager->sockets, sizeof(socket_t*) * global_socket_manager->num_sockets);
+	kfree(global_socket_manager->sockets);
+	global_socket_manager->sockets = new_sockets;
 	global_socket_manager->sockets[global_socket_manager->num_sockets] = socket;
 	global_socket_manager->num_sockets++;
 }

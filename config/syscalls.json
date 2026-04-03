@@ -392,6 +392,25 @@
 				"pid",
 				"exit_code (return)"
 			]
+		},
+		{
+			"name": "SYS_SOCK_LISTEN",
+			"arguments": [
+				"0x34",
+				"nic",
+				"socket_type",
+				"port",
+				"socket_id (return)"
+			]
+		},
+		{
+			"name": "SYS_SOCK_ACCEPT",
+			"arguments": [
+				"0x35",
+				"socket_id",
+				"&async",
+				"child_socket_id (return)"
+			]
 		}
 	]
 }

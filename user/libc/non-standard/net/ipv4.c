@@ -2,6 +2,7 @@
 #include <non-standard/sys/net.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <non-standard/sys/file.h>
 
 #define TIMEOUT 1000
@@ -35,6 +36,31 @@ void nic_write(int nic, nic_content_t content) {
 
     write(fd, &content, sizeof(nic_content_t), 0);
     close(fd);
+}
+
+int find_loopback_interface() {
+    int i = 0;
+    while (true) {
+        char path[20] = { 0 };
+        sprintf(path, "dev:nic%d", i);
+        
+        int fd = open(path, FILE_OPEN_MODE_READ);
+        if (fd < 0) {
+            break;
+        }
+
+        nic_content_t content;
+        read(fd, &content, sizeof(nic_content_t), 0);
+        close(fd);
+
+        if (strcmp(content.name, "loopback") == 0) {
+            return i;
+        }
+        i++;
+
+    }
+
+    return -1;
 }
 
 mac_u sync_ipv4_resolve_route(int nic, ip_u dest_ip) {

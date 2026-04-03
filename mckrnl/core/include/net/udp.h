@@ -26,6 +26,13 @@ typedef struct udp_socket {
 	void* data;
 
 	void (*recv)(struct udp_socket* socket, uint8_t* data, int size);
+
+	struct udp_socket** accept_queue;
+	int accept_queue_len;
+	int accept_queue_cap;
+
+	uint8_t* pending_data;
+	int pending_data_len;
 } udp_socket_t;
 
 typedef struct udp_bind {
@@ -45,6 +52,7 @@ void udp_socket_send(udp_socket_t* socket, uint8_t* data, int size);
 
 udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint16_t port);
 udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port);
+udp_socket_t* udp_accept(udp_socket_t* listener, async_t* async);
 
 void udp_set_local_port(udp_socket_t* socket, uint16_t port);
 

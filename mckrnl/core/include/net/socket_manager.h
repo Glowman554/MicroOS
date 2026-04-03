@@ -31,6 +31,8 @@ typedef struct socket_manager {
 extern socket_manager_t* global_socket_manager;
 
 socket_t* socket_connect(network_stack_t* stack, async_t* async, int socket_type, ip_u ip, uint16_t port);
+socket_t* socket_listen(network_stack_t* stack, int socket_type, uint16_t port);
+socket_t* socket_accept(socket_t* listener, async_t* async);
 void socket_disconnect(socket_t* socket, async_t* async);
 void socket_send(socket_t* socket, uint8_t* data, uint32_t size);
 int socket_recv(socket_t* socket, async_t* async, uint8_t* data, uint32_t size);

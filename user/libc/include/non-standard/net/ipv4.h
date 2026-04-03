@@ -12,5 +12,7 @@ typedef struct nic_content {
 nic_content_t nic_read(int nic);
 void nic_write(int nic, nic_content_t content);
 
+int find_loopback_interface();
+
 mac_u sync_ipv4_resolve_route(int nic, ip_u dest_ip);
 

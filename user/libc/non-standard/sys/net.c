@@ -37,4 +37,16 @@ void set_local_port(int sock, uint16_t port) {
 	asm volatile("int $0x30" :: "a"(SYS_SOCK_SET_LOCAL_PORT_ID), "b"(sock), "c"(port));
 }
 
+int listen_socket(int nic, int type, uint16_t port) {
+	int ret;
+	asm volatile("int $0x30" : "=D"(ret) : "a"(SYS_SOCK_LISTEN_ID), "b"(nic), "c"(type), "d"(port));
+	return ret;
+}
+
+int accept_socket(int sock, async_t* async) {
+	int ret;
+	asm volatile("int $0x30" : "=D"(ret) : "a"(SYS_SOCK_ACCEPT_ID), "b"(sock), "c"(async));
+	return ret;
+}
+
 #pragma GCC pop_options

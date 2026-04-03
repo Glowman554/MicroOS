@@ -19,6 +19,9 @@ void send(int sock, uint8_t* data, int size);
 int recv(int sock, async_t* async, uint8_t* data, int size);
 void set_local_port(int sock, uint16_t port);
 
+int listen_socket(int nic, int type, uint16_t port);
+int accept_socket(int sock, async_t* async);
+
 mac_u ipv4_resolve_route(int nic, async_t* async, ip_u dest_ip);
 
 #define BSWAP16(n) (((n & 0x00FF) << 8) | ((n & 0xFF00) >> 8))

@@ -80,6 +80,8 @@ void init_syscalls() {
 #ifdef NETWORK_STACK
 	register_syscall(SYS_IPV4_RESOLVE_ROUTE_ID, sys_ipv4_resolve_route);
 	register_syscall(SYS_SOCK_SET_LOCAL_PORT_ID, sys_sock_set_local_port);
+	register_syscall(SYS_SOCK_LISTEN_ID, sys_sock_listen);
+	register_syscall(SYS_SOCK_ACCEPT_ID, sys_sock_accept);
 #endif
 	register_syscall(SYS_MMAP_MAPPED_ID, sys_mmap_mapped);
 	register_syscall(SYS_SOUND_WRITE_PCM_ID, sys_sound_write_pcm);

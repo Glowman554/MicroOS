@@ -1,5 +1,6 @@
 #include "net/stack.h"
 #include <net/udp.h>
+#include <net/arp.h>
 
 #include <memory/heap.h>
 #include <string.h>
@@ -72,7 +73,10 @@ udp_socket_t* udp_connect(network_stack_t* stack, async_t* async, ip_u ip, uint1
 			}
 		}
 
-		stack->udp->binds = kmalloc(sizeof(udp_bind_t) * (stack->udp->num_binds + 1));
+		udp_bind_t* new_binds = kmalloc(sizeof(udp_bind_t) * (stack->udp->num_binds + 1));
+		memcpy(new_binds, stack->udp->binds, sizeof(udp_bind_t) * stack->udp->num_binds);
+		kfree(stack->udp->binds);
+		stack->udp->binds = new_binds;
 		stack->udp->binds[stack->udp->num_binds] = bind;
 		stack->udp->num_binds++;
 		return socket;
@@ -85,7 +89,6 @@ void udp_set_local_port(udp_socket_t* socket, uint16_t port) {
 	socket->local_port = BSWAP16(port);
 }
 
-#if 0
 udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port) {
 	udp_socket_t* socket = kmalloc(sizeof(udp_socket_t));
 	memset(socket, 0, sizeof(udp_socket_t));
@@ -111,12 +114,47 @@ udp_socket_t* udp_listen(network_stack_t* stack, uint16_t port) {
 		}
 	}
 
-	stack->udp->binds = kmalloc(sizeof(udp_bind_t) * (stack->udp->num_binds + 1));
+	udp_bind_t* new_binds = kmalloc(sizeof(udp_bind_t) * (stack->udp->num_binds + 1));
+	memcpy(new_binds, stack->udp->binds, sizeof(udp_bind_t) * stack->udp->num_binds);
+	kfree(stack->udp->binds);
+	stack->udp->binds = new_binds;
 	stack->udp->binds[stack->udp->num_binds] = bind;
 	stack->udp->num_binds++;
 	return socket;
 }
-#endif
+
+static void udp_pending_recv(struct udp_socket* socket, uint8_t* data, int size) {
+	uint8_t* new_buf = kmalloc(socket->pending_data_len + size);
+	if (socket->pending_data != NULL) {
+		memcpy(new_buf, socket->pending_data, socket->pending_data_len);
+		kfree(socket->pending_data);
+	}
+	memcpy(new_buf + socket->pending_data_len, data, size);
+	socket->pending_data = new_buf;
+	socket->pending_data_len += size;
+}
+
+udp_socket_t* udp_accept(udp_socket_t* listener, async_t* async) {
+	switch (async->state) {
+		case STATE_INIT:
+			async->state = STATE_WAIT;
+			// fallthrough
+		case STATE_WAIT:
+			if (listener->accept_queue_len > 0) {
+				udp_socket_t* child = listener->accept_queue[0];
+				listener->accept_queue_len--;
+				for (int i = 0; i < listener->accept_queue_len; i++) {
+					listener->accept_queue[i] = listener->accept_queue[i + 1];
+				}
+				async->state = STATE_DONE;
+				return child;
+			}
+			break;
+		case STATE_DONE:
+			break;
+	}
+	return NULL;
+}
 
 void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t* payload, uint32_t size) {
 	if (size < sizeof(udp_header_t)) {
@@ -126,28 +164,82 @@ void udp_ipv4_recv(struct ipv4_handler* handler, ip_u srcIP, ip_u dstIP, uint8_t
 	udp_header_t* udp = (udp_header_t*) payload;
 
 	udp_socket_t* socket = NULL;
+	udp_socket_t* listener = NULL;
 
 	for (int i = 0; i < handler->stack->udp->num_binds; i++) {
 		if (handler->stack->udp->binds[i].socket != NULL) {
-		udp_bind_t bind = handler->stack->udp->binds[i];
-			if (bind.socket->local_port == udp->dst_port && bind.socket->local_ip.ip == dstIP.ip && bind.socket->listening) {
-				bind.socket->listening = false;
-				bind.socket->remote_port = udp->src_port;
-				bind.socket->remote_ip = srcIP;
+			udp_bind_t bind = handler->stack->udp->binds[i];
+
+			if (!bind.socket->listening && bind.socket->local_port == udp->dst_port &&
+				bind.socket->remote_port == udp->src_port &&
+				(bind.socket->remote_ip.ip == srcIP.ip || dstIP.ip == 0xFFFFFFFF ||
+				 srcIP.ip == 0xFFFFFFFF || bind.socket->remote_ip.ip == 0xFFFFFFFF)) {
 				socket = bind.socket;
 				break;
 			}
 
-			if (bind.socket->remote_port == udp->src_port && (bind.socket->remote_ip.ip == srcIP.ip || dstIP.ip == 0xFFFFFFFF || srcIP.ip == 0xFFFFFFFF || bind.socket->remote_ip.ip == 0xFFFFFFFF)) {
-				socket = bind.socket;
-				break;
+			if (bind.socket->listening && bind.socket->local_port == udp->dst_port &&
+				(bind.socket->local_ip.ip == dstIP.ip || dstIP.ip == 0xFFFFFFFF)) {
+				listener = bind.socket;
 			}
 		}
 	}
 
+	if (socket == NULL && listener != NULL) {
+		udp_socket_t* child = kmalloc(sizeof(udp_socket_t));
+		memset(child, 0, sizeof(udp_socket_t));
+
+		child->local_port = listener->local_port;
+		child->local_ip = listener->local_ip;
+		child->remote_port = udp->src_port;
+		child->remote_ip = srcIP;
+		child->stack = listener->stack;
+		child->recv = udp_pending_recv;
+
+		ip_u route_ip = srcIP;
+		if ((srcIP.ip & child->stack->driver->ip_config.subnet_mask.ip) !=
+			(child->stack->driver->ip_config.ip.ip & child->stack->driver->ip_config.subnet_mask.ip) &&
+			srcIP.ip != 0xffffffff) {
+			route_ip = child->stack->driver->ip_config.gateway_ip;
+		}
+		child->route_mac = arp_get_mac_from_cache(child->stack, route_ip);
+
+		udp_bind_t bind = { .port = child->local_port, .socket = child };
+		int added = 0;
+		for (int i = 0; i < handler->stack->udp->num_binds; i++) {
+			if (handler->stack->udp->binds[i].socket == NULL) {
+				handler->stack->udp->binds[i] = bind;
+				added = 1;
+				break;
+			}
+		}
+		if (!added) {
+			udp_bind_t* new_binds = kmalloc(sizeof(udp_bind_t) * (handler->stack->udp->num_binds + 1));
+			memcpy(new_binds, handler->stack->udp->binds, sizeof(udp_bind_t) * handler->stack->udp->num_binds);
+			kfree(handler->stack->udp->binds);
+			handler->stack->udp->binds = new_binds;
+			handler->stack->udp->binds[handler->stack->udp->num_binds] = bind;
+			handler->stack->udp->num_binds++;
+		}
+
+		if (listener->accept_queue_len >= listener->accept_queue_cap) {
+			int new_cap = listener->accept_queue_cap == 0 ? 4 : listener->accept_queue_cap * 2;
+			udp_socket_t** new_queue = kmalloc(sizeof(udp_socket_t*) * new_cap);
+			if (listener->accept_queue != NULL) {
+				memcpy(new_queue, listener->accept_queue, sizeof(udp_socket_t*) * listener->accept_queue_len);
+				kfree(listener->accept_queue);
+			}
+			listener->accept_queue = new_queue;
+			listener->accept_queue_cap = new_cap;
+		}
+		listener->accept_queue[listener->accept_queue_len++] = child;
+
+		socket = child;
+	}
+
 	if (socket == NULL) {
 		debugf(WARNING, "UDP message cannot be routed to valid socket!");
-	} else {
+	} else if (socket->recv != NULL) {
 		socket->recv(socket, payload + sizeof(udp_header_t), size - sizeof(udp_header_t));
 	}
 }
