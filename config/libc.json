@@ -1,5 +1,5 @@
 {
-    "file": "user/libc/include/config.h",
+    "file": "user/libraries/libc/include/config.h",
     "configuration": {
         "title": "LibC configuration",
         "items": [
