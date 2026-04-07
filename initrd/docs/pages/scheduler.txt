@@ -1,0 +1,22 @@
+scheduler (service)
+-------------------
+
+Usage: scheduler
+
+Background service that manages scheduled jobs, persistent services,
+and keyboard shortcuts. Reads configuration from scheduler.conf.
+
+Configuration Format (scheduler.conf):
+    @reboot <command>           -> Run command once at startup
+    @service <command>          -> Run as a managed service (auto-restarts on exit)
+    every <N> minutes <command> -> Run command every N minutes
+    every <N> hours <command>   -> Run command every N hours
+    shortcut Strg+<key> <cmd>  -> Register a global keyboard shortcut
+
+Example scheduler.conf:
+    @reboot echo scheduler started
+    @service resolved -v -i 0
+    @service shortcutd
+    every 10 minutes dhcp -i 0
+    shortcut Strg+r pwr reset
+    shortcut Strg+p pwr off

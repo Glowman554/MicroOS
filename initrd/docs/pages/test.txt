@@ -1,0 +1,8 @@
+test (cmd)
+----------
+
+Usage: test
+
+Runs the built-in test suite. Executes a series of tests covering
+the assembler, C compiler, linker, and core utilities. Reports
+the number of successful and failed tests.

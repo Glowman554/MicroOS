@@ -1,0 +1,31 @@
+terminal (cmd)
+--------------
+
+Usage: terminal [-e <command>] [script.msh]
+
+The MicroOS shell. Without arguments, starts an interactive command prompt.
+Can also execute a single command or run a shell script.
+
+Flags:
+    -e <command>   -> Execute a single command and exit
+    [script.msh]   -> Run a shell script file
+
+Built-in Commands:
+    cd <path>      -> Change working directory
+    pwd            -> Print working directory
+    export VAR=val -> Set an environment variable
+    layout <name>  -> Set keyboard layout
+    help [cmd]     -> Show help (or help for a specific command)
+    read <var>     -> Read a line of input into an environment variable
+    exit           -> Exit the terminal
+    fault <type>   -> Trigger a fault for testing (#pf, #de, #gp, #heap)
+
+Features:
+    - Tab completion
+    - Command history (up/down arrows)
+    - Pipes (cmd1 | cmd2)
+    - Output redirection (cmd > file, cmd >> file)
+    - Command chaining (cmd1 && cmd2)
+    - Command substitution ($(cmd))
+    - Environment variable expansion ($VAR)
+    - Shell scripting (.msh files)

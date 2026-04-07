@@ -1,0 +1,15 @@
+resolved (service)
+------------------
+
+Usage: resolved [-i <nic_id>] [-s <dns_server>] [-v] [-h]
+
+Background DNS resolver service. Listens for resolve requests via
+the message bus and returns resolved IP addresses.
+
+Flags:
+    -i -> Network interface ID to use (default: 0)
+    -s -> Custom DNS server IP address
+    -v -> Enable verbose debug output
+    -h -> Display help information
+
+Typically started by the scheduler as a managed service.

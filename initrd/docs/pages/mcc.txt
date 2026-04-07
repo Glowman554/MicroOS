@@ -1,0 +1,15 @@
+mcc (cmd)
+---------
+
+Usage: mcc [-o <output>] [-r] <input.c>
+
+MicroOS C compiler (based on chibicc). Compiles C source files
+into executables or object files using fasm as the assembler backend.
+
+Flags:
+    -o <output> -> Set output file (default: a.out)
+    -r          -> Produce a relocatable object file instead of a raw executable
+
+Example:
+    mcc hello.c -o hello.elf
+    mcc -r lib.c -o lib.o

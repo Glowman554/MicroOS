@@ -1,0 +1,23 @@
+service (cmd)
+-------------
+
+Usage: service <list|start|stop|restart> [name]
+
+Manages system services registered with the scheduler daemon.
+
+Commands:
+    list            -> List all registered services and their status
+    start <name>    -> Start a stopped service
+    stop <name>     -> Stop a running service
+    restart <name>  -> Restart a service
+
+Service Status:
+    running  -> Service is currently active
+    stopped  -> Service is not running
+    failed   -> Service exceeded maximum retry count
+
+Example:
+    service list
+    service start resolved
+    service stop shortcutd
+    service restart resolved

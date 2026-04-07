@@ -1,0 +1,13 @@
+highlight (cmd)
+---------------
+
+Usage: highlight <filename>
+
+Displays file contents with syntax highlighting based on file extension.
+Syntax definitions are loaded from the syntax/ directory.
+
+Arguments:
+    <filename> -> File to display with syntax highlighting
+
+Example:
+    highlight main.c

@@ -1,0 +1,20 @@
+install (cmd)
+-------------
+
+Usage: install
+
+Interactive installer for MicroOS. Copies the system to a disk partition
+and creates a bootable configuration.
+
+The installer prompts for:
+    - Target partition (mountpoint, e.g. disk0p0:)
+    - Keyboard layout
+    - Number of extra terminals to start
+
+Environment variables (for unattended install):
+    partition -> Target partition path
+    keyboard  -> Keyboard layout name
+    terms     -> Number of extra terminals
+
+The installer copies all system files, packs kernel modules into a SAF
+archive, generates a startup script, and writes a limine bootloader config.
