@@ -114,15 +114,15 @@ deepclean:
 libs.zip: all
 	mkdir -p res/libs/include
 	cp user/lib/* res/libs/. -rf
-	cp user/libc/include/* res/libs/include/. -rf
-	cp user/libtinf/include/* res/libs/include/. -rf
-	cp user/libflvm/include/* res/libs/include/. -rf
-	cp user/libjson/include/* res/libs/include/. -rf
-	cp user/libload/include/* res/libs/include/. -rf
-	cp user/libsyntax/include/* res/libs/include/. -rf
+	cp user/libraries/libc/include/* res/libs/include/. -rf
+	cp user/libraries/libtinf/include/* res/libs/include/. -rf
+	cp user/libraries/libflvm/include/* res/libs/include/. -rf
+	cp user/libraries/libjson/include/* res/libs/include/. -rf
+	cp user/libraries/libload/include/* res/libs/include/. -rf
+	cp user/libraries/libsyntax/include/* res/libs/include/. -rf
 
 ifeq ($(GUI),1)
-	cp user/desktop/include/* res/libs/include/. -rf
+	cp user/base/desktop/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/
