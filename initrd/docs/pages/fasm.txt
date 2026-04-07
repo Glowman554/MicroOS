@@ -1,0 +1,15 @@
+fasm (cmd)
+----------
+
+Usage: fasm <input.asm> <output>
+
+Flat assembler (FASM) port for MicroOS. Assembles x86 assembly source
+files into executables or object files.
+
+Arguments:
+    <input.asm> -> Assembly source file to assemble
+    <output>    -> Output file path
+
+Example:
+    fasm hello.asm hello.elf
+    fasm program.asm tmp:/program.o

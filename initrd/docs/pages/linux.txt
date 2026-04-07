@@ -1,0 +1,9 @@
+linux (cmd)
+-----------
+
+Usage: linux
+
+RISC-V Linux emulator using mini-rv32ima. Boots a RISC-V Linux image
+(linux.img) with 64 MB of emulated RAM and provides console I/O.
+
+The image file is loaded from the current directory by default.

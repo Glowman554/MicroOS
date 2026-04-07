@@ -1,0 +1,18 @@
+listen (cmd)
+------------
+
+Usage: listen [-i <nic_id>] [-t <socket_type>] [-p <port>] [-h]
+
+Listens for incoming network connections on a specified port and displays
+received data.
+
+Flags:
+    -i -> Network interface ID to use (default: 0)
+    -t -> Socket type: udp or tcp (default: udp)
+    -p -> Port number to listen on (required)
+    -h -> Display help information
+
+Example:
+    listen -p 8080
+    listen -t tcp -p 80
+    listen -i 1 -t udp -p 9999

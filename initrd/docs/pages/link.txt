@@ -1,0 +1,18 @@
+link (cmd)
+----------
+
+Usage: link [options] <input.o ...>
+
+Linker for combining object files into executables.
+
+Options:
+    -o <file>        -> Output file (default: a.out)
+    -L <path>        -> Add library search path
+    -l <lib>         -> Link with library (searches for lib<lib>.a)
+    --load-addr <a>  -> Set load address (default: 0xB0000000)
+    -e <symbol>      -> Set entry point symbol (default: _start)
+    -h, --help       -> Show help
+
+Example:
+    link -o program.elf main.o utils.o
+    link -o app.elf -L lib -l c main.o

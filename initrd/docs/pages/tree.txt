@@ -1,0 +1,14 @@
+tree (cmd)
+----------
+
+Usage: tree [path]
+
+Displays a visual tree of files and directories starting from the given path.
+Without arguments, displays the tree from the current working directory.
+
+Arguments:
+    [path] -> Directory to display (optional, defaults to current directory)
+
+Example:
+    tree
+    tree initrd:/bin

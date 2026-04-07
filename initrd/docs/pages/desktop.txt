@@ -1,0 +1,15 @@
+desktop (cmd)
+-------------
+
+Usage: desktop
+
+Graphical desktop environment with mouse support. Provides a windowed
+interface with a taskbar, start menu, and multiple application windows.
+
+Features:
+    - Mouse-driven window management (move, resize, minimize, close)
+    - Taskbar with window list and start menu
+    - Keyboard input forwarded to focused window
+    - Multiple cursor styles for resize edges
+
+Requires a graphical framebuffer (GUI=1 build).

@@ -37,6 +37,14 @@ edit      Open the simple built-in text editor
 
 clear     Clear the terminal screen
 
+tree      Show a directory tree
+          Example: tree initrd:/bin
+
+wc        Count lines, words, and characters in a file
+du        Show disk usage of files or directories
+file      Identify file type by examining its contents
+lolcat    Display file contents with rainbow colors
+
 
 
 ADDITIONAL HANDY COMMANDS
@@ -45,6 +53,27 @@ ADDITIONAL HANDY COMMANDS
 fasm      FASM assembler
 free      Show memory usage (RAM free/used)
 calc      Small calculator for quick arithmetic
+tasks     List running processes
+date      Show current date and time
+figl      Render ASCII art text using figlet fonts
+echo      Print text to the terminal
+env       Show environment variables
+pciinfo   Display PCI device information
+
+
+
+DEVELOPMENT TOOLS
+-----------------
+
+mcc       MicroOS C compiler (based on chibicc)
+link      Linker for combining object files
+load      Load and execute object files with symbol resolution
+fasm      Flat assembler (FASM) port
+createmex Wrap ELF files in a MEXv2 header
+flvm      Virtual machine for FLVM bytecode
+highlight Display file with syntax highlighting
+jsonprint Pretty-print JSON files
+test      Run the built-in test suite
 
 
 
@@ -54,6 +83,44 @@ NETWORKING
 ping      Test network connectivity
 ip        Show or configure network information
 nslookup  Query DNS information
+dhcp      Automatically configure IP via DHCP
+httpget   Make HTTP GET requests
+stream    Stream terminal display over UDP
+listen    Listen for incoming network connections
+
+
+
+SERVICES
+--------
+
+service   Manage system services (list, start, stop, restart)
+scheduler Background job scheduler and service manager
+resolved  Background DNS resolver service
+shortcutd Background keyboard shortcut handler
+
+
+
+SYSTEM
+------
+
+install   Install MicroOS to a disk partition
+lminst    Install Limine bootloader to a GPT disk
+linux     RISC-V Linux emulator
+pwr       Shutdown or reboot the system
+desktop   Graphical desktop environment (GUI mode)
+
+
+
+SHELL BUILT-IN COMMANDS
+------------------------
+
+cd        Change working directory
+pwd       Print working directory
+export    Set an environment variable
+layout    Set keyboard layout
+help      Show this help (or help <cmd> for a specific command)
+read      Read input into an environment variable
+exit      Exit the terminal
 
 
 
@@ -97,3 +164,9 @@ See available programs:
 Edit a quick RAM note:
   touch tmp:/notes.txt
   edit  tmp:/notes.txt
+
+List running services:
+  service list
+
+Run the test suite:
+  test

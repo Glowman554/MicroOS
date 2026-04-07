@@ -1,0 +1,10 @@
+shortcutd (service)
+-------------------
+
+Usage: shortcutd
+
+Background service that listens for keyboard shortcut events and
+executes the associated commands. Shortcuts are registered by the
+scheduler daemon from the scheduler.conf configuration file.
+
+Typically started by the scheduler as a managed service.

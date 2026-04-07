@@ -1,0 +1,13 @@
+lminst (cmd)
+------------
+
+Usage: lminst <device_id>
+
+Installs the Limine bootloader to a GPT-formatted disk by embedding the
+bootloader stage2 into the GPT gap.
+
+Arguments:
+    <device_id> -> Numeric disk device ID to install to
+
+Example:
+    lminst 0
