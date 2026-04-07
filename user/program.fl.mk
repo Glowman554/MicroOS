@@ -1,4 +1,4 @@
-include ../../config.mk
+include ../../../config.mk
 
 SRCS = $(shell find -name '*.fl')
 
@@ -9,7 +9,7 @@ prog: $(PROGRAM)
 $(PROGRAM): $(SRCS)
 ifeq ($(FIRESTORM),1)
 	@echo FL $^
-	@fire compile $(FLFLAGS) --output=../bin/$@ --input=main.fl
+	@fire compile $(FLFLAGS) --output=../../bin/$@ --input=main.fl
 endif
 
 clean:

@@ -9,7 +9,7 @@ SYSROOT="$PREFIX/$TARGET"
 
 STUBS="$(pwd)/stubs"
 CRT0="$(pwd)/crt0.S"
-LIBC="$(pwd)/../../user/libc"
+LIBC="$(pwd)/../../user/libraries/libc"
 LIBC=$(realpath "$LIBC")
 
 
