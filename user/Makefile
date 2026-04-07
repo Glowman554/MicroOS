@@ -1,14 +1,24 @@
 include ../config.mk
 
-LIBS = libc libtinf libflvm libjson libload libsyntax libdns
-PROGRAMS = init terminal ls cat test echo calc pwr edit clear \
-           ping nslookup play wc cp env file mkdir rm rmdir date background \
-		   fasm figl du linux tasks stream free install lminst touch dhcp ip \
-		   pciinfo flvm scheduler if httpget jsonprint createmex lolcat load \
-		   tree mcc highlight resolved shortcutd service link listen
+LIBS = libraries/libc libraries/libtinf libraries/libflvm libraries/libjson \
+	   libraries/libload libraries/libsyntax libraries/libdns
+
+PROGRAMS = base/background base/calc base/cat base/clear base/cp base/date \
+           base/du base/echo base/edit base/env base/figl base/file base/free \
+		   base/if base/init base/install base/linux base/lminst base/lolcat \
+		   base/ls base/mkdir base/pciinfo base/play base/pwr base/rm base/rmdir \
+		   base/tasks base/terminal base/test base/touch base/tree base/wc
+
+PROGRAMS += development/createmex development/fasm development/flvm development/highlight \
+            development/jsonprint development/link development/load development/mcc
+
+PROGRAMS += network/dhcp network/httpget network/ip network/listen network/nslookup network/ping \
+		    network/stream
+
+PROGRAMS += services/resolved services/scheduler services/service services/shortcutd
 
 ifeq ($(GUI),1)
-	PROGRAMS += desktop
+	PROGRAMS += base/desktop
 endif
 
 all:
@@ -25,7 +35,7 @@ build_programs: $(addsuffix _prog,$(PROGRAMS))
 
 %_library_deploy:
 	mkdir -p lib
-	make -C $* deploy SYSROOT=../../.cross/i686-microos
+	make -C $* deploy SYSROOT=../../../.cross/i686-microos
 
 %_prog:
 	mkdir -p bin

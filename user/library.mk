@@ -17,17 +17,17 @@ library: $(LIBRARY) $(LIBRARY_A)
 
 $(LIBRARY): $(OBJS)
 	@echo LD $^
-	@$(LD) $(LDFLAGS) -r -o ../lib/$@ $^ $(EXTRA_OBJS)
+	@$(LD) $(LDFLAGS) -r -o ../../lib/$@ $^ $(EXTRA_OBJS)
 
 $(LIBRARY_A): $(OBJS)
 	@echo AR $^
-	@$(AR) $(ARFLAGS) ../lib/$@ $^
+	@$(AR) $(ARFLAGS) ../../lib/$@ $^
 
 deploy: $(LIBRARY_A)
 ifdef SYSROOT
 	mkdir -p $(SYSROOT)/lib
 	mkdir -p $(SYSROOT)/include
-	cp ../lib/$(LIBRARY_A) $(SYSROOT)/lib/
+	cp ../../lib/$(LIBRARY_A) $(SYSROOT)/lib/
 	cp include/* $(SYSROOT)/include/. -rf
 else
 	$(error "No SYSROOT specified.")
@@ -41,4 +41,4 @@ clean:
 	rm -f $(OBJS) $(LIBRARY) compile_flags.txt
 
 compile_flags.txt:
-	@../../res/compile-flags $(CFLAGS) > compile_flags.txt
+	@../../../res/compile-flags $(CFLAGS) > compile_flags.txt
