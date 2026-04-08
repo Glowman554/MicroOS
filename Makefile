@@ -122,7 +122,7 @@ libs.zip: all
 	cp user/libraries/libsyntax/include/* res/libs/include/. -rf
 
 ifeq ($(GUI),1)
-	cp user/base/desktop/include/* res/libs/include/. -rf
+	cp user/desktop/libdesktop/include/* res/libs/include/. -rf
 endif
 
 	zip -r libs.zip res/libs/
