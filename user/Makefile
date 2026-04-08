@@ -21,7 +21,8 @@ ifeq ($(GUI),1)
 	LIBS += desktop/libdesktop
 
 	PROGRAMS += desktop/desktop desktop/counter desktop/sysctl desktop/taskmgr \
-	            desktop/netinfo desktop/explorer desktop/imgview desktop/service
+	            desktop/netinfo desktop/explorer desktop/imgview desktop/service \
+	            desktop/terminal
 endif
 
 all:

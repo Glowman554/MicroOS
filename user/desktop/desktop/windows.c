@@ -97,8 +97,7 @@ void register_windows(void) {
     // TODO
     // register_window(&edit_def);
     register_window(&imgview_def);
-    // TODO
-    // register_window(&terminal_def);
+    register_window(&terminal_def);
     register_window(&service_def);
 
     // TODO: figure out how to do this with external windows
