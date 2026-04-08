@@ -101,7 +101,7 @@ void external_window_init(window_instance_t* w) {
         return;
     }
 
-    const char* argv[] = { est->executable, NULL };
+    const char* argv[] = { est->executable, est->launch_file, NULL };
 
     char slot_str[16];
     sprintf(slot_str, "WMS=%d", slot);
@@ -172,6 +172,10 @@ void external_window_init_spawned(window_instance_t* w) {
 void external_window_send_event(window_instance_t* w, event_t* event) {
     external_state_t* est = (external_state_t*)w->state;
     if (!est || !est->control) {
+        return;
+    }
+
+    if (event->type == EVENT_NONE) {
         return;
     }
 
@@ -270,7 +274,7 @@ void external_window_cleanup(window_instance_t* w) {
     w->is_external = false;
 }
 
-void window_add_external(const char* executable, int x, int y, int width, int height, const char* title, uint32_t bg_color) {
+void window_add_external(const char* executable, const char* launch_file, int x, int y, int width, int height, const char* title, uint32_t bg_color) {
     int slot = external_window_alloc_slot();
     if (slot < 0) {
         printf("desktop: no free SHM slots\n");
@@ -280,6 +284,7 @@ void window_add_external(const char* executable, int x, int y, int width, int he
     external_state_t* est = malloc(sizeof(external_state_t));
     memset(est, 0, sizeof(external_state_t));
     est->executable = executable;
+    est->launch_file = launch_file;
     est->slot = slot;
 
     window_add_with_state(x, y, width, height, title, bg_color,

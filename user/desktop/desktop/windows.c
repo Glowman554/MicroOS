@@ -19,7 +19,11 @@ void register_window(window_definition_t* def) {
 }
 
 void launch_external(struct window_definition* def) {
-    window_add_external(def->executable, def->x, def->y, def->width, def->height, def->name, def->bg_color);
+    window_add_external(def->executable, NULL, def->x, def->y, def->width, def->height, def->name, def->bg_color);
+}
+
+void launch_external_ext(struct window_definition* def, const char* path) {
+    window_add_external(def->executable, path, def->x, def->y, def->width, def->height, def->name, def->bg_color);
 }
 
 window_definition_t counter_def = {
@@ -88,22 +92,27 @@ window_definition_t service_def  = {
 void register_windows(void) {
     window_definitions = array_create(sizeof(window_definition_t*), 12);
 
+    // TODO: load from config file?
     register_window(&launcher_definition);
     register_window(&counter_def);
     register_window(&explorer_def);
     register_window(&taskmgr_def);
     register_window(&sysctl_def);
     register_window(&netinfo_def);
-    // TODO
-    // register_window(&edit_def);
+    register_window(&edit_def);
     register_window(&imgview_def);
     register_window(&terminal_def);
     register_window(&service_def);
 
-    // TODO: figure out how to do this with external windows
-    // desktop_register_file_assoc("fpic", imgview_open_ext);
-    // desktop_register_file_assoc("bmp",  imgview_open_ext);
-    // desktop_register_file_assoc("mbif", imgview_open_ext);
-    // desktop_register_file_assoc("o", load_extension);
+    desktop_register_file_assoc("fpic", &imgview_def, launch_external_ext);
+    desktop_register_file_assoc("bmp",  &imgview_def, launch_external_ext);
+    desktop_register_file_assoc("mbif", &imgview_def, launch_external_ext);
+
+    desktop_register_file_assoc("txt",  &edit_def, launch_external_ext);
+    desktop_register_file_assoc("conf",  &edit_def, launch_external_ext);
+    desktop_register_file_assoc("md",  &edit_def, launch_external_ext);
+    desktop_register_file_assoc("c",  &edit_def, launch_external_ext);
+    desktop_register_file_assoc("asm",  &edit_def, launch_external_ext);
+    desktop_register_file_assoc("msh",  &edit_def, launch_external_ext);
 }
 

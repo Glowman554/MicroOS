@@ -10,6 +10,7 @@ typedef struct {
     int pid;
     wm_shared_t* control;
     uint32_t* pixels;
+    const char* launch_file; // for file associations
 } external_state_t;
 
 // Open an external window by spawning a child process.
@@ -17,7 +18,7 @@ typedef struct {
 // x, y, width, height: initial window geometry
 // title: initial window title
 // bg_color: background color
-void window_add_external(const char* executable, int x, int y, int width, int height,
+void window_add_external(const char* executable, const char* launch_file, int x, int y, int width, int height,
                          const char* title, uint32_t bg_color);
 
 // Send an event to an external window's shared memory event queue.

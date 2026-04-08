@@ -22,7 +22,7 @@ ifeq ($(GUI),1)
 
 	PROGRAMS += desktop/desktop desktop/counter desktop/sysctl desktop/taskmgr \
 	            desktop/netinfo desktop/explorer desktop/imgview desktop/service \
-	            desktop/terminal
+	            desktop/terminal desktop/edit
 endif
 
 all:

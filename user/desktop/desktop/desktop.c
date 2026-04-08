@@ -21,7 +21,8 @@
 
 typedef struct {
     char ext[16];
-    void (*open_fn)(const char* path);
+    window_definition_t* def;
+    void (*open_fn)(window_definition_t* def, const char* path);
 } file_assoc_t;
 
 file_assoc_t s_assocs[MAX_ASSOCS];
@@ -29,13 +30,14 @@ int s_assoc_count = 0;
 
 void edit_open_ext(const char* path);
 
-void desktop_register_file_assoc(const char* ext, void (*open_fn)(const char* path)) {
+void desktop_register_file_assoc(const char* ext, window_definition_t* def, void (*open_fn)(window_definition_t* def, const char* path)) {
     if (s_assoc_count >= MAX_ASSOCS) {
         return;
     }
     int ext_len = strnlen(ext, sizeof(s_assocs[0].ext) - 1);
     memcpy(s_assocs[s_assoc_count].ext, ext, ext_len);
     s_assocs[s_assoc_count].ext[ext_len] = '\0';
+    s_assocs[s_assoc_count].def = def;
     s_assocs[s_assoc_count].open_fn = open_fn;
     s_assoc_count++;
 }
@@ -53,7 +55,7 @@ void desktop_open_file(const char* path) {
     const char* ext = dot + 1;
     for (int i = 0; i < s_assoc_count; i++) {
         if (strcmp(s_assocs[i].ext, ext) == 0) {
-            s_assocs[i].open_fn(path);
+            s_assocs[i].open_fn(s_assocs[i].def, path);
             return;
         }
     }
