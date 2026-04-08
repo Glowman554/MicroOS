@@ -173,6 +173,9 @@ void wm_client_draw_rect(wm_client_t* client, int x, int y, int w, int h, uint32
 
 void wm_client_flush(wm_client_t* client) {
     client->control->dirty = 1;
+    while (client->control->dirty) {
+        yield();
+    }
 }
 
 void wm_client_set_title(wm_client_t* client, const char* title) {
