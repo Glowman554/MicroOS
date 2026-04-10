@@ -2,12 +2,6 @@
 
 #include <types.h>
 
-void window_add(int x, int y, int width, int height, const char* title, uint32_t bg_color,
-                void (*init)(window_instance_t*),
-                void (*update)(window_instance_t*, event_t*),
-                void (*draw)(window_instance_t*),
-                void (*cleanup)(window_instance_t*));
-
 void window_add_with_state(int x, int y, int width, int height, const char* title, uint32_t bg_color,
                            void* state,
                            void (*init)(window_instance_t*),

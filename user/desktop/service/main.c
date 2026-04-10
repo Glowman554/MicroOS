@@ -1,5 +1,6 @@
 #include <wm_client.h>
 #include <wm_protocol.h>
+#include <ui/button.h>
 #include <non-standard/sys/spawn.h>
 #include <non-standard/sys/time.h>
 #include <non-standard/sys/message.h>
@@ -35,7 +36,6 @@ int main(int argc, char** argv) {
     wm_client_set_title(&client, "Services");
     wm_client_set_title_bar_color(&client, 0x20354a);
     wm_client_set_bg_color(&client, BG_COLOR);
-    wm_client_set_realtime(&client, true);
 
     int cw = wm_client_width(&client);
     int ch = wm_client_height(&client);
@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
     long next_poll_ms = 0;
     char status_text[96] = { 0 };
 
-    wm_button_t refresh_btn;
-    wm_btn_init(&refresh_btn, cw - 72, 4, 68, 18, "Refresh");
+    ui_button_t refresh_btn;
+    ui_button_init(&refresh_btn, cw - 72, 4, 68, 18, "Refresh");
     refresh_btn.bg_color = 0x224455;
     refresh_btn.hover_color = 0x3377aa;
 
@@ -62,12 +62,12 @@ int main(int argc, char** argv) {
         max_visible = MAX_SERVICES;
     }
 
-    wm_button_t* start_btns = malloc(sizeof(wm_button_t) * max_visible);
-    wm_button_t* stop_btns  = malloc(sizeof(wm_button_t) * max_visible);
-    wm_button_t* restart_btns = malloc(sizeof(wm_button_t) * max_visible);
-    memset(start_btns, 0, sizeof(wm_button_t) * max_visible);
-    memset(stop_btns, 0, sizeof(wm_button_t) * max_visible);
-    memset(restart_btns, 0, sizeof(wm_button_t) * max_visible);
+    ui_button_t* start_btns = malloc(sizeof(ui_button_t) * max_visible);
+    ui_button_t* stop_btns  = malloc(sizeof(ui_button_t) * max_visible);
+    ui_button_t* restart_btns = malloc(sizeof(ui_button_t) * max_visible);
+    memset(start_btns, 0, sizeof(ui_button_t) * max_visible);
+    memset(stop_btns, 0, sizeof(ui_button_t) * max_visible);
+    memset(restart_btns, 0, sizeof(ui_button_t) * max_visible);
 
     int dummy = 0;
     message_send(TOPIC_SERVICE_LIST, &dummy, sizeof(dummy));
@@ -80,82 +80,68 @@ int main(int argc, char** argv) {
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
-            if (evt.type == WM_EVENT_MOUSE_CLICK && evt.button == WM_MOUSE_BUTTON_LEFT) {
-                if (wm_btn_hit(&refresh_btn, evt.x, evt.y) && !waiting_for_list && !waiting_for_op) {
-                    message_send(TOPIC_SERVICE_LIST, &dummy, sizeof(dummy));
-                    waiting_for_list = 1;
+            need_redraw |= ui_button_update(&refresh_btn, &evt);
+            if (has_list) {
+                int count = list.count;
+                if (count > max_visible) {
+                    count = max_visible;
+                }
+                for (int i = 0; i < count; i++) {
+                    need_redraw |= ui_button_update(&start_btns[i], &evt);
+                    need_redraw |= ui_button_update(&stop_btns[i], &evt);
+                    need_redraw |= ui_button_update(&restart_btns[i], &evt);
+                }
+            }
+        }
+
+        if (ui_button_clicked(&refresh_btn) && !waiting_for_list && !waiting_for_op) {
+            message_send(TOPIC_SERVICE_LIST, &dummy, sizeof(dummy));
+            waiting_for_list = 1;
+            next_poll_ms = time_ms() + POLL_INTERVAL_MS;
+            strcpy(status_text, "Requesting service list...");
+            need_redraw = 1;
+        }
+
+        if (has_list && !waiting_for_list && !waiting_for_op) {
+            int count = list.count;
+            if (count > max_visible) {
+                count = max_visible;
+            }
+
+            for (int i = 0; i < count; i++) {
+                if (ui_button_clicked(&start_btns[i])) {
+                    service_op_request_t req = { 0 };
+                    size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
+                    memcpy(req.name, list.services[i].name, slen);
+                    req.name[slen] = 0;
+                    message_send(TOPIC_SERVICE_START, &req, sizeof(req));
+                    waiting_for_op = 1;
                     next_poll_ms = time_ms() + POLL_INTERVAL_MS;
-                    strcpy(status_text, "Requesting service list...");
+                    sprintf(status_text, "Starting '%s'...", req.name);
                     need_redraw = 1;
                 }
 
-                if (has_list) {
-                    int count = list.count;
-                    if (count > max_visible) {
-                        count = max_visible;
-                    }
-
-                    for (int i = 0; i < count; i++) {
-                        if (wm_btn_hit(&start_btns[i], evt.x, evt.y) && !waiting_for_list && !waiting_for_op) {
-                            service_op_request_t req = { 0 };
-
-                            size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
-                            memcpy(req.name, list.services[i].name, slen);
-                            req.name[slen] = 0;
-
-                            message_send(TOPIC_SERVICE_START, &req, sizeof(req));
-                            waiting_for_op = 1;
-                            next_poll_ms = time_ms() + POLL_INTERVAL_MS;
-                            sprintf(status_text, "Starting '%s'...", req.name);
-                            need_redraw = 1;
-                        }
-                        
-                        if (wm_btn_hit(&stop_btns[i], evt.x, evt.y) && !waiting_for_list && !waiting_for_op) {
-                            service_op_request_t req = { 0 };
-                            
-                            size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
-                            memcpy(req.name, list.services[i].name, slen);
-                            req.name[slen] = 0;
-
-                            message_send(TOPIC_SERVICE_STOP, &req, sizeof(req));
-                            waiting_for_op = 1;
-                            next_poll_ms = time_ms() + POLL_INTERVAL_MS;
-                            sprintf(status_text, "Stopping '%s'...", req.name);
-                            need_redraw = 1;
-                        }
-
-                        if (wm_btn_hit(&restart_btns[i], evt.x, evt.y) && !waiting_for_list && !waiting_for_op) {
-                            service_op_request_t req = { 0 };
-                            
-                            size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
-                            memcpy(req.name, list.services[i].name, slen);
-                            req.name[slen] = 0;
-
-                            message_send(TOPIC_SERVICE_RESTART, &req, sizeof(req));
-                            waiting_for_op = 1;
-                            next_poll_ms = time_ms() + POLL_INTERVAL_MS;
-                            sprintf(status_text, "Restarting '%s'...", req.name);
-                            need_redraw = 1;
-                        }
-                    }
+                if (ui_button_clicked(&stop_btns[i])) {
+                    service_op_request_t req = { 0 };
+                    size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
+                    memcpy(req.name, list.services[i].name, slen);
+                    req.name[slen] = 0;
+                    message_send(TOPIC_SERVICE_STOP, &req, sizeof(req));
+                    waiting_for_op = 1;
+                    next_poll_ms = time_ms() + POLL_INTERVAL_MS;
+                    sprintf(status_text, "Stopping '%s'...", req.name);
+                    need_redraw = 1;
                 }
-            }
-            if (evt.type == WM_EVENT_MOUSE_MOVE) {
-                int changed = 0;
-                changed |= wm_btn_update_hover(&refresh_btn, evt.x, evt.y);
-                if (has_list) {
-                    int count = list.count;
-                    if (count > max_visible) {
-                        count = max_visible;
-                    }
 
-                    for (int i = 0; i < count; i++) {
-                        changed |= wm_btn_update_hover(&start_btns[i], evt.x, evt.y);
-                        changed |= wm_btn_update_hover(&stop_btns[i], evt.x, evt.y);
-                        changed |= wm_btn_update_hover(&restart_btns[i], evt.x, evt.y);
-                    }
-                }
-                if (changed) {
+                if (ui_button_clicked(&restart_btns[i])) {
+                    service_op_request_t req = { 0 };
+                    size_t slen = strnlen(list.services[i].name, SERVICE_NAME_LEN - 1);
+                    memcpy(req.name, list.services[i].name, slen);
+                    req.name[slen] = 0;
+                    message_send(TOPIC_SERVICE_RESTART, &req, sizeof(req));
+                    waiting_for_op = 1;
+                    next_poll_ms = time_ms() + POLL_INTERVAL_MS;
+                    sprintf(status_text, "Restarting '%s'...", req.name);
                     need_redraw = 1;
                 }
             }
@@ -181,13 +167,13 @@ int main(int argc, char** argv) {
                     int action_x = cw - (BUTTON_W * 3 + 10);
                     for (int i = 0; i < count; i++) {
                         int row_y = TABLE_START_Y + i * ROW_HEIGHT;
-                        wm_btn_init(&start_btns[i], action_x, row_y, BUTTON_W, BUTTON_H, "Start");
+                        ui_button_init(&start_btns[i], action_x, row_y, BUTTON_W, BUTTON_H, "Start");
                         start_btns[i].bg_color = 0x244426;
                         start_btns[i].hover_color = 0x2f6633;
-                        wm_btn_init(&stop_btns[i], action_x + BUTTON_W + 3, row_y, BUTTON_W, BUTTON_H, "Stop");
+                        ui_button_init(&stop_btns[i], action_x + BUTTON_W + 3, row_y, BUTTON_W, BUTTON_H, "Stop");
                         stop_btns[i].bg_color = 0x553322;
                         stop_btns[i].hover_color = 0x885533;
-                        wm_btn_init(&restart_btns[i], action_x + (BUTTON_W + 3) * 2, row_y, BUTTON_W, BUTTON_H, "Again");
+                        ui_button_init(&restart_btns[i], action_x + (BUTTON_W + 3) * 2, row_y, BUTTON_W, BUTTON_H, "Again");
                         restart_btns[i].bg_color = 0x334466;
                         restart_btns[i].hover_color = 0x4477aa;
                     }
@@ -217,7 +203,7 @@ int main(int argc, char** argv) {
             int h = wm_client_height(&client);
             wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
 
-            wm_btn_draw(&refresh_btn, &client);
+            ui_button_draw(&refresh_btn, &client);
 
             wm_client_draw_line(&client, 0, 24, w, 24, 0x335577);
             wm_client_draw_string(&client, 4, 28, "Service", 0x99ccff, BG_COLOR);
@@ -242,9 +228,9 @@ int main(int argc, char** argv) {
                     sprintf(num_buf, "%d", svc->retry);
                     wm_client_draw_string(&client, 228, row_y, num_buf, 0xffffff, BG_COLOR);
 
-                    wm_btn_draw(&start_btns[i], &client);
-                    wm_btn_draw(&stop_btns[i], &client);
-                    wm_btn_draw(&restart_btns[i], &client);
+                    ui_button_draw(&start_btns[i], &client);
+                    ui_button_draw(&stop_btns[i], &client);
+                    ui_button_draw(&restart_btns[i], &client);
                 }
             }
 

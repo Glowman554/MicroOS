@@ -68,5 +68,4 @@ typedef struct {
     char title[64];
     uint32_t bg_color;
     uint32_t title_bar_color;
-    int is_realtime;
 } wm_shared_t;

@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "windows/launcher/launcher.h"
-#include <filepicker.h>
-
 window_definition_t** window_definitions = NULL;
 
 void register_window(window_definition_t* def) {
@@ -93,7 +90,6 @@ void register_windows(void) {
     window_definitions = array_create(sizeof(window_definition_t*), 12);
 
     // TODO: load from config file?
-    register_window(&launcher_definition);
     register_window(&counter_def);
     register_window(&explorer_def);
     register_window(&taskmgr_def);

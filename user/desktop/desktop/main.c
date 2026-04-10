@@ -12,8 +12,6 @@
 #include <desktop.h>
 #include <windows.h>
 
-#include "windows/launcher/launcher.h"
-
 psf1_font_t font;
 char** global_envp;
 
@@ -32,7 +30,6 @@ int main(int argc, char** argv, char** envp) {
 
     register_windows();
 
-    register_launcher_window(NULL);
     desktop_start_menu_init();
     
     desktop_draw_all();
@@ -205,23 +202,6 @@ int main(int argc, char** argv, char** envp) {
                         fw->update(fw, &aevt);
                         if (fw->is_dirty) should_redraw = true;
                     }
-                }
-            }
-        }
-
-        for (int i = 0; i < window_get_count(); i++) {
-            window_instance_t* w = window_get(i);
-            if (w && w->is_realtime && w->update && !w->is_minimized) {
-                event_t none_evt;
-                none_evt.type = EVENT_NONE;
-                none_evt.key = 0;
-                none_evt.arrow = 0;
-                none_evt.x = 0;
-                none_evt.y = 0;
-                none_evt.button = 0;
-                w->update(w, &none_evt);
-                if (w->is_dirty) {
-                    should_redraw = true;
                 }
             }
         }

@@ -1,5 +1,6 @@
 #include <wm_client.h>
 #include <wm_protocol.h>
+#include <ui/button.h>
 #include <non-standard/sys/spawn.h>
 #include <non-standard/sys/time.h>
 #include <non-standard/sys/raminfo.h>
@@ -37,41 +38,37 @@ int main(int argc, char** argv) {
     wm_client_set_title(&client, "System Control");
     wm_client_set_title_bar_color(&client, 0x553366);
     wm_client_set_bg_color(&client, BG_COLOR);
-    wm_client_set_realtime(&client, true);
 
     int cw = wm_client_width(&client);
 
-    wm_button_t reboot_btn, shutdown_btn;
-    wm_btn_init(&reboot_btn, cw - 80, 2, 76, 22, "Reboot");
+    ui_button_t reboot_btn, shutdown_btn;
+    ui_button_init(&reboot_btn, cw - 80, 2, 76, 22, "Reboot");
     reboot_btn.bg_color = 0x554400;
     reboot_btn.hover_color = 0x887700;
-    wm_btn_init(&shutdown_btn, cw - 80, 28, 76, 22, "Shutdown");
+    ui_button_init(&shutdown_btn, cw - 80, 28, 76, 22, "Shutdown");
     shutdown_btn.bg_color = 0x660000;
     shutdown_btn.hover_color = 0xaa2222;
 
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
-            if (evt.type == WM_EVENT_MOUSE_CLICK && evt.button == WM_MOUSE_BUTTON_LEFT) {
-                if (wm_btn_hit(&reboot_btn, evt.x, evt.y)) {
-                    env(SYS_PWR_RESET_ID);
-                }
-                if (wm_btn_hit(&shutdown_btn, evt.x, evt.y)) {
-                    env(SYS_PWR_SHUTDOWN_ID);
-                }
-            }
-            if (evt.type == WM_EVENT_MOUSE_MOVE) {
-                wm_btn_update_hover(&reboot_btn, evt.x, evt.y);
-                wm_btn_update_hover(&shutdown_btn, evt.x, evt.y);
-            }
+            ui_button_update(&reboot_btn, &evt);
+            ui_button_update(&shutdown_btn, &evt);
+        }
+
+        if (ui_button_clicked(&reboot_btn)) {
+            env(SYS_PWR_RESET_ID);
+        }
+        if (ui_button_clicked(&shutdown_btn)) {
+            env(SYS_PWR_SHUTDOWN_ID);
         }
 
         int w = wm_client_width(&client);
         int h = wm_client_height(&client);
         wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
 
-        wm_btn_draw(&reboot_btn, &client);
-        wm_btn_draw(&shutdown_btn, &client);
+        ui_button_draw(&reboot_btn, &client);
+        ui_button_draw(&shutdown_btn, &client);
 
         char timebuf[128] = { 0 };
         unix_time_to_string(time(NULL), timebuf);

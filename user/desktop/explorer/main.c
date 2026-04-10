@@ -1,5 +1,6 @@
 #include <wm_client.h>
 #include <wm_protocol.h>
+#include <ui/button.h>
 #include <non-standard/sys/spawn.h>
 #include <non-standard/sys/file.h>
 #include <non-standard/stdio.h>
@@ -47,108 +48,103 @@ int main(int argc, char** argv) {
     row_area_t* rows = malloc(sizeof(row_area_t) * max_rows);
     memset(rows, 0, sizeof(row_area_t) * max_rows);
 
-    wm_button_t back_btn, up_btn, down_btn;
-    wm_btn_init(&back_btn, cw - 54, 2, 50, 18, "Back");
-    wm_btn_init(&up_btn, cw - 28, 22, 24, 20, "^");
-    wm_btn_init(&down_btn, cw - 28, ch - 24, 24, 20, "v");
+    ui_button_t back_btn, up_btn, down_btn;
+    ui_button_init(&back_btn, cw - 54, 2, 50, 18, "Back");
+    ui_button_init(&up_btn, cw - 28, 22, 24, 20, "^");
+    ui_button_init(&down_btn, cw - 28, ch - 24, 24, 20, "v");
 
     int need_redraw = 1;
 
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
+            need_redraw |= ui_button_update(&back_btn, &evt);
+            need_redraw |= ui_button_update(&up_btn, &evt);
+            need_redraw |= ui_button_update(&down_btn, &evt);
+
             if (evt.type == WM_EVENT_MOUSE_CLICK && evt.button == WM_MOUSE_BUTTON_LEFT) {
-                if (wm_btn_hit(&back_btn, evt.x, evt.y)) {
-                    if (!fs_mode) {
-                        char full_path[128] = { 0 };
-                        strcpy(full_path, cwd);
-                        int fp_len = strlen(full_path);
-                        if (fp_len > 0 && full_path[fp_len - 1] != '/') {
-                            strcat(full_path, "/");
-                        }
+                for (int i = 0; i < max_rows; i++) {
+                    if (rows[i].w && rows[i].h &&
+                        evt.x >= rows[i].x && evt.x < rows[i].x + rows[i].w &&
+                        evt.y >= rows[i].y && evt.y < rows[i].y + rows[i].h) {
 
-                        strcat(full_path, "..");
-
-                        char path_buf[256] = { 0 };
-                        if (!resolve(full_path, path_buf)) {
-                            fs_mode = true;
-                            memset(cwd, 0, sizeof(cwd));
+                        if (fs_mode) {
+                            char out[512] = { 0 };
+                            if (fs_at(out, offset + i) && out[0]) {
+                                strcat(out, ":/");
+                                memset(cwd, 0, sizeof(cwd));
+                                strcpy(cwd, out);
+                                fs_mode = false;
+                                offset = 0;
+                                need_redraw = 1;
+                            }
                         } else {
-                            memset(cwd, 0, sizeof(cwd));
-                            strcpy(cwd, path_buf);
-                        }
-                        offset = 0;
-                    }
-                    need_redraw = 1;
-                } else if (wm_btn_hit(&up_btn, evt.x, evt.y)) {
-                    if (offset > 0) {
-                        offset--;
-                    }
-
-                    need_redraw = 1;
-                } else if (wm_btn_hit(&down_btn, evt.x, evt.y)) {
-                    offset++;
-                    need_redraw = 1;
-                } else {
-                    for (int i = 0; i < max_rows; i++) {
-                        if (rows[i].w && rows[i].h &&
-                            evt.x >= rows[i].x && evt.x < rows[i].x + rows[i].w &&
-                            evt.y >= rows[i].y && evt.y < rows[i].y + rows[i].h) {
-
-                            if (fs_mode) {
-                                char out[512] = { 0 };
-                                if (fs_at(out, offset + i) && out[0]) {
-                                    strcat(out, ":/");
-                                    memset(cwd, 0, sizeof(cwd));
-                                    strcpy(cwd, out);
-                                    fs_mode = false;
-                                    offset = 0;
-                                    need_redraw = 1;
+                            dir_t dir;
+                            dir_at(cwd, offset + i, &dir);
+                            if (!dir.is_none) {
+                                char full_path[128] = { 0 };
+                                strcpy(full_path, cwd);
+                                int fp_len = strlen(full_path);
+                                if (fp_len > 0 && full_path[fp_len - 1] != '/') {
+                                    strcat(full_path, "/");
                                 }
-                            } else {
-                                dir_t dir;
-                                dir_at(cwd, offset + i, &dir);
-                                if (!dir.is_none) {
-                                    char full_path[128] = { 0 };
-                                    strcpy(full_path, cwd);
-                                    int fp_len = strlen(full_path);
-                                    if (fp_len > 0 && full_path[fp_len - 1] != '/') {
-                                        strcat(full_path, "/");
-                                    }
-                                    strcat(full_path, dir.name);
+                                strcat(full_path, dir.name);
 
-                                    if (dir.type == ENTRY_DIR) {
-                                        char path_buf[256] = { 0 };
-                                        if (!resolve(full_path, path_buf)) {
-                                            fs_mode = true;
-                                            memset(cwd, 0, sizeof(cwd));
-                                            offset = 0;
-                                        } else {
-                                            memset(cwd, 0, sizeof(cwd));
-                                            strcpy(cwd, path_buf);
-                                            offset = 0;
-                                        }
-                                        need_redraw = 1;
-                                    } else if (dir.type == ENTRY_FILE) {
-                                        message_send(TOPIC_DESKTOP_OPEN_FILE, full_path, strlen(full_path) + 1);
+                                if (dir.type == ENTRY_DIR) {
+                                    char path_buf[256] = { 0 };
+                                    if (!resolve(full_path, path_buf)) {
+                                        fs_mode = true;
+                                        memset(cwd, 0, sizeof(cwd));
+                                        offset = 0;
+                                    } else {
+                                        memset(cwd, 0, sizeof(cwd));
+                                        strcpy(cwd, path_buf);
+                                        offset = 0;
                                     }
+                                    need_redraw = 1;
+                                } else if (dir.type == ENTRY_FILE) {
+                                    message_send(TOPIC_DESKTOP_OPEN_FILE, full_path, strlen(full_path) + 1);
                                 }
                             }
-                            break;
                         }
+                        break;
                     }
                 }
             }
+        }
 
-            if (evt.type == WM_EVENT_MOUSE_MOVE) {
-                int changed = 0;
-                changed |= wm_btn_update_hover(&back_btn, evt.x, evt.y);
-                changed |= wm_btn_update_hover(&up_btn, evt.x, evt.y);
-                changed |= wm_btn_update_hover(&down_btn, evt.x, evt.y);
-                if (changed) {
-                    need_redraw = 1;
+        if (ui_button_clicked(&back_btn)) {
+            if (!fs_mode) {
+                char full_path[128] = { 0 };
+                strcpy(full_path, cwd);
+                int fp_len = strlen(full_path);
+                if (fp_len > 0 && full_path[fp_len - 1] != '/') {
+                    strcat(full_path, "/");
                 }
+
+                strcat(full_path, "..");
+
+                char path_buf[256] = { 0 };
+                if (!resolve(full_path, path_buf)) {
+                    fs_mode = true;
+                    memset(cwd, 0, sizeof(cwd));
+                } else {
+                    memset(cwd, 0, sizeof(cwd));
+                    strcpy(cwd, path_buf);
+                }
+                offset = 0;
             }
+            need_redraw = 1;
+        }
+        if (ui_button_clicked(&up_btn)) {
+            if (offset > 0) {
+                offset--;
+            }
+            need_redraw = 1;
+        }
+        if (ui_button_clicked(&down_btn)) {
+            offset++;
+            need_redraw = 1;
         }
 
         if (need_redraw) {
@@ -159,9 +155,9 @@ int main(int argc, char** argv) {
             wm_client_draw_string(&client, 2, 2, cwd[0] ? cwd : "(select filesystem)", 0xffffff, BG_COLOR);
             wm_client_draw_line(&client, 0, 20, w, 20, 0x444444);
 
-            wm_btn_draw(&back_btn, &client);
-            wm_btn_draw(&up_btn, &client);
-            wm_btn_draw(&down_btn, &client);
+            ui_button_draw(&back_btn, &client);
+            ui_button_draw(&up_btn, &client);
+            ui_button_draw(&down_btn, &client);
 
             int start_y = 32;
             memset(rows, 0, sizeof(row_area_t) * max_rows);

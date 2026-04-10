@@ -13,7 +13,6 @@ int main(int argc, char** argv) {
     wm_client_set_title(&client, "Task Manager");
     wm_client_set_title_bar_color(&client, 0x884422);
     wm_client_set_bg_color(&client, BG_COLOR);
-    wm_client_set_realtime(&client, true);
 
     task_list_t tasks[64] = { 0 };
     int count = 0;

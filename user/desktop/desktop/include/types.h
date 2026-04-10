@@ -112,7 +112,6 @@ typedef struct window_instance {
     click_area_t minimize_button;
     bool is_focused;
     bool is_dirty;
-    bool is_realtime;
     bool is_minimized;
     
     drag_type_t drag_state;

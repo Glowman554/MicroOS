@@ -1,5 +1,6 @@
 #include <wm_client.h>
 #include <wm_protocol.h>
+#include <ui/button.h>
 #include <non-standard/sys/spawn.h>
 #include <non-standard/sys/file.h>
 #include <non-standard/net/ipv4.h>
@@ -34,10 +35,10 @@ int main(int argc, char** argv) {
     int ch = wm_client_height(&client);
     int interface = 0;
 
-    wm_button_t up_btn, down_btn, dhcp_btn;
-    wm_btn_init(&up_btn, cw - 28, 2, 24, 20, "^");
-    wm_btn_init(&down_btn, cw - 28, ch - 24, 24, 20, "v");
-    wm_btn_init(&dhcp_btn, cw - 54, 26, 50, 20, "DHCP");
+    ui_button_t up_btn, down_btn, dhcp_btn;
+    ui_button_init(&up_btn, cw - 28, 2, 24, 20, "^");
+    ui_button_init(&down_btn, cw - 28, ch - 24, 24, 20, "v");
+    ui_button_init(&dhcp_btn, cw - 54, 26, 50, 20, "DHCP");
     dhcp_btn.bg_color = 0x336644;
     dhcp_btn.hover_color = 0x44aa66;
 
@@ -46,34 +47,24 @@ int main(int argc, char** argv) {
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
-            if (evt.type == WM_EVENT_MOUSE_CLICK && evt.button == WM_MOUSE_BUTTON_LEFT) {
-                if (wm_btn_hit(&up_btn, evt.x, evt.y)) {
-                    interface--;
-                    need_redraw = 1;
-                }
+            need_redraw |= ui_button_update(&up_btn, &evt);
+            need_redraw |= ui_button_update(&down_btn, &evt);
+            need_redraw |= ui_button_update(&dhcp_btn, &evt);
+        }
 
-                if (wm_btn_hit(&down_btn, evt.x, evt.y)) {
-                    interface++;
-                    need_redraw = 1;
-                }
-
-                if (wm_btn_hit(&dhcp_btn, evt.x, evt.y)) {
-                    char cmd_str[32] = { 0 };
-                    sprintf(cmd_str, "dhcp -i %d", interface);
-                    system(cmd_str);
-                    need_redraw = 1;
-                }
-            }
-
-            if (evt.type == WM_EVENT_MOUSE_MOVE) {
-                int changed = 0;
-                changed |= wm_btn_update_hover(&up_btn, evt.x, evt.y);
-                changed |= wm_btn_update_hover(&down_btn, evt.x, evt.y);
-                changed |= wm_btn_update_hover(&dhcp_btn, evt.x, evt.y);
-                if (changed) {
-                    need_redraw = 1;
-                }
-            }
+        if (ui_button_clicked(&up_btn)) {
+            interface--;
+            need_redraw = 1;
+        }
+        if (ui_button_clicked(&down_btn)) {
+            interface++;
+            need_redraw = 1;
+        }
+        if (ui_button_clicked(&dhcp_btn)) {
+            char cmd_str[32] = { 0 };
+            sprintf(cmd_str, "dhcp -i %d", interface);
+            system(cmd_str);
+            need_redraw = 1;
         }
 
 
@@ -82,9 +73,9 @@ int main(int argc, char** argv) {
             int h = wm_client_height(&client);
             wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
 
-            wm_btn_draw(&up_btn, &client);
-            wm_btn_draw(&down_btn, &client);
-            wm_btn_draw(&dhcp_btn, &client);
+            ui_button_draw(&up_btn, &client);
+            ui_button_draw(&down_btn, &client);
+            ui_button_draw(&dhcp_btn, &client);
 
             char buf[128] = { 0 };
             int line = 0;

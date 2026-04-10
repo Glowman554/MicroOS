@@ -55,7 +55,6 @@ void setup_shm_control(external_state_t* est, window_instance_t* w, int slot, in
     memcpy(ctl->title, w->title, 64);
     ctl->bg_color = w->bg_color;
     ctl->title_bar_color = w->title_bar_color;
-    ctl->is_realtime = 0;
 
     est->control = ctl;
     est->pixels = WM_SHM_PIXELS(slot);
@@ -175,7 +174,7 @@ void external_window_send_event(window_instance_t* w, event_t* event) {
         return;
     }
 
-    if (event->type == EVENT_NONE) {
+    if (event->type == EVENT_NONE) { // event is only to tick the local update
         return;
     }
 
@@ -213,8 +212,6 @@ void external_window_update(window_instance_t* w, event_t* event) {
     }
     w->bg_color = ctl->bg_color;
     w->title_bar_color = ctl->title_bar_color;
-    w->is_realtime = ctl->is_realtime != 0;
-
     external_window_send_event(w, event);
 
     if (ctl->dirty) {

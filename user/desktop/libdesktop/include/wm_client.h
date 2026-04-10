@@ -49,24 +49,4 @@ void wm_client_flush(wm_client_t* client);
 void wm_client_set_title(wm_client_t* client, const char* title);
 void wm_client_set_bg_color(wm_client_t* client, uint32_t color);
 void wm_client_set_title_bar_color(wm_client_t* client, uint32_t color);
-void wm_client_set_realtime(wm_client_t* client, bool realtime);
 
-// ---------- Button widget ----------
-
-typedef struct {
-    int x, y, w, h;
-    const char* label;
-    uint32_t bg_color;
-    uint32_t hover_color;
-    uint32_t text_color;
-    uint32_t border_color;
-    int is_hovered;
-} wm_button_t;
-
-void wm_btn_init(wm_button_t* b, int x, int y, int w, int h, const char* label);
-
-void wm_btn_draw(wm_button_t* b, wm_client_t* c);
-
-int wm_btn_hit(wm_button_t* b, int x, int y);
-
-int wm_btn_update_hover(wm_button_t* b, int mouse_x, int mouse_y);

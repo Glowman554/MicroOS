@@ -7,40 +7,6 @@ window_instance_t windows[MAX_WINDOWS];
 int window_count = 0;
 int focused_window = -1;
 
-void window_add(int x, int y, int width, int height, const char* title, uint32_t bg_color,
-                void (*init)(window_instance_t*),
-                void (*update)(window_instance_t*, event_t*),
-                void (*draw)(window_instance_t*),
-                void (*cleanup)(window_instance_t*)) {
-    if (window_count >= MAX_WINDOWS) {
-        return;
-    }
-    
-    window_instance_t* w = &windows[window_count];
-    memset(w, 0, sizeof(window_instance_t));
-    w->x = x;
-    w->y = y;
-    w->width = width;
-    w->height = height;
-    memset(w->title, 0, sizeof(w->title));
-    strcpy(w->title, title);
-    w->bg_color = bg_color;
-    w->title_bar_color = 0x444477;
-    w->init = init;
-    w->update = update;
-    w->draw = draw;
-    w->cleanup = cleanup;
-    w->is_focused = false;
-    w->is_dirty = true;
-    
-    if (init) {
-        init(w);
-    }
-    
-    window_count++;
-    focused_window = window_count - 1;
-}
-
 void window_add_with_state(int x, int y, int width, int height, const char* title, uint32_t bg_color,
                            void* state,
                            void (*init)(window_instance_t*),
