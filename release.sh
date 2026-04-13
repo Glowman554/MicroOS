@@ -127,7 +127,7 @@ function install_pkgs_initrd {
     (
         cp res/initrd res/initrd-install -rv
         cd res/initrd-install
-../../tools/microemu/microemu root:/bin/init.mex <<EOF
+../../tools/microemu/microemu root:/bin/init.mex bin/terminal.mex <<EOF
 cd pkgs
 terminal all.msh
 pwr off

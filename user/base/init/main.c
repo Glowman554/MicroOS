@@ -57,8 +57,14 @@ void envp_append(char* key, char* val) {
 int main(int argc, char* argv[]) {
 	bool copy = false;
 
-	if (argc == 2 && strcmp(argv[1], "tmpfs") == 0) {
-		copy = true;
+	char* init_process = INIT_PROCESS;
+
+	if (argc == 2) {
+		if (strcmp(argv[1], "tmpfs") == 0) {
+			copy = true;
+		} else {
+			init_process = argv[1];
+		}
 	} 
 
 	char cwd[64] = { 0 };
@@ -133,7 +139,7 @@ int main(int argc, char* argv[]) {
 
 	char process[128] = { 0 };
 	strcat(process, cwd);
-	strcat(process, INIT_PROCESS);
+	strcat(process, init_process);
 #ifdef INIT_DEBUG
 	printf("got process %s\n", process);
 #endif

@@ -66,6 +66,7 @@ emu_proc_t *load_elf_into_proc(uint8_t *file, size_t elf_size) {
     emu_proc_t *proc = alloc_proc();
     if (!proc) {
         fprintf(stderr, "[sched] no free process slots\n");
+        exit(1);
         return NULL;
     }
 
