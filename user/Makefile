@@ -18,7 +18,11 @@ PROGRAMS += network/dhcp network/httpget network/ip network/listen network/nsloo
 PROGRAMS += services/resolved services/scheduler services/service services/shortcutd
 
 ifeq ($(GUI),1)
-	PROGRAMS += base/desktop
+	LIBS += desktop/libdesktop
+
+	PROGRAMS += desktop/desktop desktop/counter desktop/sysctl desktop/taskmgr \
+	            desktop/netinfo desktop/explorer desktop/imgview desktop/service \
+	            desktop/terminal desktop/edit
 endif
 
 all:
