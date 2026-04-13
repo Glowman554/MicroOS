@@ -25,7 +25,7 @@ jobs:
       with:
         go-version: '1.22'
     - name: install tools
-      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl nasm jq -y
+      run: sudo apt update && sudo apt install xorriso mtools grub-pc-bin zip gcc-i686-linux-gnu qemu-system-x86 vncsnapshot curl nasm jq libunicorn-dev -y
     - name: install fire
       run: |
         git clone https://github.com/Glowman554/FireStorm
@@ -50,3 +50,4 @@ jobs:
           mckrnl/mckrnl.elf
           mckrnl/mckrnl.syms
           res/initrd.saf
+          res/initrd-install.saf

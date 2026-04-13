@@ -8,8 +8,8 @@ WEBHOOK_URL="$MESSAGE_WEBHOOK"
 BUILD_TOKEN="$MICROOS_BUILD_TOKEN"
 
 function do_release {
-    if [[ "$#" -lt 9 ]]; then
-        echo "Usage: release <name> <cdrom> <cdromMinimal> <libs> <message> <screenshot> <kernel> <symbols> <initrd>"
+    if [[ "$#" -lt 10 ]]; then
+        echo "Usage: release <name> <cdrom> <cdromMinimal> <libs> <message> <screenshot> <kernel> <symbols> <initrd> <initrd-install>"
         exit 1
     fi
 
@@ -22,11 +22,12 @@ function do_release {
     local kernel="$7"
     local symbols="$8"
     local initrd="$9"
+    local initrd_install="${10}"
 
     echo "Releasing: $name"
 
     send_webhook "$name" "$cdrom" "$cdromMinimal" "$libs" "$message" "$screenshot" "$kernel" "$symbols" "$initrd"
-    trigger_build "$name" "$kernel" "$symbols" "$initrd"
+    trigger_build "$name" "$kernel" "$symbols" "$initrd_install"
 }
 
 function send_webhook {
@@ -116,8 +117,25 @@ function release {
     local kernel=$(upload_file "mckrnl/core/mckrnl.elf")
     local symbols=$(upload_file "mckrnl/core/mckrnl.syms")
     local initrd=$(upload_file "res/initrd.saf")
+    local initrd_install=$(upload_file "res/initrd-install.saf")
 
-    do_release "$1" "$cdrom" "$cdrom_minimal" "$libs" "$2" "$screenshot" "$kernel" "$symbols" "$initrd"
+    do_release "$1" "$cdrom" "$cdrom_minimal" "$libs" "$2" "$screenshot" "$kernel" "$symbols" "$initrd" "$initrd_install"
+}
+
+function install_pkgs_initrd {
+    make -C tools/microemu -B
+    (
+        cp res/initrd res/initrd-install -rv
+        cd res/initrd-install
+../../tools/microemu/microemu root:/bin/init.mex <<EOF
+cd pkgs
+terminal all.msh
+pwr off
+EOF
+        rm -rf pkgs
+    )
+
+    ./res/saf/saf-make ./res/initrd-install ./res/initrd-install.saf
 }
 
 applyPreset $1
@@ -134,5 +152,7 @@ cp cdrom.iso cdrom.minimal.iso
 make iso
 
 screenshot microos.jpg
+
+install_pkgs_initrd
 
 release $1 "$2"
