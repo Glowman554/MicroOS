@@ -54,3 +54,4 @@
 | SYS_MESSAGE_RECV | 0x35 | topic | &buffer | size | received (return) | - |
 | SYS_SOCK_LISTEN | 0x36 | nic | socket_type | port | socket_id (return) | - |
 | SYS_SOCK_ACCEPT | 0x37 | socket_id | &async | child_socket_id (return) | - | - |
+| SYS_SPAWN_PARAM | 0x38 | &params | - | - | - | - |

@@ -126,19 +126,24 @@ int spawn_and_capture(terminal_state_t* st, char** argv) {
 
     const char** envp = (const char**)st->envp;
 
-    set_env(SYS_ENV_PIN, (void*)1);
-    yield();
-    int pid = spawn(executable, (const char**)argv, envp);
+    spawn_params_t params = {
+		.path = executable,
+		.argv = (const char**) argv,
+		.envp = envp,
+		.stdout = &stdout_pipe,
+		.stdin = NULL,
+		.stderr = NULL,
+		.term = 0
+	};
+
+
+    int pid = spawn_param(&params);
 
     if (pid == -1) {
-        set_env(SYS_ENV_PIN, (void*)0);
         free(stdout_pipe.buffer);
         free(executable);
         return -1;
     }
-
-    set_pipe(pid, &stdout_pipe, PIPE_STDOUT);
-    set_env(SYS_ENV_PIN, (void*)0);
 
     while (get_proc_info(pid)) {
         set_wait_and_yield_term();

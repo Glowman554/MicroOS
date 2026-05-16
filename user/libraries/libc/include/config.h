@@ -66,6 +66,7 @@
 #define SYS_MESSAGE_RECV_ID 53
 #define SYS_SOCK_LISTEN_ID 54
 #define SYS_SOCK_ACCEPT_ID 55
+#define SYS_SPAWN_PARAM_ID 56
 // End Syscalls
 
 // End LibC configuration

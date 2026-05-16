@@ -90,3 +90,5 @@ cpu_registers_t* sys_sock_accept(cpu_registers_t* regs);
 
 cpu_registers_t* sys_message_send(cpu_registers_t* regs);
 cpu_registers_t* sys_message_recv(cpu_registers_t* regs);
+
+cpu_registers_t* sys_spawn_param(cpu_registers_t* regs);

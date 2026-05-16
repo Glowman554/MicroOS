@@ -91,6 +91,7 @@ void init_syscalls() {
 	register_syscall(SYS_GET_EXIT_CODE_ID, sys_get_exit_code);
 	register_syscall(SYS_MESSAGE_SEND_ID, sys_message_send);
 	register_syscall(SYS_MESSAGE_RECV_ID, sys_message_recv);
+	register_syscall(SYS_SPAWN_PARAM_ID, sys_spawn_param);
 
 	register_interrupt_handler(0x30, syscall_handler, NULL);
 }

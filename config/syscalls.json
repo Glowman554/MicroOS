@@ -430,6 +430,13 @@
 				"&async",
 				"child_socket_id (return)"
 			]
+		},
+		{
+			"name": "SYS_SPAWN_PARAM",
+			"arguments": [
+				"0x38",
+				"&params"
+			]
 		}
 	]
 }

@@ -47,3 +47,9 @@ int get_exit_code(int pid) {
 	asm volatile("int $0x30" : "=c"(code) : "a"(SYS_GET_EXIT_CODE_ID), "b"(pid));
 	return code;
 }
+
+int spawn_param(spawn_params_t* params) {
+	int pid;
+	asm volatile("int $0x30" : "=S"(pid) : "a"(SYS_SPAWN_PARAM_ID), "b"(params));
+	return pid;
+}

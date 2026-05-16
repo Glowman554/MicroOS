@@ -30,17 +30,22 @@ int spawn_and_capture(char** argv, pipe_t* stdout_pipe) {
 
     const char** envp = (const char**)env(SYS_GET_ENVP_ID);
 
-    set_env(SYS_ENV_PIN, (void*)1);
-    int pid = spawn(executable, (const char**)argv, envp);
+	spawn_params_t params = {
+		.path = executable,
+		.argv = (const char**) argv,
+		.envp = envp,
+		.stdout = stdout_pipe,
+		.stdin = NULL,
+		.stderr = NULL,
+		.term = 0
+	};
+
+    int pid = spawn_param(&params);
 
     if (pid == -1) {
-        set_env(SYS_ENV_PIN, (void*)0);
         free(executable);
         return -1;
     }
-
-    set_pipe(pid, stdout_pipe, PIPE_STDOUT);
-    set_env(SYS_ENV_PIN, (void*)0);
 
     while (get_proc_info(pid)) {
         set_wait_and_yield_term();

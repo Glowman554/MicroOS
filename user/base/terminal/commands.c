@@ -438,24 +438,22 @@ int spawn_process(char** argv, char** terminal_envp, pipe_t* stdout, pipe_t* std
 	char* executable = search_executable((char*) argv[0]);
 	const char** envp = (const char**) terminal_envp;
 
-	set_env(SYS_ENV_PIN, (void*) 1); // we dont want that the program executes until init_ipc is done. so just pin ourself until it is done
-	yield();
-	int pid = spawn(executable, (const char**) argv, envp);
+	spawn_params_t params = {
+		.path = executable,
+		.argv = (const char**) argv,
+		.envp = envp,
+		.stdout = stdout,
+		.stdin = stdin,
+		.stderr = NULL,
+		.term = 0
+	};
+
+	int pid = spawn_param(&params);
 
 	if (pid == -1) {
 		set_env(SYS_ENV_PIN, (void*) 0);
 		return -1;
 	}
-
-	if (stdout != NULL) {
-		set_pipe(pid, stdout, PIPE_STDOUT);
-	}
-
-	if (stdin != NULL) {
-		set_pipe(pid, stdin, PIPE_STDIN);
-	}
-
-	set_env(SYS_ENV_PIN, (void*) 0);
 
 	while (get_proc_info(pid)) {
 		set_wait_and_yield();

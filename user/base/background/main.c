@@ -26,10 +26,17 @@ int main(int argc, char* argv[], char* envp[]) {
 	printf("Going to run %s in the background in term %d...\n", exec, term);
 #endif
 
-	set_env(SYS_ENV_PIN, (void*) 1);
-	int child = spawn(exec, (const char**) &argv[2], (const char**) envp);
-	set_term(child, term);
-	set_env(SYS_ENV_PIN, (void*) 0);
+	spawn_params_t params = {
+		.path = exec,
+		.argv = (const char**) &argv[2],
+		.envp = (const char**) envp,
+		.stdout = NULL,
+		.stdin = NULL,
+		.stderr = NULL,
+		.term = term
+	};
+
+	spawn_param(&params);
 
 	free(exec);
 
