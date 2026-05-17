@@ -29,6 +29,7 @@ extern int current_pid;
 void sched_init(void);
 
 int sched_spawn(uc_engine *parent_uc, uint32_t path_addr, uint32_t argv_addr, uint32_t envp_addr);
+int sched_spawn_param(uc_engine *parent_uc, uint32_t params_addr);
 
 int sched_load(const char *vfs_path, int host_argc, char **host_argv);
 

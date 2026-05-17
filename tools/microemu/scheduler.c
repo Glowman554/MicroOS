@@ -262,6 +262,83 @@ int sched_spawn(uc_engine *parent_uc, uint32_t path_addr, uint32_t g_argv_addr, 
     return proc->pid;
 }
 
+int sched_spawn_param(uc_engine *parent_uc, uint32_t params_addr) {
+    uint32_t path_ptr = 0;
+    uint32_t argv_ptr = 0;
+    uint32_t envp_ptr = 0;
+
+    uc_mem_read(parent_uc, params_addr + 0, &path_ptr, 4);
+    uc_mem_read(parent_uc, params_addr + 4, &argv_ptr, 4);
+    uc_mem_read(parent_uc, params_addr + 8, &envp_ptr, 4);
+
+    char path[512];
+    read_emu_string(parent_uc, path_ptr, path, sizeof(path));
+
+    const char *argv_data[64];
+    char argv_bufs[64][512];
+    int argc = 0;
+    for (int i = 0; i < 63; i++) {
+        uint32_t ptr;
+        uc_mem_read(parent_uc, argv_ptr + i * 4, &ptr, 4);
+        if (ptr == 0) break;
+        read_emu_string(parent_uc, ptr, argv_bufs[i], sizeof(argv_bufs[i]));
+        argv_data[i] = argv_bufs[i];
+        argc++;
+    }
+    argv_data[argc] = NULL;
+
+    const char *envp_data[64];
+    char envp_bufs[64][512];
+    int envc = 0;
+    for (int i = 0; i < 63; i++) {
+        uint32_t ptr;
+        uc_mem_read(parent_uc, envp_ptr + i * 4, &ptr, 4);
+        if (ptr == 0) break;
+        read_emu_string(parent_uc, ptr, envp_bufs[i], sizeof(envp_bufs[i]));
+        envp_data[i] = envp_bufs[i];
+        envc++;
+    }
+    envp_data[envc] = NULL;
+
+    file_t *f = vfs_open(path, FILE_OPEN_MODE_READ);
+    if (!f) {
+        fprintf(stderr, "[sched] spawn_param: failed to open %s\n", path);
+        return -1;
+    }
+
+    uint32_t size = f->size;
+    void *raw = malloc(size);
+    vfs_read(f, raw, size, 0);
+    vfs_close(f);
+
+    size_t elf_size;
+    uint8_t *file = mex_load(raw, size, &elf_size);
+    free(raw);
+    if (!file) {
+        fprintf(stderr, "[sched] spawn_param: failed to load %s\n", path);
+        return -1;
+    }
+
+    emu_proc_t *proc = load_elf_into_proc(file, elf_size);
+    free(file);
+    if (!proc) {
+        return -1;
+    }
+
+    setup_proc_args(proc, argv_data, envp_data);
+
+    emu_proc_t *parent = sched_current();
+    if (parent) {
+        strncpy(proc->pwd, parent->pwd, sizeof(proc->pwd) - 1);
+        proc->pwd[sizeof(proc->pwd) - 1] = '\0';
+    } else {
+        strncpy(proc->pwd, emu_pwd, sizeof(proc->pwd) - 1);
+        proc->pwd[sizeof(proc->pwd) - 1] = '\0';
+    }
+
+    return proc->pid;
+}
+
 void sched_exit_current(int code) {
     emu_proc_t *proc = sched_current();
     if (!proc) {

@@ -129,6 +129,9 @@ void hook_intr(uc_engine *uc, uint32_t intno, void *user_data) {
         case SYS_SPAWN_ID:
             sys_spawn(uc, ebx, ecx, edx);
             break;
+        case SYS_SPAWN_PARAM_ID:
+            sys_spawn_param(uc, ebx);
+            break;
         case SYS_GET_PROC_INFO_ID:
             sys_get_proc_info(uc, ebx);
             break;

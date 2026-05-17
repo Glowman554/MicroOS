@@ -61,6 +61,7 @@ void sys_yield(uc_engine *uc);
 void sys_exit(uc_engine *uc, uint32_t ebx);
 
 void sys_spawn(uc_engine *uc, uint32_t ebx, uint32_t ecx, uint32_t edx);
+void sys_spawn_param(uc_engine *uc, uint32_t ebx);
 void sys_get_proc_info(uc_engine *uc, uint32_t ebx);
 void sys_kill(uc_engine *uc, uint32_t ebx);
 void sys_get_exit_code(uc_engine *uc, uint32_t ebx);

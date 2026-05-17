@@ -29,3 +29,9 @@ void sys_get_exit_code(uc_engine *uc, uint32_t ebx) {
     uint32_t result = (uint32_t)code;
     uc_reg_write(uc, UC_X86_REG_ECX, &result);
 }
+
+void sys_spawn_param(uc_engine *uc, uint32_t ebx) {
+    int pid = sched_spawn_param(uc, ebx);
+    uint32_t result = (uint32_t)pid;
+    uc_reg_write(uc, UC_X86_REG_ESI, &result);
+}
