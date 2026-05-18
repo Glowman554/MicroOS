@@ -48,6 +48,7 @@
 #include <devices/pci.h>
 #include <devices/symbols.h>
 #include <devices/shortcut.h>
+#include <devices/system.h>
 
 #include <gdb/gdb.h>
 
@@ -273,6 +274,7 @@ void _main(multiboot_info_t* mb_info) {
 	devfs_register_file(&global_devfs, &symbols_file);
 #endif
 	devfs_register_file(&global_devfs, &shortcut_file);
+	devfs_register_file(&global_devfs, &system_file);
 
 	stage_mount();
 

@@ -14,9 +14,19 @@ typedef struct heap_segment_header {
 
 } heap_segment_header_t;
 
+typedef struct heap_information {
+	size_t total_size_kb;
+	size_t used_size_kb;
+	size_t free_size_kb;
+	size_t largest_free_segment_kb;
+	size_t segment_count;
+} heap_information_t;
+
 void* kmalloc(size_t size);
 void* krealloc(void* ptr, size_t size);
 void kfree(void* address);
 void* kcalloc(size_t count, size_t size);
+
+void heap_get_information(heap_information_t* info);
 
 void initialize_heap(size_t page_count);

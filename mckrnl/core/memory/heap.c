@@ -261,3 +261,42 @@ void* kcalloc(size_t count, size_t size) {
 	memset(addr, 0, count * size);
 	return addr;
 }
+
+void heap_get_information(heap_information_t* info) {
+	heap_segment_header_t* current_seg = (heap_segment_header_t*) heap_start;
+
+	info->total_size_kb = 0;
+	info->used_size_kb = 0;
+	info->free_size_kb = 0;
+	info->largest_free_segment_kb = 0;
+	info->segment_count = 0;
+
+	int total_size_bytes = 0;
+	int used_size_bytes = 0;
+	int free_size_bytes = 0;
+	int largest_free_segment_bytes = 0;
+
+	while(true) {
+		total_size_bytes += current_seg->length;
+		if (!current_seg->free) {			
+			used_size_bytes += current_seg->length;
+		} else {
+			free_size_bytes += current_seg->length;
+			if (current_seg->length > largest_free_segment_bytes) {
+				largest_free_segment_bytes = current_seg->length;
+			}
+		}
+		info->segment_count++;
+
+		if (current_seg->next == NULL) {
+			break;
+		}
+
+		current_seg = current_seg->next;
+	}
+
+	info->total_size_kb = total_size_bytes / 1024;
+	info->used_size_kb = used_size_bytes / 1024;
+	info->free_size_kb = free_size_bytes / 1024;
+	info->largest_free_segment_kb = largest_free_segment_bytes / 1024;
+}
