@@ -28,18 +28,49 @@ void external_window_free_slot(int slot) {
     }
 }
 
-void map_shm_pages(int slot, int pid, int content_w, int content_h) {
+void map_shm_pages(int slot, int pid) {
     uintptr_t base = (uintptr_t)WM_SHM_ADDR(slot);
 
     mmmap((void*)base, (void*)base, pid);
 
-    int pixel_bytes = content_w * content_h * 4;
-    int pixel_pages = (pixel_bytes + WM_PAGE_SIZE - 1) / WM_PAGE_SIZE;
-
-    for (int i = 0; i < pixel_pages; i++) {
+    for (int i = 0; i < WM_MAX_PIXEL_PAGES; i++) {
         uintptr_t addr = base + WM_PIXELS_OFFSET + i * WM_PAGE_SIZE;
         mmmap((void*)addr, (void*)addr, pid);
     }
+}
+
+static bool ensure_shm_content_size(window_instance_t* w) {
+    external_state_t* est = (external_state_t*)w->state;
+    if (!est || !est->control) {
+        return false;
+    }
+
+    wm_shared_t* ctl = est->control;
+    int content_w = w->width;
+    int content_h = w->height - TITLE_BAR_HEIGHT;
+
+    if (content_w > WM_MAX_PIXEL_WIDTH) {
+        content_w = WM_MAX_PIXEL_WIDTH;
+    }
+    if (content_h > WM_MAX_PIXEL_HEIGHT) {
+        content_h = WM_MAX_PIXEL_HEIGHT;
+    }
+    if (content_w < 1) {
+        content_w = 1;
+    }
+    if (content_h < 1) {
+        content_h = 1;
+    }
+
+    if (ctl->width != content_w || ctl->height != content_h) {
+        ctl->width = content_w;
+        ctl->height = content_h;
+        memset(est->pixels, 0, content_w * content_h * 4);
+        w->is_dirty = true;
+        return true;
+    }
+
+    return false;
 }
 
 void setup_shm_control(external_state_t* est, window_instance_t* w, int slot, int content_w, int content_h) {
@@ -58,6 +89,9 @@ void setup_shm_control(external_state_t* est, window_instance_t* w, int slot, in
 
     est->control = ctl;
     est->pixels = WM_SHM_PIXELS(slot);
+    est->mapped_width = content_w;
+    est->mapped_height = content_h;
+    memset(est->pixels, 0, WM_MAX_PIXEL_BYTES);
 }
 
 void wait_for_client(wm_shared_t* ctl) {
@@ -127,7 +161,7 @@ void external_window_init(window_instance_t* w) {
     free(exec);
     w->child_pid = pid;
 
-    map_shm_pages(slot, pid, content_w, content_h);
+    map_shm_pages(slot, pid);
     setup_shm_control(est, w, slot, content_w, content_h);
     wait_for_client(est->control);
 
@@ -159,7 +193,7 @@ void external_window_init_spawned(window_instance_t* w) {
 
     w->child_pid = pid;
 
-    map_shm_pages(slot, pid, content_w, content_h);
+    map_shm_pages(slot, pid);
     setup_shm_control(est, w, slot, content_w, content_h);
     wait_for_client(est->control);
 
@@ -201,6 +235,18 @@ void external_window_update(window_instance_t* w, event_t* event) {
     }
 
     wm_shared_t* ctl = est->control;
+
+    bool resized = ensure_shm_content_size(w);
+    if (resized) {
+        event_t resize_event;
+        resize_event.type = EVENT_RESIZE;
+        resize_event.x = 0;
+        resize_event.y = 0;
+        resize_event.button = 0;
+        resize_event.key = 0;
+        resize_event.arrow = 0;
+        external_window_send_event(w, &resize_event);
+    }
 
     if (!get_proc_info(est->pid)) {
         w->is_dirty = true;

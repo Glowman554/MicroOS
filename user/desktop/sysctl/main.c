@@ -6,8 +6,6 @@
 #include <non-standard/sys/raminfo.h>
 #include <non-standard/sys/env.h>
 #include <non-standard/buildin/unix_time.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
 #define BG_COLOR 0x1a0a2e
@@ -49,9 +47,23 @@ int main(int argc, char** argv) {
     shutdown_btn.bg_color = 0x660000;
     shutdown_btn.hover_color = 0xaa2222;
 
+    int last_width = cw;
+
     while (!wm_client_should_close(&client)) {
+        int w = wm_client_width(&client);
+        if (w != last_width) {
+            last_width = w;
+            reboot_btn.x = w - 80;
+            shutdown_btn.x = w - 80;
+        }
+
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                reboot_btn.x = w - 80;
+                shutdown_btn.x = w - 80;
+                continue;
+            }
             ui_button_update(&reboot_btn, &evt);
             ui_button_update(&shutdown_btn, &evt);
         }
@@ -63,7 +75,6 @@ int main(int argc, char** argv) {
             env(SYS_PWR_SHUTDOWN_ID);
         }
 
-        int w = wm_client_width(&client);
         int h = wm_client_height(&client);
         wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
 

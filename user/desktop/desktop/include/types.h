@@ -38,6 +38,7 @@ typedef enum {
     EVENT_CLOSE,
     EVENT_KEY_PRESS,
     EVENT_ARROW_KEY,
+    EVENT_RESIZE,
 } event_type_t;
 
 #define MOUSE_BUTTON_LEFT   1

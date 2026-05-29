@@ -62,6 +62,9 @@ int main(int argc, char** argv) {
         max_visible = MAX_SERVICES;
     }
 
+    int last_width = cw;
+    int last_height = ch;
+
     ui_button_t* start_btns = malloc(sizeof(ui_button_t) * max_visible);
     ui_button_t* stop_btns  = malloc(sizeof(ui_button_t) * max_visible);
     ui_button_t* restart_btns = malloc(sizeof(ui_button_t) * max_visible);
@@ -78,8 +81,31 @@ int main(int argc, char** argv) {
     int need_redraw = 1;
 
     while (!wm_client_should_close(&client)) {
+        int w = wm_client_width(&client);
+        int h = wm_client_height(&client);
+        if (w != last_width || h != last_height) {
+            last_width = w;
+            last_height = h;
+            ui_button_init(&refresh_btn, w - 72, 4, 68, 18, "Refresh");
+            refresh_btn.bg_color = 0x224455;
+            refresh_btn.hover_color = 0x3377aa;
+
+            max_visible = (h - TABLE_START_Y - 8) / ROW_HEIGHT;
+            if (max_visible < 0) {
+                max_visible = 0;
+            }
+            if (max_visible > MAX_SERVICES) {
+                max_visible = MAX_SERVICES;
+            }
+            need_redraw = 1;
+        }
+
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                need_redraw = 1;
+                continue;
+            }
             need_redraw |= ui_button_update(&refresh_btn, &evt);
             if (has_list) {
                 int count = list.count;
@@ -164,7 +190,7 @@ int main(int argc, char** argv) {
                         count = max_visible;
                     }
 
-                    int action_x = cw - (BUTTON_W * 3 + 10);
+                    int action_x = w - (BUTTON_W * 3 + 10);
                     for (int i = 0; i < count; i++) {
                         int row_y = TABLE_START_Y + i * ROW_HEIGHT;
                         ui_button_init(&start_btns[i], action_x, row_y, BUTTON_W, BUTTON_H, "Start");
@@ -216,9 +242,17 @@ int main(int argc, char** argv) {
             } else {
                 int count = list.count;
                 if (count > max_visible) count = max_visible;
+                int action_x = w - (BUTTON_W * 3 + 10);
                 for (int i = 0; i < count; i++) {
-                    service_info_t* svc = &list.services[i];
                     int row_y = TABLE_START_Y + i * ROW_HEIGHT;
+                    start_btns[i].x = action_x;
+                    start_btns[i].y = row_y;
+                    stop_btns[i].x = action_x + BUTTON_W + 3;
+                    stop_btns[i].y = row_y;
+                    restart_btns[i].x = action_x + (BUTTON_W + 3) * 2;
+                    restart_btns[i].y = row_y;
+
+                    service_info_t* svc = &list.services[i];
                     wm_client_draw_string(&client, 4, row_y, svc->name, 0xffffff, BG_COLOR);
                     wm_client_draw_string(&client, 110, row_y, status_to_string(svc->status), 0xffffff, BG_COLOR);
 

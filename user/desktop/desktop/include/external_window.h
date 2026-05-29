@@ -11,6 +11,8 @@ typedef struct {
     wm_shared_t* control;
     uint32_t* pixels;
     const char* launch_file; // for file associations
+    int mapped_width;
+    int mapped_height;
 } external_state_t;
 
 // Open an external window by spawning a child process.

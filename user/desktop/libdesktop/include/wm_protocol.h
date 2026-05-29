@@ -43,6 +43,8 @@ enum {
 #define WM_ARROW_LEFT   3
 #define WM_ARROW_RIGHT  4
 
+#define WM_EVENT_RESIZE        6
+
 typedef struct {
     int type;
     int x;

@@ -45,8 +45,9 @@ int main(int argc, char** argv) {
         max_rows = 1;
     }
 
-    row_area_t* rows = malloc(sizeof(row_area_t) * max_rows);
-    memset(rows, 0, sizeof(row_area_t) * max_rows);
+    const int max_row_capacity = 64;
+    row_area_t* rows = malloc(sizeof(row_area_t) * max_row_capacity);
+    memset(rows, 0, sizeof(row_area_t) * max_row_capacity);
 
     ui_button_t back_btn, up_btn, down_btn;
     ui_button_init(&back_btn, cw - 54, 2, 50, 18, "Back");
@@ -58,6 +59,10 @@ int main(int argc, char** argv) {
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                need_redraw = 1;
+            }
+
             need_redraw |= ui_button_update(&back_btn, &evt);
             need_redraw |= ui_button_update(&up_btn, &evt);
             need_redraw |= ui_button_update(&down_btn, &evt);
@@ -150,6 +155,20 @@ int main(int argc, char** argv) {
         if (need_redraw) {
             int w = wm_client_width(&client);
             int h = wm_client_height(&client);
+            int current_rows = (h - 50) / 16;
+            if (current_rows < 1) {
+                current_rows = 1;
+            }
+            if (current_rows > max_row_capacity) {
+                current_rows = max_row_capacity;
+            }
+            max_rows = current_rows;
+
+            back_btn.x = w - 54;
+            up_btn.x = w - 28;
+            down_btn.x = w - 28;
+            down_btn.y = h - 24;
+
             wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
 
             wm_client_draw_string(&client, 2, 2, cwd[0] ? cwd : "(select filesystem)", 0xffffff, BG_COLOR);
@@ -160,7 +179,7 @@ int main(int argc, char** argv) {
             ui_button_draw(&down_btn, &client);
 
             int start_y = 32;
-            memset(rows, 0, sizeof(row_area_t) * max_rows);
+            memset(rows, 0, sizeof(row_area_t) * max_row_capacity);
 
             if (fs_mode) {
                 for (int i = 0; i < max_rows; i++) {

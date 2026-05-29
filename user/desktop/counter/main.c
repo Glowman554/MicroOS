@@ -23,10 +23,23 @@ int main(int argc, char** argv) {
     ui_button_init(&reset_btn, 10, 76, 210, 28, "Reset");
 
     while (!wm_client_should_close(&client)) {
+        int w = wm_client_width(&client);
+
+        minus_btn.x = 10;
+        minus_btn.y = 40;
+        plus_btn.x = w - 110;
+        plus_btn.y = 40;
+        reset_btn.x = (w - 210) / 2;
+        reset_btn.y = 76;
+
         wm_event_t evt;
         int dirty = 0;
 
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                dirty = 1;
+                continue;
+            }
             dirty |= ui_button_update(&minus_btn, &evt);
             dirty |= ui_button_update(&plus_btn, &evt);
             dirty |= ui_button_update(&reset_btn, &evt);

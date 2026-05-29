@@ -228,6 +228,8 @@ int main(int argc, char** argv, char** envp) {
                     }
                     dirty = 1;
                 }
+            } else if (evt.type == WM_EVENT_RESIZE) {
+                dirty = 1;
             }
         }
 

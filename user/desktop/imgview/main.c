@@ -4,7 +4,6 @@
 #include <non-standard/sys/file.h>
 #include <non-standard/stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 
 #define BG_COLOR 0x000000
@@ -120,7 +119,28 @@ int main(int argc, char** argv) {
 
     while (!wm_client_should_close(&client)) {
         wm_event_t evt;
+        int need_redraw = 1;
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                need_redraw = 1;
+            }
+        }
+
+        if (need_redraw) {
+            int w = wm_client_width(&client);
+            int h = wm_client_height(&client);
+            wm_client_fill_rect(&client, 0, 0, w, h, BG_COLOR);
+            if (img_data && img_size > 0) {
+                fpic_image_t* fpic = (fpic_image_t*)img_data;
+                if (fpic->magic == 0xc0ffebabe) {
+                    draw_image_scaled(&client, fpic, w, h);
+                } else {
+                    wm_client_draw_string(&client, 4, 4, "Unsupported format", 0xff4444, BG_COLOR);
+                }
+            } else {
+                wm_client_draw_string(&client, 4, 4, "No image loaded", 0x888888, BG_COLOR);
+            }
+            wm_client_flush(&client);
         }
 
         yield();

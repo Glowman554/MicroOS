@@ -42,11 +42,30 @@ int main(int argc, char** argv) {
     dhcp_btn.bg_color = 0x336644;
     dhcp_btn.hover_color = 0x44aa66;
 
+    int last_width = cw;
+    int last_height = ch;
+
     int need_redraw = 1;
 
     while (!wm_client_should_close(&client)) {
+        int w = wm_client_width(&client);
+        int h = wm_client_height(&client);
+        if (w != last_width || h != last_height) {
+            last_width = w;
+            last_height = h;
+            up_btn.x = w - 28;
+            down_btn.x = w - 28;
+            down_btn.y = h - 24;
+            dhcp_btn.x = w - 54;
+            need_redraw = 1;
+        }
+
         wm_event_t evt;
         while (wm_client_poll_event(&client, &evt)) {
+            if (evt.type == WM_EVENT_RESIZE) {
+                need_redraw = 1;
+                continue;
+            }
             need_redraw |= ui_button_update(&up_btn, &evt);
             need_redraw |= ui_button_update(&down_btn, &evt);
             need_redraw |= ui_button_update(&dhcp_btn, &evt);

@@ -130,22 +130,26 @@ int main(int argc, char* argv[], char* envp[]) {
 		int dirty = 0;
 
 		while (wm_client_poll_event(&client, &evt)) {
-			if (handle_event(&state, &evt)) {
-				goto done;
-			}
-			dirty = 1;
-		}
+            if (evt.type == WM_EVENT_RESIZE) {
+                dirty = 1;
+            } else if (handle_event(&state, &evt)) {
+                goto done;
+            } else {
+                dirty = 1;
+            }
+        }
 
-		if (dirty) {
-			render_ui(&client, &state);
-			wm_client_flush(&client);
-		}
+        if (dirty) {
+            render_ui(&client, &state);
+            wm_client_flush(&client);
+        }
 
-		yield();
-	}
+        yield();
+    }
 
 done:
-	free(state.input_buffer);
-	fclose(state.file);
-	return 0;
+    free(state.input_buffer);
+    fclose(state.file);
+    return 0;
 }
+
