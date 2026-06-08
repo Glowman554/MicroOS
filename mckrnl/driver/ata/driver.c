@@ -117,6 +117,39 @@ void ata_driver_write28(ata_driver_data_t* data, uint32_t sector, uint8_t* buffe
 	}
 }
 
+uint64_t ata_driver_get_sectors(disk_driver_t* driver) {
+	ata_driver_data_t* data = (ata_driver_data_t*) driver->driver.driver_specific_data;
+
+	outb(data->port_base + DEVICE_PORT_OFFSET, data->master ? 0xA0 : 0xB0);
+	outb(data->port_base + CONTROL_PORT_OFFSET, 0);
+	outb(data->port_base + SECTOR_COUNT_OFFSET, 0);
+	outb(data->port_base + LBA_LOW_OFFSET, 0);
+	outb(data->port_base + LBA_MID_OFFSET, 0);
+	outb(data->port_base + LBA_HIGH_OFFSET, 0);
+	outb(data->port_base + COMMAND_PORT_OFFSET, 0xEC);
+
+	uint8_t status = inb(data->port_base + COMMAND_PORT_OFFSET);
+	if (status == 0x00) {
+		return 0;
+	}
+
+	while(((status & 0x80) == 0x80) && ((status & 0x01) != 0x01)) {
+		status = inb(data->port_base + COMMAND_PORT_OFFSET);
+	}
+
+	if(status & 0x01) {
+		return 0;
+	}
+
+	uint16_t identify_data[256];
+	for (int i = 0; i < 256; i++) {
+		identify_data[i] = inw(data->port_base + DATA_PORT_OFFSET);
+	}
+
+	uint64_t sectors = ((uint64_t) identify_data[61] << 16) | identify_data[60];
+	return sectors;
+}
+
 void ata_driver_flush(disk_driver_t* driver) {
 	ata_driver_data_t* data = (ata_driver_data_t*) driver->driver.driver_specific_data;
 
@@ -144,7 +177,8 @@ void ata_driver_init(driver_t* driver) {
 	if (!read_gpt((disk_driver_t*) driver)) {
 		debugf(WARNING, "ATA: Failed to read GPT");
 	}
-
+	uint64_t sectors = ((disk_driver_t*) driver)->get_sectors((disk_driver_t*) driver);
+	debugf(SPAM, "ATA driver '%s' has %d sectors", driver->get_device_name(driver), sectors);
 	register_disk((disk_driver_t*) driver);
 }
 
@@ -176,6 +210,7 @@ disk_driver_t* get_ata_driver(bool master, uint16_t port_base, char* name) {
 	driver->flush = ata_driver_flush;
 	driver->read = ata_driver_read;
 	driver->write = ata_driver_write;
+	driver->get_sectors = ata_driver_get_sectors;
 
 	driver->physical = true;
 

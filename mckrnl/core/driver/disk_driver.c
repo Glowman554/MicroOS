@@ -42,3 +42,9 @@ bool is_disk_physical(int disk_id) {
 	assert(disks[disk_id] != 0);
 	return disks[disk_id]->physical;
 }
+
+uint64_t get_disk_sectors(int disk_id) {
+	assert(disk_id >= 0 && disk_id < num_disks);
+	assert(disks[disk_id] != 0);
+	return disks[disk_id]->get_sectors(disks[disk_id]);
+}

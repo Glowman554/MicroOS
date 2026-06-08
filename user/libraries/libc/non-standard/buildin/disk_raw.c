@@ -48,3 +48,14 @@ int disk_count(bool* physical) {
 
     return cmd.disk;
 }
+
+uint64_t disk_get_sector_count(int disk) {
+    raw_disk_command_t cmd = {
+        .command = 4,
+        .disk = disk
+    };
+
+    send_command(&cmd);
+
+    return cmd.sector;
+}

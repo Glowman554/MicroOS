@@ -24,6 +24,9 @@ void disk_file_write(struct devfs_file* dfile, file_t* file, void* buf, size_t s
                 }
             }
             break;
+        case 4:
+            cmd->sector = get_disk_sectors(cmd->disk);
+            break;
         default:
             debugf(WARNING, "Unknown disk command %d\n", cmd->command);
             break;

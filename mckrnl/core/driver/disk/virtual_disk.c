@@ -29,7 +29,12 @@ void virtual_disk_flush(disk_driver_t* driver) {
 	data->disk->flush(data->disk);
 }
 
-disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset) {
+uint64_t virtual_disk_get_sectors(disk_driver_t* driver) {
+	virtual_disk_driver_data_t* data = (virtual_disk_driver_data_t*) driver->driver.driver_specific_data;
+	return data->lba_size;
+}
+
+disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset, uint64_t lba_size) {
 	disk_driver_t* driver = (disk_driver_t*) kmalloc(sizeof(disk_driver_t));
 	memset(driver, 0, sizeof(disk_driver_t));
 
@@ -40,6 +45,7 @@ disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset)
 	driver->flush = virtual_disk_flush;
 	driver->read = virtual_disk_read;
 	driver->write = virtual_disk_write;
+	driver->get_sectors = virtual_disk_get_sectors;
 
 	driver->physical = false;
 
@@ -49,6 +55,6 @@ disk_driver_t* get_virtual_disk_driver(disk_driver_t* disk, uint64_t lba_offset)
 	
 	data->disk = disk;
 	data->lba_offset = lba_offset;
-
+	data->lba_size = lba_size;
 	return driver;
 }

@@ -83,7 +83,10 @@ res:
 
 format_disk:
 	dd if=/dev/zero of=res/hda.img bs=512 count=2097152 status=progress
-	mkfs.vfat -F 32 res/foxos.img
+	mkfs.vfat -F 32 res/hda.img
+
+create_disk:
+	dd if=/dev/zero of=res/hda.img bs=512 count=2097152 status=progress
 
 format_disk_gpt:
 	dd if=/dev/zero of=res/hda.img bs=512 count=2097152 status=progress

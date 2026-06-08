@@ -14,3 +14,4 @@ typedef struct raw_disk_command {
 void read_sector_raw(int disk, uint64_t sector, uint32_t sector_count, void* buffer);
 void write_sector_raw(int disk, uint64_t sector, uint32_t sector_count, void* buffer);
 int disk_count(bool* physical);
+uint64_t disk_get_sector_count(int disk);

@@ -9,6 +9,7 @@ typedef struct disk_driver {
 	void (*flush)(struct disk_driver*);
 	void (*read)(struct disk_driver*, uint64_t sector, uint32_t count, void* buffer);
 	void (*write)(struct disk_driver*, uint64_t sector, uint32_t count, void* buffer);
+	uint64_t (*get_sectors) (struct disk_driver*);
 
 	bool physical;
 } disk_driver_t;
@@ -20,3 +21,4 @@ void read_disk(int disk_id, uint64_t sector, uint32_t count, void* buffer);
 void write_disk(int disk_id, uint64_t sector, uint32_t count, void* buffer);
 void flush_disk(int disk_id);
 bool is_disk_physical(int disk_id);
+uint64_t get_disk_sectors(int disk_id);

@@ -24,7 +24,7 @@ bool read_gpt(disk_driver_t* disk) {
 			
 			debugf(SPAM, "Partition guid: %x, index: %d, partition start lba: %d", entries[i].type_guid.data3, i, entries[i].first_lba);
 
-			register_disk(get_virtual_disk_driver(disk, entries[i].first_lba));
+			register_disk(get_virtual_disk_driver(disk, entries[i].first_lba, entries[i].last_lba - entries[i].first_lba + 1));
 		}
 		
 

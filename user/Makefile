@@ -1,7 +1,8 @@
 include ../config.mk
 
 LIBS = libraries/libc libraries/libtinf libraries/libflvm libraries/libjson \
-	   libraries/libload libraries/libsyntax libraries/libdns
+	   libraries/libload libraries/libsyntax libraries/libdns \
+	   libraries/libgpt
 
 PROGRAMS = base/background base/calc base/cat base/clear base/cp base/date \
            base/du base/echo base/edit base/env base/figl base/file base/free \
@@ -14,6 +15,8 @@ PROGRAMS += development/createmex development/fasm development/flvm development/
 
 PROGRAMS += network/dhcp network/httpget network/ip network/listen network/nslookup network/ping \
 		    network/stream
+
+PROGRAMS += filesystem/mktable.gpt filesystem/mkpart.gpt filesystem/dump.gpt filesystem/mkfs.fat32
 
 PROGRAMS += services/resolved services/scheduler services/service services/shortcutd
 
