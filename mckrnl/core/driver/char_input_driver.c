@@ -72,7 +72,8 @@ char keymap(uint8_t key, special_keys_down_t* special_keys_down) {
     }
 
 	bool shift = special_keys_down->left_shift || special_keys_down->right_shift;
-	bool alt = special_keys_down->left_alt || special_keys_down->right_alt;
+	bool alt = special_keys_down->left_alt;
+    bool altgr = special_keys_down->right_alt;
 
     keymap_t* current = &((keymap_t*) &loaded_keymap[1])[current_keymap_idx];
 
@@ -86,6 +87,8 @@ char keymap(uint8_t key, special_keys_down_t* special_keys_down) {
 		return current->layout_shift[key];
 	} else if (alt) {
 		return current->layout_alt[key];
+    } else if (altgr) {
+        return current->layout_altgr[key];
 	} else {
 		return current->layout_normal[key];
 	}
