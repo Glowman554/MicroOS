@@ -7,7 +7,7 @@ PROGRAMS = base/background base/calc base/cat base/clear base/cp base/date \
            base/du base/echo base/edit base/env base/figl base/file base/free \
 		   base/if base/init base/install base/linux base/lminst base/lolcat \
 		   base/ls base/mkdir base/pciinfo base/play base/pwr base/rm base/rmdir \
-		   base/tasks base/terminal base/test base/touch base/tree base/wc
+		   base/tasks base/terminal base/test base/touch base/tree base/wc base/update
 
 PROGRAMS += development/createmex development/fasm development/flvm development/highlight \
             development/jsonprint development/link development/load development/mcc
