@@ -82,11 +82,11 @@ res:
 	cp tools/compile-flags/compile-flags res/compile-flags
 
 format_disk:
-	dd if=/dev/zero of=res/hda.img bs=512 count=93750 status=progress
+	dd if=/dev/zero of=res/hda.img bs=512 count=2097152 status=progress
 	mkfs.vfat -F 32 res/foxos.img
 
 format_disk_gpt:
-	dd if=/dev/zero of=res/hda.img bs=512 count=93750 status=progress
+	dd if=/dev/zero of=res/hda.img bs=512 count=2097152 status=progress
 	echo 'echo "o\ny\nn\n1\n\n\n0700\nw\ny\n" | gdisk res/hda.img' | sh
 	sudo losetup /dev/loop100 res/hda.img -P
 	sudo mkfs.vfat -F 32 /dev/loop100p1

@@ -252,85 +252,114 @@ void fatfs_rename(vfs_mount_t* fat_mount, char* name) {
 	debugf(SPAM, "New label: %s", name);
 }
 
+static uint32_t read_le32(const uint8_t* ptr) {
+	return (uint32_t)ptr[0] | ((uint32_t)ptr[1] << 8) | ((uint32_t)ptr[2] << 16) | ((uint32_t)ptr[3] << 24);
+}
+
 bool is_fat32_bpb(BPB_t* bpb) {
-	if (bpb == 0) {
+	if (bpb == NULL) {
+		debugf(ERROR, "BPB is null");
 		return false;
 	}
 
-	if (bpb->root_entry_count != 0) {
+	const uint8_t* raw = (const uint8_t*) bpb;
+	uint16_t sector_size = bpb->bytes_per_sector;
+	uint8_t cluster_size = bpb->sectors_per_cluster;
+	uint16_t reserved = bpb->reserved_sector_count;
+	uint8_t fats = bpb->num_fats;
+	uint16_t root_entries = bpb->root_entry_count;
+	uint32_t total_sectors = bpb->total_sectors_32 != 0 ? bpb->total_sectors_32 : bpb->total_sectors_16;
+	uint32_t fat_size_16 = bpb->fat_size_16;
+	uint32_t fat_size_32 = read_le32(raw + 36);
+	uint32_t root_cluster = read_le32(raw + 44);
+
+	if (sector_size == 0) {
+		debugf(ERROR, "Bytes per sector is 0");
 		return false;
 	}
-	if (bpb->bytes_per_sector == 0) {
-		return false;
-	}
-	if (bpb->sectors_per_cluster == 0) {
-		return false;
-	}
-
-	uint16_t root_dir_sectors = ((bpb->root_entry_count * 32) + (bpb->bytes_per_sector - 1)) / bpb->bytes_per_sector;
-
-	uint32_t fat_size;
-	if (bpb->total_sectors_16 != 0) {
-		fat_size = bpb->total_sectors_16;
-	} else {
-		fat_size = bpb->total_sectors_32;
-	}
-
-	uint32_t total_sectors;
-	if (bpb->total_sectors_16 != 0) {
-		total_sectors = bpb->total_sectors_16;
-	} else {
-		total_sectors = bpb->total_sectors_32;
-	}
-
-	uint32_t data_sectors = total_sectors - (bpb->reserved_sector_count + (bpb->num_fats * fat_size) + root_dir_sectors);
-	uint32_t cluster_count = data_sectors / bpb->sectors_per_cluster;
-
-	if (cluster_count < 4085) {
-		return false; //FAT12
-	} else if (cluster_count < 65525) {
-		return false; //FAT16
-	}
-
-	if (bpb->BS_jump_boot[0] == 0xEB) {
-		if (bpb->BS_jump_boot[2] != 0x90) {
-			return false;
-		}
-	} else if (bpb->BS_jump_boot[0] != 0xE9) {
+	if ((sector_size & (sector_size - 1)) != 0 || sector_size < 512 || sector_size > 4096) {
+		debugf(ERROR, "Invalid FAT32 BPB: unsupported bytes per sector: %d", sector_size);
 		return false;
 	}
 
-	if (bpb->bytes_per_sector != 512 && bpb->bytes_per_sector != 1024 && bpb->bytes_per_sector != 2048 && bpb->bytes_per_sector != 4096) {
+	if (cluster_size == 0 || (cluster_size & (cluster_size - 1)) != 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: invalid sectors per cluster: %d", cluster_size);
 		return false;
 	}
 
-	if (bpb->sectors_per_cluster != 1 && bpb->sectors_per_cluster % 2 != 2) {
-		return false;
-	}
-	if (bpb->sectors_per_cluster * bpb->bytes_per_sector > 32 * 1024) { //Too large
-		return false;
-	}
-
-	if (bpb->reserved_sector_count == 0) {
+	if ((uint32_t)sector_size * cluster_size > 32 * 1024) {
+		debugf(ERROR, "Invalid FAT32 BPB: cluster size is too large: %u bytes", (uint32_t)sector_size * cluster_size);
 		return false;
 	}
 
-	if (bpb->num_fats < 2) {
+	if (reserved == 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: reserved sector count is 0");
 		return false;
 	}
 
-	if (bpb->root_entry_count != 0) {
+	if (fats == 0 || fats > 2) {
+		debugf(ERROR, "Invalid FAT32 BPB: invalid FAT count: %d", fats);
+		return false;
+	}
+
+	if (root_entries != 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: root entry count must be 0");
+		return false;
+	}
+
+	if (total_sectors == 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: total sectors is 0");
+		return false;
+	}
+
+	if (fat_size_16 != 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: FAT size 16 is not zero (%u)", fat_size_16);
+		return false;
+	}
+
+	if (fat_size_32 == 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: FAT size 32 is 0");
+		return false;
+	}
+
+	if (root_cluster < 2) {
+		debugf(ERROR, "Invalid FAT32 BPB: root cluster is invalid: %u", root_cluster);
+		return false;
+	}
+
+	uint32_t data_sectors = total_sectors - (reserved + fats * fat_size_32);
+	if (data_sectors == 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: no data sectors");
+		return false;
+	}
+
+	uint32_t cluster_count = data_sectors / cluster_size;
+	if (cluster_count < 65525) {
+		debugf(ERROR, "Cluster count is too small for FAT32: %u", cluster_count);
+		return false;
+	}
+
+	if (cluster_count > 0x0FFFFFF5U) {
+		debugf(ERROR, "Invalid FAT32 BPB: cluster count is too large: %u", cluster_count);
+		return false;
+	}
+
+	bool has_valid_jump = (bpb->BS_jump_boot[0] == 0xEB || bpb->BS_jump_boot[0] == 0xE9 || bpb->BS_jump_boot[0] == 0xE8);
+	if (!has_valid_jump) {
+		debugf(ERROR, "Invalid FAT32 BPB: invalid jump instruction 0x%02x", bpb->BS_jump_boot[0]);
+		return false;
+	}
+
+	bool has_signature = (raw[510] == 0x55 && raw[511] == 0xAA);
+	bool has_fat32_label = (memcmp(raw + 82, "FAT32   ", 8) == 0);
+
+	if (!has_signature && !has_fat32_label) {
+		debugf(ERROR, "Invalid FAT32 BPB: missing boot signature and FAT32 label");
 		return false;
 	}
 
 	if (bpb->media != 0xF0 && bpb->media < 0xF8) {
-		return false;
-	}
-
-	if (bpb->total_sectors_16 != 0) {
-		return false;
-	}
-	if (bpb->total_sectors_32 == 0) {
+		debugf(ERROR, "Invalid FAT32 BPB: invalid media type: 0x%02x", bpb->media);
 		return false;
 	}
 
