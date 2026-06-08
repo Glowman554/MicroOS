@@ -1,0 +1,12 @@
+mkfs.fat32 (cmd)
+--------
+
+Usage: mkfs.fat32 <device_id>
+
+Creates a new FAT32 filesystem on the specified device.
+
+Arguments:
+    <device_id> -> Disk device id
+
+Example:
+    mkfs.fat32 0

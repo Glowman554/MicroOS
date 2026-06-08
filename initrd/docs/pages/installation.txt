@@ -1,0 +1,73 @@
+installation
+------------
+
+STEP 1: Disk partitioning
+-------------------------
+
+1. Identify the disk device.
+    shell initrd:/ > ls -d
+    disk 0 (physical)
+
+2. Create a new GPT partition table.
+    shell initrd:/ > mktable.gpt 0
+    gpt: created GPT on disk 0 (2097152 sectors)
+
+3. Determine the largest available partition size.
+    shell initrd:/ > dump.gpt 0
+    GPT disk 0
+      usable: 34..2097118
+      partition entries: 128
+      entry size: 128 bytes
+      biggest partition size: 2095071 sectors
+      partitions:
+        #   start   end   size
+
+4. Add a partition using the reported size.
+    shell initrd:/ > mkpart.gpt 0 --size 2095071
+    mkpart.gpt: adding partition to disk 0
+    gpt: created partition 1 on disk 0 with size 2095071
+
+5. Reboot the system.
+
+6. Confirm the new partition appears as a virtual disk.
+    shell initrd:/ > ls -d
+    disk 0 (virtual)
+    disk 1 (physical)
+
+7. Format the new partition as FAT32.
+    shell initrd:/ > mkfs.fat32 0
+    disk_ioctl: pdrv=0, cmd=3
+    disk_ioctl: pdrv=0, cmd=1
+    disk_write: pdrv=0, sector=0, count=1
+    ...
+
+8. Reboot again before installing MicroOS.
+
+
+STEP 2: Installation
+--------------------
+
+1. Launch the installer.
+    shell initrd:/ > terminal scripts/install.msh
+    initrd:
+    dev:
+    acpi:
+    tmp:
+    fat32_0:
+
+2. Configure the installation.
+    Please input the partition you want to install on:
+    fat32_0:
+    Welcome to the MicroOS installer!
+    Which keyboard layout do you want to use? > de
+    How many extra terminals do you want to start? > 0
+
+3. Install the bootloader.
+    Successfully installed MicroOS!
+    disk 0 (virtual)
+    disk 1 (physical)
+    Please input the disk id you want to install limine on:
+    1
+
+4. Finish installation.
+    The system is now installed and ready for first boot.

@@ -3,6 +3,12 @@ MicroOS
 
 Welcome! This short guide helps first-time users get started with the MicroOS command line.
 
+INSTALLATION
+------------
+
+For installation instructions see 'help installation'
+
+
 HOW PATHS LOOK
 --------------
 

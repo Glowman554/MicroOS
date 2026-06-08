@@ -110,7 +110,7 @@ function screenshot {
 
 function release {
     # deno run -A release.ts screenshot::$(upload_file microos.jpg) name::$1 cdrom::$(upload_file cdrom.iso) cdromMinimal::$(upload_file cdrom.minimal.iso) libs::$(upload_file libs.zip) message::"$2" kernel::$(upload_file mckrnl/core/mckrnl.elf) symbols::$(upload_file mckrnl/core/mckrnl.syms) initrd::$(upload_file res/initrd.saf)
-    local cdrom=$(upload_file "$2")
+    local cdrom=$(upload_file "cdrom.iso")
     local cdrom_minimal=$(upload_file "cdrom.minimal.iso")
     local libs=$(upload_file "libs.zip")
     local screenshot=$(upload_file "microos.jpg")

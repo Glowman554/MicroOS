@@ -1,0 +1,12 @@
+mktable.gpt (cmd)
+--------
+
+Usage: mktable.gpt <device_id>
+
+Initializes a new GPT partition table on the specified device.
+
+Arguments:
+    <device_id> -> Disk device id
+
+Example:
+    mktable.gpt 0

@@ -1,0 +1,12 @@
+dump.gpt (cmd)
+--------
+
+Usage: dump.gpt <device_id>
+
+Displays the GPT partition table for the specified device.
+
+Arguments:
+    <device_id> -> Disk device id
+
+Example:
+    dump.gpt 0

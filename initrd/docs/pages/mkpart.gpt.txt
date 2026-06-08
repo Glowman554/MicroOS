@@ -1,0 +1,17 @@
+mkpart.gpt (cmd)
+--------
+
+Usage: mkpart.gpt <device_id> --size <sectors> [--type <type>] [--name <name>]
+
+Adds a new GPT partition to the specified device.
+
+Arguments:
+    <device_id> -> Disk device id
+
+Options:
+    --size <sectors>  -> Partition size in sectors (required)
+    --type <type>     -> Partition type name (default: basic-data)
+    --name <name>     -> Partition name label
+
+Example:
+    mkpart.gpt 0 --size 102400 --type basic-data --name "New Volume"
