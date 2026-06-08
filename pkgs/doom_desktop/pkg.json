@@ -1,9 +1,8 @@
 {
 	"directories": [
-		"doom"
 	],
 	"mappings": {
-		"src/doom.o": "doom/doom.o"
+		"src/desktop-doom.mex": "bin/desktop-doom.mex"
 	},
 	"name": "DOOM Desktop",
 	"license": "src/DOOM/DOOMLIC.TXT"

@@ -21,7 +21,7 @@ if [ -d "installer" ]; then
 fi
 
 make -C src LIBS_ZIP=$LIBS_ZIP compile_flags.txt extract_libs
-make -C src LIBS_ZIP=$LIBS_ZIP library -j $(nproc)
+make -C src LIBS_ZIP=$LIBS_ZIP prog -j $(nproc)
 
 bash ../run_installer.sh
 cp -v installer/install.mex ../pkgs/doom_desktop_install.mex

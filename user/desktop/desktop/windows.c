@@ -86,6 +86,13 @@ window_definition_t service_def  = {
     .x = 60, .y = 60, .width = 400, .height = 360, .bg_color = 0x1a1a2e
 };
 
+window_definition_t doom_def     = {
+    .name = "DOOM",
+    .register_window = launch_external,
+    .executable = "desktop-doom",
+    .x = 50, .y = 50, .width = 320, .height = 200, .bg_color = 0x000000
+};
+
 void register_windows(void) {
     window_definitions = array_create(sizeof(window_definition_t*), 12);
 
@@ -99,7 +106,7 @@ void register_windows(void) {
     register_window(&imgview_def);
     register_window(&terminal_def);
     register_window(&service_def);
-
+    register_window(&doom_def);
     desktop_register_file_assoc("fpic", &imgview_def, launch_external_ext);
     desktop_register_file_assoc("bmp",  &imgview_def, launch_external_ext);
     desktop_register_file_assoc("mbif", &imgview_def, launch_external_ext);
