@@ -5,6 +5,8 @@
 #include <string.h>
 #include <driver/char_input_driver.h>
 #include <driver/power_driver.h>
+#include <config.h>
+#include <net/dump.h>
 
 #define SYS_GET_ARGV_ID 0x00
 #define SYS_GET_ENVP_ID 0x01
@@ -19,6 +21,9 @@
 #define SYS_ENV_SET_LAYOUT 0x07
 
 #define SYS_ENV_TASK_SET_WAIT_TIME 0x08
+
+#define SYS_ENV_ETHDUMP_ENABLE 0x09
+#define SYS_ENV_ETHDUMP_DISABLE 0x0A
 
 cpu_registers_t* sys_env(cpu_registers_t* regs) {
 	int id = regs->ebx;
@@ -80,6 +85,19 @@ cpu_registers_t* sys_env(cpu_registers_t* regs) {
                 // get_self()->wait_time = regs->ecx;
             }
             break;
+		
+	#ifdef NETWORK_STACK
+		case SYS_ENV_ETHDUMP_ENABLE:
+			{
+				ethdump_dump_enabled = true;
+			}
+			break;
+		case SYS_ENV_ETHDUMP_DISABLE:
+			{
+				ethdump_dump_enabled = false;
+			}
+			break;
+	#endif
 
 		default:
 			debugf(WARNING, "sys_env: Unknown id %d", id);

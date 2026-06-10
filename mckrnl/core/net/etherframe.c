@@ -1,10 +1,16 @@
 #include <net/etherframe.h>
+#include <net/arp.h>
+#include <net/ipv4.h>
+#include <net/tcp.h>
+#include <net/udp.h>
 #include <stdio.h>
 #include <memory/heap.h>
 #include <string.h>
 #include <net/stack.h>
+#include <net/dump.h>
 #include <config.h>
 #ifdef NETWORK_STACK
+
 
 void etherframe_register(network_stack_t* stack, ether_frame_handler_t handler) {
 	debugf(SPAM, "Registering etherframe handler for %d", handler.ether_type_be);
@@ -23,12 +29,15 @@ void etherframe_send(ether_frame_handler_t* handler, network_stack_t* stack, uin
 	frame->ether_type_be = handler->ether_type_be;
 
 	memcpy(buffer + sizeof(ether_frame_header_t), payload, size);
+
+	etherframe_dump(buffer, size + sizeof(ether_frame_header_t));
 	send_packet(stack->driver, buffer, size + sizeof(ether_frame_header_t));
 
 	kfree(buffer);
 }
 
 void etherframe_nic_recv(struct nic_driver* driver, uint8_t* data, uint32_t len) {
+	etherframe_dump(data, len);
 	ether_frame_header_t* frame = (ether_frame_header_t*) data;
 	mac_u src_mac = { .mac = frame->src_mac_be };
 

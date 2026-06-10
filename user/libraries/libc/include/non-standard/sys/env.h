@@ -9,6 +9,8 @@
 #define SYS_ENV_PIN 0x06
 #define SYS_ENV_SET_LAYOUT 0x07
 #define SYS_ENV_TASK_SET_WAIT_TIME 0x08
+#define SYS_ENV_ETHDUMP_ENABLE 0x09
+#define SYS_ENV_ETHDUMP_DISABLE 0x0A
 
 void* env(int id);
 void set_env(int id, void* value);

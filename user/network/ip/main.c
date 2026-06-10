@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <non-standard/net/nettools.h>
 #include <non-standard/net/ipv4.h>
+#include <non-standard/sys/env.h>
 
 void show(int nic_id, nic_content_t* nic_config) {
     printf("interface %d\n", nic_id);
@@ -52,6 +53,8 @@ int main(int argc, char* argv[]) {
             printf("\tip gateway <ip>\n");
             printf("\tip dns <ip>\n");
             printf("\tip show\n");
+            printf("\tip ethdump-on\n");
+            printf("\tip ethdump-off\n");
             printf("\tip setup <ip> <subnet> <gateway> <dns>\n");
 			exit(0);
 		} else {
@@ -79,6 +82,12 @@ int main(int argc, char* argv[]) {
 
     if (strcmp(command, "show") == 0) {
         show(nic_id, &nic_config);
+    } else if (strcmp(command, "ethdump-on") == 0) {
+        env(SYS_ENV_ETHDUMP_ENABLE);
+        printf("Etherframe dump enabled\n");
+    } else if (strcmp(command, "ethdump-off") == 0) {
+        env(SYS_ENV_ETHDUMP_DISABLE);
+        printf("Etherframe dump disabled\n");
     } else {
         assert(ipStr != NULL);
         ip_u ip = parse_ip(ipStr);
