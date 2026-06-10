@@ -36,7 +36,7 @@ typedef struct dhcp_message {
 } __attribute__((packed)) dhcp_message_t;
 
 void etherframe_dump_mac(const char* label, mac_u mac) {
-    debugf(WARNING, "%s %02x:%02x:%02x:%02x:%02x:%02x",
+    debugf(WARNING, "%s %x:%x:%x:%x:%x:%x",
         label,
         mac.mac_p[0], mac.mac_p[1], mac.mac_p[2],
         mac.mac_p[3], mac.mac_p[4], mac.mac_p[5]);
@@ -176,7 +176,7 @@ void etherframe_dump_ipv4(uint8_t* payload, uint32_t size) {
         uint16_t dst_port = BSWAP16(tcp->dst_port);
         uint32_t tcp_header_size = (uint32_t) tcp->header_size_32 * 4;
 
-        debugf(WARNING, "TCP: %d -> %d seq=0x%08x ack=0x%x flags=%s window=%d hdr=%d",
+        debugf(WARNING, "TCP: %d -> %d seq=0x%x ack=0x%x flags=%s window=%d hdr=%d",
             src_port,
             dst_port,
             BSWAP32(tcp->sequence_number),
